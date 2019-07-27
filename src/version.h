@@ -15,15 +15,16 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#include "main.h"
+#ifndef VERSION_H
+#define VERSION_H
 
-void setup() {
-#if DEBUG > 0
-    serial();
-#endif
-}
+#include "config.h"
+#include "helpers.h"
+#include <Arduino.h>
 
-void loop() {
-    Bubbles();
-    yield();
-}
+#define VERSION_STRING PIO_SRC_TAG
+#define BUILD_NAME PIO_SRC_REV 
+
+String GetVersion();
+
+#endif /* VERSION_H */

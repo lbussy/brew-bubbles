@@ -15,15 +15,18 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#include "main.h"
+#include "helpers.h"
 
-void setup() {
-#if DEBUG > 0
-    serial();
-#endif
-}
-
-void loop() {
-    Bubbles();
-    yield();
+void serial() { // Start serial with auto-detected rate (default to BAUD)
+    Serial.begin(BAUD);
+    unsigned long detectedBaudrate = Serial.detectBaudrate(SERDELAY);
+    if (detectedBaudrate) {
+        while (Serial.availableForWrite() != UART_TX_FIFO_SIZE) {
+            yield();
+        }
+        Serial.flush();
+        Serial.begin(detectedBaudrate);
+    }
+    Serial.flush();
+    Serial.println(); Serial.println();
 }

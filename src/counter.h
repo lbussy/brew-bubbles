@@ -15,15 +15,24 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#include "main.h"
+#ifndef COUNTER_H
+#define COUNTER_H
 
-void setup() {
-#if DEBUG > 0
-    serial();
-#endif
-}
+#include "config.h"
+#include <Arduino.h>
 
-void loop() {
-    Bubbles();
-    yield();
-}
+class Counter {
+    private:
+        int ctPin; // Store pin
+        volatile unsigned int pulse; // Store pulse count
+        volatile unsigned long lastTime; // Store time of last report (millis())
+        volatile unsigned long ulMicroLast; // Last pulse time for resolution (micros())
+
+    public:
+        Counter (int pin);
+        void HandleInterrupts(void);
+        float GetPps();
+        float GetPpm();
+};
+
+#endif // COUNTER_H
