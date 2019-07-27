@@ -1,4 +1,0 @@
-[submodule "lib/WiFiManager"]
-	path = lib/WiFiManager
-	url = https://github.com/tzapu/WiFiManager.git
-	branch = master

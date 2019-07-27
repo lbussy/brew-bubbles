@@ -15,15 +15,15 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#include "main.h"
+#ifndef MAIN_H
+#define MAIN_H
 
-void setup() {
-#if DEBUG > 0
-    serial();
-#endif
-}
+#include "bubbles.h"
+#include "helpers.h"
+#include "config.h"
+#include <Arduino.h>
 
-void loop() {
-    Bubbles();
-    yield();
-}
+void setup();
+void loop();
+
+#endif // MAIN_H

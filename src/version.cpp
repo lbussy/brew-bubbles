@@ -15,15 +15,11 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#include "main.h"
+#include "version.h"
 
-void setup() {
-#if DEBUG > 0
-    serial();
-#endif
-}
-
-void loop() {
-    Bubbles();
-    yield();
+String GetVersion() {
+    String version = "Brew Bubbles version " + stringify(VERSION_STRING);
+    //VERSION_STRING // Tag
+    //BUILD_NAME // Revision
+    return "";
 }
