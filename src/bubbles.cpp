@@ -17,36 +17,47 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "bubbles.h"
 
-Counter counter(COUNTPIN); // Create an instance of the counter
+Counter counter(COUNTPIN);      // Create an instance of the counter
+unsigned long ulNow = millis(); // Time in millis now
+unsigned long ulStart = 0UL;    // Start time
 
 void Bubbles() {
-    unsigned long ulNow = millis();         // Time in millis now
-    const char* hostname = HOSTNAME;        // Hostname (TODO: Get this from wifi setup)
-    unsigned long ulStart = 0UL;            // Start time
+    const char* hostname = HOSTNAME;    // Hostname (TODO: Get this from wifi setup)
+    ulNow = millis();
+
+    if( ulNow - ulStart > BUBLOOP) { // If (now - start) > delay time, do work
+        ulStart = ulNow;
+        float fBpm = counter.GetPpm();
 
 #ifdef READTEMP
 
 #ifdef AMBSENSOR
-    OneWire ambient(AMBSENSOR);
-    DallasTemperature sensorAmbient(&ambient);
-    sensorAmbient.begin();
+        OneWire ambient(AMBSENSOR);
+        DallasTemperature sensorAmbient(&ambient);
+        sensorAmbient.begin();
+        sensorAmbient.requestTemperatures();
+
+#if TEMPFORMAT == F
+        float fAmbTemp = sensorAmbient.getTempFByIndex(0);
+#else
+        float fAmbTemp = sensorAmbient.getTempCByIndex(0);
+#endif // TEMPFORMAT
+
 #endif // AMBSENSOR
 
 #ifdef VESSENSOR
-    OneWire vessel(VESSENSOR);
-    DallasTemperature sensorVessel(&vessel);
-    sensorVessel.begin();
-#endif // VESSENSOR
-
-#endif // READTEMP
-
-    if( ulNow - ulStart > DELAY) { // If (now - start) > delay time do work
-        ulStart = ulNow;
-        float fBpm = counter.GetPpm();
-        sensorAmbient.requestTemperatures();
+        OneWire vessel(VESSENSOR);
+        DallasTemperature sensorVessel(&vessel);
+        sensorVessel.begin();
         sensorVessel.requestTemperatures();
 
-#ifdef READTEMP
+#if TEMPFORMAT == F
+        float fVesTemp = sensorVessel.getTempFByIndex(0);
+#else
+        float fVesTemp = sensorVessel.getTempCByIndex(0);
+#endif // TEMPFORMAT
+
+#endif // VESSENSOR
 
 #if TEMPFORMAT == F
         const char* format = "F";
@@ -54,43 +65,30 @@ void Bubbles() {
         const char* format = "C";
 #endif // TEMPFORMAT
 
-#ifdef AMBSENSOR
-#if TEMPFORMAT == F
-        float fAmbTemp = sensorAmbient.getTempFByIndex(0);
-#else
-        float fAmbTemp = sensorAmbient.getTempCByIndex(0);
-#endif // TEMPFORMAT
-#endif // AMBSENSOR
-
-#ifdef VESSENSOR
-#if TEMPFORMAT == F
-        float fVesTemp = sensorVessel.getTempFByIndex(0);
-#else
-        float fVesTemp = sensorVessel.getTempCByIndex(0);
-#endif // TEMPFORMAT
-#endif // VESSENSOR
-
 #endif // READTEMP
 
         // Serialize data with ArduinoJson
 
-        /* Example JSON
+        /*         
+        Sample (230 bytes to allow for string duplication):
         {
-            "host": "brewbubbles",
-            "format": "F",
-            "bubbles": {
-                "bpm": 11.52,
-                "ambtemp": 68.23,
-                "vestemp": 45.11
-            }
+                "api_key":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                "vessel":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                "format":"F",
+                "bubbles":{
+                        "bpm":0,
+                        "ambtemp":70.3625,
+                        "vestemp":-196.6
+                }
         }
         */
 
-        const size_t capacity = 2*JSON_OBJECT_SIZE(3);
+        const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(4);
         DynamicJsonDocument bubbleJson(capacity);
 
-        bubbleJson["hostname"] = hostname;
-
+        bubbleJson["api_key"] = API_KEY;
+        bubbleJson["vessel"] = hostname;
+        
 #ifdef READTEMP
         bubbleJson["format"] = format;
 #endif // READTEMP
@@ -106,23 +104,9 @@ void Bubbles() {
         bubbles["vestemp"] = fVesTemp;
 #endif // VESSENSOR
 
-        // Serialize to memory
-        //serializeJson(bubbleJson, strBubbleJson, sizeof(strBubbleJson));
-
-#if DEBUG > 0
-        serializeJson(bubbleJson, Serial); // Print JSON to Serial
-        Serial.println();
-        Serial.print("Bubbles Per Minute: ");
-        Serial.print(fBpm);
-        Serial.print("  Ambient Temp: ");
-        Serial.print(fAmbTemp);
-        Serial.print("º");
-        Serial.print(format);
-        Serial.print("  Vessel Temp: ");
-        Serial.print(fVesTemp);
-        Serial.print("º");
-        Serial.print(format);
-        Serial.println();
-#endif // DEBUG
+        // Serialize JSON
+        char strBubbleJson[230];
+        serializeJson(bubbleJson, strBubbleJson, sizeof(strBubbleJson));
+        httppost(strBubbleJson); // Post JSON date to endpoint
     }
 }

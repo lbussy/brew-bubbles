@@ -1,0 +1,25 @@
+# TODO List
+
+- Add in logging function
+- Add in NTP
+    - Add timestamp to logging
+    - Add timestamp to JSON
+- ~~Add mMDNS responder~~
+- ~~Add mDNS resolution~~
+- Get mDNS hostname from configuration
+- GEt WiFi.hostname() from configuration
+- Add DNS resolution
+- Add configuration save
+    - HTTP Endpoint
+        - Address
+        - Port
+        - Frequency
+    - Brewer's Friend Endpoint
+        - Key
+        - Frequency
+- Add forget WiFi
+- Add OTA
+    - Local
+    - GitHub
+- Add reset for pin pulldown on starup
+- Fix deprecation error in http

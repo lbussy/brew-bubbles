@@ -18,12 +18,57 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "main.h"
 
 void setup() {
-#if DEBUG > 0
     serial();
-#endif
+    wifisetup();
+    mdnssetup();
+    webserversetup();
+    char hostname[39] = "brewpi.local";
+    mdnsquery(hostname);
+    yield();
 }
 
 void loop() {
+    MDNS.update();
+    webserverloop();
     Bubbles();
     yield();
+}
+
+void mdnssetup() {
+    if (!MDNS.begin(WiFi.hostname())) { // Start the mDNS responder for esp8266.local
+        Serial.println("Error setting up MDNS responder.");
+    } else {
+        Serial.print("mDNS responder started for ");
+        // Serial.print(WiFi.hostname()); // TODO:  Get from configuration
+        Serial.print(HOSTNAME);
+        Serial.println(".local.");
+        if (!MDNS.addService("http", "tcp", PORT)) {
+            Serial.println("Failed to register MDNS service.");
+        } else {
+            Serial.print("HTTP registered via MDNS on port ");
+            Serial.print(PORT);
+            Serial.println(".");
+        }
+    }
+}
+
+void mdnsquery(char hostname[39]) {
+        Serial.println("Sending mDNS query");
+    int n = MDNS.queryService("workstation", "tcp");
+    Serial.println("mDNS query done");
+    if (n == 0) {
+        Serial.println("No services found.");
+    } else {
+        for (int i = 0; i < n; ++i) {
+            char foundhost[39];
+            MDNS.hostname(i).toCharArray(foundhost, 39);
+            if(strcmp(foundhost, hostname) == 0) {
+                Serial.print("FOUND: ");
+                Serial.print(foundhost);
+                Serial.print(": ");
+                Serial.print(MDNS.IP(i));
+                Serial.println(".");
+            }
+        }
+    }
 }

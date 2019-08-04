@@ -15,17 +15,28 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef BUBBLES_H
-#define BUBBLES_H
+#include "serial.h"
 
-#include "post.h"
-#include "config.h"
-#include "counter.h"
-#include <OneWire.h>
-#include <DallasTemperature.h>
-#include <ArduinoJson.h>
-#include <Arduino.h>
+#if DEBUG > 0
 
-void Bubbles();
+void serial() { // Start serial with auto-detected rate (default to BAUD)
 
-#endif // BUBBLES_H
+    Serial.begin(BAUD);
+    unsigned long detectedBaudrate = Serial.detectBaudrate(SERDELAY);
+    if (detectedBaudrate) {
+        while (Serial.availableForWrite() != UART_TX_FIFO_SIZE) {
+            yield();
+        }
+        Serial.flush();
+        Serial.begin(detectedBaudrate);
+    }
+    Serial.flush();
+    Serial.println();
+    Serial.println();
+}
+
+#else // Debug
+
+void serial(){}
+
+#endif // Debug

@@ -15,11 +15,14 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#include "version.h"
+#include "mdns.h"
 
-String GetVersion() {
-    String version = "Brew Bubbles version " + stringify(VERSION_STRING);
-    //VERSION_STRING // Tag
-    //BUILD_NAME // Revision
-    return "";
-}
+// void mdnssetup() {
+//     if (!MDNS.begin(WiFi.hostname())) {             // Start the mDNS responder for esp8266.local
+//         Serial.println("Error setting up MDNS responder!");
+//     } else {
+//         Serial.print("mDNS responder started for ");
+//         Serial.print(WiFi.hostname());
+//         Serial.println(".");
+//     }
+// }

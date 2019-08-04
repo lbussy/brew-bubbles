@@ -15,18 +15,18 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#include "helpers.h"
+#ifndef WEBSERVER_H
+#define WEBSERVER_H
 
-void serial() { // Start serial with auto-detected rate (default to BAUD)
-    Serial.begin(BAUD);
-    unsigned long detectedBaudrate = Serial.detectBaudrate(SERDELAY);
-    if (detectedBaudrate) {
-        while (Serial.availableForWrite() != UART_TX_FIFO_SIZE) {
-            yield();
-        }
-        Serial.flush();
-        Serial.begin(detectedBaudrate);
-    }
-    Serial.flush();
-    Serial.println(); Serial.println();
-}
+#include "config.h"
+#include <ESP8266WiFi.h>
+#include <WiFiClient.h>
+#include <ESP8266WebServer.h>
+#include <FS.h>
+
+String getContentType(String filename); // convert the file extension to the MIME type
+bool handleFileRead(String path); // send the right file to the client (if it exists)
+void webserversetup();
+void webserverloop();
+
+#endif /* WEBSERVER_H */

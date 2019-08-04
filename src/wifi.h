@@ -15,16 +15,16 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef WIFISETUP_H
-#define WIFISETUP_H
+#ifndef WIFI_H
+#define WIFI_H
 
 #include "config.h"
+#include <ESP8266WiFi.h>        //ESP8266 Core WiFi Library
+#include <DNSServer.h>          //Local DNS Server used for redirecting all requests to the configuration portal
+#include <ESP8266WebServer.h>   //Local WebServer used to serve the configuration portal
+#include <WiFiManager.h>        //https://github.com/tzapu/WiFiManager WiFi Configuration Magic
 
-#include <ESP8266WiFi.h>        // ESP8266 Core WiFi Library (you most likely already have this in your sketch)
-#include <DNSServer.h>          // Local DNS Server used for redirecting all requests to the configuration portal
-#include <ESP8266WebServer.h>   // Local WebServer used to serve the configuration portal
-#include <WiFiManager.h>        // https://github.com/tzapu/WiFiManager WiFi Configuration Magic
-#include <ESP8266mDNS.h>        // ESP8266 Multicast DNS
-#include <Ticker.h>             // ESP8266 library which calls functions periodically
+void wifisetup();
+void configModeCallback();
 
-#endif // WIFISETUP_H
+#endif // WIFI_H

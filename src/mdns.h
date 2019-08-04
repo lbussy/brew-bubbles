@@ -15,12 +15,11 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef HELPERS_H
-#define HELPERS_H
+#ifndef MDNS_H
+#define MDNS_H
 
-#include "config.h"
-#include <Arduino.h>
+// #include <ESP8266mDNS.h>
 
-void serial();
+// void mdnssetup();
 
-#endif // HELPERS_H
+#endif // MDNS_H

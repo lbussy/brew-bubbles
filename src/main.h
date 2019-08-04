@@ -18,12 +18,16 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef MAIN_H
 #define MAIN_H
 
+//#include "mdns.h"
 #include "bubbles.h"
-#include "helpers.h"
-#include "config.h"
-#include <Arduino.h>
+#include "webserver.h"
+#include "wifi.h"
+#include "serial.h"
+#include <ESP8266mDNS.h>        // Include the mDNS library
 
 void setup();
 void loop();
+void mdnssetup();
+void mdnsquery(char hostname[39]);
 
 #endif // MAIN_H
