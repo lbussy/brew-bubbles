@@ -1,9 +1,9 @@
 # TODO List
 
-- Add in logging function
 - Add in NTP
     - Add timestamp to logging
     - Add timestamp to JSON
+- Replace Serial.print() witj Log.{level} messages
 - Configuration Work
     - Get mDNS hostname from configuration
     - Get WiFi.hostname() from configuration
@@ -22,7 +22,10 @@
     - Local
     - GitHub
 - Fix deprecation error in http
+- Make sure defaults.h (and maybe config.h) default for SPIFFS config
+- True up config.h and defaults.h
 - ~~Detect bad/no OneWire~~
 - ~~Add mMDNS responder~~
 - ~~Add mDNS resolution~~
 - ~~Figure out if we need to invert D1~~
+- ~~Add in logging function~~
