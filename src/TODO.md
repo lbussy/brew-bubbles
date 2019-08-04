@@ -4,22 +4,25 @@
 - Add in NTP
     - Add timestamp to logging
     - Add timestamp to JSON
-- ~~Add mMDNS responder~~
-- ~~Add mDNS resolution~~
-- Get mDNS hostname from configuration
-- GEt WiFi.hostname() from configuration
+- Configuration Work
+    - Get mDNS hostname from configuration
+    - Get WiFi.hostname() from configuration
+-     - Add configuration save
+        - HTTP Endpoint
+            - Address
+            - Port
+            - Frequency
+        - Brewer's Friend Endpoint
+            - Key
+            - Frequency
 - Add DNS resolution
-- Add configuration save
-    - HTTP Endpoint
-        - Address
-        - Port
-        - Frequency
-    - Brewer's Friend Endpoint
-        - Key
-        - Frequency
-- Add forget WiFi
+- Add reset/forget WiFi
+- Add reset/forget WiFi for pin pulldown on starup
 - Add OTA
     - Local
     - GitHub
-- Add reset for pin pulldown on starup
 - Fix deprecation error in http
+- ~~Detect bad/no OneWire~~
+- ~~Add mMDNS responder~~
+- ~~Add mDNS resolution~~
+- ~~Figure out if we need to invert D1~~
