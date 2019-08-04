@@ -23,7 +23,8 @@ bool httppost(String json) {
     http.begin(HTTPTARGET); // Specify request destination
     http.addHeader("Content-Type", "application/json"); // Specify content-type header
     int httpCode = http.POST(json); // Post json
-#if DEBUG > 0
+// #if DEBUG > 0
+#ifndef DISABLE_LOGGING
     String payload = http.getString(); // Get the response payload
     Serial.print("HTTP Post return code: ");
     Serial.println(httpCode); // Print HTTP return code
@@ -35,7 +36,8 @@ bool httppost(String json) {
     Serial.flush();
 #else
     http.POST(json); // Post json
-#endif
+//#endif // DEBUG
+#endif //DISABLE_LOGGING
     http.end(); // Close connection
     if(httpCode == 200) { // 200 = ok
         return true;

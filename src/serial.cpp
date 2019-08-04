@@ -17,25 +17,18 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "serial.h"
 
-#if DEBUG > 0
+#ifndef DISABLE_LOGGING
 
 void serial() { // Start serial with auto-detected rate (default to BAUD)
-
     Serial.begin(BAUD);
-    unsigned long detectedBaudrate = Serial.detectBaudrate(SERDELAY);
-    if (detectedBaudrate) {
-        while (Serial.availableForWrite() != UART_TX_FIFO_SIZE) {
-            yield();
-        }
-        Serial.flush();
-        Serial.begin(detectedBaudrate);
-    }
     Serial.flush();
-    Serial.println();
-    Serial.println();
+    Log.begin(LOG_LEVEL, &Serial, true);
+    Log.notice("" CR);
+    Log.notice("" CR);
+    Log.notice("Serial logging started at %l." CR, BAUD);
 }
 
-#else // Debug
+#else // DISABLE_LOGGING
 
 void serial(){}
 
