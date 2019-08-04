@@ -7,6 +7,9 @@
 .vscode/launch.json
 *.code-workspace
 
+# Board and Schematic File Backups
+*.*\#[0-9]
+
 # Prerequisites
 *.d
 

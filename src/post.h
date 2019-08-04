@@ -15,16 +15,12 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef VERSION_H
-#define VERSION_H
+#ifndef POST_H
+#define POST_H
 
 #include "config.h"
-#include "helpers.h"
-#include <Arduino.h>
+#include <ESP8266HTTPClient.h>
 
-#define VERSION_STRING PIO_SRC_TAG
-#define BUILD_NAME PIO_SRC_REV 
+bool httppost(String json);
 
-String GetVersion();
-
-#endif /* VERSION_H */
+#endif // POST_H
