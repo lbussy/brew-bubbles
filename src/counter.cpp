@@ -26,7 +26,7 @@ static ICACHE_RAM_ATTR void HandleInterruptsStatic(void) { // External interrupt
 
 Counter::Counter(int pin) { // Counter Constructor
     pCounter = this; // Assign current instance to pointer 
-    attachInterrupt(digitalPinToInterrupt(pin), HandleInterruptsStatic, RISING); // FALLING, RISING or CHANGE
+    attachInterrupt(digitalPinToInterrupt(pin), HandleInterruptsStatic, FALLING); // FALLING, RISING or CHANGE
     ctPin = pin; // Set input pin
     pinMode(pin, INPUT); // Change pinmode to input
     lastTime = millis(); // Store the last report timer
