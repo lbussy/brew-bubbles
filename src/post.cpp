@@ -37,8 +37,6 @@ bool httppost(String json) {
     char j[i + 1]; 
     strcpy(j, json.c_str()); 
     Log.notice("JSON was: %s" CR, j);
-#else
-    http.POST(json); // Post json
 //#endif // DEBUG
 #endif //DISABLE_LOGGING
     http.end(); // Close connection

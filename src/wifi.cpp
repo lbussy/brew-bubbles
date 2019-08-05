@@ -19,26 +19,21 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 void configModeCallback (WiFiManager *myWiFiManager) {
 #ifndef DISABLE_LOGGING
-    Log.notice("Entered AP configuration mode. IP:  " );
-    IPAddress myIP = WiFi.softAPIP();
-    Log.notice("Entered AP configuration mode." CR);
-    Log.notice("IP: %d.%d.%d.%d" CR, myIP[0], myIP[1], myIP[2], myIP[3]);
-
     // If you used auto generated SSID, print it
     String ssid = myWiFiManager->getConfigPortalSSID();
- 
-    // Convert String to char array
+     // Convert String to char array
     int n = ssid.length();
     char ap[n + 1]; 
     strcpy(ap, ssid.c_str()); 
 
-    Log.notice("SSID: %s." CR, ap);
+    IPAddress myIP = WiFi.softAPIP();
+    Log.notice("Entered AP configuration mode, SSID: %s, IP: %d.%d.%d.%d." CR, ap, myIP[0], myIP[1], myIP[2], myIP[3]);
 #endif //DISABLE_LOGGING
 }
 
 void wifisetup() {
     WiFiManager wifiManager; // Local init only
-    wifiManager.resetSettings(); // For testing
+    //wifiManager.resetSettings(); // For testing
 // #if DEBUG > 0
 #ifndef DISABLE_LOGGING
     wifiManager.setDebugOutput(true); // Turn on Debug (default off)

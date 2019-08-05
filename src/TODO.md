@@ -7,7 +7,7 @@
     - True up config.h and defaults.h
     - Get mDNS hostname from configuration
     - Get WiFi.hostname() from configuration
--     - Add configuration save
+      - Add configuration save
         - HTTP Endpoint
             - Address
             - Port
@@ -18,13 +18,13 @@
 - Add DNS resolution
 - Add reset/forget WiFi
 - Add reset/forget WiFi for pin pulldown on starup
-- Add OTA
-    - Local
-    - GitHub
+- Add GitHub OTA
 - Fix deprecation error in http
+- ~~Move mDNS functions~~
 - ~~Detect bad/no OneWire~~
 - ~~Add mMDNS responder~~
 - ~~Add mDNS resolution~~
 - ~~Figure out if we need to invert D1~~
 - ~~Add in logging function~~
 - ~~Replace Serial.print() with Log.{level} messages~~
+- ~~Add local OTA~~
