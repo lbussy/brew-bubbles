@@ -17,12 +17,3 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "mdns.h"
 
-// void mdnssetup() {
-//     if (!MDNS.begin(WiFi.hostname())) {             // Start the mDNS responder for esp8266.local
-//         Serial.println("Error setting up MDNS responder!");
-//     } else {
-//         Serial.print("mDNS responder started for ");
-//         Serial.print(WiFi.hostname());
-//         Serial.println(".");
-//     }
-// }

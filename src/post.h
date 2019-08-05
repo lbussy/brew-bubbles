@@ -19,6 +19,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #define POST_H
 
 #include "config.h"
+#include "serial.h"
 #include <ESP8266HTTPClient.h>
 
 bool httppost(String json);

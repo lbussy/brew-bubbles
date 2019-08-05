@@ -26,14 +26,17 @@ bool httppost(String json) {
 // #if DEBUG > 0
 #ifndef DISABLE_LOGGING
     String payload = http.getString(); // Get the response payload
-    Serial.print("HTTP Post return code: ");
-    Serial.println(httpCode); // Print HTTP return code
-    Serial.print("HTTP Post response payload: ");
-    Serial.print(payload); // Print request response payload
-    Serial.flush();
-    Serial.print("JSON was: ");
-    Serial.println(json);
-    Serial.flush();
+    // Convert String to char array
+    int n = payload.length();
+    char p[n + 1]; 
+    strcpy(p, payload.c_str()); 
+    Log.notice("HTTP Post return code: %i" CR, httpCode);
+    Log.notice("HTTP Post response payload: %s" CR, p);
+    // Convert String to char array
+    int i = json.length();
+    char j[i + 1]; 
+    strcpy(j, json.c_str()); 
+    Log.notice("JSON was: %s" CR, j);
 #else
     http.POST(json); // Post json
 //#endif // DEBUG

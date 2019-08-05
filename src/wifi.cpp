@@ -26,11 +26,10 @@ void configModeCallback (WiFiManager *myWiFiManager) {
 
     // If you used auto generated SSID, print it
     String ssid = myWiFiManager->getConfigPortalSSID();
-    int n = ssid.length(); 
-    // declaring character array 
+ 
+    // Convert String to char array
+    int n = ssid.length();
     char ap[n + 1]; 
-
-    // Copy the contents of the string to char array 
     strcpy(ap, ssid.c_str()); 
 
     Log.notice("SSID: %s." CR, ap);
