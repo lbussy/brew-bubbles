@@ -28,7 +28,7 @@ void webserversetup() {
     });
 
     server.begin(); // Actually start the server
-    Serial.println("HTTP server started");
+    Log.notice("HTTP server started." CR);
 }
 
 void webserverloop() {
@@ -52,7 +52,11 @@ String getContentType(String filename){
 }
 
 bool handleFileRead(String path) {  // send the right file to the client (if it exists)
-    Serial.println("handleFileRead: " + path);
+    // Convert String to char array
+    int n = path.length();
+    char p[n + 1]; 
+    strcpy(p, path.c_str()); 
+    Log.verbose("handleFileRead: %s" CR, p);
     if(path.endsWith("/")) {
         if(SPIFFS.exists(path + "index.html")) 
             path += "index.html"; // If a folder is requested, send the index file
@@ -68,9 +72,9 @@ bool handleFileRead(String path) {  // send the right file to the client (if it 
         //size_t sent = 
         server.streamFile(file, contentType); // Send it to the client
         file.close();                                       // Close the file again
-        Serial.println(String("\tSent file: ") + path);
+        Log.notice("Sent file: %s" CR, p);
         return true;
     }
-    Serial.println(String("\tFile Not Found: ") + path);
+    Log.error("File Not Found: %s" CR, p);
     return false;                                           // If the file doesn't exist, return false
 }

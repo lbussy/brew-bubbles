@@ -19,6 +19,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #define WEBSERVER_H
 
 #include "config.h"
+#include "serial.h"
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>

@@ -36,38 +36,30 @@ void loop() {
 
 void mdnssetup() {
     if (!MDNS.begin(WiFi.hostname())) { // Start the mDNS responder for esp8266.local
-        Serial.println("Error setting up MDNS responder.");
+        Log.error("Error setting up MDNS responder." CR);
     } else {
-        Serial.print("mDNS responder started for ");
-        // Serial.print(WiFi.hostname()); // TODO:  Get from configuration
-        Serial.print(HOSTNAME);
-        Serial.println(".local.");
+        Log.notice("mDNS responder started for %s.local." CR, HOSTNAME); // TODO:  Get from configuration 
         if (!MDNS.addService("http", "tcp", PORT)) {
-            Serial.println("Failed to register MDNS service.");
+            Log.error("Failed to register MDNS service." CR);
         } else {
-            Serial.print("HTTP registered via MDNS on port ");
-            Serial.print(PORT);
-            Serial.println(".");
+            Log.notice("HTTP registered via MDNS on port %i." CR, PORT); // TODO:  Get from configuration
         }
     }
 }
 
 void mdnsquery(char hostname[39]) {
-        Serial.println("Sending mDNS query");
+        Log.notice("Sending mDNS query." CR);
     int n = MDNS.queryService("workstation", "tcp");
-    Serial.println("mDNS query done");
+    Log.notice("mDNS query complete." CR);
     if (n == 0) {
-        Serial.println("No services found.");
+        Log.notice("No services found." CR);
     } else {
         for (int i = 0; i < n; ++i) {
             char foundhost[39];
             MDNS.hostname(i).toCharArray(foundhost, 39);
             if(strcmp(foundhost, hostname) == 0) {
-                Serial.print("FOUND: ");
-                Serial.print(foundhost);
-                Serial.print(": ");
-                Serial.print(MDNS.IP(i));
-                Serial.println(".");
+                IPAddress ip = MDNS.IP(i);
+                Log.notice("FOUND: %s: %d.%d.%d.%d." CR, foundhost, ip[0], ip[1], ip[2], ip[3]);
             }
         }
     }
