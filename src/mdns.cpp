@@ -17,3 +17,38 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "mdns.h"
 
+void mdnssetup() {
+    if (!MDNS.begin(WiFi.hostname())) { // Start the mDNS responder for esp8266.local
+        Log.error("Error setting up MDNS responder." CR);
+    } else {
+        Log.notice("mDNS responder started for %s.local." CR, HOSTNAME); // TODO:  Get from configuration 
+        if (!MDNS.addService("http", "tcp", PORT)) {
+            Log.error("Failed to register MDNS service." CR);
+        } else {
+            Log.notice("HTTP registered via MDNS on port %i." CR, PORT); // TODO:  Get from configuration
+        }
+    }
+}
+
+IPAddress mdnsquery(char hostname[63]) {
+    // char* hostname = "brewpi.local";
+    // IPAddress ip = mdnsquery(hostname);
+    // Log.notice("mDNS Lookup - %s: %d.%d.%d.%d." CR, hostname, ip[0], ip[1], ip[2], ip[3]);
+    Log.notice("Sending mDNS query." CR);
+    int n = MDNS.queryService("workstation", "tcp");
+    Log.notice("mDNS query complete." CR);
+    if (n == 0) {
+        Log.notice("No services found." CR);
+        return {0, 0, 0, 0};
+    } else {
+        for (int i = 0; i < n; ++i) {
+            char foundhost[63];
+            MDNS.hostname(i).toCharArray(foundhost, 63);
+            if(strcmp(foundhost, hostname) == 0) {
+                IPAddress ip = MDNS.IP(i);
+                return ip;
+            }
+        }
+        return {0, 0, 0, 0};
+    }
+}

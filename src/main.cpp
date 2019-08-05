@@ -22,45 +22,13 @@ void setup() {
     wifisetup();
     mdnssetup();
     webserversetup();
-    char hostname[39] = "brewpi.local";
-    mdnsquery(hostname);
-    yield();
+    otasetup();
 }
 
 void loop() {
     MDNS.update();
     webserverloop();
     Bubbles();
+    ArduinoOTA.handle();
     yield();
-}
-
-void mdnssetup() {
-    if (!MDNS.begin(WiFi.hostname())) { // Start the mDNS responder for esp8266.local
-        Log.error("Error setting up MDNS responder." CR);
-    } else {
-        Log.notice("mDNS responder started for %s.local." CR, HOSTNAME); // TODO:  Get from configuration 
-        if (!MDNS.addService("http", "tcp", PORT)) {
-            Log.error("Failed to register MDNS service." CR);
-        } else {
-            Log.notice("HTTP registered via MDNS on port %i." CR, PORT); // TODO:  Get from configuration
-        }
-    }
-}
-
-void mdnsquery(char hostname[39]) {
-        Log.notice("Sending mDNS query." CR);
-    int n = MDNS.queryService("workstation", "tcp");
-    Log.notice("mDNS query complete." CR);
-    if (n == 0) {
-        Log.notice("No services found." CR);
-    } else {
-        for (int i = 0; i < n; ++i) {
-            char foundhost[39];
-            MDNS.hostname(i).toCharArray(foundhost, 39);
-            if(strcmp(foundhost, hostname) == 0) {
-                IPAddress ip = MDNS.IP(i);
-                Log.notice("FOUND: %s: %d.%d.%d.%d." CR, foundhost, ip[0], ip[1], ip[2], ip[3]);
-            }
-        }
-    }
 }

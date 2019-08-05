@@ -18,6 +18,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef BUBBLES_H
 #define BUBBLES_H
 
+#include "mdns.h"
 #include "post.h"
 #include "config.h"
 #include "counter.h"

@@ -15,11 +15,18 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef MDNS_H
-#define MDNS_H
+// (#include <ESP8266mDNS.h> includes #include "LEAmDNS.h", which in turn
+// uses the MDNS_H include guard.  Long story short, do not rename this
+// to MDNS_H.)
 
-// #include <ESP8266mDNS.h>
+#ifndef _MDNS_H
+#define _MDNS_H
 
-// void mdnssetup();
+#include "config.h"
+#include <ArduinoLog.h>
+#include <ESP8266mDNS.h>
 
-#endif // MDNS_H
+void mdnssetup();
+IPAddress mdnsquery(char hostname[63]);
+
+#endif // _MDNS_H

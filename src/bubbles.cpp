@@ -17,15 +17,15 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "bubbles.h"
 
-Counter counter(COUNTPIN);      // Create an instance of the counter
+Counter counter(COUNTPIN); // Create an instance of the counter
 unsigned long ulNow = millis(); // Time in millis now
-unsigned long ulStart = 0UL;    // Start time
+unsigned long ulStart = 0UL; // Start time
 
 void Bubbles() {
-    const char* hostname = HOSTNAME;    // Hostname (TODO: Get this from wifi setup)
+    const char * hostname = HOSTNAME; // Hostname (TODO: Get this from wifi setup)
     ulNow = millis();
 
-    if( ulNow - ulStart > BUBLOOP) { // If (now - start) > delay time, do work
+    if (ulNow - ulStart > BUBLOOP) { // If (now - start) > delay time, do work
         ulStart = ulNow;
         float fBpm = counter.GetPpm();
 
@@ -55,49 +55,49 @@ void Bubbles() {
         bool present = false;
 
 #if TEMPFORMAT == F
-        const char* format = "F";
+        const char * format = "F";
 #else
-        const char* format = "C";
+            const char * format = "C";
 #endif // TEMPFORMAT
 
 #ifdef AMBSENSOR
         OneWire ambient(AMBSENSOR);
         byte addrAmb[8];
-        while(ambient.search(addrAmb)) { // Make sure we have a sensor
-                DallasTemperature sensorAmbient(&ambient);
-                sensorAmbient.begin();
-                sensorAmbient.requestTemperatures();
+        while (ambient.search(addrAmb)) { // Make sure we have a sensor
+            DallasTemperature sensorAmbient( & ambient);
+            sensorAmbient.begin();
+            sensorAmbient.requestTemperatures();
 
-                float fAmbTemp;
-                if( strcmp(format, "F") == 0 )
-                        fAmbTemp = sensorAmbient.getTempFByIndex(0);
-                else
-                        fAmbTemp = sensorAmbient.getTempCByIndex(0);
-                data["ambtemp"] = fAmbTemp;
-                present = true;
+            float fAmbTemp;
+            if (strcmp(format, "F") == 0)
+                fAmbTemp = sensorAmbient.getTempFByIndex(0);
+            else
+                fAmbTemp = sensorAmbient.getTempCByIndex(0);
+            data["ambtemp"] = fAmbTemp;
+            present = true;
         }
 #endif // AMBSENSOR
 
 #ifdef VESSENSOR
         OneWire vessel(VESSENSOR);
         byte addrVes[8];
-        while(ambient.search(addrVes)) { // Make sure we have a sensor
-                DallasTemperature sensorVessel(&vessel);
-                sensorVessel.begin();
-                sensorVessel.requestTemperatures();
+        while (ambient.search(addrVes)) { // Make sure we have a sensor
+            DallasTemperature sensorVessel( & vessel);
+            sensorVessel.begin();
+            sensorVessel.requestTemperatures();
 
-                float fVesTemp;
-                if( strcmp(format, "F") == 0 )
-                        fVesTemp = sensorVessel.getTempFByIndex(0);
-                else
-                        fVesTemp = sensorVessel.getTempCByIndex(0);
-                data["vestemp"] = fVesTemp;
-                present = true;
+            float fVesTemp;
+            if (strcmp(format, "F") == 0)
+                fVesTemp = sensorVessel.getTempFByIndex(0);
+            else
+                fVesTemp = sensorVessel.getTempCByIndex(0);
+            data["vestemp"] = fVesTemp;
+            present = true;
         }
 #endif // VESSENSOR
 
-        if(present)  // If we have a sensor
-                bubbleJson["format"] = format;
+        if (present) // If we have a sensor
+            bubbleJson["format"] = format;
 
 #endif // READTEMP
 
