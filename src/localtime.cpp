@@ -40,8 +40,7 @@ char* LocalTime::GetLocalTime() {
     utc = epochTime;
 
     // Convert the UTC UNIX timestamp to local time
-    // TODO: Construct all timezones
-    // https://github.com/JChristensen/Timezone
+     // https://github.com/JChristensen/Timezone
     //
     // US Eastern Time
     TimeChangeRule usEDT = {"EDT", Second, Sun, Mar, 2, -300}; // UTC - 5 hours - change this as needed

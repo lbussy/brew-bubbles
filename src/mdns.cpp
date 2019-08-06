@@ -21,11 +21,11 @@ void mdnssetup() {
     if (!MDNS.begin(WiFi.hostname())) { // Start the mDNS responder for esp8266.local
         Log.error("Error setting up MDNS responder." CR);
     } else {
-        Log.notice("mDNS responder started for %s.local." CR, HOSTNAME); // TODO:  Get from configuration 
+        Log.notice("mDNS responder started for %s.local." CR, HOSTNAME);
         if (!MDNS.addService("http", "tcp", PORT)) {
             Log.error("Failed to register MDNS service." CR);
         } else {
-            Log.notice("HTTP registered via MDNS on port %i." CR, PORT); // TODO:  Get from configuration
+            Log.notice("HTTP registered via MDNS on port %i." CR, PORT);
         }
     }
 }

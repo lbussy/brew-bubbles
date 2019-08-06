@@ -23,7 +23,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #define NTP_INTERVAL 60 * 1000 // In miliseconds
 #define NTP_ADDRESS "pool.ntp.org"
 #define VESSEL "fermenter 1"
-
+// TODO:  Timezone?
+// TODO:  OTA security?  Password?
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -153,6 +154,16 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 //
 #ifndef VESSENSOR
 #define VESSENSOR D3 // Uncomment to use vessel temp sensor
+#endif
+//
+//////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Define reset wifi on boot pin - reset if pulled low
+//
+#ifndef RESETWIFI
+#define RESETWIFI D4
 #endif
 //
 //////////////////////////////////////////////////////////////////////////

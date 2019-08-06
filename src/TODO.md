@@ -13,7 +13,6 @@
         - Brewer's Friend Endpoint
             - Key
             - Frequency
-- Add reset/forget WiFi for pin pulldown on starup
 - Add GitHub OTA
 - Fix deprecation error in http
 - Get web pages working
@@ -34,3 +33,4 @@
 - ~~Add local OTA~~
 - ~~Add in NTP~~
     - ~~Add timestamp to JSON~~
+- ~~Add reset/forget WiFi for pin pulldown on starup~~

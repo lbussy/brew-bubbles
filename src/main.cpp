@@ -21,7 +21,9 @@ LocalTime loc;
 
 void setup() {
     serial();
-    wifisetup();
+    pinMode(RESETWIFI, INPUT_PULLUP);
+    if(digitalRead(RESETWIFI) == LOW) wifisetup(true); // Reset wifi
+    else wifisetup(false);
     mdnssetup();
     webserversetup();
     loc.StartTime();
