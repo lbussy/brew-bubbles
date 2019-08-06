@@ -15,12 +15,18 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef OTA_H
-#define OTA_H
+#ifndef LOCALTIME_H
+#define LOCALTIME_H
 
-#include "serial.h"
-#include <ArduinoOTA.h>
+#include <ESP8266WiFi.h>
+#include <WifiUDP.h>
+// #include <String.h>
+#include <NTPClient.h>
+#include <Time.h>
+#include <TimeLib.h>
+#include <Timezone.h>
 
-void otasetup();
+void timesetup();
+void timeloop();
 
-#endif // OTA_H
+#endif // LOCALTIME_H

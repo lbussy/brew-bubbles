@@ -15,22 +15,15 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#include "main.h"
+#ifndef OTA_H
+#define OTA_H
 
-void setup() {
-    serial();
-    wifisetup();
-    mdnssetup();
-    webserversetup();
-    timesetup();
-    //otasetup();
-}
+#include "serial.h"
+#include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
+#include <WiFiUdp.h>
+#include <ArduinoOTA.h>
 
-void loop() {
-    MDNS.update();
-    webserverloop();
-    Bubbles();
-    //ArduinoOTA.handle();
-    timeloop();
-    yield();
-}
+void otasetup();
+
+#endif // OTA_H
