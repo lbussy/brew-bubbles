@@ -18,6 +18,14 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef CONFIG_H
 #define CONFIG_H
 
+
+#define NTP_OFFSET 60 * 60 // In seconds
+#define NTP_INTERVAL 60 * 1000 // In miliseconds
+#define NTP_ADDRESS "pool.ntp.org"
+#define VESSEL "fermenter 1"
+
+
+
 //////////////////////////////////////////////////////////////////////////
 //
 // Set verbosity of debug messages 0-6

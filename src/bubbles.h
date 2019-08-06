@@ -22,11 +22,12 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "post.h"
 #include "config.h"
 #include "counter.h"
+#include "localtime.h"
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <ArduinoJson.h>
 #include <Arduino.h>
 
-void Bubbles();
+void bubbles(char*);
 
 #endif // BUBBLES_H

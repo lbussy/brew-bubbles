@@ -21,7 +21,7 @@ Counter counter(COUNTPIN); // Create an instance of the counter
 unsigned long ulNow = millis(); // Time in millis now
 unsigned long ulStart = 0UL; // Start time
 
-void Bubbles() {
+void bubbles(char* localTime) {
     const char * hostname = HOSTNAME; // Hostname (TODO: Get this from wifi setup)
     ulNow = millis();
 
@@ -29,13 +29,14 @@ void Bubbles() {
         ulStart = ulNow;
         float fBpm = counter.GetPpm();
 
-        const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(4);
+        const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
         DynamicJsonDocument bubbleJson(capacity);
         /*         
-        Sample (230 bytes to allow for string duplication):
+        Sample (277 bytes to allow for string duplication):
         {
                 "api_key":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
                 "vessel":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                "datetime":"2019-11-16T23:59:01.123Z",
                 "format":"F",
                 "data":{
                         "bpm":0,
@@ -44,8 +45,10 @@ void Bubbles() {
                 }
         }
         */
+
         bubbleJson["api_key"] = API_KEY;
-        bubbleJson["vessel"] = hostname;
+        bubbleJson["vessel"] = VESSEL; // TODO:  Move to config
+        bubbleJson["datetime"] = localTime;
 
         // Get bubbles per minute
         JsonObject data = bubbleJson.createNestedObject("data");
@@ -102,7 +105,7 @@ void Bubbles() {
 #endif // READTEMP
 
         // Serialize JSON
-        char strBubbleJson[230];
+        char strBubbleJson[277];
         serializeJson(bubbleJson, strBubbleJson, sizeof(strBubbleJson));
         httppost(strBubbleJson); // Post JSON date to endpoint
     }

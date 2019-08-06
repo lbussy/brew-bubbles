@@ -18,15 +18,21 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef LOCALTIME_H
 #define LOCALTIME_H
 
+#include "config.h"
 #include <ESP8266WiFi.h>
 #include <WifiUDP.h>
-// #include <String.h>
 #include <NTPClient.h>
 #include <Time.h>
 #include <TimeLib.h>
 #include <Timezone.h>
 
-void timesetup();
-void timeloop();
+class LocalTime {
+private:
+
+public:
+        LocalTime();
+        void StartTime();
+        char* GetLocalTime();
+};
 
 #endif // LOCALTIME_H
