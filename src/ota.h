@@ -20,6 +20,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "serial.h"
 #include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>

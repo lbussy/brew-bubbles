@@ -1,7 +1,5 @@
 # TODO List
 
-- Add in NTP
-    - Add timestamp to JSON
 - Configuration Work
     - Make sure defaults.h (and maybe config.h) default for SPIFFS config
     - True up config.h and defaults.h
@@ -15,14 +13,17 @@
         - Brewer's Friend Endpoint
             - Key
             - Frequency
-- Add DNS resolution
 - Add reset/forget WiFi for pin pulldown on starup
 - Add GitHub OTA
-- Fix local OTA
 - Fix deprecation error in http
 - Get web pages working
     - Have bubbles in home page
     - Reset wireless
+
+# Complete
+
+- ~~Add DNS resolution~~
+- ~~Fix local OTA (freaking includes!)~~
 - ~~Move mDNS functions~~
 - ~~Detect bad/no OneWire~~
 - ~~Add mMDNS responder~~
@@ -31,3 +32,5 @@
 - ~~Add in logging function~~
 - ~~Replace Serial.print() with Log.{level} messages~~
 - ~~Add local OTA~~
+- ~~Add in NTP~~
+    - ~~Add timestamp to JSON~~
