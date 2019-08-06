@@ -16,10 +16,13 @@
             - Key
             - Frequency
 - Add DNS resolution
-- Add reset/forget WiFi
 - Add reset/forget WiFi for pin pulldown on starup
 - Add GitHub OTA
+- Fix local OTA
 - Fix deprecation error in http
+- Get web pages working
+    - Have bubbles in home page
+    - Reset wireless
 - ~~Move mDNS functions~~
 - ~~Detect bad/no OneWire~~
 - ~~Add mMDNS responder~~
