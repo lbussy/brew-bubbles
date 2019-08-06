@@ -22,7 +22,6 @@ unsigned long ulNow = millis(); // Time in millis now
 unsigned long ulStart = 0UL; // Start time
 
 void bubbles(char* localTime) {
-    const char * hostname = HOSTNAME; // Hostname (TODO: Get this from wifi setup)
     ulNow = millis();
 
     if (ulNow - ulStart > BUBLOOP) { // If (now - start) > delay time, do work
@@ -47,7 +46,7 @@ void bubbles(char* localTime) {
         */
 
         bubbleJson["api_key"] = API_KEY;
-        bubbleJson["vessel"] = VESSEL; // TODO:  Move to config
+        bubbleJson["vessel"] = VESSEL;
         bubbleJson["datetime"] = localTime;
 
         // Get bubbles per minute

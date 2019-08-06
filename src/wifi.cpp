@@ -31,9 +31,9 @@ void configModeCallback (WiFiManager *myWiFiManager) {
 #endif //DISABLE_LOGGING
 }
 
-void wifisetup() {
+void wifisetup(bool reset) {
     WiFiManager wifiManager; // Local init only
-    //wifiManager.resetSettings(); // For testing
+    if(reset == true) wifiManager.resetSettings(); // Reset wifi
 // #if DEBUG > 0
 #ifndef DISABLE_LOGGING
     wifiManager.setDebugOutput(true); // Turn on Debug (default off)
@@ -68,7 +68,7 @@ void wifisetup() {
         delay(1000);
     }
     // Connected
-    WiFi.hostname(HOSTNAME); // TODO: Get this from config
+    WiFi.hostname(HOSTNAME);
 #ifndef DISABLE_LOGGING
     Log.notice("WiFi connected." CR);
     String host = WiFi.hostname();
