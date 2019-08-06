@@ -19,70 +19,43 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "localtime.h"
 
-// Define NTP properties
-#define NTP_OFFSET 60 * 60 // In seconds
-#define NTP_INTERVAL 60 * 1000 // In miliseconds
-#define NTP_ADDRESS "pool.ntp.org"
-
-// Set up the NTP UDP client
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, NTP_ADDRESS, NTP_OFFSET, NTP_INTERVAL);
 
-void timesetup() {
+LocalTime::LocalTime() {
+
+}
+
+void LocalTime::StartTime() {
     timeClient.begin();
 }
 
-void timeloop() {
+char* LocalTime::GetLocalTime() {
     // Update the NTP client and get the UNIX UTC timestamp 
     timeClient.update();
     unsigned long epochTime = timeClient.getEpochTime();
 
     // Convert received time stamp to time_t object
-    time_t local, utc;
+    time_t local, utc, zulu;
     utc = epochTime;
 
     // Convert the UTC UNIX timestamp to local time
     // TODO: Construct all timezones
     // https://github.com/JChristensen/Timezone
-    TimeChangeRule usEDT = {
-        "EDT",
-        Second,
-        Sun,
-        Mar,
-        2,
-        -300
-    }; // UTC - 5 hours - change this as needed
-    TimeChangeRule usEST = {
-        "EST",
-        First,
-        Sun,
-        Nov,
-        2,
-        -360
-    }; // UTC - 6 hours - change this as needed
+    //
+    // US Eastern Time
+    TimeChangeRule usEDT = {"EDT", Second, Sun, Mar, 2, -300}; // UTC - 5 hours - change this as needed
+    TimeChangeRule usEST = {"EST", First, Sun, Nov, 2, -360}; // UTC - 6 hours - change this as needed
     Timezone usEastern(usEDT, usEST);
     local = usEastern.toLocal(utc);
 
-    // Year (4 digit)
-    Serial.print(year(local));
-    Serial.print("/");
+    // Zulu Time
+    TimeChangeRule GMT = {"GMT", Last, Sun, Oct, 2, 0}; // Zulu Time
+    Timezone zuluGMT(GMT);
+    zulu = zuluGMT.toLocal(utc);
 
-    // Month (2 digit)
-    Serial.print(month(local));
-    Serial.print("/");
-
-    // Day (2 digit)
-    Serial.print(day(local));
-    Serial.print(" ");
-
-    // Hour (2 digit, 24-hour)
-    Serial.print(hour(local));
-    Serial.print(":");
-
-    // Minute (2 digit)
-    Serial.print(minute(local));
-    Serial.print(":");
-
-    // Second (2 digit)
-    Serial.println(second(local));
+    // Get JS-formatted date/time string
+    static char datetime[19];
+    sprintf(datetime, "%u-%u-%uT%u:%u:%uZ", year(zulu), month(zulu), day(zulu), hour(zulu), minute(zulu), second(zulu));
+    return datetime;
 }

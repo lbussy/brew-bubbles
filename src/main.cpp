@@ -17,20 +17,21 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "main.h"
 
+LocalTime loc;
+
 void setup() {
     serial();
     wifisetup();
     mdnssetup();
     webserversetup();
-    timesetup();
+    loc.StartTime();
     //otasetup();
 }
 
 void loop() {
     MDNS.update();
     webserverloop();
-    Bubbles();
+    bubbles(loc.GetLocalTime());
     //ArduinoOTA.handle();
-    timeloop();
     yield();
 }
