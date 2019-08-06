@@ -25,13 +25,13 @@ void setup() {
     mdnssetup();
     webserversetup();
     loc.StartTime();
-    //otasetup();
+    otasetup();
 }
 
 void loop() {
     MDNS.update();
     webserverloop();
     bubbles(loc.GetLocalTime());
-    //ArduinoOTA.handle();
+    ArduinoOTA.handle();
     yield();
 }

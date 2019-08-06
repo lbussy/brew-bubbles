@@ -18,7 +18,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef MAIN_H
 #define MAIN_H
 
-//#include "ota.h"
+#include "ota.h"
 #include "localtime.h"
 #include "config.h"
 #include "mdns.h"
