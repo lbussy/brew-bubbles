@@ -21,6 +21,12 @@ LocalTime loc;
 
 void setup() {
     serial();
+    delay(2000); // DEBUG
+    yield();
+    delay(2000); // DEBUG
+    yield();
+    delay(2000); // DEBUG
+    yield();
     pinMode(RESETWIFI, INPUT_PULLUP);
     if(digitalRead(RESETWIFI) == LOW) wifisetup(true); // Reset wifi
     else wifisetup(false);

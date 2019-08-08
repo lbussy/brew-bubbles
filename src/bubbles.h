@@ -15,15 +15,15 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef BUBBLES_H
-#define BUBBLES_H
+#ifndef _BUBBLES_H
+#define _BUBBLES_H
 
+#include "main.h"
 #include "mdns.h"
 #include "post.h"
 #include "config.h"
 #include "counter.h"
 #include "localtime.h"
-#include "jsonconfig.h"
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <ArduinoJson.h>
@@ -31,4 +31,4 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 void bubbles(char*);
 
-#endif // BUBBLES_H
+#endif // _BUBBLES_H

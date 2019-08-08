@@ -17,223 +17,159 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "jsonconfig.h"
 
-const char * filename = "config.json";
-Config config;
-
-void ApConfig::save(JsonObject obj) const {
-    obj["ssid"] = ssid;
-    obj["appwd"] = appwd;
+bool JsonConfig::instanceFlag = false;
+JsonConfig* JsonConfig::single = NULL;
+JsonConfig* JsonConfig::getInstance()
+{
+    if(! instanceFlag)
+    {
+        single = new JsonConfig();
+        instanceFlag = true;
+        single->Parse(true);
+        return single;
+    }
+    else
+    {
+        return single;
+    }
 }
 
-void ApConfig::load(JsonObjectConst obj) {
-    strlcpy(ssid, obj["ssid"] | "", sizeof(ssid));
-    strlcpy(appwd, obj["appwd"] | "", sizeof(appwd));
-}
-
-void WiFiConfig::save(JsonObject obj) const {
-    obj["hostname"] = hostname;
-    obj["wifipwd"] = wifipwd;
-}
-
-void BubbleConfig::load(JsonObjectConst obj) {
-    strlcpy(name, obj["name"] | "", sizeof(name));
-    tempinf = obj["tempinf"];
-}
-
-void BubbleConfig::save(JsonObject obj) const {
-    obj["name"] = name;
-    obj["tempinf"] = tempinf;
-}
-
-void WiFiConfig::load(JsonObjectConst obj) {
-    strlcpy(hostname, obj["hostname"] | "", sizeof(hostname));
-    strlcpy(wifipwd, obj["wifipwd"] | "", sizeof(wifipwd));
-}
-
-void NTPConfig::save(JsonObject obj) const {
-    obj["ntphost"] = ntphost;
-    obj["tz"] = tz;
-    obj["freq"] = freq;
-}
-
-void NTPConfig::load(JsonObjectConst obj) {
-    strlcpy(ntphost, obj["ntphost"] | "", sizeof(ntphost));
-    strlcpy(tz, obj["tz"] | "", sizeof(tz));
-    freq = obj["freq"];
-}
-
-void TargetConfig::save(JsonObject obj) const {
-    obj["targethost"] = targethost;
-    obj["brewfkey"] = brewfkey;
-}
-
-void TargetConfig::load(JsonObjectConst obj) {
-    strlcpy(targethost, obj["targethost"] | "", sizeof(targethost));
-    strlcpy(brewfkey, obj["brewfkey"] | "", sizeof(brewfkey));
-}
-
-void Config::load(JsonObjectConst obj) {
-    // Read "Access Point" object
-    apconfig.load(obj["apconfig"]);
-
-    // Read "WAP Config" object
-    wificonfig.load(obj["wificonfig"]);
-
-    // Read "Bubble Config" object
-    bubbleconfig.load(obj["bubbleconfig"]);
-
-    // Read "NTP Config" object
-    ntpconfig.load(obj["ntpconfig"]);
-
-    // Read "Target Config" object
-    targetconfig.load(obj["targetconfig"]);
-}
-
-void Config::save(JsonObject obj) const {
-    // Add "Access Point" object
-    apconfig.save(obj.createNestedObject("apconfig"));
-
-    // Add "WAP Config" object
-    wificonfig.save(obj.createNestedObject("wificonfig"));
-
-    // Add "Bubble Config" object
-    bubbleconfig.save(obj.createNestedObject("bubbleconfig"));
-
-    // Add "NTP Config" object
-    ntpconfig.save(obj.createNestedObject("ntpconfig"));
-
-    // Add "Target Config" object
-    targetconfig.save(obj.createNestedObject("targetconfig"));
-}
-
-bool serializeConfig(const Config & config, Print & dst) {
-    const size_t capacity = 4*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
+bool JsonConfig::Parse(bool reset = false) {
+    const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5) + 500;
     DynamicJsonDocument doc(capacity);
 
-    // Create an object at the root
-    JsonObject root = doc.to < JsonObject > ();
-
-    // Fill the object
-    config.save(root);
-
-    // Serialize JSON to file
-    return serializeJsonPretty(doc, dst) > 0;
-}
-
-bool deserializeConfig(Stream & src, Config & config) {
-    const size_t capacity = 4*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5) + 600;
-    DynamicJsonDocument doc(capacity);
-
-    // Parse the JSON object in the file
-    DeserializationError err = deserializeJson(doc, src);
-    if (err)
-        return false;
-
-    config.load(doc.as < JsonObject > ());
-    return true;
-}
-
-bool loadwithdefaults() {
     // Mount SPIFFS
     if (!SPIFFS.begin()) {
         Log.error("Failed to mount SPIFFS." CR);
         return false;
     }
 
-    // SPIFFS.remove(filename); // DEBUG use
-
-    // Load configuration
-    bool loaded = loadFile(filename, config);
-
-    if (!loaded) {
-        Log.notice("Using default configuration." CR);
-        // Defaults for APConfig Object
-        strcpy(config.apconfig.ssid, HOSTNAME);
-        strcpy(config.apconfig.appwd, AP_PASSWD);
-        // Defaults for WiFiConfig Object
-        strcpy(config.wificonfig.hostname, HOSTNAME);
-        strcpy(config.wificonfig.wifipwd, "MyPassword");
-        // Defaults for BubbleConfig Object
-        strcpy(config.bubbleconfig.name, "BrewBubbles");
-        config.bubbleconfig.tempinf = TEMPFORMAT;
-        // Defaults for NTPConfig Object
-        strcpy(config.ntpconfig.ntphost, NTP_SERVER);
-        strcpy(config.ntpconfig.tz, TIMEZONE);
-        config.ntpconfig.freq = NTP_INTERVAL;
-        // Defaults for TargetConfig Object
-        strcpy(config.targetconfig.targethost, HTTPTARGET);
-        strcpy(config.targetconfig.brewfkey, BFKEY);
+    if (reset == true) {
+        Log.verbose("Deleted %s." CR, filename);
+        SPIFFS.remove(filename); // DEBUG use
     }
 
-    // Save configuration
-    saveFile(filename, config);
-
-    // Dump config file
-    printFile(filename);
-
-    if (!loaded) {
-        Log.notice("Loaded configuration defaults." CR);
-    } else {
-        Log.notice("Configuration load complete." CR);
-    }
-    return true;
-}
-
-// Loads the configuration from a file on SPIFFS
-bool loadFile(const char * filename, Config & config) {
     // Open file for reading
+    bool loaded;
     File file = SPIFFS.open(filename, "r");
-
     // This may fail if the file is missing
     if (!file) {
         Log.error("Failed to open configuration file." CR);
-        return false;
+        loaded = false;
+    } else {
+        // Parse the JSON object in the file
+        //bool success = deserializeJson(doc, file);
+        DeserializationError err = deserializeJson(doc, file);
+        if (err) {
+            Log.notice("Failed to deserialize configuration." CR);
+            Serial.println(err.c_str());         
+            loaded = false;
+        } else {
+            loaded = true;
+        }
     }
 
-    // Parse the JSON object in the file
-    bool success = deserializeConfig(file, config);
+    if(loaded == false){
 
-    // This may fail if the JSON is invalid
-    if (!success) {
-        Log.notice("Failed to deserialize configuration." CR);
-        return false;
+        Log.notice("Using default configuration." CR);
+
+        // Set defaults for Access Point Config Object
+        strlcpy(ssid, APNAME, sizeof(ssid));
+        strlcpy(appwd, AP_PASSWD, sizeof(appwd));
+        
+        // Set defaults for Hostname Config Object
+        strlcpy(hostname, HOSTNAME, sizeof(hostname));
+        
+        // Set defaults for Bubble Config Object
+        strlcpy(bubname, BUBNAME, sizeof(bubname));
+        tempinf = TEMPFORMAT;
+        strlcpy(tz, TIMEZONE, sizeof(tz));
+
+        // Set defaults for Target Config Object
+        strlcpy(targeturl, TARGETURL, sizeof(targeturl));
+        targetfreq = TARGETFREQ;
+
+        // Set defaults for Brewer's Friend Config Object
+        strlcpy(bfkey, "", sizeof(bfkey));
+        bffreq = BFFREQ;
+
+        // We created default configuration, save it
+        Serialize();
+
+    } else {
+
+        Log.notice("Parsing configuration data." CR);
+
+        // Parse Access Point Config Object
+        strlcpy(ssid, doc["apconfig"]["ssid"] | "", sizeof(ssid));
+        strlcpy(appwd, doc["apconfig"]["appwd"] | "", sizeof(appwd));
+
+        // Parse Hostname Config Object
+        strlcpy(hostname, doc["hostname"] | "", sizeof(hostname));
+
+        // Parse Bubble Config Object
+        strlcpy(bubname, doc["bubbleconfig"]["name"] | "", sizeof(bubname));
+        tempinf = doc["bubbleconfig"]["tempinf"];
+        strlcpy(tz, doc["bubbleconfig"]["tz"] | "", sizeof(tz));
+
+        // Parse Target Config Object
+        strlcpy(targeturl, doc["targetconfig"]["targeturl"] | "", sizeof(targeturl));
+        targetfreq = doc["targetconfig"]["freq"];
+
+        // Parse Brewer's Friend Config Object
+        strlcpy(bfkey, doc["bfconfig"]["bfkey"] | "", sizeof(bfkey));
+        bffreq = doc["bfconfig"]["freq"];
+
     }
-
     return true;
 }
 
-// Saves the configuration to a file on SPIFFS
-bool saveFile(const char * filename,
-    const Config & config) {
+bool JsonConfig::Serialize() {
+    const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
+    DynamicJsonDocument doc(capacity);
+
+    JsonObject apconfig = doc.createNestedObject("apconfig");
+    apconfig["ssid"] = ssid;
+    apconfig["appwd"] = appwd;
+
+    doc["hostname"] = hostname;
+
+    JsonObject bubbleconfig = doc.createNestedObject("bubbleconfig");
+    bubbleconfig["name"] = bubname;
+    bubbleconfig["tempinf"] = tempinf;
+    bubbleconfig["tz"] = "EST";
+
+    JsonObject target = doc.createNestedObject("target");
+    Log.verbose("Saving target as %s." CR, targeturl);
+    target["targeturl"] = targeturl;
+    Log.verbose("Saved target as %s." CR, target["targeturl"]);
+    target["freq"] = targetfreq;
+
+    JsonObject bfconfig =  doc.createNestedObject("bfconfig");
+    bfconfig["bfkey"] = bfkey;
+    bfconfig["freq"] = bffreq;
+
+    // Mount SPIFFS
+    if (!SPIFFS.begin()) {
+        Log.error("Failed to mount SPIFFS." CR);
+        return false;
+    }
+
     // Open file for writing
     File file = SPIFFS.open(filename, "w");
     if (!file) {
-        Log.error("Failed to create configuration file." CR);
-        return false;
-    }
-
-    // Serialize JSON to file
-    bool success = serializeConfig(config, file);
-    if (!success) {
-        Log.error("Failed to serialize configuration." CR);
-        return false;
-    }
-    return true;
-}
-
-// Prints the content of a file to the Serial
-bool printFile(const char * filename) {
-    // Open file for reading
-    File file = SPIFFS.open(filename, "r");
-    if (!file) {
         Log.error("Failed to open configuration file." CR);
         return false;
+    } else {
+        // Serialize the JSON object to the file
+        bool success = serializeJson(doc, file);
+        // This may fail if the JSON is invalid
+        if (!success) {
+            Log.error("Failed to serialize configuration." CR);
+            return false;
+        } else {
+            Log.notice("Saved configuration as %s." CR, filename);
+            return true;
+        }
     }
-
-    // Extract each by one by one
-    //while (file.available()) {
-        //Log.verbose((char) file.read());
-    //}
-    //Log.verbose(CR);
-    return true;
 }

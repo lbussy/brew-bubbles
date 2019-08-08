@@ -3,7 +3,7 @@
 <eagle version="9.4.2">
 <drawing>
 <settings>
-<setting alwaysvectorfont="yes"/>
+<setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
@@ -892,7 +892,7 @@ Commonly used for 1/4W through-hole resistors. 0.3" pitch between holes.</descri
 </class>
 </classes>
 <parts>
-<part name="AMBIENT" library="SparkFun-Sensors" deviceset="DS18B20" device=""/>
+<part name="ROOM" library="SparkFun-Sensors" deviceset="DS18B20" device=""/>
 <part name="U$2" library="diy-modules" deviceset="WEMOS-D1-MINI-SHIELD" device=""/>
 <part name="R1" library="SparkFun-Resistors" library_urn="urn:adsk.eagle:library:532" deviceset="330OHM" device="-HORIZ-1/10W-5%" package3d_urn="urn:adsk.eagle:package:39658/1" value="2.2kΩ"/>
 <part name="VESSEL" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X3" device="/90" package3d_urn="urn:adsk.eagle:package:22459/2" value="3PIN90"/>
@@ -905,7 +905,7 @@ Commonly used for 1/4W through-hole resistors. 0.3" pitch between holes.</descri
 <plain>
 </plain>
 <instances>
-<instance part="AMBIENT" gate="G$1" x="-10.16" y="52.07" smashed="yes" rot="R270">
+<instance part="ROOM" gate="G$1" x="-10.16" y="52.07" smashed="yes" rot="R270">
 <attribute name="NAME" x="-14.986" y="44.45" size="1.778" layer="95" font="vector"/>
 <attribute name="VALUE" x="-15.494" y="43.18" size="1.778" layer="96" font="vector" align="top-left"/>
 </instance>
@@ -968,7 +968,7 @@ Commonly used for 1/4W through-hole resistors. 0.3" pitch between holes.</descri
 <wire x1="-7.62" y1="96.52" x2="-7.62" y2="87.63" width="0.1524" layer="91"/>
 <wire x1="-7.62" y1="87.63" x2="33.02" y2="87.63" width="0.1524" layer="91"/>
 <junction x="33.02" y="87.63"/>
-<pinref part="AMBIENT" gate="G$1" pin="VDD"/>
+<pinref part="ROOM" gate="G$1" pin="VDD"/>
 <wire x1="-5.08" y1="62.23" x2="-5.08" y2="64.77" width="0.1524" layer="91"/>
 <wire x1="-5.08" y1="64.77" x2="33.02" y2="64.77" width="0.1524" layer="91"/>
 <junction x="33.02" y="64.77"/>
@@ -983,7 +983,7 @@ Commonly used for 1/4W through-hole resistors. 0.3" pitch between holes.</descri
 <segment>
 <pinref part="R1" gate="G$1" pin="1"/>
 <wire x1="1.27" y1="71.12" x2="-10.16" y2="71.12" width="0.1524" layer="91"/>
-<pinref part="AMBIENT" gate="G$1" pin="DQ"/>
+<pinref part="ROOM" gate="G$1" pin="DQ"/>
 <wire x1="-10.16" y1="71.12" x2="-10.16" y2="62.23" width="0.1524" layer="91"/>
 <wire x1="-10.16" y1="71.12" x2="-27.94" y2="71.12" width="0.1524" layer="91"/>
 <junction x="-10.16" y="71.12"/>
@@ -1031,7 +1031,7 @@ Commonly used for 1/4W through-hole resistors. 0.3" pitch between holes.</descri
 <pinref part="VESSEL" gate="A" pin="1"/>
 <wire x1="-12.7" y1="96.52" x2="-12.7" y2="85.09" width="0.1524" layer="91"/>
 <wire x1="-12.7" y1="85.09" x2="-15.24" y2="85.09" width="0.1524" layer="91"/>
-<pinref part="AMBIENT" gate="G$1" pin="GND"/>
+<pinref part="ROOM" gate="G$1" pin="GND"/>
 <wire x1="-15.24" y1="85.09" x2="-15.24" y2="64.77" width="0.1524" layer="91"/>
 <wire x1="-15.24" y1="64.77" x2="-15.24" y2="62.23" width="0.1524" layer="91"/>
 <wire x1="-15.24" y1="64.77" x2="-27.94" y2="64.77" width="0.1524" layer="91"/>
