@@ -15,13 +15,14 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef POST_H
-#define POST_H
+#ifndef _POST_H
+#define _POST_H
 
+#include "main.h"
 #include "config.h"
 #include "serial.h"
 #include <ESP8266HTTPClient.h>
 
 bool httppost(String json);
 
-#endif // POST_H
+#endif // _POST_H

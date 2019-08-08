@@ -18,12 +18,12 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "mdns.h"
 
 void mdnssetup() {
-    Config config;
-    loadwithdefaults();
-    if (!MDNS.begin(config.wificonfig.hostname)) { // Start the mDNS responder
+    JsonConfig *config;
+    config = JsonConfig::getInstance();
+    if (!MDNS.begin(config->hostname)) { // Start the mDNS responder
         Log.error("Error setting up MDNS responder." CR);
     } else {
-        Log.notice("mDNS responder started for %s.local." CR, config.wificonfig.hostname);
+        Log.notice("mDNS responder started for %s.local." CR, config->hostname);
         if (!MDNS.addService("http", "tcp", PORT)) {
             Log.error("Failed to register MDNS service." CR);
         } else {

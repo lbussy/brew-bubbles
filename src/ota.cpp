@@ -54,6 +54,6 @@ void otasetup() {
     });
 
     ArduinoOTA.begin();
-    Log.notice("OTA ready" CR);
+    Log.notice("OTA ready." CR);
 }
 

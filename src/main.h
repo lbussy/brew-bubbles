@@ -15,8 +15,8 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef _MAIN_H
+#define _MAIN_H
 
 #include "ota.h"
 #include "localtime.h"
@@ -31,4 +31,4 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 void setup();
 void loop();
 
-#endif // MAIN_H
+#endif // _MAIN_H

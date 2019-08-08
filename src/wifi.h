@@ -15,10 +15,10 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef WIFI_H
-#define WIFI_H
+#ifndef _WIFI_H
+#define _WIFI_H
 
-#include "jsonconfig.h"
+#include "main.h"
 #include <Serial.h>
 #include <ESP8266WiFi.h>        //ESP8266 Core WiFi Library
 #include <DNSServer.h>          //Local DNS Server used for redirecting all requests to the configuration portal
@@ -28,4 +28,4 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 void wifisetup(bool reset);
 void configModeCallback();
 
-#endif // WIFI_H
+#endif // _WIFI_H

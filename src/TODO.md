@@ -1,23 +1,6 @@
 # TODO List
 
-- Configuration Work
-    - Remove NTP server from config
-    - Remove NTP interval from config
-    - Figure out why "vessel" is garbaged in JSON to target
-    - Figure out why hostname is ESP_245A77 on startup
-    - Figure out why mDNS hostname is garbaged on startup
-    - ~~Make sure defaults.h (and maybe config.h) default for SPIFFS config~~
-    - ~~True up config.h and defaults.h~~
-    - ~~Get mDNS hostname from configuration~~
-    - ~~Get WiFi.hostname() from configuration~~
-      - ~~Add configuration save~~
-        - ~~HTTP Endpoint~~
-            - ~~Address~~
-            - ~~Port~~
-            - Add Frequency
-        - ~~Brewer's Friend Endpoint~~
-            - ~~Key~~
-            - Add Frequency (> 14 minutes)
+- Figure out why target["targeturl"] = targeturl; is garbaged
 - Figure out timezone
 - Handle OTA security, maybe password
 - Fix deprecation error in http
@@ -49,3 +32,21 @@
 - ~~Add in NTP~~
     - ~~Add timestamp to JSON~~
 - ~~Add reset/forget WiFi for pin pulldown on starup~~
+- ~~Configuration Work~~
+    - ~~Remove NTP server from config~~
+    - ~~Remove NTP interval from config~~
+    - ~~Figure out why "vessel" is garbaged in JSON to target~~
+    - ~~Figure out why hostname is ESP_245A77 on startup~~
+    - ~~Figure out why mDNS hostname is garbaged on startup~~
+    - ~~Make sure defaults.h (and maybe config.h) default for SPIFFS config~~
+    - ~~True up config.h and defaults.h~~
+    - ~~Get mDNS hostname from configuration~~
+    - ~~Get WiFi.hostname() from configuration~~
+      - ~~Add configuration save~~
+        - ~~HTTP Endpoint~~
+            - ~~Address~~
+            - ~~Port~~
+            - ~~Add Frequency~~
+        - ~~Brewer's Friend Endpoint~~
+            - ~~Key~~
+            - ~~Add Frequency (> 14 minutes)~~

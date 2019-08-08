@@ -23,8 +23,8 @@ void serial() { // Start serial with auto-detected rate (default to BAUD)
     Serial.begin(BAUD);
     Serial.flush();
     Log.begin(LOG_LEVEL, &Serial, true);
-    Log.notice("" CR);
-    Log.notice("" CR);
+    Serial.println();
+    Serial.println();
     Log.notice("Serial logging started at %l." CR, BAUD);
 }
 

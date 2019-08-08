@@ -22,7 +22,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef _MDNS_H
 #define _MDNS_H
 
-#include "jsonconfig.h"
+#include "main.h"
 #include <ArduinoLog.h>
 #include <ESP8266mDNS.h>
 

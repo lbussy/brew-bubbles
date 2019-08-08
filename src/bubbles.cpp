@@ -45,11 +45,11 @@ void bubbles(char* localTime) {
         }
         */
 
-        Config config;
-        loadwithdefaults();
+        JsonConfig *config;
+        config = JsonConfig::getInstance();
 
         bubbleJson["api_key"] = API_KEY;
-        bubbleJson["vessel"] = config.bubbleconfig.name;
+        bubbleJson["vessel"] = config->bubname;
         bubbleJson["datetime"] = localTime;
 
         // Get bubbles per minute
@@ -68,7 +68,7 @@ void bubbles(char* localTime) {
             sensorAmbient.requestTemperatures();
 
             float fAmbTemp;
-            if (config.bubbleconfig.tempinf == true)
+            if (config->tempinf == true)
                 fAmbTemp = sensorAmbient.getTempFByIndex(0);
             else
                 fAmbTemp = sensorAmbient.getTempCByIndex(0);
@@ -86,7 +86,7 @@ void bubbles(char* localTime) {
             sensorVessel.requestTemperatures();
 
             float fVesTemp;
-            if (config.bubbleconfig.tempinf == true)
+            if (config->tempinf == true)
                 fVesTemp = sensorVessel.getTempFByIndex(0);
             else
                 fVesTemp = sensorVessel.getTempCByIndex(0);
@@ -96,7 +96,7 @@ void bubbles(char* localTime) {
 #endif // VESSENSOR
 
         if (present) { // If we have a sensor
-            if (config.bubbleconfig.tempinf == true) {
+            if (config->tempinf == true) {
                 bubbleJson["format"] = "F";
             } else {
                 bubbleJson["format"] = "C";
