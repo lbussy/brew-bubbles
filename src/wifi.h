@@ -18,7 +18,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef WIFI_H
 #define WIFI_H
 
-#include "config.h"
+#include "jsonconfig.h"
 #include <Serial.h>
 #include <ESP8266WiFi.h>        //ESP8266 Core WiFi Library
 #include <DNSServer.h>          //Local DNS Server used for redirecting all requests to the configuration portal

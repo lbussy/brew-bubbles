@@ -21,6 +21,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "ota.h"
 #include "localtime.h"
 #include "config.h"
+#include "jsonconfig.h"
 #include "mdns.h"
 #include "bubbles.h"
 #include "webserver.h"
