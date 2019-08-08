@@ -1,23 +1,38 @@
 # TODO List
 
 - Configuration Work
-    - Make sure defaults.h (and maybe config.h) default for SPIFFS config
-    - True up config.h and defaults.h
-    - Get mDNS hostname from configuration
-    - Get WiFi.hostname() from configuration
-      - Add configuration save
-        - HTTP Endpoint
-            - Address
-            - Port
-            - Frequency
-        - Brewer's Friend Endpoint
-            - Key
-            - Frequency
-- Add GitHub OTA
+    - Remove NTP server from config
+    - Remove NTP interval from config
+    - Figure out why "vessel" is garbaged in JSON to target
+    - Figure out why hostname is ESP_245A77 on startup
+    - Figure out why mDNS hostname is garbaged on startup
+    - ~~Make sure defaults.h (and maybe config.h) default for SPIFFS config~~
+    - ~~True up config.h and defaults.h~~
+    - ~~Get mDNS hostname from configuration~~
+    - ~~Get WiFi.hostname() from configuration~~
+      - ~~Add configuration save~~
+        - ~~HTTP Endpoint~~
+            - ~~Address~~
+            - ~~Port~~
+            - Add Frequency
+        - ~~Brewer's Friend Endpoint~~
+            - ~~Key~~
+            - Add Frequency (> 14 minutes)
+- Figure out timezone
+- Handle OTA security, maybe password
 - Fix deprecation error in http
 - Get web pages working
     - Have bubbles in home page
     - Reset wireless
+    - Add GitHub OTA
+    - Add configuration items
+        - Target endpoint
+        - BF Key
+        - Hostname
+        - Chamber name
+        - Temp format
+        - NTP Server
+        - Timezone
 
 # Complete
 

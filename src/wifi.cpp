@@ -59,7 +59,10 @@ void wifisetup(bool reset) {
     // Set custom ip for portal
     // wifiManager.setAPStaticIPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
 
-    if(!wifiManager.autoConnect(HOSTNAME, AP_PASSWD)) {
+    Config config;
+    loadwithdefaults();
+
+    if(!wifiManager.autoConnect(config.apconfig.ssid, config.apconfig.appwd)) {
 #ifndef DISABLE_LOGGING
         Log.warning("Timed out trying to connect to AP, resetting" CR);
 #endif // DISABLE_LOGGING
@@ -68,7 +71,7 @@ void wifisetup(bool reset) {
         delay(1000);
     }
     // Connected
-    WiFi.hostname(HOSTNAME);
+    WiFi.hostname(config.wificonfig.hostname);
 #ifndef DISABLE_LOGGING
     Log.notice("WiFi connected." CR);
     String host = WiFi.hostname();

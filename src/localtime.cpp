@@ -20,7 +20,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "localtime.h"
 
 WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, NTP_ADDRESS, NTP_OFFSET, NTP_INTERVAL);
+NTPClient timeClient(ntpUDP, NTP_SERVER, NTP_OFFSET, NTP_INTERVAL);
 
 LocalTime::LocalTime() {
 
@@ -36,17 +36,18 @@ char* LocalTime::GetLocalTime() {
     unsigned long epochTime = timeClient.getEpochTime();
 
     // Convert received time stamp to time_t object
-    time_t local, utc, zulu;
+    // time_t local, utc, zulu;
+    time_t utc, zulu;
     utc = epochTime;
 
     // Convert the UTC UNIX timestamp to local time
      // https://github.com/JChristensen/Timezone
     //
     // US Eastern Time
-    TimeChangeRule usEDT = {"EDT", Second, Sun, Mar, 2, -300}; // UTC - 5 hours - change this as needed
-    TimeChangeRule usEST = {"EST", First, Sun, Nov, 2, -360}; // UTC - 6 hours - change this as needed
-    Timezone usEastern(usEDT, usEST);
-    local = usEastern.toLocal(utc);
+    // TimeChangeRule usEDT = {"EDT", Second, Sun, Mar, 2, -300}; // UTC - 5 hours - change this as needed
+    // TimeChangeRule usEST = {"EST", First, Sun, Nov, 2, -360}; // UTC - 6 hours - change this as needed
+    // Timezone usEastern(usEDT, usEST);
+    // local = usEastern.toLocal(utc);
 
     // Zulu Time
     TimeChangeRule GMT = {"GMT", Last, Sun, Oct, 2, 0}; // Zulu Time

@@ -23,6 +23,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "config.h"
 #include "counter.h"
 #include "localtime.h"
+#include "jsonconfig.h"
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <ArduinoJson.h>

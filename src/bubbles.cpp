@@ -45,8 +45,11 @@ void bubbles(char* localTime) {
         }
         */
 
+        Config config;
+        loadwithdefaults();
+
         bubbleJson["api_key"] = API_KEY;
-        bubbleJson["vessel"] = VESSEL;
+        bubbleJson["vessel"] = config.bubbleconfig.name;
         bubbleJson["datetime"] = localTime;
 
         // Get bubbles per minute
@@ -55,12 +58,6 @@ void bubbles(char* localTime) {
 
 #ifdef READTEMP
         bool present = false;
-
-#if TEMPFORMAT == F
-        const char * format = "F";
-#else
-            const char * format = "C";
-#endif // TEMPFORMAT
 
 #ifdef AMBSENSOR
         OneWire ambient(AMBSENSOR);
@@ -71,7 +68,7 @@ void bubbles(char* localTime) {
             sensorAmbient.requestTemperatures();
 
             float fAmbTemp;
-            if (strcmp(format, "F") == 0)
+            if (config.bubbleconfig.tempinf == true)
                 fAmbTemp = sensorAmbient.getTempFByIndex(0);
             else
                 fAmbTemp = sensorAmbient.getTempCByIndex(0);
@@ -89,7 +86,7 @@ void bubbles(char* localTime) {
             sensorVessel.requestTemperatures();
 
             float fVesTemp;
-            if (strcmp(format, "F") == 0)
+            if (config.bubbleconfig.tempinf == true)
                 fVesTemp = sensorVessel.getTempFByIndex(0);
             else
                 fVesTemp = sensorVessel.getTempCByIndex(0);
@@ -98,8 +95,14 @@ void bubbles(char* localTime) {
         }
 #endif // VESSENSOR
 
-        if (present) // If we have a sensor
-            bubbleJson["format"] = format;
+        if (present) { // If we have a sensor
+            if (config.bubbleconfig.tempinf == true) {
+                bubbleJson["format"] = "F";
+            } else {
+                bubbleJson["format"] = "C";
+            }
+        }
+            
 
 #endif // READTEMP
 

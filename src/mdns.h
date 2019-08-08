@@ -22,11 +22,11 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef _MDNS_H
 #define _MDNS_H
 
-#include "config.h"
+#include "jsonconfig.h"
 #include <ArduinoLog.h>
 #include <ESP8266mDNS.h>
 
 void mdnssetup();
-IPAddress mdnsquery(char hostname[63]);
+IPAddress mdnsquery(char hostname[65]);
 
 #endif // _MDNS_H
