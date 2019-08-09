@@ -25,7 +25,7 @@ JsonConfig* JsonConfig::getInstance()
     {
         single = new JsonConfig();
         instanceFlag = true;
-        single->Parse(true);
+        single->Parse(false); // True to wipe config.json for testing
         return single;
     }
     else
@@ -69,85 +69,83 @@ bool JsonConfig::Parse(bool reset = false) {
         }
     }
 
-    if(loaded == false){
+    if(loaded == false){ // Load defaults
 
         Log.notice("Using default configuration." CR);
 
         // Set defaults for Access Point Config Object
-        strlcpy(ssid, APNAME, sizeof(ssid));
-        strlcpy(appwd, AP_PASSWD, sizeof(appwd));
+        strlcpy(single->ssid, APNAME, sizeof(single->ssid));
+        strlcpy(single->appwd, AP_PASSWD, sizeof(single->appwd));
         
         // Set defaults for Hostname Config Object
-        strlcpy(hostname, HOSTNAME, sizeof(hostname));
+        strlcpy(single->hostname, HOSTNAME, sizeof(single->hostname));
         
         // Set defaults for Bubble Config Object
-        strlcpy(bubname, BUBNAME, sizeof(bubname));
-        tempinf = TEMPFORMAT;
-        strlcpy(tz, TIMEZONE, sizeof(tz));
-
+        strlcpy(single->bubname, BUBNAME, sizeof(single->bubname));
+        single->tempinf = TEMPFORMAT;
+        strlcpy(single->tz, TIMEZONE, sizeof(single->tz));
+        
         // Set defaults for Target Config Object
-        strlcpy(targeturl, TARGETURL, sizeof(targeturl));
-        targetfreq = TARGETFREQ;
+        strlcpy(single->targeturl, TARGETURL, sizeof(single->targeturl));
+        single->targetfreq = TARGETFREQ;
 
         // Set defaults for Brewer's Friend Config Object
-        strlcpy(bfkey, "", sizeof(bfkey));
-        bffreq = BFFREQ;
+        strlcpy(single->bfkey, "", sizeof(single->bfkey));
+        single->bffreq = BFFREQ;
 
         // We created default configuration, save it
         Serialize();
 
-    } else {
+    } else { // Parse from file
 
         Log.notice("Parsing configuration data." CR);
 
         // Parse Access Point Config Object
-        strlcpy(ssid, doc["apconfig"]["ssid"] | "", sizeof(ssid));
-        strlcpy(appwd, doc["apconfig"]["appwd"] | "", sizeof(appwd));
+        strlcpy(single->ssid, doc["apconfig"]["ssid"] | "", sizeof(single->ssid));
+        strlcpy(single->appwd, doc["apconfig"]["appwd"] | "", sizeof(single->appwd));
 
         // Parse Hostname Config Object
-        strlcpy(hostname, doc["hostname"] | "", sizeof(hostname));
+        strlcpy(single->hostname, doc["hostname"] | "", sizeof(single->hostname));
 
         // Parse Bubble Config Object
-        strlcpy(bubname, doc["bubbleconfig"]["name"] | "", sizeof(bubname));
-        tempinf = doc["bubbleconfig"]["tempinf"];
-        strlcpy(tz, doc["bubbleconfig"]["tz"] | "", sizeof(tz));
+        strlcpy(single->bubname, doc["bubbleconfig"]["name"] | "", sizeof(single->bubname));
+        single->tempinf = doc["bubbleconfig"]["tempinf"];
+        strlcpy(single->tz, doc["bubbleconfig"]["tz"] | "", sizeof(single->tz));
 
         // Parse Target Config Object
-        strlcpy(targeturl, doc["targetconfig"]["targeturl"] | "", sizeof(targeturl));
-        targetfreq = doc["targetconfig"]["freq"];
+        strlcpy(single->targeturl, doc["targetconfig"]["targeturl"] | "", sizeof(single->targeturl));
+        single->targetfreq = doc["targetconfig"]["freq"];
 
         // Parse Brewer's Friend Config Object
-        strlcpy(bfkey, doc["bfconfig"]["bfkey"] | "", sizeof(bfkey));
-        bffreq = doc["bfconfig"]["freq"];
+        strlcpy(single->bfkey, doc["bfconfig"]["bfkey"] | "", sizeof(single->bfkey));
+        single->bffreq = doc["bfconfig"]["freq"];
 
     }
     return true;
 }
 
 bool JsonConfig::Serialize() {
-    const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
-    DynamicJsonDocument doc(capacity);
+    //const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
+    DynamicJsonDocument doc(668);
 
     JsonObject apconfig = doc.createNestedObject("apconfig");
-    apconfig["ssid"] = ssid;
-    apconfig["appwd"] = appwd;
+    apconfig["ssid"] = single->ssid;
+    apconfig["appwd"] = single->appwd;
 
-    doc["hostname"] = hostname;
+    doc["hostname"] = single->hostname;
 
     JsonObject bubbleconfig = doc.createNestedObject("bubbleconfig");
-    bubbleconfig["name"] = bubname;
-    bubbleconfig["tempinf"] = tempinf;
-    bubbleconfig["tz"] = "EST";
+    bubbleconfig["name"] = single->bubname;
+    bubbleconfig["tempinf"] = single->tempinf;
+    bubbleconfig["tz"] = single->tz;
 
-    JsonObject target = doc.createNestedObject("target");
-    Log.verbose("Saving target as %s." CR, targeturl);
-    target["targeturl"] = targeturl;
-    Log.verbose("Saved target as %s." CR, target["targeturl"]);
-    target["freq"] = targetfreq;
+    JsonObject targetconfig = doc.createNestedObject("targetconfig");
+    targetconfig["targeturl"] = single->targeturl;
+    targetconfig["freq"] = single->targetfreq;
 
-    JsonObject bfconfig =  doc.createNestedObject("bfconfig");
-    bfconfig["bfkey"] = bfkey;
-    bfconfig["freq"] = bffreq;
+    JsonObject bfconfig = doc.createNestedObject("bfconfig");
+    bfconfig["bfkey"] = single->bfkey;
+    bfconfig["freq"] = single->bffreq;
 
     // Mount SPIFFS
     if (!SPIFFS.begin()) {

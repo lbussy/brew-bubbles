@@ -1,6 +1,5 @@
 # TODO List
 
-- Figure out why target["targeturl"] = targeturl; is garbaged
 - Figure out timezone
 - Handle OTA security, maybe password
 - Fix deprecation error in http
@@ -50,3 +49,4 @@
         - ~~Brewer's Friend Endpoint~~
             - ~~Key~~
             - ~~Add Frequency (> 14 minutes)~~
+- ~~Figure out why target["targeturl"] = targeturl; is garbaged~~ (was out of space serializing JSON)
