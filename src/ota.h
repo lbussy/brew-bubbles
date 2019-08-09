@@ -18,6 +18,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef OTA_H
 #define OTA_H
 
+#include "jsonconfig.h"
 #include "serial.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
