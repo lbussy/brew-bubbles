@@ -21,7 +21,7 @@ Counter counter(COUNTPIN); // Create an instance of the counter
 unsigned long ulNow = millis(); // Time in millis now
 unsigned long ulStart = 0UL; // Start time
 
-void bubbles(char* localTime) {
+bool bubbles(char* localTime) {
     ulNow = millis();
 
     if (ulNow - ulStart > BUBLOOP) { // If (now - start) > delay time, do work
@@ -29,7 +29,7 @@ void bubbles(char* localTime) {
         float fBpm = counter.GetPpm();
 
         const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
-        DynamicJsonDocument bubbleJson(capacity);
+        DynamicJsonDocument doc(capacity);
         /*         
         Sample (277 bytes to allow for string duplication):
         {
@@ -48,12 +48,12 @@ void bubbles(char* localTime) {
         JsonConfig *config;
         config = JsonConfig::getInstance();
 
-        bubbleJson["api_key"] = API_KEY;
-        bubbleJson["vessel"] = config->bubname;
-        bubbleJson["datetime"] = localTime;
+        doc["api_key"] = API_KEY;
+        doc["vessel"] = config->bubname;
+        doc["datetime"] = localTime;
 
         // Get bubbles per minute
-        JsonObject data = bubbleJson.createNestedObject("data");
+        JsonObject data = doc.createNestedObject("data");
         data["bpm"] = fBpm;
 
 #ifdef READTEMP
@@ -97,9 +97,9 @@ void bubbles(char* localTime) {
 
         if (present) { // If we have a sensor
             if (config->tempinf == true) {
-                bubbleJson["format"] = "F";
+                doc["format"] = "F";
             } else {
-                bubbleJson["format"] = "C";
+                doc["format"] = "C";
             }
         }
             
@@ -108,7 +108,33 @@ void bubbles(char* localTime) {
 
         // Serialize JSON
         char strBubbleJson[277];
-        serializeJson(bubbleJson, strBubbleJson, sizeof(strBubbleJson));
+        serializeJson(doc, strBubbleJson, sizeof(strBubbleJson));
         httppost(strBubbleJson); // Post JSON date to endpoint
+
+        // Mount SPIFFS
+        if (!SPIFFS.begin()) {
+            Log.error("Failed to mount SPIFFS." CR);
+            return false;
+        }
+
+        // Open file for writing
+        char filename[14] = "/bubbles.json";
+        File file = SPIFFS.open(filename, "w");
+        if (!file) {
+            Log.error("Failed to open json file for writing." CR);
+            return false;
+        } else {
+            // Serialize the JSON object to the file
+            bool success = serializeJson(doc, file);
+            // This may fail if the JSON is invalid
+            if (!success) {
+                Log.error("Failed to serialize json." CR);
+                return false;
+            } else {
+                Log.notice("Saved json as %s." CR, filename);
+                return true;
+            }
+        }
     }
+    return true;
 }
