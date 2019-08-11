@@ -21,13 +21,13 @@ void mdnssetup() {
     JsonConfig *config;
     config = JsonConfig::getInstance();
     if (!MDNS.begin(config->hostname)) { // Start the mDNS responder
-        Log.error("Error setting up MDNS responder." CR);
+        Log.error("Error setting up mDNS responder." CR);
     } else {
         Log.notice("mDNS responder started for %s.local." CR, config->hostname);
         if (!MDNS.addService("http", "tcp", PORT)) {
-            Log.error("Failed to register MDNS service." CR);
+            Log.error("Failed to register mDNS service." CR);
         } else {
-            Log.notice("HTTP registered via MDNS on port %i." CR, PORT);
+            Log.notice("HTTP registered via mDNS on port %i." CR, PORT);
         }
     }
 }

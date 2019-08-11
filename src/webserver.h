@@ -20,14 +20,50 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "config.h"
 #include "serial.h"
+#include "jsonconfig.h"
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266HTTPUpdateServer.h>
 #include <FS.h>
 
 String getContentType(String filename); // convert the file extension to the MIME type
 bool handleFileRead(String path); // send the right file to the client (if it exists)
 void webserversetup();
 void webserverloop();
+void setAliases();
+void root_from_spiffs();
+void settings_from_spiffs();
+void about_from_spiffs();
+void favicon_from_spiffs();
+void trigger_OTA();
+void trigger_wifi_reset();
+void http_json();
+void settings_json();
+void handleNotFound();
+void android_chrome_192x192png_from_spiffs();
+void android_chrome_512x512png_from_spiffs();
+void apple_touch_iconpng_from_spiffs();
+void apple_touch_icon_114x114png_from_spiffs();
+void apple_touch_icon_120x120png_from_spiffs();
+void apple_touch_icon_144x144png_from_spiffs();
+void apple_touch_icon_152x152png_from_spiffs();
+void apple_touch_icon_180x180png_from_spiffs();
+void apple_touch_icon_57x57png_from_spiffs();
+void apple_touch_icon_60x60png_from_spiffs();
+void apple_touch_icon_72x72png_from_spiffs();
+void apple_touch_icon_76x76png_from_spiffs();
+void favicon_16x16png_from_spiffs();
+void favicon_32x32png_from_spiffs();
+void mstile_144x144png_from_spiffs();
+void mstile_150x150png_from_spiffs();
+void mstile_310x310png_from_spiffs();
+void safari_pinned_tabsvg_from_spiffs();
+void manifestjson_from_spiffs();
+void configjson_from_spiffs();
+void testbubblesjson_from_spiffs();
+void manifest_json_from_spiffs();
+void config_json_from_spiffs(); // TODO: This should be temp
+void testbubbles_json_from_spiffs(); // TODO: This should be temp
 
 #endif /* WEBSERVER_H */
