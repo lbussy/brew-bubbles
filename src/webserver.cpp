@@ -25,7 +25,7 @@ void webserversetup() {
 
     server.onNotFound([]() { // If the client requests any URI
         if (!handleFileRead(server.uri())) // send it if it exists
-            server.send(404, "text/plain", "500: Internal Server Error, unable to process request"); // No idea ...
+            server.send(500, "text/plain", "500: Internal Server Error, unable to process request"); // No idea ...
     });
 
     httpUpdater.setup(&server); // Attach the HTTPUpdate server
