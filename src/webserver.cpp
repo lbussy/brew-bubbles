@@ -79,9 +79,8 @@ bool handleFileRead(String path) {  // send the right file to the client (if it 
         if(SPIFFS.exists(pathWithGz))                      // If there's a compressed version available
             path += ".gz";                                 // Use the compressed version
         File file = SPIFFS.open(path, "r");                // Open the file
-        if (!file)  //unsuccessful open
+        if (!file)                                          // Unsuccessful open
             return false;
-        //size_t sent = 
         server.streamFile(file, contentType);              // Send it to the client
         file.close();                                      // Close the file again
         Log.notice("Sent file: %s" CR, p);
@@ -91,6 +90,51 @@ bool handleFileRead(String path) {  // send the right file to the client (if it 
         handleNotFound();
         return true;
     }
+}
+
+/////////////////////////////////////////////////
+//
+// Page Action Handlers
+//
+/////////////////////////////////////////////////
+
+void trigger_OTA() {
+    String message = "TODO: Should be triggering OTA.\n\n"; // TODO: Temp message only, remove this
+    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
+    // handleFileRead("/updating.htm");    // Send a message to the user to let them know what is going on // TODO: Fix this
+    // app_config.config["update_spiffs"] = true; // TODO: Fix this
+    // lcd.display_ota_update_screen(); // Trigger this here while everything else is waiting. // TODO: Fix this
+    // delay(1000);                     // Wait 1 second to let everything send // TODO: Fix this
+    // tilt_scanner.wait_until_scan_complete(); // Wait for scans to complete  // TODO: Fix this
+    // execOTA();                          // Trigger the OTA update
+}
+
+void trigger_wifi_reset() {
+    String message = "TODO: Should be resetting wifi.\n\n"; // TODO: Temp message only, remove this
+    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
+    // handleFileRead("/wifi_reset.htm");       // Send a message to the user to let them know what is going on // TODO: Fix this
+    // delay(1000);                             // Wait 1 second to let everything send // TODO: Fix this
+    // tilt_scanner.wait_until_scan_complete(); // Wait for scans to complete // TODO: Fix this
+    // disconnect_from_wifi_and_restart();      // Reset the wifi settings // TODO: Fix this
+}
+
+void http_json() {
+    // I probably don't want this inline so that I can add the Allow-Origin
+    // header (in case anyone wants to build scripts that pull this data)
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    String message = "TODO: Should be sending json.\n\n"; // TODO: Temp message only, remove this
+    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
+    // server.send(200, "application/json", tilt_scanner.tilt_to_json().dump().c_str());
+}
+
+void settings_json() {
+    String message = "TODO: Should be loading settings.\n\n"; // TODO: Temp message only, remove this
+    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
+    // settings_json is intended to be used to build the "Change Settings"
+    // page. Not sure if I want to leave allow-origin here, but for now 
+    // it's OK.
+    //server.sendHeader("Access-Control-Allow-Origin", "*"); // TODO: Fix this
+    //server.send(200, "application/json", app_config.config.dump().c_str()); // TODO: Fix this
 }
 
 /////////////////////////////////////////////////
@@ -236,45 +280,6 @@ void config_json_from_spiffs() {
 
 void testbubbles_json_from_spiffs() {
     handleFileRead("/testbubbles.json"); // TODO: This should be temp
-}
-
-void trigger_OTA() {
-    String message = "TODO: Should be triggering OTA.\n\n"; // TODO: Temp message only, remove this
-    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
-    // handleFileRead("/updating.htm");    // Send a message to the user to let them know what is going on // TODO: Fix this
-    // app_config.config["update_spiffs"] = true; // TODO: Fix this
-    // lcd.display_ota_update_screen(); // Trigger this here while everything else is waiting. // TODO: Fix this
-    // delay(1000);                     // Wait 1 second to let everything send // TODO: Fix this
-    // tilt_scanner.wait_until_scan_complete(); // Wait for scans to complete  // TODO: Fix this
-    // execOTA();                          // Trigger the OTA update
-}
-
-void trigger_wifi_reset() {
-    String message = "TODO: Should be resetting wifi.\n\n"; // TODO: Temp message only, remove this
-    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
-    // handleFileRead("/wifi_reset.htm");       // Send a message to the user to let them know what is going on // TODO: Fix this
-    // delay(1000);                             // Wait 1 second to let everything send // TODO: Fix this
-    // tilt_scanner.wait_until_scan_complete(); // Wait for scans to complete // TODO: Fix this
-    // disconnect_from_wifi_and_restart();      // Reset the wifi settings // TODO: Fix this
-}
-
-void http_json() {
-    // I probably don't want this inline so that I can add the Allow-Origin
-    // header (in case anyone wants to build scripts that pull this data)
-    server.sendHeader("Access-Control-Allow-Origin", "*");
-    String message = "TODO: Should be sending json.\n\n"; // TODO: Temp message only, remove this
-    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
-    // server.send(200, "application/json", tilt_scanner.tilt_to_json().dump().c_str());
-}
-
-void settings_json() {
-    String message = "TODO: Should be loading settings.\n\n"; // TODO: Temp message only, remove this
-    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
-    // settings_json is intended to be used to build the "Change Settings"
-    // page. Not sure if I want to leave allow-origin here, but for now 
-    // it's OK.
-    //server.sendHeader("Access-Control-Allow-Origin", "*"); // TODO: Fix this
-    //server.send(200, "application/json", app_config.config.dump().c_str()); // TODO: Fix this
 }
 
 void handleNotFound() {
