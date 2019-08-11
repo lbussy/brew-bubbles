@@ -145,8 +145,9 @@ void settings_json() {
 
 void setAliases() { // Aliases for pages
     server.on("/", root_from_spiffs);
-    server.on("/about/", about_from_spiffs);
     server.on("/settings/", settings_from_spiffs);
+    server.on("/help/", help_from_spiffs);
+    server.on("/about/", about_from_spiffs);
     // server.on("/settings/update/", processConfig);  // TODO: Fix this - should reset all settings
     server.on("/json/", http_json);
     server.on("/settings/json/", settings_json);
@@ -185,8 +186,11 @@ void root_from_spiffs() {
 }
 
 void settings_from_spiffs() {
-    Log.verbose("Trying to load settings.htm." CR);
     handleFileRead("/settings.htm");
+}
+
+void help_from_spiffs() {
+    handleFileRead("/help.htm");
 }
 
 void about_from_spiffs() {

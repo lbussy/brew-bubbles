@@ -34,6 +34,7 @@ void webserverloop();
 void setAliases();
 void root_from_spiffs();
 void settings_from_spiffs();
+void help_from_spiffs();
 void about_from_spiffs();
 void favicon_from_spiffs();
 void trigger_OTA();
