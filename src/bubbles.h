@@ -29,6 +29,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include <ArduinoJson.h>
 #include <Arduino.h>
 
-bool bubbles(char*);
+void bubbles(char*);
 
 #endif // _BUBBLES_H

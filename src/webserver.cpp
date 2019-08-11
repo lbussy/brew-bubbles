@@ -18,16 +18,27 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "webserver.h"
 
 ESP8266WebServer server(PORT); // Create a webserver object that listens for HTTP requests
+ESP8266HTTPUpdateServer httpUpdater; // Create an object that listens for OTA/upload requests
 
 void webserversetup() {
     SPIFFS.begin(); // Start the SPI Flash Files System
 
     server.onNotFound([]() { // If the client requests any URI
         if (!handleFileRead(server.uri())) // send it if it exists
-            server.send(404, "text/plain", "404: Not Found"); // otherwise, respond with a 404 (Not Found) error
+            server.send(404, "text/plain", "500: Internal Server Error, unable to process request"); // No idea ...
     });
 
-    server.begin(); // Actually start the server
+    httpUpdater.setup(&server); // Attach the HTTPUpdate server
+  
+    int n = WiFi.hostname().length(); 
+    char hostname[n + 1]; 
+    strcpy(hostname, WiFi.hostname().c_str()); 
+    Log.notice("HTTP update server started. Open http://%s.local/update in your browser." CR, hostname);
+
+    server.onNotFound(handleNotFound); // Attach a 404 handler
+    setAliases();
+
+    server.begin(); // Start the web server
     Log.notice("HTTP server started." CR);
 }
 
@@ -35,19 +46,24 @@ void webserverloop() {
     server.handleClient();
 }
 
-String getContentType(String filename){
-    if(filename.endsWith(".htm")) return "text/html";
-    else if(filename.endsWith(".html")) return "text/html";
-    else if(filename.endsWith(".css")) return "text/css";
-    else if(filename.endsWith(".js")) return "application/javascript";
-    else if(filename.endsWith(".png")) return "image/png";
-    else if(filename.endsWith(".gif")) return "image/gif";
-    else if(filename.endsWith(".jpg")) return "image/jpeg";
-    else if(filename.endsWith(".ico")) return "image/x-icon";
-    else if(filename.endsWith(".xml")) return "text/xml";
-    else if(filename.endsWith(".pdf")) return "application/x-pdf";
-    else if(filename.endsWith(".zip")) return "application/x-zip";
-    else if(filename.endsWith(".gz")) return "application/x-gzip";
+String getContentType(String path){
+    int n = path.length();
+    char p[n + 1]; 
+    strcpy(p, path.c_str()); 
+    Log.verbose("In getContentType, looking for %s." CR, p);
+    if (path.endsWith(".src")) path = path.substring(0, path.lastIndexOf("."));
+    else if(path.endsWith(".htm")) return "text/html";
+    else if(path.endsWith(".html")) return "text/html";
+    else if(path.endsWith(".css")) return "text/css";
+    else if(path.endsWith(".js")) return "application/javascript";
+    else if(path.endsWith(".png")) return "image/png";
+    else if(path.endsWith(".gif")) return "image/gif";
+    else if(path.endsWith(".jpg")) return "image/jpeg";
+    else if(path.endsWith(".ico")) return "image/x-icon";
+    else if(path.endsWith(".xml")) return "text/xml";
+    else if(path.endsWith(".pdf")) return "application/x-pdf";
+    else if(path.endsWith(".zip")) return "application/x-zip";
+    else if(path.endsWith(".gz")) return "application/x-gzip";
     return "text/plain";
 }
 
@@ -56,25 +72,212 @@ bool handleFileRead(String path) {  // send the right file to the client (if it 
     int n = path.length();
     char p[n + 1]; 
     strcpy(p, path.c_str()); 
-    Log.verbose("handleFileRead: %s" CR, p);
-    if(path.endsWith("/")) {
-        if(SPIFFS.exists(path + "index.html")) 
-            path += "index.html"; // If a folder is requested, send the index file
-        else if(SPIFFS.exists(path + "index.htm"))
-            path += "index.htm"; // If a folder is requested, send the index file
-    }
-    String contentType = getContentType(path);              // Get the MIME type
+    Log.verbose("Handle file read: %s" CR, p);
+    String contentType = getContentType(path);             // Get the MIME type
     String pathWithGz = path + ".gz";
-    if(SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)) {   // If the file exists, either as a compressed archive, or normal
-        if(SPIFFS.exists(pathWithGz))                       // If there's a compressed version available
-            path += ".gz";                                  // Use the compressed version
-        File file = SPIFFS.open(path, "r");                 // Open the file
+    if(SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)) { // If the file exists, either as a compressed archive, or normal
+        if(SPIFFS.exists(pathWithGz))                      // If there's a compressed version available
+            path += ".gz";                                 // Use the compressed version
+        File file = SPIFFS.open(path, "r");                // Open the file
+        if (!file)  //unsuccessful open
+            return false;
         //size_t sent = 
-        server.streamFile(file, contentType); // Send it to the client
-        file.close();                                       // Close the file again
+        server.streamFile(file, contentType);              // Send it to the client
+        file.close();                                      // Close the file again
         Log.notice("Sent file: %s" CR, p);
         return true;
+    } else {
+        Log.error("File Not Found: %s" CR, p);
+        handleNotFound();
+        return true;
     }
-    Log.error("File Not Found: %s" CR, p);
-    return false;                                           // If the file doesn't exist, return false
+}
+
+/////////////////////////////////////////////////
+//
+// Page Aliases
+//
+/////////////////////////////////////////////////
+
+void setAliases() { // Aliases for pages
+    server.on("/", root_from_spiffs);
+    server.on("/about/", about_from_spiffs);
+    server.on("/settings/", settings_from_spiffs);
+    // server.on("/settings/update/", processConfig);  // TODO: Fix this - should reset all settings
+    server.on("/json/", http_json);
+    server.on("/settings/json/", settings_json);
+    server.on("/ota/", trigger_OTA);
+    server.on("/wifi/", trigger_wifi_reset);
+
+    server.on("/favicon.ico", favicon_from_spiffs);
+
+    server.on("/android-chrome-192x192.png", android_chrome_192x192png_from_spiffs);
+    server.on("/android-chrome-512x512.png", android_chrome_512x512png_from_spiffs);
+    server.on("/apple-touch-icon.png", apple_touch_iconpng_from_spiffs);
+    server.on("/apple-touch-icon-114x114.png", apple_touch_icon_114x114png_from_spiffs);
+    server.on("/apple-touch-icon-120x120.png", apple_touch_icon_120x120png_from_spiffs);
+    server.on("/apple-touch-icon-144x144.png", apple_touch_icon_144x144png_from_spiffs);
+    server.on("/apple-touch-icon-152x152.png", apple_touch_icon_152x152png_from_spiffs);
+    server.on("/apple-touch-icon-180x180.png", apple_touch_icon_180x180png_from_spiffs);
+    server.on("/apple-touch-icon-57x57.png", apple_touch_icon_57x57png_from_spiffs);
+    server.on("/apple-touch-icon-60x60.png", apple_touch_icon_60x60png_from_spiffs);
+    server.on("/apple-touch-icon-72x72.png", apple_touch_icon_72x72png_from_spiffs);
+    server.on("/apple-touch-icon-76x76.png", apple_touch_icon_76x76png_from_spiffs);
+    server.on("/favicon-16x16.png", favicon_16x16png_from_spiffs);
+    server.on("/favicon-32x32.png", favicon_32x32png_from_spiffs);
+    server.on("/mstile-144x144.png", mstile_144x144png_from_spiffs);
+    server.on("/mstile-150x150.png", mstile_150x150png_from_spiffs);
+    server.on("/mstile-310x310.png", mstile_310x310png_from_spiffs);
+
+    server.on("/safari-pinned-tab.svg", safari_pinned_tabsvg_from_spiffs);
+
+    server.on("/manifest.json", manifest_json_from_spiffs);
+    server.on("/config.json", config_json_from_spiffs); // TODO: This should be temp
+    server.on("/testbubbles.json", testbubbles_json_from_spiffs); // TODO: This should be temp
+}
+
+void root_from_spiffs() {
+    handleFileRead("/index.htm");
+}
+
+void settings_from_spiffs() {
+    Log.verbose("Trying to load settings.htm." CR);
+    handleFileRead("/settings.htm");
+}
+
+void about_from_spiffs() {
+    handleFileRead("/about.htm");
+}
+
+void favicon_from_spiffs() {
+    handleFileRead("/favicon.ico");
+}
+
+void android_chrome_192x192png_from_spiffs() {
+    handleFileRead("/android-chrome-192x192.png");
+}
+
+void android_chrome_512x512png_from_spiffs() {
+    handleFileRead("/android-chrome-512x512.png");
+}
+
+void apple_touch_iconpng_from_spiffs() {
+    handleFileRead("/apple-touch-icon.png");
+}
+
+void apple_touch_icon_114x114png_from_spiffs() {
+    handleFileRead("/apple-touch-icon-114x114.png");
+}
+
+void apple_touch_icon_120x120png_from_spiffs() {
+    handleFileRead("/apple-touch-icon-120x120.png");
+}
+
+void apple_touch_icon_144x144png_from_spiffs() {
+    handleFileRead("/apple-touch-icon-144x144.png");
+}
+
+void apple_touch_icon_152x152png_from_spiffs() {
+    handleFileRead("/apple-touch-icon-152x152.png");
+}
+
+void apple_touch_icon_180x180png_from_spiffs() {
+    handleFileRead("/apple-touch-icon-180x180.png");
+}
+
+void apple_touch_icon_57x57png_from_spiffs() {
+    handleFileRead("/apple-touch-icon-57x57.png");
+}
+
+void apple_touch_icon_60x60png_from_spiffs() {
+    handleFileRead("/apple-touch-icon-60x60.png");
+}
+
+void apple_touch_icon_72x72png_from_spiffs() {
+    handleFileRead("/apple-touch-icon-72x72.png");
+}
+
+void apple_touch_icon_76x76png_from_spiffs() {
+    handleFileRead("/apple-touch-icon-76x76.png");
+}
+
+void favicon_16x16png_from_spiffs() {
+    handleFileRead("/favicon-16x16.png");
+}
+
+void favicon_32x32png_from_spiffs() {
+    handleFileRead("/favicon-32x32.png");
+}
+
+void mstile_144x144png_from_spiffs() {
+    Log.verbose("Made it here." CR);
+    handleFileRead("/mstile-144x144.png");
+}
+
+void mstile_150x150png_from_spiffs() {
+    handleFileRead("/mstile-150x150.png");
+}
+
+void mstile_310x310png_from_spiffs() {
+    handleFileRead("/mstile-310x310.png");
+}
+
+void safari_pinned_tabsvg_from_spiffs() {
+    handleFileRead("/safari-pinned-tab.svg");
+}
+
+void manifest_json_from_spiffs() {
+    handleFileRead("/manifest.json");
+}
+
+void config_json_from_spiffs() {
+    handleFileRead("/config.json"); // TODO: This should be temp
+}
+
+void testbubbles_json_from_spiffs() {
+    handleFileRead("/testbubbles.json"); // TODO: This should be temp
+}
+
+void trigger_OTA() {
+    String message = "TODO: Should be triggering OTA.\n\n"; // TODO: Temp message only, remove this
+    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
+    // handleFileRead("/updating.htm");    // Send a message to the user to let them know what is going on // TODO: Fix this
+    // app_config.config["update_spiffs"] = true; // TODO: Fix this
+    // lcd.display_ota_update_screen(); // Trigger this here while everything else is waiting. // TODO: Fix this
+    // delay(1000);                     // Wait 1 second to let everything send // TODO: Fix this
+    // tilt_scanner.wait_until_scan_complete(); // Wait for scans to complete  // TODO: Fix this
+    // execOTA();                          // Trigger the OTA update
+}
+
+void trigger_wifi_reset() {
+    String message = "TODO: Should be resetting wifi.\n\n"; // TODO: Temp message only, remove this
+    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
+    // handleFileRead("/wifi_reset.htm");       // Send a message to the user to let them know what is going on // TODO: Fix this
+    // delay(1000);                             // Wait 1 second to let everything send // TODO: Fix this
+    // tilt_scanner.wait_until_scan_complete(); // Wait for scans to complete // TODO: Fix this
+    // disconnect_from_wifi_and_restart();      // Reset the wifi settings // TODO: Fix this
+}
+
+void http_json() {
+    // I probably don't want this inline so that I can add the Allow-Origin
+    // header (in case anyone wants to build scripts that pull this data)
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    String message = "TODO: Should be sending json.\n\n"; // TODO: Temp message only, remove this
+    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
+    // server.send(200, "application/json", tilt_scanner.tilt_to_json().dump().c_str());
+}
+
+void settings_json() {
+    String message = "TODO: Should be loading settings.\n\n"; // TODO: Temp message only, remove this
+    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
+    // settings_json is intended to be used to build the "Change Settings"
+    // page. Not sure if I want to leave allow-origin here, but for now 
+    // it's OK.
+    //server.sendHeader("Access-Control-Allow-Origin", "*"); // TODO: Fix this
+    //server.send(200, "application/json", app_config.config.dump().c_str()); // TODO: Fix this
+}
+
+void handleNotFound() {
+    String message = "404: File Not Found\n\n";
+    server.send(404, "text/plain", message);
 }

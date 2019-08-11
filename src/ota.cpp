@@ -31,7 +31,7 @@ void otasetup() {
     // ArduinoOTA.setPassword("esp8266");
     // Password can be set with it's md5 value as well
     // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
-    // ArduinoOTA.setPasswordHash("5f4dcc3b5aa765d61d8327deb882cf99");
+    ArduinoOTA.setPasswordHash("5f4dcc3b5aa765d61d8327deb882cf99");
 
     ArduinoOTA.onStart([]() {
         Log.notice("OTA started." CR);
