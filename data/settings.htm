@@ -99,16 +99,46 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                     </h5>
                 </div>
                 <div class="card-body">
-                    <p class="card-text">These settings control how the device operates.</p>
-                    <form action="/settings/update/" method="POST">
-                        <div class="form-group row">
-                            <label for="mdnsID" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Change mDNS name (the hostname part in http://hostname.local/)  Do not add the &ldquo;.local&rdquo; to the name">mDNS ID</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" name="mdnsID" id="mdnsID" placeholder="brewbubbles" :value="settings.mdnsID">
-                            </div>
-                            <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
-                        </div>
-                    </form>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <form action="/settings/update/" method="POST">
+                                <div class="form-group row">
+                                    <label for="mdnsID" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Change mDNS name (the hostname part in http://hostname.local/)  Do not add the &ldquo;.local&rdquo; to the name">mDNS ID</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="mdnsID" id="mdnsID" placeholder="brewbubbles" :value="settings.mdnsID">
+                                    </div>
+                                    <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
+                                </div>
+                            </form>
+                        </li>
+                        <li class="list-group-item">
+                            <form action="/settings/update/" method="POST">
+                                <div class="container">
+                                <fieldset class="form-group">
+                                    <legend>Temperature Format</legend>
+                                    <div class="row justify-content-center">
+                                        <div class="col"><p>&nbsp;</p></div>
+                                        <div class="col">
+                                            <div class="form-check">
+                                                <input type="radio" id="tempInF" name="tempFormat" class="custom-control-input" checked="">
+                                                <label data-toggle="tooltip" title="Change the application display in Farenheit" class="custom-control-label" for="tempInF">Farenheit</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input type="radio" id="tempInC" name="tempFormat" class="custom-control-input">
+                                                    <label data-toggle="tooltip" title="Change the application display in Celcius" class="custom-control-label" for="tempInC">Celcius</label>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col"><p>&nbsp;</p></div>
+                                        <div class="col"><button type="submit" class="btn btn-primary">Update</button></div>
+                                        <div class="col"><p>&nbsp;</p></div>
+                                    </div>
+                                </fieldset>
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
                 </div>
             </div> <!-- General Settings -->
 
