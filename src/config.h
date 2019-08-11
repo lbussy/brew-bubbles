@@ -177,7 +177,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 // Define reset wifi on boot pin - reset if pulled low
 //
 #ifndef RESETWIFI
-#define RESETWIFI D4
+#define RESETWIFI D5
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
