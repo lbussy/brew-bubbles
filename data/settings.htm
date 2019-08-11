@@ -1,14 +1,32 @@
+<!-- Copyright (C) 2019 Lee C. Bussy (@LBussy)
+
+This file is part of Lee Bussy's Brew Bubbles (Brew-Bubbles).
+
+Brew Bubbles is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+Brew Bubbles is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
+
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-100">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Brew Bubbles - Settings</title>
+    <meta name="description" content="Brew Bubbles, a Home Brewing application">
+    <meta name="author" content="Lee Bussy">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <title>Brew Bubbles</title>
+
+    <link rel="canonical" href="https://www.brewbubbles.com/">
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -21,192 +39,203 @@
     <meta name="msapplication-TileImage" content="/mstile-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
-    <style>
-        body {padding-top: 5rem; padding-bottom: 5rem;}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://getbootstrap.com/docs/4.3/examples/sticky-footer/sticky-footer.css" integrity="sha384-BZcSuyq3cmGi/E2JVjs3C6PoDcVs/8OKuDZjyXOY/ntKcIbMt8iD4g+LyeSuJX+t" crossorigin="anonymous">
 
-        .row-padded {
-            padding: 0.75rem 1.25rem;
+    <style>
+        main > .container {
+            padding: 60px 15px 0;
         }
 
+        .footer {
+            background-color: #f5f5f5;
+        }
+
+        .footer > .container {
+            padding-right: 15px;
+            padding-left: 15px;
+        }
     </style>
 </head>
 
-<body>
+<body class="d-flex flex-column h-100">
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <img src="/mstile-144x144.png" style="width:32px;height:32px;">
-        <a class="navbar-brand" href="/">&nbsp;Brew Bubbles</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMain" aria-controls="navbarsMain" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    
-    <div class="collapse navbar-collapse" id="navbarsMain">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/">Home</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="/settings/">Settings <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/about/">About</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-
-<main role="main" class="container">
-
-    <h4>Device Configuration</h4>
-
-    <div id="settingsapp">
-        <div class="row row-padded">
-            <div class="col-12">
-                <div class="card">
-                    <h5 class="card-header">
-                        General Settings
-                    </h5>
-                    <div class="card-body">
-                        <p class="card-text">These settings control how the device operates.</p>
-                        <form action="/settings/update/" method="POST">
-                            <div class="form-group row">
-                                <label for="mdnsID" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Change mDNS name (the hostname part in http://hostname.local/)  Do not add the &ldquo;.local&rdquo; to the name">mDNS ID</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="mdnsID" id="mdnsID" placeholder="brewbubbles" :value="settings.mdnsID">
-                                </div>
-                                <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <img src="/mstile-144x144.png" style="width:32px;height:32px;">
+            <a class="navbar-brand" href="/">&nbsp;Brew Bubbles</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/settings.htm">Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about.htm">About</a>
+                    </li>
+                </ul>
             </div>
-        </div>
+        </nav>
+    </header>
 
-        <div class="row row-padded">
-            <div class="col-12">
-                <div class="card">
-                    <h5 class="card-header">
-                        Target Settings
-                    </h5>
-                    <div class="card-body">
-                        <p class="card-text">These settings control how Brew Bubbles talks to an HTML endpoint such as 
-                            <a href="https://www.brewpiremix.com/">BrewPi Remix</a> or
-                            <a href="https://www.fermentrack.com/">Fermentrack</a>. To disable pushing to the endpoint,
-                            delete the URL.
-                        </p>
-                        <form action="/settings/update/" method="POST">
-                            <div class="form-group row">
-                                <label for="endpointURL" class="col-sm-2 col-form-label" data-toggle="tooltip" title="HTML Endpoint URL. Delete to disable pushing to an HTML Endpoint. Ports other than 80 need to be in the format of: http://foo.com:8080/page.php">HTML Endpoint URL</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="brewpiremixURL" id="brewpiremixURL" placeholder="http://brewpi.local/brewbubbles.php" :value="settings.brewpiremixURL">
-                                </div>
-                                <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
-                            </div>
-                        </form>
+    <main role="main" class="container">
 
-                        <form action="/settings/update/" method="POST">
-                            <div class="form-group row">
-                                <label for="endpointPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip" title="How often (in seconds) to push data to HTML Endpoint">Push Frequency</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="endpointPushEvery" id="endpointPushEvery" placeholder="60" :value="settings.endpointPushEvery">
-                                </div>
-                                <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
-                            </div>
-                        </form>
+        <h1 class="mt-5">Device Configuration</h1>
 
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="row row-padded">
-            <div class="col-12">
-                <div class="card">
-                    <h5 class="card-header">
-                        Brewer's Friend Settings
-                    </h5>
-                    <div class="card-body">
-                        <p class="card-text">
-                            These settings control how Brew Bubbles talks to <a href="http://www.brewersfriend.com/">Brewer's
-                            Friend.</a> With a premium account, Brewer's Friend supports logging brew-related data. 
-                            To find your API key; log into your Brewer's Friend account and go to Profile > Account.
-                            Your API key will be a 40-character string of letters and numbers (not a URL).
-                        </p>
-                        <form action="/settings/update/" method="POST">
-                            <div class="form-group row">
-                                <label for="brewersFriendKey" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Enter the API key from your Brewer's Friend premium account">Brewer's Friend Key</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="brewersFriendKey" id="brewersFriendKey" placeholder="000fa2ac454c1abf14ffa3" :value="settings.brewersFriendKey">
-                                </div>
-                                <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
-                            </div>
-                        </form>
-
-                        <form action="/settings/update/" method="POST">
-                            <div class="form-group row">
-                                <label for="bfPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip" title="How often (in minutes) to push data to Brewer's Friend">Push Frequency</label>
-                                <div class="col-sm-8">
-                                    <input type="text" class="form-control" name="endpointPushEvery" id="endpointPushEvery" placeholder="15" :value="settings.endpointPushEvery">
-                                </div>
-                                <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row row-padded">
+        <div id="settingsapp">
+            <div class="row row-padded">
                 <div class="col-12">
                     <div class="card">
                         <h5 class="card-header">
-                            Update Firmware
+                            General Settings
                         </h5>
                         <div class="card-body">
-                            <p class="card-text">
-                                Your Brew Bubbles can be updated over the internet to the latest version of the Brew Bubbles
-                                firmware by clicking the "Update Firmware" button below.
+                            <p class="card-text">These settings control how the device operates.</p>
+                            <form action="/settings/update/" method="POST">
+                                <div class="form-group row">
+                                    <label for="mdnsID" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Change mDNS name (the hostname part in http://hostname.local/)  Do not add the &ldquo;.local&rdquo; to the name">mDNS ID</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="mdnsID" id="mdnsID" placeholder="brewbubbles" :value="settings.mdnsID">
+                                    </div>
+                                    <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row row-padded">
+                <div class="col-12">
+                    <div class="card">
+                        <h5 class="card-header">
+                            Target Settings
+                        </h5>
+                        <div class="card-body">
+                            <p class="card-text">These settings control how Brew Bubbles talks to an HTML endpoint such as 
+                                <a href="https://www.brewpiremix.com/">BrewPi Remix</a> or
+                                <a href="https://www.fermentrack.com/">Fermentrack</a>. To disable pushing to the endpoint,
+                                delete the URL.
                             </p>
-    
-                            <p class="card-text">
-                                <a href="/ota/" class="btn btn-danger">Update Firmware</a>
-                            </p>
-    
+                            <form action="/settings/update/" method="POST">
+                                <div class="form-group row">
+                                    <label for="endpointURL" class="col-sm-2 col-form-label" data-toggle="tooltip" title="HTML Endpoint URL. Delete to disable pushing to an HTML Endpoint. Ports other than 80 need to be in the format of: http://foo.com:8080/page.php">HTML Endpoint URL</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="brewpiremixURL" id="brewpiremixURL" placeholder="http://brewpi.local/brewbubbles.php" :value="settings.brewpiremixURL">
+                                    </div>
+                                    <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
+                                </div>
+                            </form>
+
+                            <form action="/settings/update/" method="POST">
+                                <div class="form-group row">
+                                    <label for="endpointPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip" title="How often (in seconds) to push data to HTML Endpoint">Push Frequency</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="endpointPushEvery" id="endpointPushEvery" placeholder="60" :value="settings.endpointPushEvery">
+                                    </div>
+                                    <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
+                                </div>
+                            </form>
+
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row row-padded">
+
+            <div class="row row-padded">
                 <div class="col-12">
                     <div class="card">
                         <h5 class="card-header">
-                            Reset Wifi Settings
+                            Brewer's Friend Settings
                         </h5>
                         <div class="card-body">
                             <p class="card-text">
-                                If you plan on relocating your Brew Bubbles to a new network, you can reset the WiFi connection
-                                settings by clicking "Reset WiFi". You will need to perform the the original network setup again
-                                by connecting to this device as an access point.
+                                These settings control how Brew Bubbles talks to <a href="http://www.brewersfriend.com/">Brewer's
+                                Friend.</a> With a premium account, Brewer's Friend supports logging brew-related data. 
+                                To find your API key; log into your Brewer's Friend account and go to Profile > Account.
+                                Your API key will be a 40-character string of letters and numbers (not a URL).
                             </p>
-    
-                            <p class="card-text">
-                                <a href="/wifi/" class="btn btn-danger">Reset WiFi</a>
-                            </p>
-    
+                            <form action="/settings/update/" method="POST">
+                                <div class="form-group row">
+                                    <label for="brewersFriendKey" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Enter the API key from your Brewer's Friend premium account">Brewer's Friend Key</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="brewersFriendKey" id="brewersFriendKey" placeholder="000fa2ac454c1abf14ffa3" :value="settings.brewersFriendKey">
+                                    </div>
+                                    <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
+                                </div>
+                            </form>
+
+                            <form action="/settings/update/" method="POST">
+                                <div class="form-group row">
+                                    <label for="bfPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip" title="How often (in minutes) to push data to Brewer's Friend">Push Frequency</label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" name="endpointPushEvery" id="endpointPushEvery" placeholder="15" :value="settings.endpointPushEvery">
+                                    </div>
+                                    <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
+                                </div>
+                            </form>
+
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="row row-padded">
+                    <div class="col-12">
+                        <div class="card">
+                            <h5 class="card-header">
+                                Update Firmware
+                            </h5>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    Your Brew Bubbles can be updated over the internet to the latest version of the Brew Bubbles
+                                    firmware by clicking the "Update Firmware" button below.
+                                </p>
+        
+                                <p class="card-text">
+                                    <a href="/ota/" class="btn btn-danger">Update Firmware</a>
+                                </p>
+        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row row-padded">
+                    <div class="col-12">
+                        <div class="card">
+                            <h5 class="card-header">
+                                Reset Wifi Settings
+                            </h5>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    If you plan on relocating your Brew Bubbles to a new network, you can reset the WiFi connection
+                                    settings by clicking "Reset WiFi". You will need to perform the the original network setup again
+                                    by connecting to this device as an access point.
+                                </p>
+        
+                                <p class="card-text">
+                                    <a href="/wifi/" class="btn btn-danger">Reset WiFi</a>
+                                </p>
+        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-    </div>
-
-</main>
+    </main>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
@@ -240,6 +269,11 @@
     });
 </script>
 
+<footer class="footer mt-auto py-3">
+    <div class="container">
+        <span class="text-muted">Copyright &copy; 2019, Lee C. Bussy</span>
+    </div>
+</footer>
 
 </body>
 </html>
