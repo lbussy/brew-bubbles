@@ -39,7 +39,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
     <meta name="msapplication-TileImage" content="/mstile-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://bootswatch.com/4/united/bootstrap.css" integrity="sha384-GuVYG0jqJkyF0Z6LyLuimzKIsbFyMvgtCUeAX3v/Mr+rBBK4qsoQk0yP6xB+RDzc" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" href="https://getbootstrap.com/docs/4.3/examples/sticky-footer/sticky-footer.css" integrity="sha384-BZcSuyq3cmGi/E2JVjs3C6PoDcVs/8OKuDZjyXOY/ntKcIbMt8iD4g+LyeSuJX+t" crossorigin="anonymous">
 
@@ -62,7 +62,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 <body class="d-flex flex-column h-100">
 
     <header>
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
             <img src="/mstile-144x144.png" style="width:32px;height:32px;">
             <a class="navbar-brand" href="/">&nbsp;Brew Bubbles</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,10 +74,10 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/settings.htm">Settings</a>
+                        <a class="nav-link" href="/settings/">Settings</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/about.htm">About</a>
+                        <a class="nav-link" href="/about/">About</a>
                     </li>
                 </ul>
             </div>
@@ -85,41 +85,24 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
     </header>
 
     <main role="main" class="flex-shrink-0">
-        <div class="container">
-            <h1 class="mt-5">Bubble Counter</h1>
 
-            <!-- Start vue Sensor container -->
-            <div class="container" id="bubapp">
-                <div class="row">
-                    <!-- Start vue Sensor loop div -->
-                    <div class="col-12 col-sm-6 sm-padded" v-for="bubble in bubbles">
-                        <p class="lead">Lead .....</p>
-                        <p>Not a lead .....</p>
-                        <!-- Card -->
-                        <!-- <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title">{{sensor.color}} Tilt</h5>
-                                <h6 class="card-subtitle mb-2 text-muted">Google Sheets: {{sensor.gsheets_name}}</h6>
-                            </div> -->
+            <div class="container" id="settingsapp"> <!-- Container -->
+                <h1 class="mt-5">Bubble Sensor</h1>
+    
+                <div class="card border-dark mb-3"> <!-- Sensor Readings -->
+                    <div class="card-header">
+                        <h5>
+                            Sensor Readings
+                        </h5>
+                    </div>
+                    <div class="card-body">
 
-                            <!-- GravitySensor Line -->
-                            <!-- <div class="row">
-                                <div class="col-6 d-flex flex-column text-center">
-                                    <div class="p-2 h3">Gravity</div><div class="p-2">{{sensor.gravity | numeral('0.000')}}</div>
-                                </div>
-                                <div class="col-6 d-flex flex-column text-center">
-                                    <div class="p-2 h3">Temp</div><div class="p-2 text-center">{{sensor.temp}}&deg; F</div>
-                                </div>
-                            </div> -->
-                            <!-- End GravitySensor Line -->
-
-                        <!-- </div> -->
-                        <!-- End Card -->
-                    </div> <!-- End vue Sensor loop div -->
-                </div>
-            </div> <!-- End vue application container -->
-        </div>
-    </main>
+                    </div>
+                </div> <!-- Sensor Readingss -->
+    
+            </div> <!-- Container -->
+            
+        </main>
 
     <footer class="footer mt-auto py-3">
         <div class="container">
@@ -133,37 +116,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.7/dist/vue.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-numeral-filter/dist/vue-numeral-filter.min.js" crossorigin="anonymous"></script>
-    <script type="text/javascript">
-        var vm = new Vue({
-            el: '#bubapp',
-            data: {
-                bubbles: []
-            },
-            mounted: function () {
-                this.getSensors();
-                window.setInterval(() => {
-                    this.getSensors()
-                }, 60000)  // File is only updated once per minute
-            },
-            methods: {
-                getSensors: function() {
-                    var xhr = new XMLHttpRequest();
-                    var self = this;
-                    xhr.open('GET', '/testbubbles.json'); // DEBUG
-                    //xhr.open('GET', '/bubbles.json'); // TODO
-                    xhr.onload = function () {
-                        self.fullDict = JSON.parse(xhr.responseText);
-                        self.bubbles = [];
-                        Object.keys(self.fullDict).forEach(function(key) {
-                            self.bubbles.push(self.fullDict[key]);
-                        });
-                        console.log(self.fullDict);
-                    };
-                    xhr.send()
-                }
-            }
-        });
-    </script>
 
 </body>
 </html>

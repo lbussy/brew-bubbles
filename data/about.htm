@@ -39,7 +39,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
     <meta name="msapplication-TileImage" content="/mstile-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://bootswatch.com/4/united/bootstrap.css" integrity="sha384-GuVYG0jqJkyF0Z6LyLuimzKIsbFyMvgtCUeAX3v/Mr+rBBK4qsoQk0yP6xB+RDzc" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" href="https://getbootstrap.com/docs/4.3/examples/sticky-footer/sticky-footer.css" integrity="sha384-BZcSuyq3cmGi/E2JVjs3C6PoDcVs/8OKuDZjyXOY/ntKcIbMt8iD4g+LyeSuJX+t" crossorigin="anonymous">
 
@@ -62,7 +62,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 <body class="d-flex flex-column h-100">
 
     <header>
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
             <img src="/mstile-144x144.png" style="width:32px;height:32px;">
             <a class="navbar-brand" href="/">&nbsp;Brew Bubbles</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,14 +70,14 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/settings.htm">Settings</a>
+                        <a class="nav-link" href="/settings/">Settings</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/about.htm">About</a>
+                        <a class="nav-link active" href="/about/">Help/About  <span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
             </div>
@@ -87,21 +87,22 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
     <main role="main" class="flex-shrink-0">
         <div class="container">
             <h1 class="mt-5">About Brew Bubbles</h1>
-            <p class="lead"><a href="https://www.brewbubbles.com/">Brew Bubbles</a> is a project by Lee
+            <p><a href="https://www.brewbubbles.com/">Brew Bubbles</a> is a project by Lee
                 Bussy and is licensed under the <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">
                 GNU General Public License (GPLv3)</a>.  To contact me, please reach out to
                 <a href="https://www.homebrewtalk.com/forum/members/lbussy.144719/">LBussy</a> on the
                 HomeBrewTalk Forums (free registration required).
             </p>
 
-            <p class="lead">Brew Bubbles documentation, issue reporting and support can be found at
+            <p>Brew Bubbles documentation, issue reporting and support can be found at
                 the following links:<br>
-                <ul>
-                    <li><a href="https://www.brewbubbles.com/">Homepage</a><br>
-                    <li><a href="http://docs.brewbubbles.com/">Documentation</a><br>
-                    <li><a href="https://github.com/lbussy/brew-bubbles/issues">GitHub</a><br>
-                    <li><a href="http://support.brewbubbles.com/">HomeBrewTalk Thread</a>
-                </ul>
+                    <ul class="fa-ul">
+                        <li><span class="fa-li"><i class="fas fa-home"></i></span>Visit the <a href="https://www.brewbubbles.com/">Homepage</a></li>
+                        <li><span class="fa-li"><i class="fab fa-github"></i></span>Visit project on <a href="https://github.com/lbussy/brew-bubbles/">GitHub</a></li>
+                        <li><span class="fa-li"><i class="fas fa-book"></i></span>Read the <a href="http://docs.brewbubbles.com/">Documentation</a></li>
+                        <li><span class="fa-li"><i class="fas fa-bug"></i></span>Report an <a href="https://github.com/lbussy/brew-bubbles/issues">issue or bug</a></li>
+                        <li><span class="fa-li"><i class="fas fa-hands-helping"></i></span>Get support or chat with other users on the <a href="http://support.brewbubbles.com/">HomeBrewTalk Thread</a></li>
+                    </ul>
             </p>
         </div>
     </main>
