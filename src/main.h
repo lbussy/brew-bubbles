@@ -27,6 +27,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "webserver.h"
 #include "wifi.h"
 #include "serial.h"
+#include <DoubleResetDetect.h>
 
 void setup();
 void loop();

@@ -19,12 +19,27 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 LocalTime loc;
 
+// DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
+// DRD_TIMEOUT =    Maximum number of seconds between resets that counts
+//                  as a double reset
+// DRD_ADDRESS =    Address to the block in the RTC user memory change it
+//                  if it collides with another usage of the address block
+DoubleResetDetect drd(3.0, 0x00);
+
+unsigned long ulMNow = millis(); // Time in millis now // DEBUG
+unsigned long ulMStart = 0UL; // Start time // DEBUG
+
 void setup() {
     serial();
-    delay(200); // Let pins settle
+    delay(200); // Let pins settle, else next detect is flakey
     pinMode(RESETWIFI, INPUT_PULLUP);
-    if(digitalRead(RESETWIFI) == LOW) wifisetup(true); // Reset wifi
-    else wifisetup(false);
+    if (drd.detect() || digitalRead(RESETWIFI) == LOW) {
+        if(drd.detect()) Log.notice("Double reset boot, resetting wifi." CR);
+        if(digitalRead(RESETWIFI) == LOW) Log.notice("%s low, resetting wifi." CR, RESETWIFI);
+        wifisetup(true);
+    } else {
+        wifisetup(false);
+    }
     mdnssetup();
     webserversetup();
     loc.StartTime();
@@ -36,5 +51,10 @@ void loop() {
     webserverloop();
     bubbles(loc.GetLocalTime());
     ArduinoOTA.handle();
+    ulMNow = millis();
+    if (ulMNow - ulMStart > BUBLOOP) { // If (now - start) > delay time, do work
+        ulMStart = ulMNow;
+        Log.verbose("DEBUG: getFreeHeap(): %d, getHeapFragmentation(): %d, getMaxFreeBlocks(): %d" CR, ESP.getFreeHeap(), ESP.getHeapFragmentation(), ESP.getMaxFreeBlockSize());
+    }
     yield();
 }
