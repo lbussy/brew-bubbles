@@ -1,0 +1,31 @@
+Exception (0):
+epc1=0xcb000002 epc2=0x00000000 epc3=0x00000000 excvaddr=0x00000000 depc=0x00000000
+
+>>>stack>>>
+
+ctx: cont
+sp: 3fff0890 end: 3fff0b00 offset: 01a0
+3fff0a30:  3fffdad0 00000000 3ffef14c 40210e19
+3fff0a40:  3fffdad0 00000000 3ffef14c 40210ebb
+3fff0a50:  0aa56044 00000000 3ffef14c 4020336e
+3fff0a60:  00000001 3ffef30c 3ffef20c 4021f7e6
+3fff0a70:  00000001 3ffef30c 3fff2538 4010017b
+3fff0a80:  4024c987 40205b94 3ffef208 40220218
+3fff0a90:  3fff0d84 00000000 3ffef208 4020dedd
+3fff0aa0:  40220f38 00000000 00001388 3ffef58c
+3fff0ab0:  00000000 00000000 3ffef2f0 4020914a
+3fff0ac0:  3fffdad0 00000000 3ffef55c 3ffef58c
+3fff0ad0:  3fffdad0 00000000 3ffef55c 40203465
+3fff0ae0:  3fffdad0 00000000 3ffef55c 40217b48
+3fff0af0:  feefeffe feefeffe 3ffe8550 40100881
+<<<stack<<<
+
+ ets Jan  8 2013,rst cause:4, boot mode:(3,6)
+
+wdt reset
+load 0x4010f000, len 1384, room 16
+tail 8
+chksum 0x2d
+csum 0x2d
+v8b899c12
+~ld
