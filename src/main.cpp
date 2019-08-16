@@ -33,11 +33,14 @@ void setup() {
     serial();
     delay(200); // Let pins settle, else next detect is flakey
     pinMode(RESETWIFI, INPUT_PULLUP);
-    if (drd.detect() || digitalRead(RESETWIFI) == LOW) {
-        if(drd.detect()) Log.notice("Double reset boot, resetting wifi." CR);
-        if(digitalRead(RESETWIFI) == LOW) Log.notice("%s low, resetting wifi." CR, RESETWIFI);
-        wifisetup(true);
+    if (digitalRead(RESETWIFI) == LOW) {
+        Log.notice(F("%s low, resetting wifi and restarting." CR), RESETWIFI);
+        disco_restart();
+    } else if (drd.detect()) {
+        Log.notice(F("Double reset boot, resetting wifi and restarting." CR));
+        //disco_restart();
     } else {
+        Log.verbose(F("Normal boot, re-using WiFi values." CR));
         wifisetup(false);
     }
     mdnssetup();
@@ -54,7 +57,6 @@ void loop() {
     ulMNow = millis();
     if (ulMNow - ulMStart > BUBLOOP) { // If (now - start) > delay time, do work
         ulMStart = ulMNow;
-        Log.verbose("DEBUG: getFreeHeap(): %d, getHeapFragmentation(): %d, getMaxFreeBlocks(): %d" CR, ESP.getFreeHeap(), ESP.getHeapFragmentation(), ESP.getMaxFreeBlockSize());
     }
     yield();
 }

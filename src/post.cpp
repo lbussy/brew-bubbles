@@ -22,7 +22,7 @@ bool httppost(String json) {
     // Ports other than 80 need to be in the format of: http://192.168.168.199:8080/
     JsonConfig *config;
     config = JsonConfig::getInstance();
-    Log.verbose("Posting to: %s" CR, config->targeturl);
+    Log.verbose(F("Posting to: %s" CR), config->targeturl);
     http.begin(config->targeturl); // Specify request destination
     http.addHeader("Content-Type", "application/json"); // Specify content-type header
     int httpCode = http.POST(json); // Post json
@@ -33,13 +33,13 @@ bool httppost(String json) {
     int n = payload.length();
     char p[n + 1]; 
     strcpy(p, payload.c_str()); 
-    Log.notice("HTTP Post return code: %i" CR, httpCode);
-    Log.notice("HTTP Post response payload: %s" CR, p);
+    Log.notice(F("HTTP Post return code: %i" CR), httpCode);
+    Log.notice(F("HTTP Post response payload: %s" CR), p);
     // Convert String to char array
     int i = json.length();
     char j[i + 1]; 
     strcpy(j, json.c_str()); 
-    Log.notice("JSON was: %s" CR, j);
+    Log.notice(F("JSON was: %s" CR), j);
 //#endif // DEBUG
 #endif //DISABLE_LOGGING
     http.end(); // Close connection

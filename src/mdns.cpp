@@ -21,13 +21,13 @@ void mdnssetup() {
     JsonConfig *config;
     config = JsonConfig::getInstance();
     if (!MDNS.begin(config->hostname)) { // Start the mDNS responder
-        Log.error("Error setting up mDNS responder." CR);
+        Log.error(F("Error setting up mDNS responder." CR));
     } else {
-        Log.notice("mDNS responder started for %s.local." CR, config->hostname);
+        Log.notice(F("mDNS responder started for %s.local." CR), config->hostname);
         if (!MDNS.addService("http", "tcp", PORT)) {
-            Log.error("Failed to register mDNS service." CR);
+            Log.error(F("Failed to register mDNS service." CR));
         } else {
-            Log.notice("HTTP registered via mDNS on port %i." CR, PORT);
+            Log.notice(F("HTTP registered via mDNS on port %i." CR), PORT);
         }
     }
 }
@@ -35,12 +35,12 @@ void mdnssetup() {
 IPAddress mdnsquery(char* hostname) {
     // char* hostname = "brewpi.local";
     // IPAddress ip = mdnsquery(hostname);
-    // Log.notice("mDNS Lookup - %s: %d.%d.%d.%d." CR, hostname, ip[0], ip[1], ip[2], ip[3]);
-    Log.notice("Sending mDNS query." CR);
+    // Log.notice(F("mDNS Lookup - %s: %d.%d.%d.%d." CR), hostname, ip[0], ip[1], ip[2], ip[3]);
+    Log.notice(F("Sending mDNS query." CR));
     int n = MDNS.queryService("workstation", "tcp");
-    Log.notice("mDNS query complete." CR);
+    Log.notice(F("mDNS query complete." CR));
     if (n == 0) {
-        Log.notice("No services found." CR);
+        Log.notice(F("No services found." CR));
         return {0, 0, 0, 0};
     } else {
         for (int i = 0; i < n; ++i) {

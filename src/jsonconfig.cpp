@@ -40,12 +40,12 @@ bool JsonConfig::Parse(bool reset = false) {
 
     // Mount SPIFFS
     if (!SPIFFS.begin()) {
-        Log.error("Failed to mount SPIFFS." CR);
+        Log.error(F("Failed to mount SPIFFS." CR));
         return false;
     }
 
     if (reset == true) {
-        Log.verbose("Deleted %s." CR, filename);
+        Log.verbose(F("Deleted %s." CR), filename);
         SPIFFS.remove(filename); // DEBUG use
     }
 
@@ -54,14 +54,14 @@ bool JsonConfig::Parse(bool reset = false) {
     File file = SPIFFS.open(filename, "r");
     // This may fail if the file is missing
     if (!file) {
-        Log.error("Failed to open configuration file." CR);
+        Log.error(F("Failed to open configuration file." CR));
         loaded = false;
     } else {
         // Parse the JSON object in the file
         //bool success = deserializeJson(doc, file);
         DeserializationError err = deserializeJson(doc, file);
         if (err) {
-            Log.notice("Failed to deserialize configuration." CR);
+            Log.notice(F("Failed to deserialize configuration." CR));
             Serial.println(err.c_str());         
             loaded = false;
         } else {
@@ -71,7 +71,7 @@ bool JsonConfig::Parse(bool reset = false) {
 
     if(loaded == false){ // Load defaults
 
-        Log.notice("Using default configuration." CR);
+        Log.notice(F("Using default configuration." CR));
 
         // Set defaults for Access Point Config Object
         strlcpy(single->ssid, APNAME, sizeof(single->ssid));
@@ -98,7 +98,7 @@ bool JsonConfig::Parse(bool reset = false) {
 
     } else { // Parse from file
 
-        Log.notice("Parsing configuration data." CR);
+        Log.notice(F("Parsing configuration data." CR));
 
         // Parse Access Point Config Object
         strlcpy(single->ssid, doc["apconfig"]["ssid"] | "", sizeof(single->ssid));
@@ -149,24 +149,24 @@ bool JsonConfig::Serialize() {
 
     // Mount SPIFFS
     if (!SPIFFS.begin()) {
-        Log.error("Failed to mount SPIFFS." CR);
+        Log.error(F("Failed to mount SPIFFS." CR));
         return false;
     }
 
     // Open file for writing
     File file = SPIFFS.open(filename, "w");
     if (!file) {
-        Log.error("Failed to open configuration file." CR);
+        Log.error(F("Failed to open configuration file." CR));
         return false;
     } else {
         // Serialize the JSON object to the file
         bool success = serializeJson(doc, file);
         // This may fail if the JSON is invalid
         if (!success) {
-            Log.error("Failed to serialize configuration." CR);
+            Log.error(F("Failed to serialize configuration." CR));
             return false;
         } else {
-            Log.notice("Saved configuration as %s." CR, filename);
+            Log.notice(F("Saved configuration as %s." CR), filename);
             return true;
         }
     }

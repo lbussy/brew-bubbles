@@ -23,5 +23,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include <Arduino.h>
 
 void serial();
+void printTimestamp(Print* _logOutput);
 
 #endif // SERIAL_H

@@ -109,21 +109,21 @@ void bubbles(char* localTime) {
 #endif // READTEMP
 
         if (!SPIFFS.begin()) { // Mount SPIFFS
-            Log.error("Failed to mount SPIFFS." CR);
+            Log.error(F("Failed to mount SPIFFS." CR));
         } else {
             // Open file for writing
             char filename[14] = "/bubbles.json";
             File file = SPIFFS.open(filename, "w");
             if (!file) {
-                Log.error("Failed to open json file for writing." CR);
+                Log.error(F("Failed to open json file for writing." CR));
             } else {
                 // Serialize the JSON object to the file
                 bool success = serializeJson(doc, file);
                 // This may fail if the JSON is invalid
                 if (!success) {
-                    Log.error("Failed to serialize json." CR);
+                    Log.error(F("Failed to serialize json." CR));
                 } else {
-                    Log.notice("Saved json as %s." CR, filename);
+                    Log.notice(F("Saved json as %s." CR), filename);
                 }
             }
         }
@@ -132,6 +132,27 @@ void bubbles(char* localTime) {
         char strBubbleJson[capacity];
         serializeJson(doc, strBubbleJson, sizeof(strBubbleJson));
         httppost(strBubbleJson); // Post JSON date to endpoint
+
+        // // Connect to the HTTP server
+        // WiFiClient client;
+        // client.connect("io.adafruit.com",80);
+    
+        // // Send "POST /api/v2/bblanchon/groups/arduinojson/data HTTP/1.1"
+        // client.println("POST /api/v2/"IO_USERNAME"/groups/arduinojson/data HTTP/1.1");
+        // // Send the HTTP headers
+        // client.println("Host: io.adafruit.com");
+        // client.println("Connection: close");
+        // client.print("Content-Length: ");
+        // client.println(measureJson(doc));
+        // client.println("Content-Type: application/json");
+        // client.println("X-AIO-Key: "IO_KEY);
+
+        // // Terminate headers with a blank line
+        // client.println();
+
+        // // Send JSON document in body
+        // serializeJson(doc, client);
+
     }
     return;
 }
