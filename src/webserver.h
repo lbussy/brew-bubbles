@@ -21,6 +21,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "config.h"
 #include "serial.h"
 #include "jsonconfig.h"
+#include "wifi.h"
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
@@ -39,6 +40,7 @@ void about_from_spiffs();
 void favicon_from_spiffs();
 void trigger_OTA();
 void trigger_wifi_reset();
+void trigger_wifi_reset2();
 void http_json();
 void settings_json();
 void handleNotFound();

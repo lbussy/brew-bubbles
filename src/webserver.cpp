@@ -33,13 +33,13 @@ void webserversetup() {
     int n = WiFi.hostname().length(); 
     char hostname[n + 1]; 
     strcpy(hostname, WiFi.hostname().c_str()); 
-    Log.notice("HTTP update server started. Open http://%s.local/update in your browser." CR, hostname);
+    Log.notice(F("HTTP update server started. Open http://%s.local/update in your browser." CR), hostname);
 
     server.onNotFound(handleNotFound); // Attach a 404 handler
     setAliases();
 
     server.begin(); // Start the web server
-    Log.notice("HTTP server started." CR);
+    Log.notice(F("HTTP server started." CR));
 }
 
 void webserverloop() {
@@ -50,7 +50,7 @@ String getContentType(String path){
     int n = path.length();
     char p[n + 1]; 
     strcpy(p, path.c_str()); 
-    Log.verbose("In getContentType, looking for %s." CR, p);
+    Log.verbose(F("In getContentType, looking for %s." CR), p);
     if (path.endsWith(".src")) path = path.substring(0, path.lastIndexOf("."));
     else if(path.endsWith(".htm")) return "text/html";
     else if(path.endsWith(".html")) return "text/html";
@@ -72,7 +72,7 @@ bool handleFileRead(String path) {  // send the right file to the client (if it 
     int n = path.length();
     char p[n + 1]; 
     strcpy(p, path.c_str()); 
-    Log.verbose("Handle file read: %s" CR, p);
+    Log.verbose(F("Handle file read: %s" CR), p);
     String contentType = getContentType(path);             // Get the MIME type
     String pathWithGz = path + ".gz";
     if(SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)) { // If the file exists, either as a compressed archive, or normal
@@ -83,10 +83,10 @@ bool handleFileRead(String path) {  // send the right file to the client (if it 
             return false;
         server.streamFile(file, contentType);              // Send it to the client
         file.close();                                      // Close the file again
-        Log.notice("Sent file: %s" CR, p);
+        Log.notice(F("Sent file: %s" CR), p);
         return true;
     } else {
-        Log.error("File Not Found: %s" CR, p);
+        Log.error(F("File Not Found: %s" CR), p);
         handleNotFound();
         return true;
     }
@@ -110,12 +110,17 @@ void trigger_OTA() {
 }
 
 void trigger_wifi_reset() {
-    String message = "TODO: Should be resetting wifi.\n\n"; // TODO: Temp message only, remove this
-    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
-    // handleFileRead("/wifi_reset.htm");       // Send a message to the user to let them know what is going on // TODO: Fix this
-    // delay(1000);                             // Wait 1 second to let everything send // TODO: Fix this
-    // tilt_scanner.wait_until_scan_complete(); // Wait for scans to complete // TODO: Fix this
-    // disconnect_from_wifi_and_restart();      // Reset the wifi settings // TODO: Fix this
+    handleFileRead("/wifi_reset.htm");  // Send an "are you sure?" message
+}
+
+void trigger_wifi_reset2() {
+    handleFileRead("/wifi_reset2.htm"); // Send a message to the user to let them know what is going on
+    delay(1000);                        // Wait 3 (safe) seconds to let everything load
+    yield();
+    delay(1000);
+    yield();
+    delay(1000);
+    disco_restart();                    // Reset the wifi settings
 }
 
 void http_json() {
@@ -153,6 +158,7 @@ void setAliases() { // Aliases for pages
     server.on("/settings/json/", settings_json);
     server.on("/ota/", trigger_OTA);
     server.on("/wifi/", trigger_wifi_reset);
+    server.on("/wifi2/", trigger_wifi_reset2);
 
     server.on("/favicon.ico", favicon_from_spiffs);
 
@@ -258,7 +264,6 @@ void favicon_32x32png_from_spiffs() {
 }
 
 void mstile_144x144png_from_spiffs() {
-    Log.verbose("Made it here." CR);
     handleFileRead("/mstile-144x144.png");
 }
 
