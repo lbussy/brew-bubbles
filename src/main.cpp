@@ -39,6 +39,7 @@ void setup() {
     } else if (drd.detect()) {
         Log.notice(F("Double reset boot, resetting wifi and restarting." CR));
         //disco_restart();
+        wifisetup(false); // DEBUG
     } else {
         Log.verbose(F("Normal boot, re-using WiFi values." CR));
         wifisetup(false);
