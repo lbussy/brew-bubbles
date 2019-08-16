@@ -23,9 +23,16 @@ void serial() { // Start serial with auto-detected rate (default to BAUD)
     Serial.begin(BAUD);
     Serial.flush();
     Log.begin(LOG_LEVEL, &Serial, true);
+    Log.setPrefix(printTimestamp);
     Serial.println();
     Serial.println();
-    Log.notice("Serial logging started at %l." CR, BAUD);
+    Log.notice(F("Serial logging started at %l." CR), BAUD);
+}
+
+void printTimestamp(Print* _logOutput) {
+  char c[12];
+  int m = sprintf(c, "%10lu ", millis());
+  _logOutput->print(c);
 }
 
 #else // DISABLE_LOGGING

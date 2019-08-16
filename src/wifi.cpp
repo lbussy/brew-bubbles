@@ -27,7 +27,7 @@ void configModeCallback (WiFiManager *myWiFiManager) {
     strcpy(ap, ssid.c_str()); 
 
     IPAddress myIP = WiFi.softAPIP();
-    Log.notice("Entered AP configuration mode, SSID: %s, IP: %d.%d.%d.%d." CR, ap, myIP[0], myIP[1], myIP[2], myIP[3]);
+    Log.notice(F("Entered AP configuration mode, SSID: %s, IP: %d.%d.%d.%d." CR), ap, myIP[0], myIP[1], myIP[2], myIP[3]);
 #endif //DISABLE_LOGGING
 }
 
@@ -63,7 +63,7 @@ void wifisetup(bool reset) {
     config = JsonConfig::getInstance();
     if(!wifiManager.autoConnect(config->ssid, config->appwd)) {
 #ifndef DISABLE_LOGGING
-        Log.warning("Timed out trying to connect to AP, resetting" CR);
+        Log.warning(F("Timed out trying to connect to AP, resetting" CR));
 #endif // DISABLE_LOGGING
         delay(1000);
         ESP.reset();  // Reset and try again
@@ -72,11 +72,11 @@ void wifisetup(bool reset) {
     // Connected
     WiFi.hostname(config->hostname);
 #ifndef DISABLE_LOGGING
-    Log.notice("WiFi connected." CR);
+    Log.notice(F("WiFi connected." CR));
     String host = WiFi.hostname();
-    Log.notice("Hostname: %s" CR,  &host);
+    Log.notice(F("Hostname: %s" CR),  &host);
     IPAddress myIP = WiFi.localIP();
-    Log.notice("IP address: %d.%d.%d.%d" CR, myIP[0], myIP[1], myIP[2], myIP[3]);
+    Log.notice(F("IP address: %d.%d.%d.%d" CR), myIP[0], myIP[1], myIP[2], myIP[3]);
 #endif // DISABLE_LOGGING
 
     // Save custom configuration
@@ -84,4 +84,9 @@ void wifisetup(bool reset) {
 
     // Set custom IP for Station
     // wifiManager.setSTAStaticIPConfig(IPAddress(192,168,0,99), IPAddress(192,168,0,1), IPAddress(255,255,255,0));
+}
+
+void disco_restart() { // Blow away WiFi config and reset
+    WiFi.disconnect(true);
+    ESP.restart();
 }

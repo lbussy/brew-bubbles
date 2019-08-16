@@ -34,28 +34,28 @@ void otasetup() {
     ArduinoOTA.setPasswordHash("5f4dcc3b5aa765d61d8327deb882cf99");
 
     ArduinoOTA.onStart([]() {
-        Log.notice("OTA started." CR);
+        Log.notice(F("OTA started." CR));
     });
 
     ArduinoOTA.onEnd([]() {
-        Log.notice("OTA complete." CR);
+        Log.notice(F("OTA complete." CR));
     });
 
     ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-        Log.notice("Progress: %u%%\r", (progress / (total / 100)));
+        Log.notice(F("Progress: %u%%\r"), (progress / (total / 100)));
     });
 
     ArduinoOTA.onError([](ota_error_t error) {
-        Log.error("Error[%u]: " CR, error);
-        if (error == OTA_AUTH_ERROR) Log.error("OTA auth failed." CR);
-        else if (error == OTA_BEGIN_ERROR) Log.error("OTA begin failed." CR);
-        else if (error == OTA_CONNECT_ERROR) Log.error("OTA connect failed." CR);
-        else if (error == OTA_RECEIVE_ERROR) Log.error("OTA receive failed." CR);
-        else if (error == OTA_END_ERROR) Log.error("OTA end failed." CR);
+        Log.error(F("Error[%u]: " CR), error);
+        if (error == OTA_AUTH_ERROR) Log.error(F("OTA auth failed." CR));
+        else if (error == OTA_BEGIN_ERROR) Log.error(F("OTA begin failed." CR));
+        else if (error == OTA_CONNECT_ERROR) Log.error(F("OTA connect failed." CR));
+        else if (error == OTA_RECEIVE_ERROR) Log.error(F("OTA receive failed." CR));
+        else if (error == OTA_END_ERROR) Log.error(F("OTA end failed." CR));
         ESP.restart();
     });
 
     ArduinoOTA.begin();
-    Log.notice("OTA ready." CR);
+    Log.notice(F("OTA ready." CR));
 }
 
