@@ -99,14 +99,9 @@ bool handleFileRead(String path) {  // send the right file to the client (if it 
 /////////////////////////////////////////////////
 
 void trigger_OTA() {
-    String message = "TODO: Should be triggering OTA.\n\n"; // TODO: Temp message only, remove this
-    server.send(200, "text/plain", message); // TODO: Temp message only, remove this
-    // handleFileRead("/updating.htm");    // Send a message to the user to let them know what is going on // TODO: Fix this
+    handleFileRead("/updating.htm");    // Send a message to the user to let them know what is going on
     // app_config.config["update_spiffs"] = true; // TODO: Fix this
-    // lcd.display_ota_update_screen(); // Trigger this here while everything else is waiting. // TODO: Fix this
-    // delay(1000);                     // Wait 1 second to let everything send // TODO: Fix this
-    // tilt_scanner.wait_until_scan_complete(); // Wait for scans to complete  // TODO: Fix this
-    // execOTA();                          // Trigger the OTA update
+    execfw();                           // Trigger the OTA update
 }
 
 void trigger_wifi_reset() {
