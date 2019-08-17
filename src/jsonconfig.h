@@ -41,6 +41,7 @@ class JsonConfig {
         unsigned long targetfreq; // Target freqency
         char bfkey[41]; // Brewer's Friend key
         unsigned long bffreq; // Brewer's Friend frequency
+        bool dospiffs; // Update SPIFFS on reboot
 
         // Methods
         bool Parse(bool reset);

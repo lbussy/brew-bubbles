@@ -18,6 +18,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef _EXECOTA_H
 #define _EXECOTA_H
 
+#include "jsonconfig.h"
+#include "config.h"
 #include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
 #include <ArduinoLog.h>

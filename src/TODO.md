@@ -2,13 +2,15 @@
 
 - Fix crash when doing sendNTPPacket()
 - Find out why flashing sometimes triggers double-reset
+- Figure out version in code
 - Figure out timezone
 - Handle OTA security, maybe password
 - Fix deprecation error in http
 - Get web pages working
     - Have bubbles in home page
     - ~~Reset wireless~~
-    - Add GitHub OTA
+    - ~~Add GitHub OTA for Firmware~~
+    - ~~Add GitHub OTA for SPIFFS~~
     - Add configuration items
         - Target endpoint
         - BF Key

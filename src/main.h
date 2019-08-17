@@ -19,6 +19,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #define _MAIN_H
 
 #include "ota.h"
+#include "execota.h"
 #include "localtime.h"
 #include "config.h"
 #include "jsonconfig.h"
