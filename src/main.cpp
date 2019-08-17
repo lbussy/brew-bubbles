@@ -40,7 +40,8 @@ void setup() {
     mdnssetup();
     webserversetup();
     JsonConfig *config = JsonConfig::getInstance();
-    if (config->dospiffs == true) { // Update SPIFFS on restart
+    if (config->dospiffs == true) {
+        // Update SPIFFS on restart
         execspiffs();
     }
 }
