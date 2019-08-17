@@ -35,7 +35,7 @@ JsonConfig* JsonConfig::getInstance()
 }
 
 bool JsonConfig::Parse(bool reset = false) {
-    const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5) + 500;
+    const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(6) + 460;
     DynamicJsonDocument doc(capacity);
 
     // Mount SPIFFS
@@ -93,6 +93,9 @@ bool JsonConfig::Parse(bool reset = false) {
         strlcpy(single->bfkey, "", sizeof(single->bfkey));
         single->bffreq = BFFREQ;
 
+        // Set defaults for SPIFFS OTA update
+        single->dospiffs = false;
+
         // We created default configuration, save it
         Serialize();
 
@@ -101,51 +104,61 @@ bool JsonConfig::Parse(bool reset = false) {
         Log.notice(F("Parsing configuration data." CR));
 
         // Parse Access Point Config Object
-        strlcpy(single->ssid, doc["apconfig"]["ssid"] | "", sizeof(single->ssid));
-        strlcpy(single->appwd, doc["apconfig"]["appwd"] | "", sizeof(single->appwd));
+        strlcpy(single->ssid, doc["apconfig"]["ssid"] | APNAME, sizeof(single->ssid));
+        strlcpy(single->appwd, doc["apconfig"]["appwd"] | AP_PASSWD, sizeof(single->appwd));
 
         // Parse Hostname Config Object
-        strlcpy(single->hostname, doc["hostname"] | "", sizeof(single->hostname));
+        strlcpy(single->hostname, doc["hostname"] | HOSTNAME, sizeof(single->hostname));
 
         // Parse Bubble Config Object
-        strlcpy(single->bubname, doc["bubbleconfig"]["name"] | "", sizeof(single->bubname));
-        single->tempinf = doc["bubbleconfig"]["tempinf"];
-        strlcpy(single->tz, doc["bubbleconfig"]["tz"] | "", sizeof(single->tz));
+        strlcpy(single->bubname, doc["bubbleconfig"]["name"] | BUBNAME, sizeof(single->bubname));
+        single->tempinf = doc["bubbleconfig"]["tempinf"] | TEMPFORMAT;
+        strlcpy(single->tz, doc["bubbleconfig"]["tz"] | TIMEZONE, sizeof(single->tz));
 
         // Parse Target Config Object
-        strlcpy(single->targeturl, doc["targetconfig"]["targeturl"] | "", sizeof(single->targeturl));
-        single->targetfreq = doc["targetconfig"]["freq"];
+        strlcpy(single->targeturl, doc["targetconfig"]["targeturl"] | TARGETURL, sizeof(single->targeturl));
+        single->targetfreq = doc["targetconfig"]["freq"] | TARGETFREQ;
 
         // Parse Brewer's Friend Config Object
         strlcpy(single->bfkey, doc["bfconfig"]["bfkey"] | "", sizeof(single->bfkey));
-        single->bffreq = doc["bfconfig"]["freq"];
+        single->bffreq = doc["bfconfig"]["freq"] | BFFREQ;
 
+        // Parse SPIFFS OTA update choice
+        single->dospiffs = doc["dospiffs"] | false;
     }
     return true;
 }
 
 bool JsonConfig::Serialize() {
     //const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
-    DynamicJsonDocument doc(668);
+    DynamicJsonDocument doc(653);
 
+    // Serialize Access Point Config Object
     JsonObject apconfig = doc.createNestedObject("apconfig");
     apconfig["ssid"] = single->ssid;
     apconfig["appwd"] = single->appwd;
 
+    // Serialize Hostname Config Object
     doc["hostname"] = single->hostname;
 
+    // Serialize Bubble Config Object
     JsonObject bubbleconfig = doc.createNestedObject("bubbleconfig");
     bubbleconfig["name"] = single->bubname;
     bubbleconfig["tempinf"] = single->tempinf;
     bubbleconfig["tz"] = single->tz;
 
+    // Serialize Target Config Object
     JsonObject targetconfig = doc.createNestedObject("targetconfig");
     targetconfig["targeturl"] = single->targeturl;
     targetconfig["freq"] = single->targetfreq;
 
+    // Serialize Brewer's Friend Config Object
     JsonObject bfconfig = doc.createNestedObject("bfconfig");
     bfconfig["bfkey"] = single->bfkey;
     bfconfig["freq"] = single->bffreq;
+
+    // Serialize SPIFFS OTA update choice
+    doc["dospiffs"] = single->dospiffs;
 
     // Mount SPIFFS
     if (!SPIFFS.begin()) {

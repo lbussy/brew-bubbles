@@ -17,10 +17,9 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "execota.h"
 
-const char firmwareUrlBase[33] = "http://firmware.brewbubbles.com/";
-const char spiffsUrlBase[31] = "http://spiffs.brewbubbles.com/";
-
 void execfw() {
+    const char* firmwareUrlBase = FIRMWAREURL;
+    Log.verbose(F("Starting the Firmware OTA pull." CR));
     t_httpUpdate_return ret = ESPhttpUpdate.update(firmwareUrlBase);
 
     switch(ret) {
@@ -33,14 +32,23 @@ void execfw() {
             break;
         
         case HTTP_UPDATE_OK:
-            // This is just gere to get rid of a compiler warning, since
+            // This is just here to get rid of a compiler warning, since
             // the system will reset after OTA, we will never hit this.
             break;
     }
 }
 
 void execspiffs() {
-    t_httpUpdate_return ret = ESPhttpUpdate.update(firmwareUrlBase);
+    const char* spiffsUrlBase = SPIFFSURL;
+    Log.verbose(F("Starting the SPIFFS OTA pull." CR));
+
+    // Reset SPIFFS update flag
+    JsonConfig *config;
+    config = JsonConfig::getInstance();
+    config->dospiffs = false;
+    config->Serialize();
+
+    t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(spiffsUrlBase);
 
     switch(ret) {
         case HTTP_UPDATE_FAILED:
@@ -54,6 +62,8 @@ void execspiffs() {
         case HTTP_UPDATE_OK:
             // This is just gere to get rid of a compiler warning, since
             // the system will reset after OTA, we will never hit this.
+            Log.notice(F("HTTP SPIFFS Update complete, restarting." CR));
+            ESP.reset();
             break;
     }
 }

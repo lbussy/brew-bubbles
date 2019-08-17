@@ -40,6 +40,7 @@ void help_from_spiffs();
 void about_from_spiffs();
 void favicon_from_spiffs();
 void trigger_OTA();
+void trigger_OTA2();
 void trigger_wifi_reset();
 void trigger_wifi_reset2();
 void http_json();

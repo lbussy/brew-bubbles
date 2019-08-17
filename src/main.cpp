@@ -48,6 +48,12 @@ void setup() {
     webserversetup();
     loc.StartTime();
     otasetup();
+    JsonConfig *config;
+    config = JsonConfig::getInstance();
+    if (config->dospiffs == true) { // Update SPIFFS on restart
+        Log.verbose(F("SPIFFS is supposed to be updated." CR));
+        execspiffs();
+    }
 }
 
 void loop() {

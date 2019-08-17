@@ -99,8 +99,15 @@ bool handleFileRead(String path) {  // send the right file to the client (if it 
 /////////////////////////////////////////////////
 
 void trigger_OTA() {
-    handleFileRead("/updating.htm");    // Send a message to the user to let them know what is going on
-    // app_config.config["update_spiffs"] = true; // TODO: Fix this
+    handleFileRead("/updating.htm");    // Send an "are you sure?" message
+}
+
+void trigger_OTA2() {
+    handleFileRead("/updating2.htm");   // Send a message to the user to let them know what is going on
+    JsonConfig *config;
+    config = JsonConfig::getInstance();
+    config->dospiffs = true;            // Set config to update SPIFFS on restart
+    config->Serialize();
     execfw();                           // Trigger the OTA update
 }
 
@@ -152,6 +159,7 @@ void setAliases() { // Aliases for pages
     server.on("/json/", http_json);
     server.on("/settings/json/", settings_json);
     server.on("/ota/", trigger_OTA);
+    server.on("/ota2/", trigger_OTA2);
     server.on("/wifi/", trigger_wifi_reset);
     server.on("/wifi2/", trigger_wifi_reset2);
 
