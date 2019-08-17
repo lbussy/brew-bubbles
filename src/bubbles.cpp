@@ -82,18 +82,10 @@ float Bubbles::GetRawPpm() { // Return raw pulses per minute (resets counter)
 }
 
 void Bubbles::Update() {
-    return;
-    Log.verbose(F("Inside Update()." CR));
-    Log.verbose(F("millis() = %l." CR), millis());
-    delay(200);
-    unsigned long ulNow = 0;
-    Log.verbose(F("ulNow = %l, ulStart = %l." CR), ulNow, single->ulStart);
-    ulNow = millis();
-    Log.verbose(F("ulNow = %l, ulStart = %l." CR), ulNow, single->ulStart);
-    if (ulNow - single->ulStart > BUBLOOP) { // If (now - start) > delay time, get new value
-        Log.verbose(F("ulNow - single->ulStart > BUBLOOP" CR));
+    unsigned long ulNow = millis();
+    if (ulNow - single->ulStart > BUBLOOP) {
+        // If (now - start) > delay time, get new value
         single->ulStart = ulNow;
-        Log.verbose(F("Reset ulStart to %l." CR), single->ulStart);
         single->lastPpm = GetRawPpm();
         Log.verbose(F("lastPpm = %l" CR), single->lastPpm);
     }
