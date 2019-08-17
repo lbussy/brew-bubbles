@@ -4,9 +4,6 @@
 - Figure out version in code
 - Add hostname change to AP Portal
 - Figure out timezone
-- Handle OTA security, maybe password
-- Maybe remove OTA push altogether?
-- Remove HTTP update as well?
 - Fix deprecation error in http
 - Get web pages working
     - Have bubbles in home page
@@ -62,3 +59,6 @@
 - ~~Move Bubbles to singleton~~
 - ~~Move Counter to a singleton~~
 - ~~Find out why flashing sometimes triggers double-reset~~
+- ~~Handle OTA security, maybe password~~
+- ~~Maybe remove OTA push altogether?~~
+- ~~Remove HTTP update as well?~~

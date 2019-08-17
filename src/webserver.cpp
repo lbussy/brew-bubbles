@@ -18,7 +18,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "webserver.h"
 
 ESP8266WebServer server(PORT); // Create a webserver object that listens for HTTP requests
-ESP8266HTTPUpdateServer httpUpdater; // Create an object that listens for OTA/upload requests
 
 void webserversetup() {
     SPIFFS.begin(); // Start the SPI Flash Files System
@@ -27,13 +26,6 @@ void webserversetup() {
         if (!handleFileRead(server.uri())) // send it if it exists
             server.send(500, "text/plain", "500: Internal Server Error, unable to process request"); // No idea ...
     });
-
-    httpUpdater.setup(&server); // Attach the HTTPUpdate server
-  
-    int n = WiFi.hostname().length(); 
-    char hostname[n + 1]; 
-    strcpy(hostname, WiFi.hostname().c_str()); 
-    Log.notice(F("HTTP update server started. Open http://%s.local/update in your browser." CR), hostname);
 
     server.onNotFound(handleNotFound); // Attach a 404 handler
     setAliases();
