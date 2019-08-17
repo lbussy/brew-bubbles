@@ -15,24 +15,33 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef COUNTER_H
-#define COUNTER_H
+#ifndef _LOCALTIME_H
+#define _LOCALTIME_H
 
 #include "config.h"
-#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <WifiUDP.h>
+#include <NTPClient.h>
+#include <Time.h>
+#include <TimeLib.h>
+#include <Timezone.h>
 
-class Counter {
+class LocalTime {
     private:
-        int ctPin; // Store pin
-        volatile unsigned int pulse; // Store pulse count
-        volatile unsigned long lastTime; // Store time of last report (millis())
-        volatile unsigned long ulMicroLast; // Last pulse time for resolution (micros())
+        // Singleton Declarations
+        static bool instanceFlag;
+        static LocalTime *single;
+        LocalTime();
+        // Other Declarations
+        NTPClient timeClient(WiFiUDP, const char*, int, int);
 
     public:
-        Counter (int pin);
-        void HandleInterrupts(void);
-        float GetPps();
-        float GetPpm();
+        // Singleton Declarations
+        static LocalTime* getInstance();
+        ~LocalTime();
+        // Other Declarations
+        void Update();
+        char* GetLocalTime();
 };
 
-#endif // COUNTER_H
+#endif // _LOCALTIME_H

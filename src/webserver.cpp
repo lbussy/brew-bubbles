@@ -104,8 +104,7 @@ void trigger_OTA() {
 
 void trigger_OTA2() {
     handleFileRead("/updating2.htm");   // Send a message to the user to let them know what is going on
-    JsonConfig *config;
-    config = JsonConfig::getInstance();
+    JsonConfig *config = JsonConfig::getInstance();
     config->dospiffs = true;            // Set config to update SPIFFS on restart
     config->Serialize();
     execfw();                           // Trigger the OTA update

@@ -20,8 +20,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 bool httppost(String json) {
     HTTPClient http; // Declare object of class HTTPClient
     // Ports other than 80 need to be in the format of: http://192.168.168.199:8080/
-    JsonConfig *config;
-    config = JsonConfig::getInstance();
+    JsonConfig *config = JsonConfig::getInstance();
     Log.verbose(F("Posting to: %s" CR), config->targeturl);
     http.begin(config->targeturl); // Specify request destination
     http.addHeader("Content-Type", "application/json"); // Specify content-type header

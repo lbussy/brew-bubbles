@@ -43,8 +43,7 @@ void execspiffs() {
     Log.verbose(F("Starting the SPIFFS OTA pull." CR));
 
     // Reset SPIFFS update flag
-    JsonConfig *config;
-    config = JsonConfig::getInstance();
+    JsonConfig *config = JsonConfig::getInstance();
     config->dospiffs = false;
     config->Serialize();
 

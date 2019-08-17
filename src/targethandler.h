@@ -15,24 +15,18 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef LOCALTIME_H
-#define LOCALTIME_H
+#ifndef _TARGETHANDLER_H
+#define _TARGETHANDLER_H
 
 #include "config.h"
-#include <ESP8266WiFi.h>
-#include <WifiUDP.h>
-#include <NTPClient.h>
-#include <Time.h>
-#include <TimeLib.h>
-#include <Timezone.h>
+#include "jsonconfig.h"
+#include "bubbles.h"
+#include "ArduinoJson.h"
+#include <ESP8266HTTPClient.h>
+#include <Arduino.h>
 
-class LocalTime {
-private:
+void doTargets();
+void doDoc();
+bool httppost(String);
 
-public:
-        LocalTime();
-        void StartTime();
-        char* GetLocalTime();
-};
-
-#endif // LOCALTIME_H
+#endif // _TARGETHANDLER_H

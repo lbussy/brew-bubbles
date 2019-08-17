@@ -18,8 +18,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "ota.h"
 
 void otasetup() {
-    JsonConfig *config;
-    config = JsonConfig::getInstance();
+    JsonConfig *config = JsonConfig::getInstance();
     // Set host name
     // Hostname defaults to esp8266-[ChipID]
     ArduinoOTA.setHostname(config->hostname);

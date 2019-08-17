@@ -18,8 +18,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "mdns.h"
 
 void mdnssetup() {
-    JsonConfig *config;
-    config = JsonConfig::getInstance();
+    JsonConfig *config = JsonConfig::getInstance();
     if (!MDNS.begin(config->hostname)) { // Start the mDNS responder
         Log.error(F("Error setting up mDNS responder." CR));
     } else {

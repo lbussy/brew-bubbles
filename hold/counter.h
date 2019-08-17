@@ -15,44 +15,24 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef _BUBBLES_H
-#define _BUBBLES_H
+#ifndef COUNTER_H
+#define COUNTER_H
 
 #include "config.h"
-#include "jsonconfig.h"
-#include "DallasTemperature.h"
-#include "OneWire.h"
 #include <Arduino.h>
 
-
-class Bubbles {
+class Counter {
     private:
-        // Singleton Declarations
-        static bool instanceFlag;
-        static Bubbles *single;
-        Bubbles() {};
-        void Setup();
-        // Other Declarations
-        volatile unsigned long ulStart;     // Start time
-        volatile unsigned int pulse;        // Store pulse count
-        volatile unsigned long ulLastReport;// Store time of last report (millis())
+        int ctPin; // Store pin
+        volatile unsigned int pulse; // Store pulse count
+        volatile unsigned long ulLastReport; // Store time of last report (millis())
         volatile unsigned long ulMicroLast; // Last pulse time for resolution (micros())
-        float lastPpm;                      // Holds most recent count
-        JsonConfig *config;                 // Instance of config class
-        float GetRawPps();
-        float GetRawPpm();
-        
 
     public:
-        // Singleton Declarations
-        static Bubbles* getInstance();
-        ~Bubbles();
-        // Other Declarations
+        Counter (int pin);
         void HandleInterrupts(void);
-        void Update();
+        float GetPps();
         float GetPpm();
-        float GetAmbientTemp();
-        float GetVesselTemp();
 };
 
-#endif // _BUBBLES_H
+#endif // COUNTER_H

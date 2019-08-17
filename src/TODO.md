@@ -1,17 +1,19 @@
 # TODO List
 
 - Fix crash when doing sendNTPPacket()
-- Find out why flashing sometimes triggers double-reset
 - Figure out version in code
+- Add hostname change to AP Portal
 - Figure out timezone
 - Handle OTA security, maybe password
+- Maybe remove OTA push altogether?
+- Remove HTTP update as well?
 - Fix deprecation error in http
 - Get web pages working
     - Have bubbles in home page
     - ~~Reset wireless~~
     - ~~Add GitHub OTA for Firmware~~
     - ~~Add GitHub OTA for SPIFFS~~
-    - Add configuration items
+    - Add settings items
         - Target endpoint
         - BF Key
         - Hostname
@@ -23,7 +25,7 @@
 # Complete
 
 - ~~Add DNS resolution~~
-- ~~Fix local OTA (freaking includes!)~~
+- ~~Fix local OTA~~
 - ~~Move mDNS functions~~
 - ~~Detect bad/no OneWire~~
 - ~~Add mMDNS responder~~
@@ -53,4 +55,10 @@
         - ~~Brewer's Friend Endpoint~~
             - ~~Key~~
             - ~~Add Frequency (> 14 minutes)~~
-- ~~Figure out why target["targeturl"] = targeturl; is garbaged~~ (was out of space serializing JSON)
+- ~~Figure out why target["targeturl"] = targeturl; is garbaged~~
+- ~~Move NTP to a singleton~~
+- ~~Move debug strings to flash~~
+- ~~Move config to a singleton~~
+- ~~Move Bubbles to singleton~~
+- ~~Move Counter to a singleton~~
+- ~~Find out why flashing sometimes triggers double-reset~~
