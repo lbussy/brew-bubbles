@@ -15,25 +15,40 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-//  Time.h & TimeLib.h:  https://github.com/PaulStoffregen/Time
+// Time.h & TimeLib.h:  https://github.com/PaulStoffregen/Time
+// Timezone.h: https://github.com/JChristensen/Timezone
 
-#include "localtime.h"
+#include "localtime.h" 
 
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, NTP_SERVER, NTP_OFFSET, NTP_INTERVAL);
+bool LocalTime::instanceFlag = false;
+LocalTime* LocalTime::single = NULL;
 
 LocalTime::LocalTime() {
-
-}
-
-void LocalTime::StartTime() {
+    WiFiUDP ntpUDP;
+    NTPClient timeClient(ntpUDP, NTP_SERVER, NTP_OFFSET, NTP_INTERVAL);
     timeClient.begin();
 }
 
+LocalTime::~LocalTime() {
+    instanceFlag = false;
+}
+
+LocalTime* LocalTime::getInstance() {
+    if(!instanceFlag) {
+        single = new LocalTime();
+        instanceFlag = true;
+        return single;
+    } else {
+        return single;
+    }
+}
+
+void LocalTime::Update() {
+    single->timeClient.update();
+}
+
 char* LocalTime::GetLocalTime() {
-    // Update the NTP client and get the UNIX UTC timestamp 
-    timeClient.update();
-    unsigned long epochTime = timeClient.getEpochTime();
+    unsigned long epochTime = single->timeClient.getEpochTime();
 
     // Convert received time stamp to time_t object
     // time_t local, utc, zulu;
@@ -41,7 +56,6 @@ char* LocalTime::GetLocalTime() {
     utc = epochTime;
 
     // Convert the UTC UNIX timestamp to local time
-     // https://github.com/JChristensen/Timezone
     //
     // US Eastern Time
     // TimeChangeRule usEDT = {"EDT", Second, Sun, Mar, 2, -300}; // UTC - 5 hours - change this as needed

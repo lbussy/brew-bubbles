@@ -34,13 +34,13 @@ void configModeCallback (WiFiManager *myWiFiManager) {
 void wifisetup(bool reset) {
     WiFiManager wifiManager; // Local init only
     if(reset == true) wifiManager.resetSettings(); // Reset wifi
-// #if DEBUG > 0
+
 #ifndef DISABLE_LOGGING
     wifiManager.setDebugOutput(true); // Turn on Debug (default off)
 #else
     wifiManager.setDebugOutput(false);
-//#endif // DEBUG
 #endif //DISABLE_LOGGING
+
     wifiManager.setTimeout(180); // Timeout for config portal
     wifiManager.setAPCallback(configModeCallback); // Set callback for when entering AP
 
@@ -59,8 +59,7 @@ void wifisetup(bool reset) {
     // Set custom ip for portal
     // wifiManager.setAPStaticIPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
 
-    JsonConfig *config;
-    config = JsonConfig::getInstance();
+    JsonConfig *config = JsonConfig::getInstance();
     if(!wifiManager.autoConnect(config->ssid, config->appwd)) {
 #ifndef DISABLE_LOGGING
         Log.warning(F("Timed out trying to connect to AP, resetting" CR));
@@ -87,6 +86,7 @@ void wifisetup(bool reset) {
 }
 
 void disco_restart() { // Blow away WiFi config and reset
-    WiFi.disconnect(true);
+    WiFi.disconnect();
     ESP.restart();
+    delay(1000);
 }

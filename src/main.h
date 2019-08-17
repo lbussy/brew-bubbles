@@ -20,7 +20,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "ota.h"
 #include "execota.h"
-#include "localtime.h"
 #include "config.h"
 #include "jsonconfig.h"
 #include "mdns.h"
@@ -28,9 +27,25 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "webserver.h"
 #include "wifi.h"
 #include "serial.h"
+#include "targethandler.h"
+//#include "localtime.h" // DEBUG
 #include <DoubleResetDetect.h>
+#include <EEPROM.h>
+
+// DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
+// DRD_TIMEOUT =    Maximum number of seconds between resets that counts
+//                  as a double reset
+// DRD_ADDRESS =    Address to the block in the RTC user memory change it
+//                  if it collides with another usage of the address block
+// Max time between resets to count as a double 
+#define DRD_TIMEOUT 2.0
+// Address within RTC memory to contain flag
+#define DRD_ADDRESS 0x00
+// EEPROM address at which to store the IPL flag.  Edit accordingly.
+#define EEPROM_ADDRESS 0x00
 
 void setup();
 void loop();
+bool ipl();
 
 #endif // _MAIN_H

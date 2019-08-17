@@ -29,7 +29,7 @@ Counter::Counter(int pin) { // Counter Constructor
     attachInterrupt(digitalPinToInterrupt(pin), HandleInterruptsStatic, FALLING); // FALLING, RISING or CHANGE
     ctPin = pin; // Set input pin
     pinMode(pin, INPUT); // Change pinmode to input
-    lastTime = millis(); // Store the last report timer
+    ulLastReport = millis(); // Store the last report timer
     pulse = 0; // Reset pulse counter
 }
 
@@ -44,22 +44,22 @@ void Counter::HandleInterrupts(void) { // Counter Interrupt handler
 
 float Counter::GetPps() { // Return pulses per second
     unsigned long thisTime = millis(); // Get timer value now
-    unsigned long ulLapsed = thisTime - lastTime; // Millis since last run
+    unsigned long ulLapsed = thisTime - ulLastReport; // Millis since last run
     float fLapsed = (float) ulLapsed; // Cast to float
     float secs = fLapsed / 1000.0; // Seconds since last request
     float pps = (pulse / secs); // Calculate PPS
     pulse = 0; // Zero the pulse counter
-    lastTime = millis(); // Store the last report timer
+    ulLastReport = millis(); // Store the last report timer
     return pps; // Return pulses per second
 }
 
 float Counter::GetPpm() { // Return pulses per minute
     unsigned long thisTime = millis(); // Get timer value now
-    unsigned long ulLapsed = thisTime - lastTime; // Millis since last run
+    unsigned long ulLapsed = thisTime - ulLastReport; // Millis since last run
     float fLapsed = (float) ulLapsed; // Cast to float
     float secs = fLapsed / 60000.0; // Minutes since last request
     float ppm = (pulse / secs); // Calculate PPM
     pulse = 0; // Zero the pulse counter
-    lastTime = millis(); // Store the last report timer
+    ulLastReport = millis(); // Store the last report timer
     return ppm; // Return pulses per minute
 }

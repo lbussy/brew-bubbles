@@ -26,22 +26,22 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 class JsonConfig {
     private:
         const char * filename = "/config.json";
-            static bool instanceFlag;
-            static JsonConfig *single;
-            JsonConfig() {} 
+        static bool instanceFlag;
+        static JsonConfig *single;
+        JsonConfig() {} 
 
     public:
-        char ssid[33]; // Ap SSID
-        char appwd[65]; // Ap Pwd
-        char hostname[33]; // Hostname
-        char bubname[33];  // This device
-        bool tempinf; // Is temp in F
-        char tz[4]; // Timezone
-        char targeturl[129]; // Target host
-        unsigned long targetfreq; // Target freqency
-        char bfkey[41]; // Brewer's Friend key
-        unsigned long bffreq; // Brewer's Friend frequency
-        bool dospiffs; // Update SPIFFS on reboot
+        char ssid[33];              // Ap SSID
+        char appwd[65];             // Ap Pwd
+        char hostname[33];          // Hostname
+        char bubname[33];           // This device
+        bool tempinf;               // Is temp in F
+        char tz[4];                 // Timezone
+        char targeturl[129];        // Target host
+        unsigned long targetfreq;   // Target freqency
+        char bfkey[41];             // Brewer's Friend key
+        unsigned long bffreq;       // Brewer's Friend frequency
+        bool dospiffs;              // Update SPIFFS on reboot
 
         // Methods
         bool Parse(bool reset);

@@ -17,41 +17,31 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "main.h"
 
-LocalTime loc;
+Bubbles *bubble = Bubbles::getInstance();
+//LocalTime *time; // DEBUG
 
-// DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
-// DRD_TIMEOUT =    Maximum number of seconds between resets that counts
-//                  as a double reset
-// DRD_ADDRESS =    Address to the block in the RTC user memory change it
-//                  if it collides with another usage of the address block
-DoubleResetDetect drd(3.0, 0x00);
-
-unsigned long ulMNow = millis(); // Time in millis now // DEBUG
-unsigned long ulMStart = 0UL; // Start time // DEBUG
+DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 
 void setup() {
+    bool rst = drd.detect(); // Check for double-reset
     serial();
-    delay(200); // Let pins settle, else next detect is flakey
+    delay(200); // Let pins settle, else detect is inconsistent
     pinMode(RESETWIFI, INPUT_PULLUP);
     if (digitalRead(RESETWIFI) == LOW) {
         Log.notice(F("%s low, resetting wifi and restarting." CR), RESETWIFI);
         disco_restart();
-    } else if (drd.detect()) {
-        Log.notice(F("Double reset boot, resetting wifi and restarting." CR));
-        //disco_restart();
-        wifisetup(false); // DEBUG
+    } else if (rst && !ipl()) {
+        Log.notice(F("DRD: Double reset boot, resetting wifi and restarting." CR));
+        disco_restart();
     } else {
-        Log.verbose(F("Normal boot, re-using WiFi values." CR));
+        Log.verbose(F("DRD: Normal boot, re-using WiFi values." CR));
         wifisetup(false);
     }
     mdnssetup();
     webserversetup();
-    loc.StartTime();
     otasetup();
-    JsonConfig *config;
-    config = JsonConfig::getInstance();
+    JsonConfig *config = JsonConfig::getInstance();
     if (config->dospiffs == true) { // Update SPIFFS on restart
-        Log.verbose(F("SPIFFS is supposed to be updated." CR));
         execspiffs();
     }
 }
@@ -59,11 +49,26 @@ void setup() {
 void loop() {
     MDNS.update();
     webserverloop();
-    bubbles(loc.GetLocalTime());
+    bubble->Update();
     ArduinoOTA.handle();
-    ulMNow = millis();
-    if (ulMNow - ulMStart > BUBLOOP) { // If (now - start) > delay time, do work
-        ulMStart = ulMNow;
-    }
+    //time->Update(); // DEBUG
+    //doTargets();
     yield();
+}
+
+// Addresses: https://github.com/jenscski/DoubleResetDetect/issues/2
+bool ipl() { // Determine if this is the first start after loading image
+    char thisver[20] = __DATE__ __TIME__; // Sets at compile-time
+    char savever[20] = "";
+    bool _ipl = false;
+
+    EEPROM.begin(20);
+    EEPROM.get(EEPROM_ADDRESS, savever);
+    if (strcmp (thisver, savever) != 0) {
+        EEPROM.put(EEPROM_ADDRESS, thisver);
+        EEPROM.commit();
+        _ipl = true;
+    }
+    EEPROM.end();
+    return _ipl;
 }

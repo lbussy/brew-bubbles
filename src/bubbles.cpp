@@ -17,142 +17,124 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "bubbles.h"
 
-Counter counter(COUNTPIN); // Create an instance of the counter
-unsigned long ulNow = millis(); // Time in millis now
-unsigned long ulStart = 0UL; // Start time
+Bubbles *pBubbles; // Pointer to Counter class
 
-void bubbles(char* localTime) {
-    ulNow = millis();
+static ICACHE_RAM_ATTR void HandleInterruptsStatic(void) { // External interrupt handler
+    pBubbles->HandleInterrupts(); // Calls class member handler
+}
 
-    if (ulNow - ulStart > BUBLOOP) { // If (now - start) > delay time, do work
-        ulStart = ulNow;
+bool Bubbles::instanceFlag = false;
+Bubbles* Bubbles::single = NULL; // Holds pointer to class
 
-        /*         
-        Sample (277 bytes to allow for string duplication):
-        {
-            "api_key":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-            "vessel":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-            "datetime":"2019-11-16T23:59:01.123Z",
-            "format":"F",
-            "data":{
-                "bpm":99.999,
-                "ambtemp":70.3625,
-                "vestemp":-196.6
-            }
-        }
-        */
-
-        // Declare doc
-        const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
-        DynamicJsonDocument doc(capacity);
-
-        JsonConfig *config;
-        config = JsonConfig::getInstance();
-        
-        doc["api_key"] = API_KEY;
-        doc["vessel"] = config->bubname;
-        doc["datetime"] = localTime;
-
-        // Get bubbles per minute
-        JsonObject data = doc.createNestedObject("data");
-        float fBpm = counter.GetPpm();
-        data["bpm"] = fBpm;
-
-#ifdef READTEMP
-        bool present = false;
-
-#ifdef AMBSENSOR
-        OneWire ambient(AMBSENSOR);
-        byte addrAmb[8];
-        while (ambient.search(addrAmb)) { // Make sure we have a sensor
-            DallasTemperature sensorAmbient( & ambient);
-            sensorAmbient.begin();
-            sensorAmbient.requestTemperatures();
-
-            float fAmbTemp;
-            if (config->tempinf == true)
-                fAmbTemp = sensorAmbient.getTempFByIndex(0);
-            else
-                fAmbTemp = sensorAmbient.getTempCByIndex(0);
-            data["ambtemp"] = fAmbTemp;
-            present = true;
-        }
-#endif // AMBSENSOR
-
-#ifdef VESSENSOR
-        OneWire vessel(VESSENSOR);
-        byte addrVes[8];
-        while (ambient.search(addrVes)) { // Make sure we have a sensor
-            DallasTemperature sensorVessel( & vessel);
-            sensorVessel.begin();
-            sensorVessel.requestTemperatures();
-
-            float fVesTemp;
-            if (config->tempinf == true)
-                fVesTemp = sensorVessel.getTempFByIndex(0);
-            else
-                fVesTemp = sensorVessel.getTempCByIndex(0);
-            data["vestemp"] = fVesTemp;
-            present = true;
-        }
-#endif // VESSENSOR
-
-        if (present) { // If we have a sensor
-            if (config->tempinf == true) {
-                doc["format"] = "F";
-            } else {
-                doc["format"] = "C";
-            }
-        }
-            
-
-#endif // READTEMP
-
-        if (!SPIFFS.begin()) { // Mount SPIFFS
-            Log.error(F("Failed to mount SPIFFS." CR));
-        } else {
-            // Open file for writing
-            char filename[14] = "/bubbles.json";
-            File file = SPIFFS.open(filename, "w");
-            if (!file) {
-                Log.error(F("Failed to open json file for writing." CR));
-            } else {
-                // Serialize the JSON object to the file
-                bool success = serializeJson(doc, file);
-                // This may fail if the JSON is invalid
-                if (!success) {
-                    Log.error(F("Failed to serialize json." CR));
-                } else {
-                    Log.notice(F("Saved json as %s." CR), filename);
-                }
-            }
-        }
-
-        // Post JSON
-        char strBubbleJson[capacity];
-        serializeJson(doc, strBubbleJson, sizeof(strBubbleJson));
-        httppost(strBubbleJson); // Post JSON date to endpoint
-
-        // // Connect to the HTTP server
-        // WiFiClient client;
-        // client.connect("io.adafruit.com",80);
-    
-        // // Send "POST /api/v2/bblanchon/groups/arduinojson/data HTTP/1.1"
-        // client.println("POST /api/v2/"IO_USERNAME"/groups/arduinojson/data HTTP/1.1");
-        // // Send the HTTP headers
-        // client.println("Host: io.adafruit.com");
-        // client.println("Connection: close");
-        // client.print("Content-Length: ");
-        // client.println(measureJson(doc));
-        // client.println("Content-Type: application/json");
-        // client.println("X-AIO-Key: "IO_KEY);
-
-        // // Terminate headers with a blank line
-        // client.println();
-
-        // // Send JSON document in body
-        // serializeJson(doc, client);
-
+Bubbles* Bubbles::getInstance() { // This is where we really create the instance
+    if(!instanceFlag) {
+        single = new Bubbles();
+        instanceFlag = true;
+        single->Setup();
+        return single;
+    } else {
+        return single;
     }
+}
+
+void Bubbles::Setup() {
+    pinMode(COUNTPIN, INPUT);       // Change pinmode to input
+    attachInterrupt(digitalPinToInterrupt(COUNTPIN), HandleInterruptsStatic, FALLING); // FALLING, RISING or CHANGE
+    pBubbles = single;              // Assign current instance to pointer 
+    single->ulLastReport = millis();// Store the last report timer
+    single->pulse = 0;              // Reset pulse counter
+    single->ulStart = 0UL;          // Start time
+}
+
+Bubbles::~Bubbles() {
+    instanceFlag = false;
+}
+
+void Bubbles::HandleInterrupts(void) { // Bubble Interrupt handler
+    noInterrupts(); // Turn off interrupts
+    unsigned long now = micros();
+    if ((now - ulMicroLast) > RESOLUTION) { // Filter noise/bounce
+        single->pulse++;    // Increment pulse count
+    }
+    interrupts();   // Turn on interrupts
+}
+
+float Bubbles::GetRawPps() { // Return raw pulses per second (resets counter)
+    unsigned long thisTime = millis(); // Get timer value now
+    unsigned long ulLapsed = thisTime - single->ulLastReport; // Millis since last run
+    float fLapsed = (float) ulLapsed; // Cast to float
+    float secs = fLapsed / 1000.0; // Seconds since last request
+    float pps = (pulse / secs); // Calculate PPS
+    single->pulse = 0; // Zero the pulse counter
+    single->ulLastReport = millis(); // Store the last report timer
+    return pps; // Return pulses per second
+}
+
+float Bubbles::GetRawPpm() { // Return raw pulses per minute (resets counter)
+    unsigned long thisTime = millis(); // Get timer value now
+    unsigned long ulLapsed = thisTime - single->ulLastReport; // Millis since last run
+    float fLapsed = (float) ulLapsed; // Cast to float
+    float secs = fLapsed / 60000.0; // Minutes since last request
+    float ppm = (pulse / secs); // Calculate PPM
+    single->pulse = 0; // Zero the pulse counter
+    single->ulLastReport = millis(); // Store the last report timer
+    return ppm; // Return pulses per minute
+}
+
+void Bubbles::Update() {
     return;
+    Log.verbose(F("Inside Update()." CR));
+    Log.verbose(F("millis() = %l." CR), millis());
+    delay(200);
+    unsigned long ulNow = 0;
+    Log.verbose(F("ulNow = %l, ulStart = %l." CR), ulNow, single->ulStart);
+    ulNow = millis();
+    Log.verbose(F("ulNow = %l, ulStart = %l." CR), ulNow, single->ulStart);
+    if (ulNow - single->ulStart > BUBLOOP) { // If (now - start) > delay time, get new value
+        Log.verbose(F("ulNow - single->ulStart > BUBLOOP" CR));
+        single->ulStart = ulNow;
+        Log.verbose(F("Reset ulStart to %l." CR), single->ulStart);
+        single->lastPpm = GetRawPpm();
+        Log.verbose(F("lastPpm = %l" CR), single->lastPpm);
+    }
+}
+
+float Bubbles::GetAmbientTemp() {
+    OneWire ambient(AMBSENSOR);
+    byte addrAmb[8];
+    float fAmbTemp = -100.0;
+    while (ambient.search(addrAmb)) { // Make sure we have a sensor
+        DallasTemperature sensorAmbient(&ambient);
+        sensorAmbient.begin();
+        sensorAmbient.requestTemperatures();
+
+        JsonConfig *config = JsonConfig::getInstance();
+        if (config->tempinf == true)
+            fAmbTemp = sensorAmbient.getTempFByIndex(0);
+        else
+            fAmbTemp = sensorAmbient.getTempCByIndex(0);
+    }
+    return fAmbTemp;
+}
+
+float Bubbles::GetVesselTemp() {
+    OneWire vessel(VESSENSOR);
+    byte addrVes[8];
+    float fVesTemp = -100.0;
+    while (vessel.search(addrVes)) { // Make sure we have a sensor
+        DallasTemperature sensorVessel(&vessel);
+        sensorVessel.begin();
+        sensorVessel.requestTemperatures();
+
+        JsonConfig *config = JsonConfig::getInstance();
+        if (config->tempinf == true)
+            fVesTemp = sensorVessel.getTempFByIndex(0);
+        else
+            fVesTemp = sensorVessel.getTempCByIndex(0);
+    }
+    return fVesTemp;
+}
+
+float Bubbles::GetPpm() {
+    return single->lastPpm;
 }
