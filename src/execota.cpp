@@ -63,6 +63,7 @@ void execspiffs() {
             // the system will reset after OTA, we will never hit this.
             Log.notice(F("HTTP SPIFFS Update complete, restarting." CR));
             ESP.reset();
+            delay(1000);
             break;
     }
 }

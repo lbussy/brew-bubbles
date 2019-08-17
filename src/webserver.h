@@ -26,7 +26,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
-#include <ESP8266HTTPUpdateServer.h>
 #include <FS.h>
 
 String getContentType(String filename); // convert the file extension to the MIME type

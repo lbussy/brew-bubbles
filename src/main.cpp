@@ -39,7 +39,6 @@ void setup() {
     }
     mdnssetup();
     webserversetup();
-    otasetup();
     JsonConfig *config = JsonConfig::getInstance();
     if (config->dospiffs == true) { // Update SPIFFS on restart
         execspiffs();
@@ -50,7 +49,6 @@ void loop() {
     MDNS.update();
     webserverloop();
     bubble->Update();
-    ArduinoOTA.handle();
     //time->Update(); // DEBUG
     //doTargets();
     yield();
