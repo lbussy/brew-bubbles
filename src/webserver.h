@@ -68,6 +68,6 @@ void configjson_from_spiffs();
 void testbubblesjson_from_spiffs();
 void manifest_json_from_spiffs();
 void config_json_from_spiffs(); // TODO: This should be temp
-void testbubbles_json_from_spiffs(); // TODO: This should be temp
+void bubbles_json_from_spiffs(); // TODO: This should be temp
 
 #endif /* WEBSERVER_H */

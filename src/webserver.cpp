@@ -178,7 +178,7 @@ void setAliases() { // Aliases for pages
 
     server.on("/manifest.json", manifest_json_from_spiffs);
     server.on("/config.json", config_json_from_spiffs); // TODO: This should be temp
-    server.on("/testbubbles.json", testbubbles_json_from_spiffs); // TODO: This should be temp
+    server.on("/bubbles.json", bubbles_json_from_spiffs); // TODO: This should be temp
 }
 
 void root_from_spiffs() {
@@ -281,8 +281,8 @@ void config_json_from_spiffs() {
     handleFileRead("/config.json"); // TODO: This should be temp
 }
 
-void testbubbles_json_from_spiffs() {
-    handleFileRead("/testbubbles.json"); // TODO: This should be temp
+void bubbles_json_from_spiffs() {
+    handleFileRead("/bubbles.json"); // TODO: This should be temp
 }
 
 void handleNotFound() {

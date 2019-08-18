@@ -20,28 +20,27 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 unsigned long ulMStart = 0UL; // Start time // DEBUG
 
 void doTargets() {
+    ZuluTime *time = ZuluTime::getInstance();
+    time->update();
     unsigned long ulMNow = millis();
     if (ulMNow - ulMStart > BUBLOOP) { // If (now - start) > delay time, do work
-        ulMStart = ulMNow;
         // Do something once per BUBLOOP
+        ulMStart = ulMNow;
+        doDoc();
     }
 }
 
 void doDoc() {
     JsonConfig *config = JsonConfig::getInstance();
     Bubbles *bubble = Bubbles::getInstance();
-    //LocalTime *time = LocalTime::getInstance(); // DEBUG
-    const char timestamp[25] = "2019-11-16T23:59:01.123Z"; // DEBUG
-    
-    // Declare doc
-    //const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
+    ZuluTime *time = ZuluTime::getInstance();
+
     const size_t capacity = 277;
     DynamicJsonDocument doc(capacity);
 
     doc["api_key"] = API_KEY;
     doc["vessel"] = config->bubname;
-    //doc["datetime"] = time->GetLocalTime; // DEBUG
-    doc["datetime"] = timestamp;
+    doc["datetime"] = time->getZuluTime();
     
     if (config->tempinf == true) {
         doc["format"] = "F";
