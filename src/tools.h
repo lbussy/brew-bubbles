@@ -15,25 +15,11 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#include "main.h"
+#include "wifi.h"
+#include <EEPROM.h>
+#include <Ticker.h>
+#include <Arduino.h>
 
-Bubbles *bubble = Bubbles::getInstance();
-DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
-
-void setup() {
-    bool rst = drd.detect(); // Check for double-reset
-    serial();
-    handleWifiReset(rst);
-    mdnssetup();
-    webserversetup();
-    JsonConfig *config = JsonConfig::getInstance();
-    if (config->dospiffs == true) {execspiffs();}
-}
-
-void loop() {
-    MDNS.update();
-    webserverloop();
-    bubble->Update();
-    doTargets();
-    yield();
-}
+void handleWifiReset(bool drd);
+void _delay(unsigned long, bool = false);
+void _dot();
