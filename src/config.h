@@ -41,6 +41,25 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
+// Task scheduler defines, uncomment to enable
+//
+#ifndef TASKSCHEDULER
+#define TASKSCHEDULER
+// #define _TASK_MICRO_RES // micro() instead of millis() resolution
+// #define _TASK_TIMECRITICAL // Time critical tracking option enabled
+// #define _TASK_SLEEP_ON_IDLE_RUN // Use SLEEP_MODE_IDLE state in between
+// #define _TASK_STATUS_REQUEST // Support for StatusRequest object
+// #define _TASK_WDT_IDS // Support for Task IDs and Control Points
+// #define _TASK_LTS_POINTER // Support for Local Task Storage pointer
+// #define _TASK_PRIORITY // Support for layered task prioritization
+// #define _TASK_STD_FUNCTION // Support for std::functions
+// #define _TASK_DEBUG // All methods and variables declared as public
+// #define _TASK_INLINE // All methods defined as inline
+// #define _TASK_TIMEOUT // Support for overall Task timeout
+#endif //TASKSCHEDULER
+
+//////////////////////////////////////////////////////////////////////////
+//
 // Define data source (identifies JSON type to target)
 //
 #ifndef API_KEY

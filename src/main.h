@@ -18,6 +18,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef _MAIN_H
 #define _MAIN_H
 
+#include "tools.h"
 #include "execota.h"
 #include "config.h"
 #include "jsonconfig.h"
@@ -27,7 +28,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "wifi.h"
 #include "serial.h"
 #include "targethandler.h"
-//#include "ZuluTime.h" // DEBUG
 #include <DoubleResetDetect.h>
 #include <EEPROM.h>
 

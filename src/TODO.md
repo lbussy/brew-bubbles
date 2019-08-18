@@ -1,15 +1,13 @@
 # TODO List
 
-- Fix crash when doing sendNTPPacket()
+- Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
 - Figure out version in code
 - Add hostname change to AP Portal
-- Figure out timezone
 - Fix deprecation error in http
 - Get web pages working
-    - Have bubbles in home page
-    - ~~Reset wireless~~
-    - ~~Add GitHub OTA for Firmware~~
-    - ~~Add GitHub OTA for SPIFFS~~
+    - Have bubbles display in home page
+    - Add endpoint for settings json dump
+    - Add endpoint for bubbles json dump
     - Add settings items
         - Target endpoint
         - BF Key
@@ -62,3 +60,9 @@
 - ~~Handle OTA security, maybe password~~
 - ~~Maybe remove OTA push altogether?~~
 - ~~Remove HTTP update as well?~~
+- ~~Fix crash when doing sendNTPPacket()~~
+- ~~Figure out timezone~~
+- ~~Get web pages working~~
+    - ~~Reset wireless~~
+    - ~~Add GitHub OTA for Firmware~~
+    - ~~Add GitHub OTA for SPIFFS~~
