@@ -31,8 +31,8 @@ class JsonConfig {
         JsonConfig() {} 
 
     public:
-        char ssid[33];              // Ap SSID
-        char appwd[65];             // Ap Pwd
+        char ssid[33];              // AP SSID
+        char appwd[65];             // AP Pwd
         char hostname[33];          // Hostname
         char bubname[33];           // This device
         bool tempinf;               // Is temp in F

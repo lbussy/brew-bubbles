@@ -18,7 +18,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "main.h"
 
 Bubbles *bubble = Bubbles::getInstance();
-//LocalTime *time; // DEBUG
+//ZuluTime *time; // DEBUG
 
 DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 
@@ -50,8 +50,7 @@ void loop() {
     MDNS.update();
     webserverloop();
     bubble->Update();
-    //time->Update(); // DEBUG
-    //doTargets();
+    doTargets();
     yield();
 }
 

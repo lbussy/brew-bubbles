@@ -17,7 +17,15 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "wifi.h"
 
+Ticker ticker;
+
+void tick() { // Toggle LED state
+  int state = digitalRead(LED);  // Get the current state of LED pin
+  digitalWrite(LED, !state);     // Set pin to the opposite state
+}
+
 void configModeCallback (WiFiManager *myWiFiManager) {
+    ticker.attach(0.2, tick); // Flash LED quickly when in AP mode
 #ifndef DISABLE_LOGGING
     // If you used auto generated SSID, print it
     String ssid = myWiFiManager->getConfigPortalSSID();
@@ -32,6 +40,7 @@ void configModeCallback (WiFiManager *myWiFiManager) {
 }
 
 void wifisetup(bool reset) {
+    ticker.attach(0.5, tick); // Flash LED slower when conecting
     WiFiManager wifiManager; // Local init only
     if(reset == true) wifiManager.resetSettings(); // Reset wifi
 
@@ -44,32 +53,20 @@ void wifisetup(bool reset) {
     wifiManager.setTimeout(180); // Timeout for config portal
     wifiManager.setAPCallback(configModeCallback); // Set callback for when entering AP
 
-    // Custom Parameters
-    // {Name}, {Prompt}, {Lamda}, {Length}
-    // WiFiManagerParameter {parameter_name}("{name}", "{prompt}", {lamda}, {length (int)});
-    // wifiManager.addParameter(&{parameter name});
+    JsonConfig *config = JsonConfig::getInstance(); // Get config
 
-    // Inject custom head element - overwrites included css
-    // wifiManager.setCustomHeadElement("<style>html{filter: invert(100%); -webkit-filter: invert(100%);}</style>");
-
-    // Custom text for captive portal
-    //WiFiManagerParameter custom_text("<p>This is just a text paragraph</p>");
-    //wifiManager.addParameter(&custom_text);
-
-    // Set custom ip for portal
-    // wifiManager.setAPStaticIPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
-
-    JsonConfig *config = JsonConfig::getInstance();
     if(!wifiManager.autoConnect(config->ssid, config->appwd)) {
 #ifndef DISABLE_LOGGING
-        Log.warning(F("Timed out trying to connect to AP, resetting" CR));
+        Log.warning(F("Timed out waiting for connection to AP, resetting." CR));
 #endif // DISABLE_LOGGING
         delay(1000);
         ESP.reset();  // Reset and try again
         delay(1000);
     }
+
     // Connected
     WiFi.hostname(config->hostname);
+    
 #ifndef DISABLE_LOGGING
     Log.notice(F("WiFi connected." CR));
     String host = WiFi.hostname();
@@ -78,11 +75,8 @@ void wifisetup(bool reset) {
     Log.notice(F("IP address: %d.%d.%d.%d" CR), myIP[0], myIP[1], myIP[2], myIP[3]);
 #endif // DISABLE_LOGGING
 
-    // Save custom configuration
-    // {parameter} = {parameter_name}.getValue(); // Read and save custom parameters
-
-    // Set custom IP for Station
-    // wifiManager.setSTAStaticIPConfig(IPAddress(192,168,0,99), IPAddress(192,168,0,1), IPAddress(255,255,255,0));
+    ticker.detach();
+    digitalWrite(LED, HIGH); // Turn off LED
 }
 
 void disco_restart() { // Blow away WiFi config and reset

@@ -15,33 +15,32 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef _LOCALTIME_H
-#define _LOCALTIME_H
+#ifndef _ZULUTIME_H
+#define _ZULUTIME_H
 
 #include "config.h"
-#include <ESP8266WiFi.h>
 #include <WifiUDP.h>
 #include <NTPClient.h>
 #include <Time.h>
 #include <TimeLib.h>
 #include <Timezone.h>
 
-class LocalTime {
+class ZuluTime {
     private:
         // Singleton Declarations
         static bool instanceFlag;
-        static LocalTime *single;
-        LocalTime();
+        static ZuluTime *single;
+        ZuluTime() {}
+        void setup();
         // Other Declarations
-        NTPClient timeClient(WiFiUDP, const char*, int, int);
 
     public:
         // Singleton Declarations
-        static LocalTime* getInstance();
-        ~LocalTime();
+        static ZuluTime* getInstance();
+        ~ZuluTime() {instanceFlag = false;}
         // Other Declarations
-        void Update();
-        char* GetLocalTime();
+        void update();
+        char* getZuluTime();
 };
 
-#endif // _LOCALTIME_H
+#endif // _ZULUTIME_H

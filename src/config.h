@@ -261,16 +261,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Do NTP
-//
-#ifndef DO_NTP
-#define DO_NTP true
-#endif
-//
-//////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
-//
 // NTP Server
 //
 #ifndef NTP_SERVER
@@ -284,7 +274,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 // Timezone
 //
 #ifndef TIMEZONE
-#define TIMEZONE "EST"
+#define TIMEZONE "GMT"
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
@@ -304,7 +294,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 // NTP Reset interval
 //
 #ifndef NTP_INTERVAL
-#define NTP_INTERVAL 10 * 60 * 1000 // In miliseconds
+#define NTP_INTERVAL 1 * 60 * 1000 // In miliseconds
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
