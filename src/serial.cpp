@@ -21,17 +21,17 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 void serial() { // Start serial with auto-detected rate (default to BAUD)
     Serial.begin(BAUD);
+    Serial.setDebugOutput(true);
     Serial.flush();
     Log.begin(LOG_LEVEL, &Serial, true);
     Log.setPrefix(printTimestamp);
-    Serial.println();
-    Serial.println();
     Log.notice(F("Serial logging started at %l." CR), BAUD);
 }
 
 void printTimestamp(Print* _logOutput) {
   char c[12];
-  int m = sprintf(c, "%10lu ", millis());
+  //int m = 
+  sprintf(c, "%10lu ", millis());
   _logOutput->print(c);
 }
 

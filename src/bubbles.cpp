@@ -26,7 +26,7 @@ static ICACHE_RAM_ATTR void HandleInterruptsStatic(void) { // External interrupt
 bool Bubbles::instanceFlag = false;
 Bubbles* Bubbles::single = NULL; // Holds pointer to class
 
-Bubbles* Bubbles::getInstance() { // This is where we really create the instance
+Bubbles* Bubbles::getInstance() {
     if(!instanceFlag) {
         single = new Bubbles();
         instanceFlag = true;
@@ -67,7 +67,8 @@ float Bubbles::GetRawPps() { // Return raw pulses per second (resets counter)
     float pps = (pulse / secs); // Calculate PPS
     single->pulse = 0; // Zero the pulse counter
     single->ulLastReport = millis(); // Store the last report timer
-    return pps; // Return pulses per second
+    //return pps; // Return pulses per second
+    return 10.5;
 }
 
 float Bubbles::GetRawPpm() { // Return raw pulses per minute (resets counter)
@@ -86,8 +87,10 @@ void Bubbles::Update() {
     if (ulNow - single->ulStart > BUBLOOP) {
         // If (now - start) > delay time, get new value
         single->ulStart = ulNow;
-        single->lastPpm = GetRawPpm();
-        Log.verbose(F("lastPpm = %l" CR), single->lastPpm);
+        single->lastPpm = single->GetRawPpm();
+        NtpHandler *ntpTime = NtpHandler::getInstance();
+        single->lastTime = ntpTime->getJsonTime();
+        Log.verbose(F("Update(): Last time is %s, last Ppm is %l:" CR), single->lastTime, single->lastPpm);
     }
 }
 
@@ -129,4 +132,31 @@ float Bubbles::GetVesselTemp() {
 
 float Bubbles::GetPpm() {
     return single->lastPpm;
+}
+
+char* Bubbles::CreateBubbleJson() {
+    //const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
+    const size_t capacity = 277;
+    DynamicJsonDocument doc(capacity);
+    JsonConfig *config = JsonConfig::getInstance();
+
+    doc["api_key"] = API_KEY;
+    doc["vessel"] = config->bubname;
+    doc["datetime"] = single->lastTime;
+    
+    if (config->tempinf == true) {
+        doc["format"] = "F";
+    } else {
+        doc["format"] = "C";
+    }
+
+    // Get bubbles per minute
+    JsonObject data = doc.createNestedObject("data");
+    data["bpm"] = single->lastPpm;
+    data["ambtemp"] = single->GetAmbientTemp();
+    data["vestemp"] = single->GetVesselTemp();
+
+    char output[capacity] = {};
+    serializeJson(doc, output, sizeof(output));
+    return output;
 }

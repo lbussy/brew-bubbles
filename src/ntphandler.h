@@ -15,24 +15,37 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#ifndef COUNTER_H
-#define COUNTER_H
+#ifndef _NTPHANDLER_H
+#define _NTPHANDLER_H
 
 #include "config.h"
-#include <Arduino.h>
+#include <TimeLib.h>
+#include <NtpClientLib.h>
+#include <ArduinoLog.h>
 
-class Counter {
+#define NTP_TIMEOUT 1500
+
+class NtpHandler {
     private:
-        int ctPin; // Store pin
-        volatile unsigned int pulse; // Store pulse count
-        volatile unsigned long ulLastReport; // Store time of last report (millis())
-        volatile unsigned long ulMicroLast; // Last pulse time for resolution (micros())
+        // Singleton Declarations
+        static bool instanceFlag;
+        static NtpHandler *single;
+        NtpHandler() {}
+        // Other Declarations
+        boolean syncEventTriggered;
+        NTPSyncEvent_t ntpEvent;
+        void setup();
+        void processSyncEvent(NTPSyncEvent_t);
 
     public:
-        Counter (int pin);
-        void HandleInterrupts(void);
-        float GetPps();
-        float GetPpm();
+        // Singleton Declarations
+        static NtpHandler* getInstance();
+        ~NtpHandler() {instanceFlag = false;}
+        // Other Declarations
+        void start();
+        void update();
+        char* getJsonTime();
+        bool hasBeenSet;
 };
 
-#endif // COUNTER_H
+#endif // _NTPHANDLER_H

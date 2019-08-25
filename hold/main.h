@@ -18,11 +18,11 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef _MAIN_H
 #define _MAIN_H
 
-#include "serial.h"
 #include "config.h"
 #include "jsonconfig.h"
 #include "ntphandler.h"
 #include "webserver.h"
+#include "serial.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 
@@ -38,8 +38,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 //#include <Arduino.h>
 
 #ifndef _WIFI_CONFIG_H
-#define _WIFI_CONFIG_H
 
+#define _WIFI_CONFIG_H
 #define WIFI_SSID "Bohica"
 #define WIFI_PASSWD "idoxlr8!"
 

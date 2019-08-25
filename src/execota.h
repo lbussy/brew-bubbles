@@ -20,7 +20,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "jsonconfig.h"
 #include "config.h"
-#include <ESP8266HTTPClient.h>
 #include <ESP8266httpUpdate.h>
 #include <ArduinoLog.h>
 

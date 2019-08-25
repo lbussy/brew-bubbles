@@ -17,21 +17,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "tools.h"
 
-void handleWifiReset(bool drd) {
-    _delay(200); // Let pins settle, else detect is inconsistent
-    pinMode(RESETWIFI, INPUT_PULLUP);
-    if (digitalRead(RESETWIFI) == LOW) {
-        Log.notice(F("%s low, resetting wifi and restarting." CR), RESETWIFI);
-        disco_restart();
-    } else if (drd && !ipl()) {
-        Log.notice(F("DRD: Double reset boot, resetting wifi and restarting." CR));
-        disco_restart();
-    } else {
-        Log.verbose(F("DRD: Normal boot, re-using WiFi values." CR));
-        wifisetup(false);
-    }
-}
-
 bool ipl() { // Determine if this is the first start after loading image
     // Mitigates: https://github.com/jenscski/DoubleResetDetect/issues/2
     char thisver[20] = __DATE__ __TIME__; // Sets at compile-time
@@ -49,22 +34,12 @@ bool ipl() { // Determine if this is the first start after loading image
     return _ipl;
 }
 
-void _delay(unsigned long ulDelay, bool dot) {
+void _delay(unsigned long ulDelay)
+{
     // Safe blocking delay() replacement with yield()
-    Ticker _dottimer(_dot, 1000.0);
-    if (dot) _dottimer.start();
     unsigned long ulNow = millis();
     unsigned long ulThen = ulNow + ulDelay;
     while (ulThen > millis()) {
-        _dottimer.update();
         yield();
     }
-    if (dot) {
-        Serial.println();
-        _dottimer.stop();
-    }
-}
-
-void _dot() {
-    Serial.print(".");
 }

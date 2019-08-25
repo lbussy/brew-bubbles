@@ -20,6 +20,5 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include <Ticker.h>
 #include <Arduino.h>
 
-void handleWifiReset(bool drd);
-void _delay(unsigned long, bool = false);
-void _dot();
+bool ipl();
+void _delay(unsigned long);

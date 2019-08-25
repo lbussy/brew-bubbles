@@ -61,8 +61,8 @@ bool JsonConfig::Parse(bool reset = false) {
         //bool success = deserializeJson(doc, file);
         DeserializationError err = deserializeJson(doc, file);
         if (err) {
-            Log.notice(F("Failed to deserialize configuration." CR));
-            Serial.println(err.c_str());         
+            Log.error(F("Failed to deserialize configuration." CR));
+            Log.error(err.c_str());         
             loaded = false;
         } else {
             loaded = true;
@@ -73,23 +73,22 @@ bool JsonConfig::Parse(bool reset = false) {
 
         Log.notice(F("Using default configuration." CR));
 
-        // Set defaults for Access Point Config Object
+        // Set defaults for Access Point Settings Object
         strlcpy(single->ssid, APNAME, sizeof(single->ssid));
         strlcpy(single->appwd, AP_PASSWD, sizeof(single->appwd));
         
-        // Set defaults for Hostname Config Object
+        // Set defaults for Hostname Settings Object
         strlcpy(single->hostname, HOSTNAME, sizeof(single->hostname));
         
-        // Set defaults for Bubble Config Object
+        // Set defaults for Bubble Settings Object
         strlcpy(single->bubname, BUBNAME, sizeof(single->bubname));
         single->tempinf = TEMPFORMAT;
-        strlcpy(single->tz, TIMEZONE, sizeof(single->tz));
         
-        // Set defaults for Target Config Object
+        // Set defaults for Target Settings Object
         strlcpy(single->targeturl, TARGETURL, sizeof(single->targeturl));
         single->targetfreq = TARGETFREQ;
 
-        // Set defaults for Brewer's Friend Config Object
+        // Set defaults for Brewer's Friend Settings Object
         strlcpy(single->bfkey, "", sizeof(single->bfkey));
         single->bffreq = BFFREQ;
 
@@ -97,29 +96,28 @@ bool JsonConfig::Parse(bool reset = false) {
         single->dospiffs = false;
 
         // We created default configuration, save it
-        Serialize();
+        single->Save();
 
     } else { // Parse from file
 
         Log.notice(F("Parsing configuration data." CR));
 
-        // Parse Access Point Config Object
+        // Parse Access Point Settings Object
         strlcpy(single->ssid, doc["apconfig"]["ssid"] | APNAME, sizeof(single->ssid));
         strlcpy(single->appwd, doc["apconfig"]["appwd"] | AP_PASSWD, sizeof(single->appwd));
 
-        // Parse Hostname Config Object
+        // Parse Hostname Settings Object
         strlcpy(single->hostname, doc["hostname"] | HOSTNAME, sizeof(single->hostname));
 
-        // Parse Bubble Config Object
+        // Parse Bubble Settings Object
         strlcpy(single->bubname, doc["bubbleconfig"]["name"] | BUBNAME, sizeof(single->bubname));
         single->tempinf = doc["bubbleconfig"]["tempinf"] | TEMPFORMAT;
-        strlcpy(single->tz, doc["bubbleconfig"]["tz"] | TIMEZONE, sizeof(single->tz));
 
-        // Parse Target Config Object
+        // Parse Target Settings Object
         strlcpy(single->targeturl, doc["targetconfig"]["targeturl"] | TARGETURL, sizeof(single->targeturl));
         single->targetfreq = doc["targetconfig"]["freq"] | TARGETFREQ;
 
-        // Parse Brewer's Friend Config Object
+        // Parse Brewer's Friend Settings Object
         strlcpy(single->bfkey, doc["bfconfig"]["bfkey"] | "", sizeof(single->bfkey));
         single->bffreq = doc["bfconfig"]["freq"] | BFFREQ;
 
@@ -129,30 +127,29 @@ bool JsonConfig::Parse(bool reset = false) {
     return true;
 }
 
-bool JsonConfig::Serialize() {
-    //const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
-    DynamicJsonDocument doc(653);
+bool JsonConfig::Save() {
+    const size_t capacity = 653;
+    DynamicJsonDocument doc(capacity);
 
-    // Serialize Access Point Config Object
+    // Serialize Access Point Settings Object
     JsonObject apconfig = doc.createNestedObject("apconfig");
     apconfig["ssid"] = single->ssid;
     apconfig["appwd"] = single->appwd;
 
-    // Serialize Hostname Config Object
+    // Serialize Hostname Settings Object
     doc["hostname"] = single->hostname;
 
-    // Serialize Bubble Config Object
+    // Serialize Bubble Settings Object
     JsonObject bubbleconfig = doc.createNestedObject("bubbleconfig");
     bubbleconfig["name"] = single->bubname;
     bubbleconfig["tempinf"] = single->tempinf;
-    bubbleconfig["tz"] = single->tz;
 
-    // Serialize Target Config Object
+    // Serialize Target Settings Object
     JsonObject targetconfig = doc.createNestedObject("targetconfig");
     targetconfig["targeturl"] = single->targeturl;
     targetconfig["freq"] = single->targetfreq;
 
-    // Serialize Brewer's Friend Config Object
+    // Serialize Brewer's Friend Settings Object
     JsonObject bfconfig = doc.createNestedObject("bfconfig");
     bfconfig["bfkey"] = single->bfkey;
     bfconfig["freq"] = single->bffreq;
@@ -183,4 +180,39 @@ bool JsonConfig::Serialize() {
             return true;
         }
     }
+}
+
+char* JsonConfig::CreateSettingsJson() {
+    const size_t capacity = 653;
+    DynamicJsonDocument doc(capacity);
+
+    // Serialize Access Point Settings Object
+    JsonObject apconfig = doc.createNestedObject("apconfig");
+    apconfig["ssid"] = single->ssid;
+    apconfig["appwd"] = single->appwd;
+
+    // Serialize Hostname Settings Object
+    doc["hostname"] = single->hostname;
+
+    // Serialize Bubble Settings Object
+    JsonObject bubbleconfig = doc.createNestedObject("bubbleconfig");
+    bubbleconfig["name"] = single->bubname;
+    bubbleconfig["tempinf"] = single->tempinf;
+
+    // Serialize Target Settings Object
+    JsonObject targetconfig = doc.createNestedObject("targetconfig");
+    targetconfig["targeturl"] = single->targeturl;
+    targetconfig["freq"] = single->targetfreq;
+
+    // Serialize Brewer's Friend Settings Object
+    JsonObject bfconfig = doc.createNestedObject("bfconfig");
+    bfconfig["bfkey"] = single->bfkey;
+    bfconfig["freq"] = single->bffreq;
+
+    // Serialize SPIFFS OTA update choice
+    doc["dospiffs"] = single->dospiffs;
+
+    char output[capacity] = {};
+    serializeJson(doc, output, sizeof(output));
+    return output;
 }

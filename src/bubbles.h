@@ -20,10 +20,10 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "config.h"
 #include "jsonconfig.h"
+#include "ntphandler.h"
 #include "DallasTemperature.h"
 #include "OneWire.h"
 #include <Arduino.h>
-
 
 class Bubbles {
     private:
@@ -38,10 +38,10 @@ class Bubbles {
         volatile unsigned long ulLastReport;// Store time of last report (millis())
         volatile unsigned long ulMicroLast; // Last pulse time for resolution (micros())
         float lastPpm;                      // Holds most recent count
-        JsonConfig *config;                 // Instance of config class
+        char* lastTime;
+        JsonConfig *config;
         float GetRawPps();
         float GetRawPpm();
-        
 
     public:
         // Singleton Declarations
@@ -53,6 +53,7 @@ class Bubbles {
         float GetPpm();
         float GetAmbientTemp();
         float GetVesselTemp();
+        char* CreateBubbleJson();
 };
 
 #endif // _BUBBLES_H

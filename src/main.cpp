@@ -17,23 +17,48 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "main.h"
 
+WebServer *server = WebServer::getInstance();
 Bubbles *bubble = Bubbles::getInstance();
-DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
+NtpHandler *ntpTime = NtpHandler::getInstance();
 
-void setup() {
-    bool rst = drd.detect(); // Check for double-reset
+void setup(void)
+{
     serial();
-    handleWifiReset(rst);
-    mdnssetup();
-    webserversetup();
+
     JsonConfig *config = JsonConfig::getInstance();
-    if (config->dospiffs == true) {execspiffs();}
+    wifi_station_set_hostname(config->hostname);
+
+    Log.notice(F("Connecting to %s." CR), WiFi.SSID().c_str());
+    if (String(WiFi.SSID()) != String(config->ssid)) {
+        WiFi.mode(WIFI_STA);
+        WiFi.begin(WIFI_SSID, WIFI_PASSWD);
+    }
+
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        _delay(500);
+        #ifdef LOG_LEVEL
+        Serial.print(F("."));
+        #endif
+    }
+    #ifdef LOG_LEVEL
+    Serial.println();
+    #endif
+
+    Log.notice(F("Connected. IP address: %s." CR), WiFi.localIP().toString().c_str());
+
+    if (!MDNS.begin(config->hostname)) {
+        Log.error(F("Error setting up MDNS responder."));
+    } else {
+        Log.notice(F("mDNS responder started, hostname %s.local." CR), WiFi.hostname().c_str());
+    }
+    server->initialize(PORT);
+    ntpTime->start();
 }
 
-void loop() {
-    MDNS.update();
-    webserverloop();
+void loop(void)
+{
     bubble->Update();
-    doTargets();
-    yield();
+    server->handleLoop();
+    MDNS.update();
 }

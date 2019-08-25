@@ -1,24 +1,28 @@
 # TODO List
 
+- Merge back in MDNS
+- Merge back in Target Handler
+- WiFi // wifiManager.startConfigPortal("{APName}", "{APPassword}") // Does not wipe settings
+- BUG: IPL stopped working
+- Fix losing WiFi config on power loss
 - Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
 - Figure out version in code
 - Add hostname change to AP Portal
 - Fix deprecation error in http
 - Get web pages working
     - Have bubbles display in home page
-    - Add endpoint for settings json dump
-    - Add endpoint for bubbles json dump
-    - Add settings items
+    - Add endpoint to receive new settings
+    - Add settings items from json
         - Target endpoint
         - BF Key
         - Hostname
         - Chamber name
         - Temp format
         - NTP Server
-        - Timezone
 
 # Complete
 
+- ~~BUG: Pages are not being found~~
 - ~~Add DNS resolution~~
 - ~~Fix local OTA~~
 - ~~Move mDNS functions~~
@@ -66,3 +70,5 @@
     - ~~Reset wireless~~
     - ~~Add GitHub OTA for Firmware~~
     - ~~Add GitHub OTA for SPIFFS~~
+    - ~~Add endpoint for settings json dump~~
+    - ~~Add endpoint for bubbles json dump~~
