@@ -45,7 +45,7 @@ void execspiffs() {
     // Reset SPIFFS update flag
     JsonConfig *config = JsonConfig::getInstance();
     config->dospiffs = false;
-    config->Serialize();
+    config->Save();
 
     t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(spiffsUrlBase);
 
@@ -59,7 +59,7 @@ void execspiffs() {
             break;
 
         case HTTP_UPDATE_OK:
-            // This is just gere to get rid of a compiler warning, since
+            // This is just here to get rid of a compiler warning, since
             // the system will reset after OTA, we will never hit this.
             Log.notice(F("HTTP SPIFFS Update complete, restarting." CR));
             ESP.reset();

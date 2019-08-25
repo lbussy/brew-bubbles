@@ -20,67 +20,14 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 unsigned long ulMStart = 0UL; // Start time // DEBUG
 
 void doTargets() {
-    ZuluTime *time = ZuluTime::getInstance();
-    time->update();
     unsigned long ulMNow = millis();
     if (ulMNow - ulMStart > BUBLOOP) { // If (now - start) > delay time, do work
-        // Do something once per BUBLOOP
         ulMStart = ulMNow;
-        doDoc();
+        // Do something once per BUBLOOP
     }
 }
 
-void doDoc() {
-    JsonConfig *config = JsonConfig::getInstance();
-    Bubbles *bubble = Bubbles::getInstance();
-    ZuluTime *time = ZuluTime::getInstance();
-
-    const size_t capacity = 277;
-    DynamicJsonDocument doc(capacity);
-
-    doc["api_key"] = API_KEY;
-    doc["vessel"] = config->bubname;
-    doc["datetime"] = time->getZuluTime();
-    
-    if (config->tempinf == true) {
-        doc["format"] = "F";
-    } else {
-        doc["format"] = "C";
-    }
-
-    // Get bubbles per minute
-    JsonObject data = doc.createNestedObject("data");
-    data["bpm"] = bubble->GetPpm();
-    data["ambtemp"] = bubble->GetAmbientTemp();
-    data["vestemp"] = bubble->GetVesselTemp();
-
-    if (!SPIFFS.begin()) { // Mount SPIFFS
-        Log.error(F("Failed to mount SPIFFS." CR));
-    } else {
-        // Open file for writing
-        char filename[14] = "/bubbles.json";
-        File file = SPIFFS.open(filename, "w");
-        if (!file) {
-            Log.error(F("Failed to open json file for writing." CR));
-        } else {
-            // Serialize the JSON object to the file
-            bool success = serializeJson(doc, file);
-            // This may fail if the JSON is invalid
-            if (!success) {
-                Log.error(F("Failed to serialize json." CR));
-            } else {
-                Log.notice(F("Saved json as %s." CR), filename);
-            }
-        }
-    }
-
-    // Post JSON
-    char strBubbleJson[capacity];
-    serializeJson(doc, strBubbleJson, sizeof(strBubbleJson));
-    httppost(strBubbleJson); // Post JSON date to endpoint
-}
-
-bool httppost(String json) {
+bool httppost(String json) { // TODO:  Decide if we use this
     HTTPClient http; // Declare object of class HTTPClient
     // Ports other than 80 need to be in the format of: http://192.168.168.199:8080/
     JsonConfig *config = JsonConfig::getInstance();

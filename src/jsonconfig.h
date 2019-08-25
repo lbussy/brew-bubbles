@@ -45,9 +45,10 @@ class JsonConfig {
 
         // Methods
         bool Parse(bool reset);
-        bool Serialize();
+        bool Save();
         static JsonConfig* getInstance();
         ~JsonConfig() {instanceFlag = false;}
+        char* CreateSettingsJson(); // Provide serialized JSON string
 };
 
 #endif // _JSONCONFIG_H

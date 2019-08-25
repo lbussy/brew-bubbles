@@ -276,7 +276,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
             getSettings: function() {
                 var xhr = new XMLHttpRequest();
                 var self = this;
-                xhr.open('GET', '/settings/json/');
+                xhr.open('GET', '/config/');
                 xhr.onload = function () {
                     self.settings = JSON.parse(xhr.responseText);
                 };

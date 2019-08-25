@@ -30,26 +30,3 @@ void mdnssetup() {
         }
     }
 }
-
-IPAddress mdnsquery(char* hostname) {
-    // char* hostname = "brewpi.local";
-    // IPAddress ip = mdnsquery(hostname);
-    // Log.notice(F("mDNS Lookup - %s: %d.%d.%d.%d." CR), hostname, ip[0], ip[1], ip[2], ip[3]);
-    Log.notice(F("Sending mDNS query." CR));
-    int n = MDNS.queryService("workstation", "tcp");
-    Log.notice(F("mDNS query complete." CR));
-    if (n == 0) {
-        Log.notice(F("No services found." CR));
-        return {0, 0, 0, 0};
-    } else {
-        for (int i = 0; i < n; ++i) {
-            char foundhost[65];
-            MDNS.hostname(i).toCharArray(foundhost, 65);
-            if(strcmp(foundhost, hostname) == 0) {
-                IPAddress ip = MDNS.IP(i);
-                return ip;
-            }
-        }
-        return {0, 0, 0, 0};
-    }
-}

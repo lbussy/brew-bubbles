@@ -17,15 +17,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "wifi.h"
 
-Ticker ticker;
-
-void tick() { // Toggle LED state
-  int state = digitalRead(LED);  // Get the current state of LED pin
-  digitalWrite(LED, !state);     // Set pin to the opposite state
-}
-
 void configModeCallback (WiFiManager *myWiFiManager) {
-    ticker.attach(0.2, tick); // Flash LED quickly when in AP mode
 #ifndef DISABLE_LOGGING
     // If you used auto generated SSID, print it
     String ssid = myWiFiManager->getConfigPortalSSID();
@@ -33,19 +25,18 @@ void configModeCallback (WiFiManager *myWiFiManager) {
     int n = ssid.length();
     char ap[n + 1]; 
     strcpy(ap, ssid.c_str()); 
-
     IPAddress myIP = WiFi.softAPIP();
     Log.notice(F("Entered AP configuration mode, SSID: %s, IP: %d.%d.%d.%d." CR), ap, myIP[0], myIP[1], myIP[2], myIP[3]);
 #endif //DISABLE_LOGGING
 }
 
 void wifisetup(bool reset) {
-    ticker.attach(0.5, tick); // Flash LED slower when conecting
     WiFiManager wifiManager; // Local init only
     if(reset == true) wifiManager.resetSettings(); // Reset wifi
 
 #ifndef DISABLE_LOGGING
     wifiManager.setDebugOutput(true); // Turn on Debug (default off)
+    WiFi.printDiag(Serial);
 #else
     wifiManager.setDebugOutput(false);
 #endif //DISABLE_LOGGING
@@ -75,7 +66,6 @@ void wifisetup(bool reset) {
     Log.notice(F("IP address: %d.%d.%d.%d" CR), myIP[0], myIP[1], myIP[2], myIP[3]);
 #endif // DISABLE_LOGGING
 
-    ticker.detach();
     digitalWrite(LED, HIGH); // Turn off LED
 }
 

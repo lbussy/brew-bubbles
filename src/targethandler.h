@@ -21,7 +21,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "config.h"
 #include "jsonconfig.h"
 #include "bubbles.h"
-#include "zulutime.h"
 #include <ArduinoJson.h>
 #include <ESP8266HTTPClient.h>
 #include <Arduino.h>
