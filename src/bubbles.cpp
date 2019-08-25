@@ -44,6 +44,7 @@ void Bubbles::Setup() {
     single->ulLastReport = millis();// Store the last report timer
     single->pulse = 0;              // Reset pulse counter
     single->ulStart = 0UL;          // Start time
+    single->lastTime = (char*)F("1970-01-01T00:00:00Z"); // Set to epoch as a placeholder
 }
 
 Bubbles::~Bubbles() {
