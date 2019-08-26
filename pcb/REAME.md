@@ -27,13 +27,12 @@ Since this uses 1 or 2 each of very common, very inexpensive components, you may
 |---|---|---|
 | 1 | 150Ω 1/4W 5%  Axial resistor | R1, R2 |
 | *2 | 2.2kΩ 1/4W 5% Axial resistor | R3 |
-| *1 | 3-Pin 90° Header | VESSEL |
-| *1 | Dallas/Maxim DS18B20 1-Wire Temperature Sensor | ROOM |
+| *2 | 3-Pin 90° Header | ROOM, VESSEL |
 | 1 | Sharp GP1A57HR Transmissive Photointerrupter | U1 |
 | 2 | 8-pin male stackable header (nearly always comes with the D1) |  |
 | 2 | 8-pin female stackable header (nearly always comes with the D1) |  |
 | 1 | Wemos D1 Mini R2 | U2 |
-| *1 | Waterproof DS18B20 Temperature Sensor with lead | Fermenter |
+| *2 | Waterproof DS18B20 Temperature Sensor with lead | ROOM, VESSEL |
 
 The items with an *asterisk are optional.  They are in the design to provide a means to monitor and trend one's ambient temperature where the fermenter is placed, and/or the fermenting liquid's temperature via a thermowell or insulated in contact with the fermenter.  If one chooses not to use these, the firmware will automatically skip reporting these readings.
 
@@ -41,7 +40,7 @@ Note that component labeled "ROOM" is an actual bare DS18B20 sensor, not a water
 
 ## Order Boards
 
-Order 3 boards for $5.65 from [Oshpark using this link](https://oshpark.com/shared_projects/lUBAEzle), or download the Brew-Bubbles.brd file and use it with the board fabrication house of your choosing.
+Order 3 boards for $5.65 from [Oshpark using this link](https://oshpark.com/shared_projects/NbyG1Xje), or download the Brew-Bubbles.brd file and use it with the board fabrication house of your choosing.
 
 ## Modifying These Files
 If you would like to personalize these board designs, you may modify them with [Autodesk's EAGLE](https://www.autodesk.com/products/eagle/overview). EAGLE is a scriptable electronic design automation (EDA) application with schematic capture, printed circuit board (PCB) layout, auto-router and computer-aided manufacturing (CAM) features. EAGLE stands for Easily Applicable Graphical Layout Editor and is developed by CadSoft Computer GmbH. The company was acquired by Autodesk Inc. in 2016.  
