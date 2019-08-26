@@ -36,7 +36,8 @@ class JsonConfig {
         char hostname[33];          // Hostname
         char bubname[33];           // This device
         bool tempinf;               // Is temp in F
-        char tz[4];                 // Timezone
+        float calAmbient;            // Calibration for Ambient sensor
+        float calVessel;             // Calibration for Vessel sensor
         char targeturl[129];        // Target host
         unsigned long targetfreq;   // Target freqency
         char bfkey[41];             // Brewer's Friend key

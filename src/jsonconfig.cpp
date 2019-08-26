@@ -83,6 +83,10 @@ bool JsonConfig::Parse(bool reset = false) {
         // Set defaults for Bubble Settings Object
         strlcpy(single->bubname, BUBNAME, sizeof(single->bubname));
         single->tempinf = TEMPFORMAT;
+
+        // Set defaults for temperature calibration
+        single->calAmbient = 0.0;
+        single->calVessel = 0.0;
         
         // Set defaults for Target Settings Object
         strlcpy(single->targeturl, TARGETURL, sizeof(single->targeturl));
@@ -113,6 +117,10 @@ bool JsonConfig::Parse(bool reset = false) {
         strlcpy(single->bubname, doc["bubbleconfig"]["name"] | BUBNAME, sizeof(single->bubname));
         single->tempinf = doc["bubbleconfig"]["tempinf"] | TEMPFORMAT;
 
+        // Parse temperature calibration
+        single->calAmbient = doc["calibrate"]["room"] | 0.0;
+        single->calVessel = doc["calibrate"]["vessel"] | 0.0;
+
         // Parse Target Settings Object
         strlcpy(single->targeturl, doc["targetconfig"]["targeturl"] | TARGETURL, sizeof(single->targeturl));
         single->targetfreq = doc["targetconfig"]["freq"] | TARGETFREQ;
@@ -128,7 +136,7 @@ bool JsonConfig::Parse(bool reset = false) {
 }
 
 bool JsonConfig::Save() {
-    const size_t capacity = 653;
+    const size_t capacity = CONFIG_CAP;
     DynamicJsonDocument doc(capacity);
 
     // Serialize Access Point Settings Object
@@ -143,6 +151,11 @@ bool JsonConfig::Save() {
     JsonObject bubbleconfig = doc.createNestedObject("bubbleconfig");
     bubbleconfig["name"] = single->bubname;
     bubbleconfig["tempinf"] = single->tempinf;
+
+    // Serialize temperature calibration
+    JsonObject calibrate = doc.createNestedObject("calibrate");
+    calibrate["room"] = single->calAmbient;
+    calibrate["vessel"] = single->calVessel;
 
     // Serialize Target Settings Object
     JsonObject targetconfig = doc.createNestedObject("targetconfig");
@@ -183,7 +196,7 @@ bool JsonConfig::Save() {
 }
 
 char* JsonConfig::CreateSettingsJson() {
-    const size_t capacity = 653;
+    const size_t capacity = CONFIG_CAP;
     DynamicJsonDocument doc(capacity);
 
     // Serialize Access Point Settings Object
@@ -198,6 +211,11 @@ char* JsonConfig::CreateSettingsJson() {
     JsonObject bubbleconfig = doc.createNestedObject("bubbleconfig");
     bubbleconfig["name"] = single->bubname;
     bubbleconfig["tempinf"] = single->tempinf;
+
+    // Serialize temperature calibration
+    JsonObject calibrate = doc.createNestedObject("calibrate");
+    calibrate["room"] = single->calAmbient;
+    calibrate["vessel"] = single->calVessel;
 
     // Serialize Target Settings Object
     JsonObject targetconfig = doc.createNestedObject("targetconfig");
