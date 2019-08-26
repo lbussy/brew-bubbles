@@ -173,31 +173,6 @@ We've spent an enormous amount of time creating and checking these footprints an
 &lt;br&gt;
 You are welcome to use this library for commercial purposes. For attribution, we ask that when you begin to sell your device using our footprint, you email us with a link to the product being sold. We want bragging rights that we helped (in a very small part) to create your 8th world wonder. We would like the opportunity to feature your device on our homepage.</description>
 <packages>
-<package name="TO-92-AMMO">
-<description>&lt;h3&gt;TO-92 3-Pin PTH AMMO package&lt;/h3&gt;
-&lt;p&gt;&lt;a href=""&gt;Datasheet&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Specifications:
-&lt;ul&gt;
-&lt;li&gt;Pin Count: 3&lt;/li&gt;
-&lt;li&gt;Dimensions:  3.68 x 4.83 x 4.83 mm&lt;/li&gt;
-&lt;li&gt;Pitch: 2.54 mm&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Devices Using:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;DS18B20&lt;/li&gt;
-&lt;/ul&gt;</description>
-<wire x1="-2.0946" y1="-1.651" x2="-0.7863" y2="2.5485" width="0.2032" layer="21" curve="-111.098957" cap="flat"/>
-<wire x1="0.7863" y1="2.5484" x2="2.0945" y2="-1.651" width="0.2032" layer="21" curve="-111.09954" cap="flat"/>
-<wire x1="-2.0945" y1="-1.651" x2="2.0945" y2="-1.651" width="0.2032" layer="21"/>
-<wire x1="-0.635" y1="2.54" x2="0.635" y2="2.54" width="0.2032" layer="21" curve="-25.057615"/>
-<wire x1="0.635" y1="2.54" x2="1.905" y2="1.905" width="0.2032" layer="21" curve="-28.072487"/>
-<wire x1="-1.905" y1="1.905" x2="0.635" y2="2.54" width="0.2032" layer="21" curve="-53.130102"/>
-<pad name="3" x="2.54" y="0" drill="0.8128" diameter="1.8796"/>
-<pad name="2" x="0" y="0" drill="0.8128" diameter="1.8796"/>
-<pad name="1" x="-2.54" y="0" drill="0.8128" diameter="1.8796"/>
-<text x="0" y="-1.778" size="0.6096" layer="25" font="vector" ratio="20" rot="R180" align="bottom-center">&gt;NAME</text>
-<text x="0" y="2.794" size="0.6096" layer="27" font="vector" ratio="20" rot="R180" align="top-center">&gt;VALUE</text>
-</package>
 <package name="GP1A57HR">
 <description>&lt;h3&gt;Sharp GP1A57HR Transmissive Photointerrupter&lt;/h3&gt;
 &lt;p&gt;&lt;a href="https://www.sparkfun.com/datasheets/Components/GP1A57HRJ00F.pdf"&gt;Datasheet&lt;/a&gt;&lt;/p&gt;
@@ -227,19 +202,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </package>
 </packages>
 <symbols>
-<symbol name="DS18B20">
-<description>&lt;h3&gt;Dallas/Maxim DS18B20 1-Wire Temperature Sensor&lt;/h3&gt;
-&lt;p&gt;The DS18B20 reports degrees C with 9 to 12-bit precision, -55C to 125C (+/-0.5C). Each sensor has a unique 64-Bit Serial number etched into it - allows for a huge number of sensors to be used on one data bus.&lt;/p&gt;</description>
-<wire x1="-7.62" y1="7.62" x2="-7.62" y2="-7.62" width="0.254" layer="94"/>
-<wire x1="-7.62" y1="-7.62" x2="5.08" y2="-7.62" width="0.254" layer="94"/>
-<wire x1="5.08" y1="-7.62" x2="5.08" y2="7.62" width="0.254" layer="94"/>
-<wire x1="5.08" y1="7.62" x2="-7.62" y2="7.62" width="0.254" layer="94"/>
-<pin name="DQ" x="-10.16" y="0" length="short"/>
-<pin name="VDD" x="-10.16" y="5.08" length="short" direction="pwr"/>
-<pin name="GND" x="-10.16" y="-5.08" length="short" direction="pwr"/>
-<text x="-7.62" y="7.874" size="1.778" layer="95" font="vector">&gt;Name</text>
-<text x="-7.62" y="-7.874" size="1.778" layer="96" font="vector" align="top-left">&gt;Value</text>
-</symbol>
 <symbol name="GP1A57HR">
 <description>&lt;h3&gt;Sharp GP1A57HR Transmissive Photointerrupter&lt;/h3&gt;
 &lt;p&gt;Standard, OPIC output, transmissive photointerrupter with opposing emitter and detector in a case, providing non-contact sensing. 10mm gap. Built in 15kΩ pull-up resistor.&lt;/p&gt;</description>
@@ -350,32 +312,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </symbol>
 </symbols>
 <devicesets>
-<deviceset name="DS18B20" prefix="U">
-<description>&lt;h3&gt;Dallas/Maxim DS18B20 1-Wire Temperature Sensor&lt;/h3&gt;
-&lt;p&gt;The DS18B20 reports degrees C with 9 to 12-bit precision, -55C to 125C (+/-0.5C). Each sensor has a unique 64-Bit Serial number etched into it - allows for a huge number of sensors to be used on one data bus.&lt;/p&gt;
-&lt;p&gt;&lt;a href="http://datasheets.maximintegrated.com/en/ds/DS18B20.pdf"&gt;Datasheet&lt;/a&gt;&lt;/p&gt;
-&lt;h4&gt;SparkFun Products&lt;/h4&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href="https://www.sparkfun.com/products/245"&gt;One Wire Digital Temperature Sensor - DS18B20&lt;/a&gt; (SEN-00245)&lt;/li&gt;
-&lt;/ul&gt;</description>
-<gates>
-<gate name="G$1" symbol="DS18B20" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="TO-92-AMMO">
-<connects>
-<connect gate="G$1" pin="DQ" pad="2"/>
-<connect gate="G$1" pin="GND" pad="1"/>
-<connect gate="G$1" pin="VDD" pad="3"/>
-</connects>
-<technologies>
-<technology name="">
-<attribute name="STORE_ID" value="SEN-00245" constant="no"/>
-</technology>
-</technologies>
-</device>
-</devices>
-</deviceset>
 <deviceset name="GP1A57HR" prefix="U">
 <description>&lt;h3&gt;Sharp GP1A57HR Transmissive Photointerrupter&lt;/h3&gt;
 &lt;p&gt;Standard, OPIC output, transmissive photointerrupter with opposing emitter and detector in a case, providing non-contact sensing. 10mm gap. Built in 15kΩ pull-up resistor.&lt;/p&gt;
@@ -874,38 +810,34 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </class>
 </classes>
 <parts>
-<part name="ROOM" library="SparkFun-Sensors" deviceset="DS18B20" device=""/>
 <part name="U2" library="diy-modules" deviceset="WEMOS-D1-MINI-SHIELD" device="" value="WEMOS-D1-MINI"/>
 <part name="R1" library="SparkFun-Resistors" deviceset="330OHM" device="-HORIZ-1/10W-5%" value="2.2kΩ"/>
 <part name="VESSEL" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X3" device="/90" package3d_urn="urn:adsk.eagle:package:22459/2" value="3PIN90"/>
 <part name="R2" library="SparkFun-Resistors" deviceset="330OHM" device="-HORIZ-1/10W-5%" value="2.2kΩ"/>
 <part name="U1" library="SparkFun-Sensors" deviceset="GP1A57HR" device=""/>
 <part name="R3" library="SparkFun-Resistors" deviceset="330OHM" device="-HORIZ-1/10W-5%" value="150Ω"/>
+<part name="ROOM" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X3" device="/90" package3d_urn="urn:adsk.eagle:package:22459/2" value="3PIN90"/>
 </parts>
 <sheets>
 <sheet>
 <plain>
 </plain>
 <instances>
-<instance part="ROOM" gate="G$1" x="-10.16" y="52.07" smashed="yes" rot="R270">
-<attribute name="NAME" x="-14.986" y="44.45" size="1.778" layer="95" font="vector"/>
-<attribute name="VALUE" x="-15.494" y="43.18" size="1.778" layer="96" font="vector" align="top-left"/>
-</instance>
 <instance part="U2" gate="G$1" x="77.47" y="41.91" smashed="yes">
 <attribute name="NAME" x="66.04" y="19.05" size="1.778" layer="95"/>
 <attribute name="VALUE" x="66.04" y="21.59" size="1.778" layer="96"/>
 </instance>
-<instance part="R1" gate="G$1" x="6.35" y="71.12" smashed="yes">
-<attribute name="NAME" x="6.35" y="72.644" size="1.778" layer="95" font="vector" align="bottom-center"/>
-<attribute name="VALUE" x="6.35" y="69.596" size="1.778" layer="96" font="vector" align="top-center"/>
+<instance part="R1" gate="G$1" x="19.05" y="71.12" smashed="yes">
+<attribute name="NAME" x="19.05" y="72.644" size="1.778" layer="95" font="vector" align="bottom-center"/>
+<attribute name="VALUE" x="19.05" y="69.596" size="1.778" layer="96" font="vector" align="top-center"/>
 </instance>
-<instance part="VESSEL" gate="A" x="-10.16" y="99.06" smashed="yes" rot="R90">
-<attribute name="VALUE" x="-6.35" y="102.87" size="1.778" layer="96" rot="R180"/>
-<attribute name="NAME" x="-7.112" y="105.41" size="1.778" layer="95" rot="R180"/>
+<instance part="VESSEL" gate="A" x="7.62" y="99.06" smashed="yes" rot="R90">
+<attribute name="VALUE" x="11.43" y="102.87" size="1.778" layer="96" rot="R180"/>
+<attribute name="NAME" x="10.668" y="105.41" size="1.778" layer="95" rot="R180"/>
 </instance>
-<instance part="R2" gate="G$1" x="6.35" y="81.28" smashed="yes">
-<attribute name="NAME" x="6.35" y="82.804" size="1.778" layer="95" font="vector" align="bottom-center"/>
-<attribute name="VALUE" x="6.35" y="79.756" size="1.778" layer="96" font="vector" align="top-center"/>
+<instance part="R2" gate="G$1" x="19.05" y="81.28" smashed="yes">
+<attribute name="NAME" x="19.05" y="82.804" size="1.778" layer="95" font="vector" align="bottom-center"/>
+<attribute name="VALUE" x="19.05" y="79.756" size="1.778" layer="96" font="vector" align="top-center"/>
 </instance>
 <instance part="U1" gate="G$1" x="74.93" y="83.82" smashed="yes">
 <attribute name="NAME" x="74.93" y="91.694" size="1.778" layer="95" font="vector" align="bottom-center"/>
@@ -914,6 +846,10 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="R3" gate="G$1" x="62.23" y="96.52" smashed="yes">
 <attribute name="NAME" x="62.23" y="98.044" size="1.778" layer="95" font="vector" align="bottom-center"/>
 <attribute name="VALUE" x="62.23" y="94.996" size="1.778" layer="96" font="vector" align="top-center"/>
+</instance>
+<instance part="ROOM" gate="A" x="-5.08" y="99.06" smashed="yes" rot="R90">
+<attribute name="VALUE" x="-1.27" y="102.87" size="1.778" layer="96" rot="R180"/>
+<attribute name="NAME" x="-2.032" y="105.41" size="1.778" layer="95" rot="R180"/>
 </instance>
 </instances>
 <busses>
@@ -927,8 +863,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="U2" gate="G$1" pin="3V3"/>
 <label x="52.07" y="34.29" size="1.778" layer="95"/>
 <wire x1="59.69" y1="34.29" x2="33.02" y2="34.29" width="0.1524" layer="91"/>
-<wire x1="33.02" y1="34.29" x2="33.02" y2="64.77" width="0.1524" layer="91"/>
-<wire x1="33.02" y1="64.77" x2="33.02" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="34.29" x2="33.02" y2="68.58" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="68.58" x2="33.02" y2="81.28" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="81.28" x2="33.02" y2="88.9" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="88.9" x2="33.02" y2="107.95" width="0.1524" layer="91"/>
@@ -939,21 +874,21 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <label x="80.01" y="96.52" size="1.778" layer="95"/>
 <wire x1="80.01" y1="107.95" x2="80.01" y2="93.98" width="0.1524" layer="91"/>
 <pinref part="R2" gate="G$1" pin="2"/>
-<wire x1="11.43" y1="81.28" x2="13.97" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="13.97" y1="81.28" x2="13.97" y2="71.12" width="0.1524" layer="91"/>
+<wire x1="24.13" y1="81.28" x2="29.21" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="29.21" y1="81.28" x2="29.21" y2="71.12" width="0.1524" layer="91"/>
 <pinref part="R1" gate="G$1" pin="2"/>
-<wire x1="13.97" y1="71.12" x2="11.43" y2="71.12" width="0.1524" layer="91"/>
-<wire x1="13.97" y1="81.28" x2="33.02" y2="81.28" width="0.1524" layer="91"/>
-<junction x="13.97" y="81.28"/>
+<wire x1="29.21" y1="71.12" x2="24.13" y2="71.12" width="0.1524" layer="91"/>
+<wire x1="29.21" y1="81.28" x2="33.02" y2="81.28" width="0.1524" layer="91"/>
+<junction x="29.21" y="81.28"/>
 <junction x="33.02" y="81.28"/>
-<pinref part="ROOM" gate="G$1" pin="VDD"/>
-<wire x1="-5.08" y1="62.23" x2="-5.08" y2="64.77" width="0.1524" layer="91"/>
-<wire x1="-5.08" y1="64.77" x2="33.02" y2="64.77" width="0.1524" layer="91"/>
-<junction x="33.02" y="64.77"/>
 <pinref part="VESSEL" gate="A" pin="2"/>
-<wire x1="-10.16" y1="96.52" x2="-10.16" y2="88.9" width="0.1524" layer="91"/>
-<wire x1="-10.16" y1="88.9" x2="33.02" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="7.62" y1="96.52" x2="7.62" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="7.62" y1="88.9" x2="33.02" y2="88.9" width="0.1524" layer="91"/>
 <junction x="33.02" y="88.9"/>
+<pinref part="ROOM" gate="A" pin="2"/>
+<wire x1="-5.08" y1="96.52" x2="-5.08" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="-5.08" y1="88.9" x2="7.62" y2="88.9" width="0.1524" layer="91"/>
+<junction x="7.62" y="88.9"/>
 </segment>
 </net>
 <net name="D2" class="0">
@@ -964,12 +899,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </segment>
 <segment>
 <pinref part="R1" gate="G$1" pin="1"/>
-<wire x1="1.27" y1="71.12" x2="-10.16" y2="71.12" width="0.1524" layer="91"/>
-<pinref part="ROOM" gate="G$1" pin="DQ"/>
-<wire x1="-10.16" y1="71.12" x2="-10.16" y2="62.23" width="0.1524" layer="91"/>
-<wire x1="-10.16" y1="71.12" x2="-27.94" y2="71.12" width="0.1524" layer="91"/>
-<junction x="-10.16" y="71.12"/>
+<wire x1="13.97" y1="71.12" x2="-2.54" y2="71.12" width="0.1524" layer="91"/>
+<wire x1="-2.54" y1="71.12" x2="-27.94" y2="71.12" width="0.1524" layer="91"/>
 <label x="-27.94" y="71.12" size="1.778" layer="95"/>
+<pinref part="ROOM" gate="A" pin="3"/>
+<wire x1="-2.54" y1="96.52" x2="-2.54" y2="71.12" width="0.1524" layer="91"/>
+<junction x="-2.54" y="71.12"/>
 </segment>
 </net>
 <net name="D3" class="0">
@@ -980,12 +915,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </segment>
 <segment>
 <pinref part="R2" gate="G$1" pin="1"/>
-<wire x1="1.27" y1="81.28" x2="-7.62" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="13.97" y1="81.28" x2="10.16" y2="81.28" width="0.1524" layer="91"/>
 <label x="-27.94" y="81.28" size="1.778" layer="95"/>
 <pinref part="VESSEL" gate="A" pin="3"/>
-<wire x1="-7.62" y1="81.28" x2="-27.94" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="-7.62" y1="96.52" x2="-7.62" y2="81.28" width="0.1524" layer="91"/>
-<junction x="-7.62" y="81.28"/>
+<wire x1="10.16" y1="81.28" x2="-27.94" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="10.16" y1="96.52" x2="10.16" y2="81.28" width="0.1524" layer="91"/>
+<junction x="10.16" y="81.28"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -1010,15 +945,15 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="48.26" y1="102.87" x2="123.19" y2="102.87" width="0.1524" layer="91"/>
 </segment>
 <segment>
+<pinref part="ROOM" gate="A" pin="1"/>
+<wire x1="-7.62" y1="96.52" x2="-7.62" y2="88.9" width="0.1524" layer="91"/>
+<label x="-27.94" y="60.96" size="1.778" layer="95"/>
+<wire x1="-27.94" y1="60.96" x2="-7.62" y2="60.96" width="0.1524" layer="91"/>
+<wire x1="-7.62" y1="60.96" x2="5.08" y2="60.96" width="0.1524" layer="91"/>
+<wire x1="5.08" y1="60.96" x2="5.08" y2="96.52" width="0.1524" layer="91"/>
 <pinref part="VESSEL" gate="A" pin="1"/>
-<wire x1="-12.7" y1="96.52" x2="-12.7" y2="85.09" width="0.1524" layer="91"/>
-<wire x1="-12.7" y1="85.09" x2="-15.24" y2="85.09" width="0.1524" layer="91"/>
-<pinref part="ROOM" gate="G$1" pin="GND"/>
-<wire x1="-15.24" y1="85.09" x2="-15.24" y2="64.77" width="0.1524" layer="91"/>
-<wire x1="-15.24" y1="64.77" x2="-15.24" y2="62.23" width="0.1524" layer="91"/>
-<wire x1="-15.24" y1="64.77" x2="-27.94" y2="64.77" width="0.1524" layer="91"/>
-<junction x="-15.24" y="64.77"/>
-<label x="-27.94" y="64.77" size="1.778" layer="95"/>
+<wire x1="-7.62" y1="88.9" x2="-7.62" y2="60.96" width="0.1524" layer="91"/>
+<junction x="-7.62" y="60.96"/>
 </segment>
 </net>
 <net name="D1" class="0">
@@ -1044,7 +979,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </sheet>
 </sheets>
 <errors>
-<approved hash="104,1,-5.08,62.23,ROOM,VDD,3V3,,,"/>
 <approved hash="204,1,95.25,34.29,U2,5V,,,,"/>
 </errors>
 </schematic>
