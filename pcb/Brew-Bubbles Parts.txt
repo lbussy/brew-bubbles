@@ -4,7 +4,7 @@ Part   Value                Device                Package              Descripti
 R1     2.2kΩ                2200OHM-HORIZ-1/4W-5% AXIAL-0.3            2k2Ω resistor                                                               2k2  
 R2     2.2kΩ                2200OHM-HORIZ-1/4W-5% AXIAL-0.3            2k2Ω resistor                                                               2k2  
 R3     150Ω                 150OHM-HORIZ-1/4W-5%  AXIAL-0.3            150Ω resistor                                                               150  
-ROOM   DS18B20              DS18B20               TO-92-AMMO           Dallas/Maxim DS18B20 1-Wire Temperature Sensor                                   
 U2     WEMOS-D1-MINI        WEMOS-D1-MINI         WEMOS-D1-MINI        WEMOS D1 mini                                    
 U1     GP1A57HR             GP1A57HR              GP1A57HR             Sharp GP1A57HR Transmissive Photointerrupter                                     
+ROOM 3PIN90               PINHD-1X3/90          1X03/90              PIN HEADER                                                                       
 VESSEL 3PIN90               PINHD-1X3/90          1X03/90              PIN HEADER                                                                       
