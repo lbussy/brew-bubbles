@@ -95,11 +95,9 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
         <div class="container" id="settingsapp"> <!-- Container -->
             <h1 class="mt-5">Device Settings</h1>
 
-            <div class="card border-dark mb-3"> <!-- General Settings -->
+            <div class="card border-dark mb-3"> <!-- Controller Settings -->
                 <div class="card-header">
-                    <h5>
-                        General Settings
-                    </h5>
+                    <h4 class="card-title">Controller Settings</h4>
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
@@ -108,48 +106,78 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                 <div class="form-group row">
                                     <label for="mdnsID" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Change mDNS name (the hostname part in http://hostname.local/)  Do not add the &ldquo;.local&rdquo; to the name">mDNS ID</label>
                                     <div class="col-sm-8">
-                                        <input type="text" class="form-control" name="mdnsID" id="mdnsID" placeholder="brewbubbles" :value="settings.mdnsID">
+                                        <input type="text" class="form-control" name="mdnsID" id="mdnsID" placeholder="brewbubbles" value="settings.mdnsID">
                                     </div>
                                     <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
                                 </div>
                             </form>
                         </li>
+                    </ul>
+                </div>
+            </div> <!-- Controller Settings -->
+
+            <div class="card border-dark mb-3"> <!-- Temperature Settings -->
+                <div class="card-header">
+                    <h4 class="card-title">Temperature Settings</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
                         <li class="list-group-item">
                             <form action="/settings/update/" method="POST">
                                 <div class="container">
-                                <fieldset class="form-group">
-                                    <legend>Temperature Format</legend>
-                                    <div class="row justify-content-center">
-                                        <div class="col"><p>&nbsp;</p></div>
-                                        <div class="col">
-                                            <div class="form-check">
-                                                <input type="radio" id="tempInF" name="tempFormat" class="custom-control-input" checked="">
-                                                <label data-toggle="tooltip" title="Change the application display in Farenheit" class="custom-control-label" for="tempInF">Farenheit</label>
+                                    <fieldset class="form-group">
+                                        <h5 class="legend">Temperature Format</h5>
+                                        <div class="row justify-content-center">
+                                            <div class="col"><p>&nbsp;</p></div>
+                                            <div class="col">
+                                                <div class="form-check">
+                                                    <input type="radio" id="tempInF" name="tempFormat" class="custom-control-input" checked="">
+                                                    <label data-toggle="tooltip" title="Change the application display in Farenheit" class="custom-control-label" for="tempInF">Farenheit</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <label class="form-check-label">
+                                                        <input type="radio" id="tempInC" name="tempFormat" class="custom-control-input">
+                                                        <label data-toggle="tooltip" title="Change the application display in Celcius" class="custom-control-label" for="tempInC">Celcius</label>
+                                                    </label>
+                                                </div>
                                             </div>
-                                            <div class="form-check">
-                                                <label class="form-check-label">
-                                                    <input type="radio" id="tempInC" name="tempFormat" class="custom-control-input">
-                                                    <label data-toggle="tooltip" title="Change the application display in Celcius" class="custom-control-label" for="tempInC">Celcius</label>
-                                                </label>
-                                            </div>
+                                            <div class="col"><p>&nbsp;</p></div>
+                                            <div class="col"><button type="submit" class="btn btn-primary">Update</button></div>
+                                            <div class="col"><p>&nbsp;</p></div>
                                         </div>
-                                        <div class="col"><p>&nbsp;</p></div>
-                                        <div class="col"><button type="submit" class="btn btn-primary">Update</button></div>
-                                        <div class="col"><p>&nbsp;</p></div>
-                                    </div>
-                                </fieldset>
+                                    </fieldset>
+                                    <hr class="my-4">
+                                    <fieldset class="form-group">
+                                        <h5 class="legend">Temperature Calibration</h5>
+                                        <form action="/settings/update/" method="POST">
+                                            <div class="form-group row">
+                                                <label for="calAmbient" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Value by which the Room teperature display will be offset">Room</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" name="calAmbient" id="calAmbient" placeholder="0.0" value="settings.calAmbient">
+                                                </div>
+                                                <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
+                                            </div>
+                                        </form>
+                    
+                                        <form action="/settings/update/" method="POST">
+                                            <div class="form-group row">
+                                                <label for="calVessel" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Value by which the Vessel teperature display will be offset">Vessel</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" name="calVessel" id="calVessel" placeholder="0.0" value="settings.calVessel">
+                                                </div>
+                                                <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
+                                            </div>
+                                        </form>
+                                    </fieldset>
                                 </div>
                             </form>
                         </li>
-                    </ul>
                 </div>
-            </div> <!-- General Settings -->
+            </div> <!-- Temperature Settings -->
 
             <div class="card border-dark mb-3"> <!-- Target Settings -->
                 <div class="card-header">
-                    <h5>
-                        Target Settings
-                    </h5>
+                    <h4 class="card-title">Target Settings</h4>
                 </div>
                 <div class="card-body">
                     <p class="card-text">These settings control how Brew Bubbles talks to an HTML endpoint such as 
@@ -160,9 +188,9 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 
                     <form action="/settings/update/" method="POST">
                         <div class="form-group row">
-                            <label for="endpointURL" class="col-sm-2 col-form-label" data-toggle="tooltip" title="HTML Endpoint URL. Delete to disable pushing to an HTML Endpoint. Ports other than 80 need to be in the format of: http://foo.com:8080/page.php">HTML Endpoint URL</label>
+                            <label for="endpointURL" class="col-sm-2 col-form-label" data-toggle="tooltip" title="HTML Endpoint URL. Delete to disable pushing to an HTML Endpoint. Ports other than 80 need to be in the format of: http://foo.com:8080/page.php">Target</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="brewpiremixURL" id="brewpiremixURL" placeholder="http://brewpi.local/brewbubbles.php" :value="settings.brewpiremixURL">
+                                <input type="text" class="form-control" name="brewpiremixURL" id="brewpiremixURL" placeholder="http://brewpi.local/brewbubbles.php" value="settings.brewpiremixURL">
                             </div>
                             <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
                         </div>
@@ -170,9 +198,9 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 
                     <form action="/settings/update/" method="POST">
                         <div class="form-group row">
-                            <label for="endpointPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip" title="How often (in seconds) to push data to HTML Endpoint">Push Frequency</label>
+                            <label for="endpointPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip" title="How often (in seconds) to push data to HTML Endpoint">Frequency</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="endpointPushEvery" id="endpointPushEvery" placeholder="60" :value="settings.endpointPushEvery">
+                                <input type="text" class="form-control" name="endpointPushEvery" id="endpointPushEvery" placeholder="60" value="settings.endpointPushEvery">
                             </div>
                             <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
                         </div>
@@ -182,9 +210,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 
             <div class="card border-dark mb-3"> <!-- Brewer's Friend Settings -->
                 <div class="card-header">
-                    <h5>
-                        Brewer's Friend Settings
-                    </h5>
+                    <h4 class="card-title">Brewer's Friend Settings</h4>
                 </div>
                 <div class="card-body">
                     <p class="card-text">
@@ -197,7 +223,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         <div class="form-group row">
                             <label for="brewersFriendKey" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Enter the API key from your Brewer's Friend premium account">Brewer's Friend Key</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="brewersFriendKey" id="brewersFriendKey" placeholder="000fa2ac454c1abf14ffa3" :value="settings.brewersFriendKey">
+                                <input type="text" class="form-control" name="brewersFriendKey" id="brewersFriendKey" placeholder="000fa2ac454c1abf14ffa3" value="settings.brewersFriendKey">
                             </div>
                             <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
                         </div>
@@ -207,7 +233,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         <div class="form-group row">
                             <label for="bfPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip" title="How often (in minutes) to push data to Brewer's Friend">Push Frequency</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="endpointPushEvery" id="endpointPushEvery" placeholder="15" :value="settings.endpointPushEvery">
+                                <input type="text" class="form-control" name="endpointPushEvery" id="endpointPushEvery" placeholder="15" value="settings.endpointPushEvery">
                             </div>
                             <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
                         </div>
@@ -217,9 +243,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 
             <div class="card border-dark mb-3"> <!-- Update Firmware -->
                 <div class="card-header">
-                    <h5>
-                        Update Firmware
-                    </h5>
+                    <h4 class="card-title">Update Firmware</h4>
                 </div>
                 <div class="card-body">
                     <p class="card-text">
@@ -234,9 +258,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 
             <div class="card border-dark mb-3"> <!-- Reset WiFi -->
                 <div class="card-header">
-                    <h5>
-                        Reset WiFi
-                    </h5>
+                    <h4 class="card-title">Reset WiFi</h4>
                 </div>
                 <div class="card-body">
                     <p class="card-text">
