@@ -17,6 +17,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 
 <!doctype html>
 <html lang="en" class="h-100">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -42,12 +43,15 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
     <meta name="msapplication-config" content="/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="stylesheet" href="https://bootswatch.com/4/united/bootstrap.css" integrity="sha384-GuVYG0jqJkyF0Z6LyLuimzKIsbFyMvgtCUeAX3v/Mr+rBBK4qsoQk0yP6xB+RDzc" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://getbootstrap.com/docs/4.3/examples/sticky-footer/sticky-footer.css" integrity="sha384-BZcSuyq3cmGi/E2JVjs3C6PoDcVs/8OKuDZjyXOY/ntKcIbMt8iD4g+LyeSuJX+t" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://bootswatch.com/4/united/bootstrap.css"
+        integrity="sha384-GuVYG0jqJkyF0Z6LyLuimzKIsbFyMvgtCUeAX3v/Mr+rBBK4qsoQk0yP6xB+RDzc" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://getbootstrap.com/docs/4.3/examples/sticky-footer/sticky-footer.css"
+        integrity="sha384-BZcSuyq3cmGi/E2JVjs3C6PoDcVs/8OKuDZjyXOY/ntKcIbMt8iD4g+LyeSuJX+t" crossorigin="anonymous">
 
     <style>
-        main > .container {
+        main>.container {
             padding: 60px 15px 0;
         }
 
@@ -55,7 +59,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
             background-color: #f5f5f5;
         }
 
-        .footer > .container {
+        .footer>.container {
             padding-right: 15px;
             padding-left: 15px;
         }
@@ -68,7 +72,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
         <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
             <img src="/mstile-144x144.png" style="width:32px;height:32px;">
             <a class="navbar-brand" href="/">&nbsp;Brew Bubbles</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -92,44 +97,43 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 
     <main role="main" class="flex-shrink-0">
 
-        <div class="container" id="settingsapp"> <!-- Container -->
+        <div class="container" id="settingsapp">
+            <!-- Container -->
             <h1 class="mt-5">Bubble Sensor</h1>
 
-            <div class="card border-dark mb-3"> <!-- Sensor Readings -->
+            <div class="card border-dark mb-3">
+                <!-- Sensor Readings -->
                 <div class="card-header">
-                    <h5>
-                        Sensor Readings
-                    </h5>
+                    <h4 class="card-title">Current Readings</h4>
                 </div>
                 <div class="card-body">
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Vessel Name:
-                            <span>My Fermenter</span>
+                            <strong>Vessel Name:</strong>
+                            <span id="name">...loading</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Bubbles Per Minute:
-                            <span>22.934</span>
+                            <strong>Bubbles Per Minute:</strong>
+                            <span id="bpm">...loading</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Ambient Temp:
-                            <span>71.2</span>
-                        </li>
-                        </ul>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Vessel Temp:
-                            <span>70.8</span>
+                            <strong>Ambient Temp:</strong>
+                            <span id="aTemp">...loading</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Last Reading:
-                            <span>2019-11-16T23:59:01.123Z</span>
+                            <strong>Vessel Temp:</strong>
+                            <span id="vTemp">...loading</span>
                         </li>
-            
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Last Reading:</strong>
+                            <span id="time">...loading</span>
+                        </li>
+                    </ul>
                 </div>
             </div> <!-- Sensor Readingss -->
 
         </div> <!-- Container -->
-            
+
     </main>
 
     <footer class="footer mt-auto py-3">
@@ -138,12 +142,33 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
         </div>
     </footer>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.7/dist/vue.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-numeral-filter/dist/vue-numeral-filter.min.js" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            loadPage(); // Load once on page load
+            var interval = setInterval(function () { loadPage(); }, 60000); // Then every 60 seconds
+        });
 
+        function loadPage() {
+            var url = "/bubble/";
+            var bubble = $.getJSON(url, function () {
+            })
+                .done(function (bubble) {
+                    $("#name").text(bubble.vessel);
+                    $("#bpm").text(parseFloat(bubble.data.bpm).toFixed(1));
+                    $("#aTemp").text(parseFloat(bubble.data.ambtemp).toFixed(2) + "°" + bubble.format);
+                    $("#vTemp").text(parseFloat(bubble.data.vestemp).toFixed(2) + "°" + bubble.format);
+                    $("#time").text(bubble.datetime);
+                })
+                .fail(function () {
+                    console.log("Error loading JSON from " + url + ".");
+                })
+                .always(function () {
+                    //
+                });
+        }
+    </script>
 </body>
+
 </html>
