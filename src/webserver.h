@@ -18,6 +18,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef _WEBSERVER_H
 #define _WEBSERVER_H
 
+#include "wifi.h"
 #include "execota.h"
 #include "bubbles.h"
 #include "tools.h"
@@ -25,6 +26,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "serial.h"
 #include <FS.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266HTTPClient.h>
 
 class WebServer {
     private:
