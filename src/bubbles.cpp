@@ -43,8 +43,13 @@ void Bubbles::Setup() {
     pBubbles = single;              // Assign current instance to pointer 
     single->ulLastReport = millis();// Store the last report timer
     single->pulse = 0;              // Reset pulse counter
-    single->ulStart = 0UL;          // Start time
-    single->lastTime = (char*)F("1970-01-01T00:00:00Z"); // Set to epoch as a placeholder
+
+    // Get starting values
+    unsigned long ulNow = millis();
+    single->ulStart = ulNow;
+    single->lastPpm = single->GetRawPpm();
+    NtpHandler *ntpTime = NtpHandler::getInstance();
+    single->lastTime = ntpTime->getJsonTime();
 }
 
 Bubbles::~Bubbles() {
@@ -58,6 +63,7 @@ void Bubbles::HandleInterrupts(void) { // Bubble Interrupt handler
         single->pulse++;    // Increment pulse count
     }
     interrupts();   // Turn on interrupts
+    Log.verbose(F("."));
 }
 
 float Bubbles::GetRawPps() { // Return raw pulses per second (resets counter)
@@ -69,7 +75,7 @@ float Bubbles::GetRawPps() { // Return raw pulses per second (resets counter)
     single->pulse = 0; // Zero the pulse counter
     single->ulLastReport = millis(); // Store the last report timer
     //return pps; // Return pulses per second
-    return 10.5;
+    return pps;
 }
 
 float Bubbles::GetRawPpm() { // Return raw pulses per minute (resets counter)
@@ -106,9 +112,9 @@ float Bubbles::GetAmbientTemp() {
 
         JsonConfig *config = JsonConfig::getInstance();
         if (config->tempinf == true)
-            fAmbTemp = sensorAmbient.getTempFByIndex(0);
+            fAmbTemp = sensorAmbient.getTempFByIndex(0) + config->calAmbient;
         else
-            fAmbTemp = sensorAmbient.getTempCByIndex(0);
+            fAmbTemp = sensorAmbient.getTempCByIndex(0) + config->calAmbient;
     }
     return fAmbTemp;
 }
@@ -124,9 +130,9 @@ float Bubbles::GetVesselTemp() {
 
         JsonConfig *config = JsonConfig::getInstance();
         if (config->tempinf == true)
-            fVesTemp = sensorVessel.getTempFByIndex(0);
+            fVesTemp = sensorVessel.getTempFByIndex(0) + config->calVessel;
         else
-            fVesTemp = sensorVessel.getTempCByIndex(0);
+            fVesTemp = sensorVessel.getTempCByIndex(0) + config->calVessel;
     }
     return fVesTemp;
 }
