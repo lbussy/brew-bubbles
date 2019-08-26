@@ -50,9 +50,9 @@ void wifisetup(bool reset) {
 #ifndef DISABLE_LOGGING
         Log.warning(F("Timed out waiting for connection to AP, resetting." CR));
 #endif // DISABLE_LOGGING
-        delay(1000);
+        _delay(1000);
         ESP.reset();  // Reset and try again
-        delay(1000);
+        _delay(1000);
     }
 
     // Connected
@@ -69,8 +69,16 @@ void wifisetup(bool reset) {
     digitalWrite(LED, HIGH); // Turn off LED
 }
 
-void disco_restart() { // Blow away WiFi config and reset
-    WiFi.disconnect();
-    ESP.restart();
-    delay(1000);
+void presentPortal() { // Present AP and captive portal to allow new settings
+    JsonConfig *config = JsonConfig::getInstance();
+    WiFiManager wifiManager;
+    wifiManager.setConfigPortalTimeout(120); // Reset controller after 120 secs
+    wifiManager.startConfigPortal(config->ssid, config->appwd);
+}
+
+void resetWifi() { // Wipe wifi settings and reset controller
+    WiFiManager wifiManager;
+    wifiManager.resetSettings();
+    _delay(3000);
+    ESP.reset();
 }

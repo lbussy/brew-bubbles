@@ -26,6 +26,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 void wifisetup(bool reset);
 void configModeCallback();
-void disco_restart();
+void presentPortal();
+void resetWifi();
 
 #endif // _WIFI_H
