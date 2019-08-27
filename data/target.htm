@@ -17,6 +17,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 
 <!doctype html>
 <html lang="en" class="h-100">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -42,12 +43,15 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
     <meta name="msapplication-config" content="/browserconfig.xml">
     <meta name="theme-color" content="#ffffff">
 
-    <link rel="stylesheet" href="https://bootswatch.com/4/united/bootstrap.css" integrity="sha384-GuVYG0jqJkyF0Z6LyLuimzKIsbFyMvgtCUeAX3v/Mr+rBBK4qsoQk0yP6xB+RDzc" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://getbootstrap.com/docs/4.3/examples/sticky-footer/sticky-footer.css" integrity="sha384-BZcSuyq3cmGi/E2JVjs3C6PoDcVs/8OKuDZjyXOY/ntKcIbMt8iD4g+LyeSuJX+t" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://bootswatch.com/4/united/bootstrap.css"
+        integrity="sha384-GuVYG0jqJkyF0Z6LyLuimzKIsbFyMvgtCUeAX3v/Mr+rBBK4qsoQk0yP6xB+RDzc" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://getbootstrap.com/docs/4.3/examples/sticky-footer/sticky-footer.css"
+        integrity="sha384-BZcSuyq3cmGi/E2JVjs3C6PoDcVs/8OKuDZjyXOY/ntKcIbMt8iD4g+LyeSuJX+t" crossorigin="anonymous">
 
     <style>
-        main > .container {
+        main>.container {
             padding: 60px 15px 0;
         }
 
@@ -55,7 +59,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
             background-color: #f5f5f5;
         }
 
-        .footer > .container {
+        .footer>.container {
             padding-right: 15px;
             padding-left: 15px;
         }
@@ -64,37 +68,41 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
     <script type="text/javascript">
         function countdown() {
             var i = document.getElementById('counter');
-            if (parseInt(i.innerHTML)<=0) {
+            if (parseInt(i.innerHTML) <= 0) {
                 location.href = '/';
             }
-            if (parseInt(i.innerHTML)!=0) {
-                i.innerHTML = parseInt(i.innerHTML)-1;
+            if (parseInt(i.innerHTML) != 0) {
+                i.innerHTML = parseInt(i.innerHTML) - 1;
             }
-            if (parseInt(i.innerHTML)==1) {
+            if (parseInt(i.innerHTML) == 1) {
                 var p = document.getElementById('plural');
                 p.innerHTML = "";
             }
         }
-        setInterval(function(){ countdown(); },1000);
+        setInterval(function () { countdown(); }, 1000);
     </script>
 
-    </head>
+</head>
 
 <body class="d-flex flex-column h-100">
 
     <header>
-        <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
-            <img src="/mstile-144x144.png" style="width:32px;height:32px;">
-            <a class="navbar-brand" href="/">&nbsp;Brew Bubbles</a>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="/">
+                <img src="/mstile-144x144.png" style="width:32px;height:32px;">
+                &nbsp;Brew Bubbles
+            </a>
         </nav>
     </header>
 
     <main role="main" class="flex-shrink-0">
 
-        <div class="container" id="settingsapp"> <!-- Container -->
+        <div class="container" id="settingsapp">
+            <!-- Container -->
             <h1 class="mt-5">Test Page</h1>
 
-            <div class="card border-dark mb-3"> <!-- Target Settings -->
+            <div class="card border-dark mb-3">
+                <!-- Target Settings -->
                 <div class="card-header">
                     <h4 class="card-title">Data Injector</h4>
                 </div>
@@ -117,7 +125,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                             <span id="name">??</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>Temp in FArenheit:</strong>
+                            <strong>Temp in Farenheit:</strong>
                             <span id="tempinf">??</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -153,7 +161,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
             </div> <!-- Target Settings -->
 
         </div> <!-- Container -->
-            
+
     </main>
 
     <footer class="footer mt-auto py-3">
@@ -162,12 +170,20 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
         </div>
     </footer>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.7/dist/vue.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-numeral-filter/dist/vue-numeral-filter.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-numeral-filter/dist/vue-numeral-filter.min.js"
+        crossorigin="anonymous"></script>
 
 </body>
+
 </html>
