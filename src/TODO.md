@@ -1,5 +1,6 @@
 # TODO List
 
+- Add countdown on main page to next refresh?
 - Try to apply former configuration when updating firmware
 - Merge back in MDNS
 - Merge back in Target Handler

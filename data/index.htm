@@ -69,17 +69,19 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 <body class="d-flex flex-column h-100">
 
     <header>
-        <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
-            <img src="/mstile-144x144.png" style="width:32px;height:32px;">
-            <a class="navbar-brand" href="/">&nbsp;Brew Bubbles</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="#">
+                <img src="/mstile-144x144.png" style="width:32px;height:32px;">
+                &nbsp;Brew Bubbles
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+                aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="collapse navbar-collapse" id="navbarColor01">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/settings/">Settings</a>
@@ -109,23 +111,23 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                 <div class="card-body">
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>Vessel Name:</strong>
+                            <strong>Vessel Name: </strong>
                             <span id="name">...loading</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>Bubbles Per Minute:</strong>
+                            <strong>Bubbles Per Minute: </strong>
                             <span id="bpm">...loading</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>Ambient Temp:</strong>
+                            <strong>Ambient Temp: </strong>
                             <span id="aTemp">...loading</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>Vessel Temp:</strong>
+                            <strong>Vessel Temp: </strong>
                             <span id="vTemp">...loading</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>Last Reading:</strong>
+                            <strong>Last Reading: </strong>
                             <span id="time">...loading</span>
                         </li>
                     </ul>
@@ -155,14 +157,28 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
             var bubble = $.getJSON(url, function () {
             })
                 .done(function (bubble) {
-                    $("#name").text(bubble.vessel);
-                    $("#bpm").text(parseFloat(bubble.data.bpm).toFixed(1));
-                    $("#aTemp").text(parseFloat(bubble.data.ambtemp).toFixed(2) + "°" + bubble.format);
-                    $("#vTemp").text(parseFloat(bubble.data.vestemp).toFixed(2) + "°" + bubble.format);
-                    $("#time").text(bubble.datetime);
+                    try {
+                        $("#name").text(bubble.vessel);
+                        $("#bpm").text(parseFloat(bubble.data.bpm).toFixed(1));
+                        $("#aTemp").text(parseFloat(bubble.data.ambtemp).toFixed(2) + "°" + bubble.format);
+                        $("#vTemp").text(parseFloat(bubble.data.vestemp).toFixed(2) + "°" + bubble.format);
+                        var date = new Date(bubble.datetime);
+                        $("#time").text(date);
+                    }
+                    catch {
+                        $("#name").text("Not yet updated.");
+                        $("#bpm").text("Not yet updated.");
+                        $("#aTemp").text("Not yet updated.");
+                        $("#vTemp").text("Not yet updated.");
+                        $("#time").text("Not yet updated.");
+                    }
                 })
                 .fail(function () {
-                    console.log("Error loading JSON from " + url + ".");
+                    $("#name").text("Error loading JSON.");
+                    $("#bpm").text("Error loading JSON.");
+                    $("#aTemp").text("Error loading JSON.");
+                    $("#vTemp").text("Error loading JSON.");
+                    $("#time").text("Error loading JSON.");
                 })
                 .always(function () {
                     //
