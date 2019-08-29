@@ -27,6 +27,11 @@ version = subprocess.check_output(tagcmd, shell=True).decode().strip()
 revcmd = "git log --pretty=format:'%h' -n 1"
 commit = subprocess.check_output(revcmd, shell=True).decode().strip()
 
+# Get branch name from Git
+branchcmd = "git rev-parse --abbrev-ref HEAD"
+branch = subprocess.check_output(branchcmd, shell=True).decode().strip()
+
 # Make both available for use in the defines
 print("-DPIO_SRC_TAG={0}".format(version))
 print("-DPIO_SRC_REV={0}".format(commit))
+print("-DPIO_SRC_BRH={0}".format(branch))
