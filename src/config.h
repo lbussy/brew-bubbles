@@ -278,10 +278,10 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Target Frequency (default 1 minute)
+// Target Frequency (default 60 seconds)
 //
 #ifndef TARGETFREQ
-#define TARGETFREQ 1 * 60 * 1000UL
+#define TARGETFREQ 60
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
@@ -291,7 +291,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 // Brewer's Friend Frequency (default 15 mins)
 //
 #ifndef BFFREQ
-#define BFFREQ 15 * 60 * 1000UL
+#define BFFREQ 15
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
