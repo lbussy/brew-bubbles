@@ -35,7 +35,6 @@ class NtpHandler {
         boolean syncEventTriggered;
         NTPSyncEvent_t ntpEvent;
         void setup();
-        void processSyncEvent(NTPSyncEvent_t);
 
     public:
         // Singleton Declarations
