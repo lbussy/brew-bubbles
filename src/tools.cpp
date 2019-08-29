@@ -18,7 +18,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "tools.h"
 
 bool ipl() { // Determine if this is the first start after loading image
-    // Mitigates: https://github.com/jenscski/DoubleResetDetect/issues/2
     char thisver[20] = __DATE__ __TIME__; // Sets at compile-time
     char savever[20] = "";
     bool _ipl = false;
