@@ -15,10 +15,14 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
+#ifndef _TOOLS_H
+#define _TOOLS_H
+
 #include "wifi.h"
 #include <EEPROM.h>
 #include <Ticker.h>
 #include <Arduino.h>
 
-bool ipl();
 void _delay(unsigned long);
+
+#endif
