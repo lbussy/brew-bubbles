@@ -1,13 +1,12 @@
 # TODO List
 
+- Do a version check
+    - Add JSON to SPIFFS
+    - Compare with home
 - Add countdown on main page to next refresh?
 - Try to apply former configuration when updating firmware
-- Merge back in MDNS
 - Merge back in Target Handler
-- BUG: IPL stopped working
-- Fix losing WiFi config on power loss
 - Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
-- Figure out version in code
 - Add hostname change to AP Portal
 - Fix deprecation error in http
 - Get web pages working
@@ -83,3 +82,8 @@
     - ~~Add to JSON~~
     - ~~Add to Settings page~~
     - ~~Calculate temp~~
+- ~~Figure out version in code~~
+- ~~Force NTP to make a blocking call to get time on startup~~
+- ~~BUG: IPL stopped working~~ (no longer using)
+- ~~Fix losing WiFi config on power loss~~
+- ~~Merge back in MDNS~~
