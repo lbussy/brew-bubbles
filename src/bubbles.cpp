@@ -97,7 +97,7 @@ void Bubbles::Update() {
         single->lastPpm = single->GetRawPpm();
         NtpHandler *ntpTime = NtpHandler::getInstance();
         single->lastTime = ntpTime->getJsonTime();
-        Log.verbose(F("Update(): Last time is %s, last Ppm is %l:" CR), single->lastTime, single->lastPpm);
+        Log.verbose(F("Update(): Last time is %s, last PPM is %l:" CR), single->lastTime, single->lastPpm);
     }
 }
 
