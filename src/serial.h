@@ -19,6 +19,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #define SERIAL_H
 
 #include "config.h"
+#include "tools.h" // DEBUG TODO
 #include <ArduinoLog.h>
 #include <Arduino.h>
 
