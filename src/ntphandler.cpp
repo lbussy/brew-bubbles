@@ -43,13 +43,12 @@ void NtpHandler::setup() {
 void NtpHandler::start() {
     NTP.setInterval(63);
     NTP.setNTPTimeout(NTP_TIMEOUT);
-    NTP.begin("pool.ntp.org", 0, false, 0);
+    NTP.begin(TIMESERVER, 0, false, 0);
 }
 
 void NtpHandler::update() {
-    if (syncEventTriggered) {
-        single->processSyncEvent(single->ntpEvent);
-        single->syncEventTriggered = false;
+    if (NTP.getLastNTPSync() > 0) {
+        single->hasBeenSet = true;
     }
 }
 
@@ -58,23 +57,4 @@ char* NtpHandler::getJsonTime() {
     sprintf(datetime, "%04u-%02u-%02uT%02u:%02u:%02uZ", year(), month(), day(), hour(), minute(), second());
     Log.verbose(F("NtpHandler: Creating date/time: %s" CR), datetime);
     return(datetime);
-}
-
-void NtpHandler::processSyncEvent(NTPSyncEvent_t ntpEvent) {
-    if (ntpEvent < 0)     {
-        Log.error(F("Time Sync error: %d" CR), ntpEvent);
-        if (ntpEvent == noResponse)
-            Log.error(F("NTP server not reachable."));
-        else if (ntpEvent == invalidAddress)
-            Log.error(F("Invalid NTP server address."));
-        else if (ntpEvent == errorSending)
-            Log.error(F("Error sending request."));
-        else if (ntpEvent == responseError)
-            Log.error(F("NTP response error."));
-    } else {
-        if (ntpEvent == timeSyncd) {
-            Log.notice(F("Updated time via NTP." CR));
-            hasBeenSet = true;
-        }
-    }
 }
