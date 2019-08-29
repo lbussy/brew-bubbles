@@ -20,6 +20,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef DISABLE_LOGGING
 
 void serial() { // Start serial with auto-detected rate (default to BAUD)
+    _delay(4000); // DEBUG TODO
     Serial.begin(BAUD);
     Serial.setDebugOutput(true);
     Serial.flush();
