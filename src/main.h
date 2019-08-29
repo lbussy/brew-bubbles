@@ -23,6 +23,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "jsonconfig.h"
 #include "ntphandler.h"
 #include "webserver.h"
+#include <DoubleResetDetect.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 
@@ -32,7 +33,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 //#include "bubbles.h"
 //#include "wifi.h"
 //#include "targethandler.h"
-//#include <DoubleResetDetect.h>
 //#include <EEPROM.h>
 //#include <WiFiClient.h>
 //#include <Arduino.h>
@@ -45,7 +45,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #endif // _WIFI_CONFIG_H
 
-// DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 // DRD_TIMEOUT =    Maximum number of seconds between resets that counts
 //                  as a double reset
 // DRD_ADDRESS =    Address to the block in the RTC user memory change it
@@ -56,5 +55,11 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #define DRD_ADDRESS 0x00
 // EEPROM address at which to store the IPL flag.  Edit accordingly.
 #define EEPROM_ADDRESS 0x00
+
+// Have to use two levels of macro expansion to convert a symbol to
+// a string. See http://gcc.gnu.org/onlinedocs/cpp/Stringification.html
+
+#define stringify(s) _stringifyDo(s)
+#define _stringifyDo(s) #s
 
 #endif // _MAIN_H
