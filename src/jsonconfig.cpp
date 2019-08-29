@@ -85,8 +85,8 @@ bool JsonConfig::Parse(bool reset = false) {
         single->tempinf = TEMPFORMAT;
 
         // Set defaults for temperature calibration
-        single->calAmbient = 0.0;
-        single->calVessel = 0.0;
+        single->calAmbient = 0.1;
+        single->calVessel = 0.1;
         
         // Set defaults for Target Settings Object
         strlcpy(single->targeturl, TARGETURL, sizeof(single->targeturl));
