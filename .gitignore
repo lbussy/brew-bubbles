@@ -2,12 +2,10 @@
 .pio
 .pioenvs
 .piolibdeps
-.vscode/.browse.c_cpp*
-.vscode/c_cpp_properties.json
-.vscode/launch.json
+.vscode
 *.code-workspace
 
-# Board and Schematic File Backups
+# PCB and Schematic File Backups
 *.*\#[0-9]
 
 # Prerequisites
