@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.4.2">
+<eagle version="9.5.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -874,6 +874,8 @@ LETTER landscape</description>
 <part name="R3" library="SparkFun-Resistors" deviceset="330OHM" device="-HORIZ-1/10W-5%" value="150Ω"/>
 <part name="ROOM" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X3" device="/90" package3d_urn="urn:adsk.eagle:package:22459/2" value="3PIN90"/>
 <part name="FRAME1" library="frames" deviceset="LETTER_L" device=""/>
+<part name="ROOM1" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X3" device="/90" package3d_urn="urn:adsk.eagle:package:22459/2" value="3PIN90"/>
+<part name="VESSEL1" library="pinhead" library_urn="urn:adsk.eagle:library:325" deviceset="PINHD-1X3" device="/90" package3d_urn="urn:adsk.eagle:package:22459/2" value="3PIN90"/>
 </parts>
 <sheets>
 <sheet>
@@ -913,6 +915,14 @@ LETTER landscape</description>
 <attribute name="LAST_DATE_TIME" x="91.44" y="-24.13" size="2.54" layer="94" font="vector"/>
 <attribute name="SHEET" x="165.1" y="-24.13" size="2.54" layer="94" font="vector"/>
 <attribute name="DRAWING_NAME" x="96.52" y="-6.35" size="2.54" layer="94" font="vector"/>
+</instance>
+<instance part="ROOM1" gate="A" x="81.28" y="124.46" smashed="yes" rot="R90">
+<attribute name="VALUE" x="85.09" y="128.27" size="1.778" layer="96" rot="R180"/>
+<attribute name="NAME" x="84.328" y="130.81" size="1.778" layer="95" rot="R180"/>
+</instance>
+<instance part="VESSEL1" gate="A" x="119.38" y="124.46" smashed="yes" rot="R90">
+<attribute name="VALUE" x="123.19" y="128.27" size="1.778" layer="96" rot="R180"/>
+<attribute name="NAME" x="122.428" y="130.81" size="1.778" layer="95" rot="R180"/>
 </instance>
 </instances>
 <busses>
