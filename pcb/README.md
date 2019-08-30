@@ -40,7 +40,7 @@ Note that component labeled "ROOM" is an actual bare DS18B20 sensor, not a water
 
 ## Order Boards
 
-Order 3 boards for $5.65 from [Oshpark using this link](https://oshpark.com/shared_projects/NbyG1Xje), or download the Brew-Bubbles.brd file and use it with the board fabrication house of your choosing.
+Order 3 boards for $5.65 from [Oshpark using this link](https://oshpark.com/shared_projects/y4PDSHvo), or download the Brew-Bubbles.brd file and use it with the board fabrication house of your choosing.
 
 ## Modifying These Files
 If you would like to personalize these board designs, you may modify them with [Autodesk's EAGLE](https://www.autodesk.com/products/eagle/overview). EAGLE is a scriptable electronic design automation (EDA) application with schematic capture, printed circuit board (PCB) layout, auto-router and computer-aided manufacturing (CAM) features. EAGLE stands for Easily Applicable Graphical Layout Editor and is developed by CadSoft Computer GmbH. The company was acquired by Autodesk Inc. in 2016.  
