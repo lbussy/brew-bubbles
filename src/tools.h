@@ -23,6 +23,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include <Ticker.h>
 #include <Arduino.h>
 
+#define EEPROM_ADDRESS 0x00
+
 void _delay(unsigned long);
 
 #endif
