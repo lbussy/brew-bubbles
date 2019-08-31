@@ -24,7 +24,9 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include <ESP8266WebServer.h>   //Local WebServer used to serve the configuration portal
 #include <WiFiManager.h>        //https://github.com/tzapu/WiFiManager WiFi Configuration Magic
 
-void presentPortal();
+void presentPortal(bool);
 void resetWifi();
+void saveConfigCallback();
+void configModeCallback(WiFiManager *myWiFiManager);
 
 #endif // _WIFI_H
