@@ -31,7 +31,7 @@ commit = subprocess.check_output(revcmd, shell=True).decode().strip()
 branchcmd = "git rev-parse --abbrev-ref HEAD"
 branch = subprocess.check_output(branchcmd, shell=True).decode().strip()
 
-# Make both available for use in the defines
+# Make all available for use in the macros
 print("-DPIO_SRC_TAG={0}".format(version))
 print("-DPIO_SRC_REV={0}".format(commit))
 print("-DPIO_SRC_BRH={0}".format(branch))
