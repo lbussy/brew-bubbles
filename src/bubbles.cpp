@@ -47,7 +47,7 @@ void Bubbles::Setup() {
     // Get starting values
     unsigned long ulNow = millis();
     single->ulStart = ulNow;
-    single->lastPpm = single->GetRawPpm();
+    single->lastPpm = 0.0;
     NtpHandler *ntpTime = NtpHandler::getInstance();
     single->lastTime = ntpTime->getJsonTime();
 }
@@ -97,7 +97,7 @@ void Bubbles::Update() {
         single->lastPpm = single->GetRawPpm();
         NtpHandler *ntpTime = NtpHandler::getInstance();
         single->lastTime = ntpTime->getJsonTime();
-        Log.verbose(F("Update(): Last time is %s, last PPM is %l:" CR), single->lastTime, single->lastPpm);
+        Log.verbose(F("Time is %s, PPM is %l:" CR), single->lastTime, single->lastPpm);
     }
 }
 
