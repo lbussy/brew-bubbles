@@ -162,8 +162,19 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                     try {
                         $("#name").text(bubble.vessel);
                         $("#bpm").text(parseFloat(bubble.data.bpm).toFixed(1));
-                        $("#aTemp").text(parseFloat(bubble.data.ambtemp).toFixed(2) + "°" + bubble.format);
-                        $("#vTemp").text(parseFloat(bubble.data.vestemp).toFixed(2) + "°" + bubble.format);
+
+                        if (bubble.data.ambtemp == -100) {
+                            $("#aTemp").text("Not connected")
+                        } else {
+                            $("#aTemp").text(parseFloat(bubble.data.ambtemp).toFixed(2) + "°" + bubble.format);
+                        }
+
+                        if (bubble.data.vestemp == -100) {
+                            $("#vTemp").text("Not connected")
+                        } else {
+                            $("#vTemp").text(parseFloat(bubble.data.vestemp).toFixed(2) + "°" + bubble.format);
+                        }
+
                         var date = new Date(bubble.datetime);
                         $("#time").text(date);
                     }
