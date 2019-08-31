@@ -44,6 +44,20 @@ void NtpHandler::start() {
     NTP.setInterval(63);
     NTP.setNTPTimeout(NTP_TIMEOUT);
     NTP.begin(TIMESERVER, 0, false, 0);
+    Log.verbose(F("Entering blocking loop to get NTP time." CR));
+    single->update();
+    while (!single->hasBeenSet) {
+        #ifdef LOG_LEVEL
+        Serial.print(F("."));
+        #endif
+        _delay(500);
+        single->update();
+        yield();
+    }
+    #ifdef LOG_LEVEL
+    Serial.println();
+    Log.notice(F("NTP Time: %s." CR), single->getJsonTime());
+    #endif
 }
 
 void NtpHandler::update() {
@@ -55,6 +69,5 @@ void NtpHandler::update() {
 char* NtpHandler::getJsonTime() {
     char* datetime = new  char[21];
     sprintf(datetime, "%04u-%02u-%02uT%02u:%02u:%02uZ", year(), month(), day(), hour(), minute(), second());
-    Log.verbose(F("NtpHandler: Creating date/time: %s" CR), datetime);
     return(datetime);
 }

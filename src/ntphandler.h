@@ -19,6 +19,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #define _NTPHANDLER_H
 
 #include "config.h"
+#include "tools.h"
 #include <TimeLib.h>
 #include <NtpClientLib.h>
 #include <ArduinoLog.h>
