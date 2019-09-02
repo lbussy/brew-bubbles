@@ -21,7 +21,6 @@ bool shouldSaveConfig = false;
 
 void presentPortal(bool ignore = false) { // Present AP and captive portal to allow new settings
     JsonConfig *config = JsonConfig::getInstance();
-
     WiFiManager wifiManager;
     wifiManager.setSaveConfigCallback(saveConfigCallback); // Set callback to save settings
     wifiManager.setAPCallback(configModeCallback); // Give some basic instructions via Serial
@@ -43,7 +42,7 @@ void presentPortal(bool ignore = false) { // Present AP and captive portal to al
         if (!wifiManager.autoConnect(config->ssid, config->appwd)) {
             Log.warning(F("Failed to connect and hit timeout."));
             _delay(3000);
-            ESP.reset();
+            ESP.restart();
             _delay(5000);
         }
     }
@@ -67,7 +66,7 @@ void resetWifi() { // Wipe wifi settings and reset controller
     WiFiManager wifiManager;
     wifiManager.resetSettings();
     _delay(3000);
-    ESP.reset();
+    ESP.restart();
 }
 
 void saveConfigCallback() { // Set flag to save config
