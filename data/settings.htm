@@ -111,7 +111,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <form id="controller" action="/settings/update/" method="POST">
+                            <form id="controller">
                                 <div class="form-group row">
                                     <label for="mdnsID" class="col-sm-2 col-form-label" data-toggle="tooltip" 
                                             title="Change mDNS name (the hostname part in http://hostname.local/) Do not add the &ldquo;.local&rdquo; to the name">
@@ -121,7 +121,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                         <input type="text" class="form-control" name="mdnsID" id="mdnsID"
                                             placeholder="Hostname">
                                     </div>
-                                    <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button>
+                                    <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -132,7 +132,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                         <input type="text" class="form-control" name="bubname" id="bubname"
                                             placeholder="Fermenter 1">
                                     </div>
-                                    <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button>
+                                    <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
                                     </div>
                                 </div>
                             </form>
@@ -148,7 +148,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <form id="temerature" action="/settings/update/" method="POST">
+                            <form id="temperature">
                                 <div class="container">
                                     <fieldset class="form-group">
                                         <h5 class="legend">Temperature Format</h5>
@@ -159,27 +159,26 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                             <div class="col">
                                                 <div class="form-check">
                                                     <label class="form-check-label"
-                                                        title="Change the application display in Celcius">
+                                                        title="Change the application display in Celsius">
                                                         <input type="radio" class="form-check-input" name="tempInF"
-                                                            id="celcius" value="option0">
+                                                            id="celsius" value="option0">
                                                         Celsius
                                                     </label>
-
                                                 </div>
                                                 <div class="form-check">
                                                     <label class="form-check-label"
-                                                        title="Change the application display in Farenheit">
+                                                        title="Change the application display in Fahrenheit">
                                                         <input type="radio" class="form-check-input" name="tempInF"
-                                                            id="farenheit" value="option1" checked="">
-                                                        Farenheit
+                                                            id="fahrenheit" value="option1" checked="">
+                                                        Fahrenheit
                                                     </label>
                                                 </div>
                                             </div>
                                             <div class="col">
                                                 <p>&nbsp;</p>
                                             </div>
-                                            <div class="col"><button type="submit"
-                                                    class="btn btn-primary">Update</button></div>
+                                            <div class="col">
+                                                <button class="btn btn-primary" id="submitSettings">Update</button></div>
                                             <div class="col">
                                                 <p>&nbsp;</p>
                                             </div>
@@ -188,31 +187,31 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                     <hr class="my-4">
                                     <fieldset class="form-group">
                                         <h5 class="legend">Temperature Calibration</h5>
-                                        <form action="/settings/update/" method="POST">
+                                        <form>
                                             <div class="form-group row">
                                                 <label for="calRoom" class="col-sm-2 col-form-label"
                                                     data-toggle="tooltip"
-                                                    title="Value by which the Room teperature display will be offset">Room</label>
+                                                    title="Value by which the Room temperature display will be offset">Room</label>
                                                 <div class="col-sm-8">
                                                     <input type="number" class="form-control" id="calRoom"
-                                                        placeholder="0.0">
+                                                    name="calRoom" placeholder="0.0">
                                                 </div>
-                                                <div class="col-sm-2"><button type="submit"
-                                                        class="btn btn-primary">Update</button></div>
+                                                <div class="col-sm-2">
+                                                    <button class="btn btn-primary" id="submitSettings">Update</button></div>
                                             </div>
                                         </form>
 
-                                        <form action="/settings/update/" method="POST">
+                                        <form>
                                             <div class="form-group row">
                                                 <label for="calVessel" class="col-sm-2 col-form-label"
                                                     data-toggle="tooltip"
                                                     title="Value by which the Vessel teperature display will be offset">Vessel</label>
                                                 <div class="col-sm-8">
                                                     <input type="number" class="form-control" id="calVessel"
-                                                        placeholder="0.0">
+                                                    name="calVessel" placeholder="0.0">
                                                 </div>
-                                                <div class="col-sm-2"><button type="submit"
-                                                        class="btn btn-primary">Update</button></div>
+                                                <div class="col-sm-2">
+                                                    <button class="btn btn-primary" id="submitSettings">Update</button></div>
                                             </div>
                                         </form>
                                     </fieldset>
@@ -234,26 +233,26 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         delete the URL.
                     </p>
 
-                    <form action="/settings/update/" method="POST">
+                    <form>
                         <div class="form-group row">
                             <label for="endpointURL" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                 title="HTML Endpoint URL. Delete to disable pushing to an HTML Endpoint. Ports other than 80 need to be in the format of: http://foo.com:8080/page.php">Target</label>
                             <div class="col-sm-8">
-                                <input type="url" class="form-control" id="target"
+                                <input type="url" class="form-control" id="target" name="target"
                                     placeholder="http://brewpi.local/brew-bubbles-php">
                             </div>
-                            <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
+                            <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button></div>
                         </div>
                     </form>
 
-                    <form action="/settings/update/" method="POST">
+                    <form>
                         <div class="form-group row">
                             <label for="endpointPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                 title="How often (in seconds) to push data to HTML Endpoint">Frequency</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" id="tfreq" placeholder="120">
+                                <input type="number" class="form-control" id="tfreq" name="tfreq" placeholder="120">
                             </div>
-                            <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
+                            <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button></div>
                         </div>
                     </form>
                 </div>
@@ -272,26 +271,26 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         To find your API key; log into your Brewer's Friend account and go to Profile > Account.
                         Your API key will be a 40-character string of letters and numbers (not a URL).
                     </p>
-                    <form action="/settings/update/" method="POST">
+                    <form>
                         <div class="form-group row">
                             <label for="brewersFriendKey" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Enter the API key from your Brewer's Friend premium account.
                                 To disable pushing to Brewer's Friend, delete the key.">Brewer's Friend Key
                             </label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="bfkey" placeholder="000fa2ac454c1abf14ffa3">
+                                <input type="text" class="form-control" id="bfkey" name="bfkey" placeholder="000fa2ac454c1abf14ffa3">
                             </div>
-                            <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
+                            <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button></div>
                         </div>
                     </form>
 
-                    <form action="/settings/update/" method="POST">
+                    <form>
                         <div class="form-group row">
                             <label for="bfPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                 title="How often (in minutes) to push data to Brewer's Friend">Push Frequency</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" id="bfreq" placeholder="15">
+                                <input type="number" class="form-control" id="bfreq" name="bfreq" placeholder="15">
                             </div>
-                            <div class="col-sm-2"><button type="submit" class="btn btn-primary">Update</button></div>
+                            <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button></div>
                         </div>
                     </form>
                 </div>
@@ -339,8 +338,9 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
     <script>
         $(document).ready(function () {
             loadPage(); // Load once on page load
-            objectifyForm();
-            var interval = setInterval(function () { loadPage(); }, 60000); // Then every 60 seconds
+            var button=document.getElementById("submitSettings");
+            button.onclick=submitSettings;
+            submitSettings();
         });
 
         function loadPage() {
@@ -349,28 +349,19 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
             })
                 .done(function (config) {
                     try {
-                        console.log("Hostname: " + config.hostname);
                         $('input[name="mdnsID"]').val(config.hostname);
-                        console.log("Device name: " + config.bubbleconfig.name);
                         $('input[name="bubname"]').val(config.bubbleconfig.name);
-                        console.log("Temp in F: " + config.bubbleconfig.tempinf);
                         if (config.bubbleconfig.tempinf) {
                             $('input[name="tempInF"]')[1].checked = true; // Farenheit
                         } else {
                             $('input[name="tempInF"]')[0].checked = true; // Celcius
                         }
-                        console.log("Room temp calibration: " + config.calibrate.room.toString());
-                        $('input[name="calRoom"]').val(config.calibrate.room.toString());
-                        console.log("Vessel temp calibration: " + config.calibrate.vesselstString());
-                        $('input[name="calVessel"]').val(config.calibrate.vessel.toString());
-                        console.log("Target URL: " + config.targetconfig.targeturl);
+                        $('input[name="calRoom"]').val(config.calibrate.room);
+                        $('input[name="calVessel"]').val(config.calibrate.vessel);
                         $('input[name="target"]').val(config.targetconfig.targeturl);
-                        console.log("Target frequency: " + config.targetconfig.freq.toString());
-                        $('input[name="tfreq"]').val(config.targetconfig.freq.toString());
-                        console.log("BF Key: " + config.bfconfig.bfkey);
+                        $('input[name="tfreq"]').val(config.targetconfig.freq);
                         $('input[name="bfkey"]').val(config.bfconfig.bfkey);
-                        console.log("BF freqency: " + config.bfconfig.freq.toString());
-                        $('input[name="bfreq"]').val(config.bfconfig.freq.toString());
+                        $('input[name="bfreq"]').val(config.bfconfig.freq);
                     }
                     catch {
                         // What do we do if there's an error?
@@ -383,14 +374,15 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                     //
                 });
         }
+
         function objectifyForm() { // Serialize data function
             var config = {};
 
-            console.log($("#mdnsID").contents);
-            config.hostname = $("#mdnsID").contents; // brewbubbles
+            config.hostname = $("#mdnsID").val();
             
             config["bubbleconfig"] = {};
-            config.bubbleconfig.name = $("#mdnsID").contents; // Fermenter 1
+            config.bubbleconfig.name = $("#mdnsID").val();
+
             var tempInF = $("input[name='tempInF']:checked").val();
             if (tempInF) {
                 config.bubbleconfig.tempinf = true;
@@ -399,20 +391,23 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
             }
 
             config["calibrate"] = {};
-            config.calibrate.room = $("#calRoom").val;
-            config.calibrate.vessel = $("#calVessel").val;
+            config.calibrate.room = $("#calRoom").val(); // TODO:  Change to double
+            config.calibrate.vessel = $("#calVessel").val(); // TODO:  Change to double
             
             config["targetconfig"] = {};
-            config.targetconfig.targeturl = $("#target").contents; 
-            config.targetconfig.freq = $("#tfreq").val;
+            config.targetconfig.targeturl = $("#target").val();
+            config.targetconfig.freq = $("#tfreq").val(); // TODO:  Change to double
             
             config["bfconfig"] = {};
-            config.bfconfig.bfkey = $("#bfkey").contents;
-            config.bfconfig.freq = $("#target").val;
+            config.bfconfig.bfkey = $("#bfkey").val();
+            config.bfconfig.freq = $("#bfreq").val(); // TODO:  Change to double
             
             var configJson= JSON.stringify(config);
-            console.log(configJson);
-            //return configJson;
+            return configJson;
+        }
+
+        function submitSettings() {
+            console.log(objectifyForm());
         }
 
     </script>
