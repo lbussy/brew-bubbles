@@ -62,7 +62,7 @@ void execspiffs() {
             // This is just here to get rid of a compiler warning, since
             // the system will reset after OTA, we will never hit this.
             Log.notice(F("HTTP SPIFFS Update complete, restarting." CR));
-            ESP.reset();
+            ESP.restart();
             _delay(1000);
             break;
     }
