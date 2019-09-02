@@ -20,7 +20,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 WebServer *server = WebServer::getInstance();
 DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 
-void setup(void) {
+void setup() {
     bool rst = drd.detect(); // Check for double-reset
     serial();
 
@@ -33,7 +33,7 @@ void setup(void) {
         Log.notice(F("DRD: Double reset boot, presenting portal." CR));
         presentPortal(true);
     } else {
-        Log.verbose(F("DRD: Normal boot, re-using WiFi values." CR));
+        Log.verbose(F("DRD: Normal boot." CR));
         presentPortal(false);
     }
 
@@ -56,7 +56,7 @@ void setup(void) {
     Log.notice("Started Brew Bubbles version %s (%s) [%s]." CR, version, branch, build);
 }
 
-void loop(void) {
+void loop() {
     Bubbles *bubble = Bubbles::getInstance();
     while (true) {
         bubble->Update();
