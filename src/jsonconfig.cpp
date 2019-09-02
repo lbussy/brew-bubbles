@@ -36,7 +36,7 @@ JsonConfig* JsonConfig::getInstance()
 
 bool JsonConfig::Parse(bool reset = false) {
     const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(6) + 460;
-    DynamicJsonDocument doc(capacity);
+    StaticJsonDocument<capacity> doc;
 
     // Mount SPIFFS
     if (!SPIFFS.begin()) {
@@ -85,8 +85,8 @@ bool JsonConfig::Parse(bool reset = false) {
         single->tempinf = TEMPFORMAT;
 
         // Set defaults for temperature calibration
-        single->calAmbient = 0.1;
-        single->calVessel = 0.1;
+        single->calAmbient = 0.0;
+        single->calVessel = 0.0;
         
         // Set defaults for Target Settings Object
         strlcpy(single->targeturl, TARGETURL, sizeof(single->targeturl));
@@ -137,7 +137,7 @@ bool JsonConfig::Parse(bool reset = false) {
 
 bool JsonConfig::Save() {
     const size_t capacity = CONFIG_CAP;
-    DynamicJsonDocument doc(capacity);
+    StaticJsonDocument<capacity> doc;
 
     // Serialize Access Point Settings Object
     JsonObject apconfig = doc.createNestedObject("apconfig");
@@ -197,7 +197,7 @@ bool JsonConfig::Save() {
 
 char* JsonConfig::CreateSettingsJson() {
     const size_t capacity = CONFIG_CAP;
-    DynamicJsonDocument doc(capacity);
+    StaticJsonDocument<capacity> doc;
 
     // Serialize Access Point Settings Object
     JsonObject apconfig = doc.createNestedObject("apconfig");

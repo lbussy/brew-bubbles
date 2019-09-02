@@ -144,7 +144,7 @@ float Bubbles::GetPpm() {
 char* Bubbles::CreateBubbleJson() {
     //const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
     const size_t capacity = 277;
-    DynamicJsonDocument doc(capacity);
+    StaticJsonDocument<capacity> doc;
     JsonConfig *config = JsonConfig::getInstance();
 
     doc["api_key"] = API_KEY;

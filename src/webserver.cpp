@@ -188,7 +188,7 @@ void WebServer::aliases() {
             // Get heap status, analog input value and GPIO statuses
             // TODO: Make sure DI's actually display properly
             const size_t capacity = 65;
-            DynamicJsonDocument doc(capacity);
+            StaticJsonDocument<capacity> doc;
 
             doc["heap"] = String(ESP.getFreeHeap());
             doc["analog"] = String(analogRead(A0));
