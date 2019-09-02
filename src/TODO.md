@@ -11,20 +11,9 @@
 - Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
 - Add hostname change to AP Portal
 - Fix deprecation error in http
-- Get web pages working
-  - ~~Have bubbles display in home page~~
-  - Add endpoint to receive new settings
-    - ~~Parse JSON~~
-    - ~~Save file~~
-    - Reset parameters
-  - Add settings items from json
-    - Target Endpoint
-    - BF Key
-    - Hostname
-    - Chamber Name
-    - Temp Format
-    - Temp Calibration
-    - NTP Server
+- Fix setting page
+  - Send JSON to "/config/update/"
+  - Validate settings
 
 ## Complete
 
@@ -33,7 +22,7 @@
 - ~~Fix local OTA~~
 - ~~Move mDNS functions~~
 - ~~Detect bad/no OneWire~~
-- ~~Add mMDNS responder~~
+- ~~Add mDNS responder~~
 - ~~Add mDNS resolution~~
 - ~~Figure out if we need to invert D1~~
 - ~~Add in logging function~~
@@ -89,3 +78,17 @@
 - ~~BUG: IPL stopped working~~ (no longer using)
 - ~~Fix losing WiFi config on power loss~~
 - ~~Merge back in MDNS~~
+- ~~Get web pages working~~
+  - ~~Have bubbles display in home page~~
+  - ~~Add endpoint to receive new settings~~
+    - ~~Parse JSON~~
+    - ~~Save file~~
+    - ~~Reset parameters~~
+  - ~~Add settings items from json~~
+    - ~~Target Endpoint~~
+    - ~~BF Key~~
+    - ~~Hostname~~
+    - ~~Chamber Name~~
+    - ~~Temp Format~~
+    - ~~Temp Calibration~~
+    - ~~NTP Server~~
