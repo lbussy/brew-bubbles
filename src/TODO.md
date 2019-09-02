@@ -1,8 +1,10 @@
 # TODO List
 
+## Open
+
 - Do a version check
-    - Add JSON to SPIFFS
-    - Compare with home
+  - Add JSON to SPIFFS
+  - Compare with repo
 - Add countdown on main page to next refresh?
 - Try to apply former configuration when updating firmware
 - Merge back in Target Handler
@@ -10,21 +12,21 @@
 - Add hostname change to AP Portal
 - Fix deprecation error in http
 - Get web pages working
-    - ~~Have bubbles display in home page~~
-    - Add endpoint to receive new settings
-        - ~~Parse JSON~~
-        - ~~Save file~~
-        - Reset parameters
-    - Add settings items from json
-        - Target Endpoint
-        - BF Key
-        - Hostname
-        - Chamber Name
-        - Temp Format
-        - Temp Calibration
-        - NTP Server
+  - ~~Have bubbles display in home page~~
+  - Add endpoint to receive new settings
+    - ~~Parse JSON~~
+    - ~~Save file~~
+    - Reset parameters
+  - Add settings items from json
+    - Target Endpoint
+    - BF Key
+    - Hostname
+    - Chamber Name
+    - Temp Format
+    - Temp Calibration
+    - NTP Server
 
-# Complete
+## Complete
 
 - ~~BUG: Pages are not being found~~
 - ~~Add DNS resolution~~
@@ -38,26 +40,26 @@
 - ~~Replace Serial.print() with Log.{level} messages~~
 - ~~Add local OTA~~
 - ~~Add in NTP~~
-    - ~~Add timestamp to JSON~~
+  - ~~Add timestamp to JSON~~
 - ~~Add reset/forget WiFi for pin pulldown on starup~~
 - ~~Configuration Work~~
-    - ~~Remove NTP server from config~~
-    - ~~Remove NTP interval from config~~
-    - ~~Figure out why "vessel" is garbaged in JSON to target~~
-    - ~~Figure out why hostname is ESP_245A77 on startup~~
-    - ~~Figure out why mDNS hostname is garbaged on startup~~
-    - ~~Make sure defaults.h (and maybe config.h) default for SPIFFS config~~
-    - ~~True up config.h and defaults.h~~
-    - ~~Get mDNS hostname from configuration~~
-    - ~~Get WiFi.hostname() from configuration~~
-      - ~~Add configuration save~~
-        - ~~HTTP Endpoint~~
-            - ~~Address~~
-            - ~~Port~~
-            - ~~Add Frequency~~
-        - ~~Brewer's Friend Endpoint~~
-            - ~~Key~~
-            - ~~Add Frequency (> 14 minutes)~~
+  - ~~Remove NTP server from config~~
+  - ~~Remove NTP interval from config~~
+  - ~~Figure out why "vessel" is garbaged in JSON to target~~
+  - ~~Figure out why hostname is ESP_245A77 on startup~~
+  - ~~Figure out why mDNS hostname is garbaged on startup~~
+  - ~~Make sure defaults.h (and maybe config.h) default for SPIFFS config~~
+  - ~~True up config.h and defaults.h~~
+  - ~~Get mDNS hostname from configuration~~
+  - ~~Get WiFi.hostname() from configuration~~
+    - ~~Add configuration save~~
+      - ~~HTTP Endpoint~~
+        - ~~Address~~
+        - ~~Port~~
+        - ~~Add Frequency~~
+      - ~~Brewer's Friend Endpoint~~
+        - ~~Key~~
+        - ~~Add Frequency (> 14 minutes)~~
 - ~~Figure out why target["targeturl"] = targeturl; is garbaged~~
 - ~~Move NTP to a singleton~~
 - ~~Move debug strings to flash~~
@@ -71,17 +73,17 @@
 - ~~Fix crash when doing sendNTPPacket()~~
 - ~~Figure out timezone~~
 - ~~Get web pages working~~
-    - ~~Reset wireless~~
-    - ~~Add GitHub OTA for Firmware~~
-    - ~~Add GitHub OTA for SPIFFS~~
-    - ~~Add endpoint for settings json dump~~
-    - ~~Add endpoint for bubbles json dump~~
+  - ~~Reset wireless~~
+  - ~~Add GitHub OTA for Firmware~~
+  - ~~Add GitHub OTA for SPIFFS~~
+  - ~~Add endpoint for settings json dump~~
+  - ~~Add endpoint for bubbles json dump~~
 - ~~WiFi // wifiManager.startConfigPortal("{APName}", "{APPassword}") // Does not wipe settings~~
 - ~~Fix crash if /bubble/ is requested before first run~~
 - ~~Add temp calibration~~
-    - ~~Add to JSON~~
-    - ~~Add to Settings page~~
-    - ~~Calculate temp~~
+  - ~~Add to JSON~~
+  - ~~Add to Settings page~~
+  - ~~Calculate temp~~
 - ~~Figure out version in code~~
 - ~~Force NTP to make a blocking call to get time on startup~~
 - ~~BUG: IPL stopped working~~ (no longer using)
