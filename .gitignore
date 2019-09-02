@@ -4,7 +4,6 @@
 .piolibdeps
 .vscode
 *.code-workspace
-.vscode/*.json
 
 # PCB and Schematic File Backups
 *.*\#[0-9]
