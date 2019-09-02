@@ -142,35 +142,67 @@ void WebServer::aliases() {
                 JsonConfig *config = JsonConfig::getInstance();
 
                 // Parse Access Point Settings Object
-                strlcpy(config->ssid, doc["apconfig"]["ssid"] | APNAME, sizeof(config->ssid));
-                strlcpy(config->appwd, doc["apconfig"]["appwd"] | AP_PASSWD, sizeof(config->appwd));
+                const char* ssid = doc["apconfig"]["ssid"];
+                if (ssid)
+                    strlcpy(config->ssid, ssid, sizeof(config->ssid));
+                const char* appwd = doc["apconfig"]["appwd"];
+                if (appwd)
+                    strlcpy(config->appwd, appwd, sizeof(config->appwd));
 
                 // Parse Hostname Settings Object
-                strlcpy(config->hostname, doc["hostname"] | HOSTNAME, sizeof(config->hostname));
+                const char* hostname = doc["hostname"];
+                bool hostNameChanged = false;
+                if (hostname)
+                    hostNameChanged = true;
+                    strlcpy(config->hostname, hostname, sizeof(config->hostname));
 
                 // Parse Bubble Settings Object
-                strlcpy(config->bubname, doc["bubbleconfig"]["name"] | BUBNAME, sizeof(config->bubname));
-                config->tempinf = doc["bubbleconfig"]["tempinf"] | TEMPFORMAT;
+                const char* bubname = doc["bubbleconfig"]["name"];
+                if (hostname)
+                    strlcpy(config->bubname, bubname, sizeof(config->bubname));
+                input.toLowerCase();
+                if (input.indexOf("tempinf") >= 0)
+                    config->tempinf = doc["tempinf"];
 
                 // Parse temperature calibration
-                config->calAmbient = doc["calibrate"]["room"] | 0.0;
-                config->calVessel = doc["calibrate"]["vessel"] | 0.0;
+                double calAmbient = doc["calibrate"]["room"];
+                if (calAmbient)
+                    config->calAmbient = calAmbient;
+                double calVessel = doc["calibrate"]["vessel"];
+                if (calVessel)
+                    config->calVessel =  calVessel;
 
                 // Parse Target Settings Object
-                strlcpy(config->targeturl, doc["targetconfig"]["targeturl"] | TARGETURL, sizeof(config->targeturl));
-                config->targetfreq = doc["targetconfig"]["freq"] | TARGETFREQ;
+                const char* targeturl = doc["targetconfig"]["targeturl"];
+                if (targeturl)
+                    strlcpy(config->targeturl, targeturl, sizeof(config->targeturl));
+                unsigned long targetfreq = doc["targetconfig"]["freq"];
+                if (targetfreq)
+                    config->targetfreq = targetfreq;
 
                 // Parse Brewer's Friend Settings Object
-                strlcpy(config->bfkey, doc["bfconfig"]["bfkey"] | "", sizeof(config->bfkey));
-                config->bffreq = doc["bfconfig"]["freq"] | BFFREQ;
+                const char* bfkey = doc["bfconfig"]["bfkey"];
+                if (bfkey)
+                    strlcpy(config->bfkey, bfkey, sizeof(config->bfkey));
+                unsigned long bffreq = doc["bfconfig"]["freq"];
+                if (bffreq)
+                    config->bffreq = bffreq;
 
                 // Parse SPIFFS OTA update choice
-                config->dospiffs = doc["dospiffs"] | false;
+                input.toLowerCase();
+                if (input.indexOf("dospiffs") >= 0)
+                    config->dospiffs = doc["dospiffs"];
 
                 // Save configuration to file
                 config->Save();
 
-                // TODO:  Reset and restart stuff like MDNS, WiFI, etc.
+                // Reset hostname
+                if (hostNameChanged) {
+                    wifi_station_set_hostname(hostname);
+                    MDNS.setHostname(hostname);
+                    MDNS.notifyAPChange();
+                    MDNS.announce();
+                }
 
                 // Redirect to Settings page
                 single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
@@ -197,8 +229,7 @@ void WebServer::aliases() {
             char json[capacity] = {};
             serializeJson(doc, json, capacity);
             single->server->send(200, F("application/json"), json);
-        }
-    );
+        });
 
     // File not found handler
 
