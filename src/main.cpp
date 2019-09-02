@@ -42,6 +42,7 @@ void setup() {
         Log.error(F("Error setting up MDNS responder."));
     } else {
         Log.notice(F("mDNS responder started, hostname %s.local." CR), WiFi.hostname().c_str());
+        MDNS.addService("http", "tcp", 80);
     }
 
     server->initialize(PORT); // Turn on web server
