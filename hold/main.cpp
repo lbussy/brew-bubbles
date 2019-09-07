@@ -94,7 +94,7 @@ void loop() {
             MDNS.begin(config->hostname);
             time->start();
 
-            //if (config->dospiffs == true) {execspiffs();}
+            //if (config->dospiffs == true) {execspiffs();} // DEBUG: Remove comment
         }
 
         if (WiFi.isConnected()) {
