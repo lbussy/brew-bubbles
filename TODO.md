@@ -2,11 +2,11 @@
 
 ## Open
 
+- Not reading config on startup
 - Do a version check
   - Add JSON to SPIFFS
   - Compare with repo
 - Add countdown on main page to next refresh
-- Split up form items
 - Get POSTs and apply
 - Try to apply former configuration when updating firmware
 - Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
@@ -95,3 +95,4 @@
   - ~~Send JSON to "/config/update/"~~
   - ~~Validate settings~~
 - ~~Merge back in Target Handler~~
+- ~~Split up form items~~
