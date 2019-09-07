@@ -56,7 +56,7 @@ void NtpHandler::start() {
     }
     #ifdef LOG_LEVEL
     Serial.println();
-    single->getJsonTime();
+    single->setJsonTime();
     Log.notice(F("NTP Time: %s." CR), single->Time);
     #endif
 }
@@ -67,7 +67,7 @@ void NtpHandler::update() {
     }
 }
 
-void NtpHandler::getJsonTime() {
+void NtpHandler::setJsonTime() {
     char* datetime = new  char[21];
     sprintf(single->Time, "%04u-%02u-%02uT%02u:%02u:%02uZ", year(), month(), day(), hour(), minute(), second());
 }

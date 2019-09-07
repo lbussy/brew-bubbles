@@ -44,7 +44,7 @@ class NtpHandler {
         // Other Declarations
         void start();
         void update();
-        void getJsonTime();
+        void setJsonTime();
         bool hasBeenSet;
         char Time[21];               // Hold the Time string
 };
