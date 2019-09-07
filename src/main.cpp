@@ -50,11 +50,7 @@ void setup() {
     NtpHandler *ntpTime = NtpHandler::getInstance();
     ntpTime->start();
 
-    const char* version = stringify(PIO_SRC_TAG);
-    const char* build = stringify(PIO_SRC_REV);
-    const char* branch = stringify(PIO_SRC_BRH);
-
-    Log.notice("Started Brew Bubbles version %s (%s) [%s]." CR, version, branch, build);
+    Log.notice(F("Started Brew Bubbles version %s (%s) [%s]." CR), version(), branch(), build());
 }
 
 void loop() {

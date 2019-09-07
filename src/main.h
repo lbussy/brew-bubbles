@@ -24,6 +24,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "ntphandler.h"
 #include "webserver.h"
 #include "wifi.h"
+#include "version.h"
 #include <WiFiManager.h>
 #include <DoubleResetDetect.h>
 #include <ESP8266WiFi.h>
@@ -36,11 +37,5 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 //
 #define DRD_TIMEOUT 2.0
 #define DRD_ADDRESS 0x00
-
-// Have to use two levels of macro expansion to convert a symbol to
-// a string. See http://gcc.gnu.org/onlinedocs/cpp/Stringification.html
-
-#define stringify(s) _stringifyDo(s)
-#define _stringifyDo(s) #s
 
 #endif // _MAIN_H
