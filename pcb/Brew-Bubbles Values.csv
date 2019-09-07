@@ -1,6 +1,7 @@
-"Qty";"Value";"Device";"Package";"Parts";"Description";"PROD_ID";"SF_ID";"STORE_ID";"VALUE";
-"1";"150Ω";"150OHM-HORIZ-1/4W-5%";"AXIAL-0.3";"R3";"150Ω resistor";"";"";"";"150";
-"2";"2.2kΩ";"2k2OHM-HORIZ-1/4W-5%";"AXIAL-0.3";"R1, R2";"2k2Ω resistor";"";"";"";"2200";
-"2";"3PIN90";"PINHD-1X3/90";"1X03/90";"ROOM, VESSEL";"PIN HEADER";"";"";"";"";
-"1";"GP1A57HR";"GP1A57HR";"GP1A57HR";"U1";"Sharp GP1A57HR Transmissive Photointerrupter";"";"";"";"";
-"1";"WEMOS-D1-MINI";"WEMOS-D1-MINI";"WEMOS-D1-MINI";"U$2";"WEMOS D1 mini";"";"";"";"";
+"Qty";"Value";"Device";"Package";"Parts";"Description";"POPULARITY";"PROD_ID";"SF_ID";"SPICEPREFIX";"VALUE";
+"1";"0.1μF";"C-EU025-024X044";"C025-024X044";"C1";"CAPACITOR, European symbol";"56";"";"";"C";"";
+"1";"150Ω";"150OHM-HORIZ-1/4W-5%";"AXIAL-0.3";"R3";"150Ω resistor";"";"RES-8371";"";"";"150";
+"2";"2.2kΩ";"2K2OHM-HORIZ-1/4W-5%";"AXIAL-0.3";"R1, R2";"2K2Ω resistor";"";"RES-8371";"";"";"2200";
+"2";"3PIN90";"PINHD-1X3/90";"1X03/90";"ROOM, VESSEL";"PIN HEADER";"17";"";"";"";"";
+"1";"GP1A57HR";"GP1A57HR";"GP1A57HR";"U1";"Sharp GP1A57HR Transmissive Photointerrupter";"";"";"SEN-09299";"";"";
+"1";"WEMOS-D1-MINI";"WEMOS-D1-MINI-SHIELD";"WEMOS-D1-MINI-SHIELD";"U2";"Template for WEMOS D1 mini compatible shields";"";"";"";"";"";
