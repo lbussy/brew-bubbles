@@ -51,6 +51,10 @@ If for some reason you are having issues with WiFi which is not addressed by any
 esptool write_flash -fm dio -fs 4MB-c1 0xfe000 blank.bin 0x3fe000 blank.bin
 ```
 
+### Mac Platforms
+
+I do not have access to a Mac, however anecdotally I believe Mac users may follow the "*Unix-Based Platforms*" above.
+
 ### Windows-Based Platforms
 
 Using Espressif's Flash Download tool is the recommended method for Windows platforms.  [Download the tool](https://www.espressif.com/en/support/download/other-tools) directly from Espressif's website.  Unzip the tool to a convenient folder and execute the application (named `flash_download_tools_v3.6.7.exe` at the time of writing.)
