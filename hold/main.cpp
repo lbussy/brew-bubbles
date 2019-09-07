@@ -103,7 +103,7 @@ void loop() {
             if ((millis() - last) > LOOPTIMER) {
                 last = millis();
                 if (time->hasBeenSet)
-                    Log.verbose(F("%s" CR), time->getJsonTime());
+                    Log.verbose(F("%s" CR), time->setJsonTime());
             }
 
             MDNS.update();

@@ -49,6 +49,7 @@ void Bubbles::Setup() {
     single->ulStart = ulNow;
     single->lastPpm = 0.0;
     NtpHandler *ntpTime = NtpHandler::getInstance();
+    ntpTime->setJsonTime();
     single->lastTime = ntpTime->Time;
     strlcpy(single->Bubble, "{}", 3);
 }
@@ -97,6 +98,7 @@ void Bubbles::Update() {
         single->ulStart = ulNow;
         single->lastPpm = single->GetRawPpm();
         NtpHandler *ntpTime = NtpHandler::getInstance();
+        ntpTime->setJsonTime();
         single->lastTime = ntpTime->Time;
         Log.verbose(F("Time is %s, PPM is %l:" CR), single->lastTime, single->lastPpm);
     }

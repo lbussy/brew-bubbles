@@ -5,20 +5,17 @@
 - Do a version check
   - Add JSON to SPIFFS
   - Compare with repo
-- Add countdown on main page to next refresh?
+- Add countdown on main page to next refresh
 - Split up form items
-- Make sure time updates
+- Get POSTs and apply
 - Try to apply former configuration when updating firmware
-- Merge back in Target Handler
 - Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
 - Add hostname change to AP Portal
 - Fix deprecation error in http
-- Fix setting page
-  - Send JSON to "/config/update/"
-  - Validate settings
 
 ## Complete
 
+- ~~Make sure time updates~~
 - ~~BUG: Pages are not being found~~
 - ~~Add DNS resolution~~
 - ~~Fix local OTA~~
@@ -94,3 +91,7 @@
     - ~~Temp Format~~
     - ~~Temp Calibration~~
     - ~~NTP Server~~
+- ~~Fix setting page~~
+  - ~~Send JSON to "/config/update/"~~
+  - ~~Validate settings~~
+- ~~Merge back in Target Handler~~
