@@ -49,7 +49,8 @@ void Bubbles::Setup() {
     single->ulStart = ulNow;
     single->lastPpm = 0.0;
     NtpHandler *ntpTime = NtpHandler::getInstance();
-    single->lastTime = ntpTime->getJsonTime();
+    single->lastTime = ntpTime->Time;
+    strlcpy(single->Bubble, "{}", 3);
 }
 
 Bubbles::~Bubbles() {
@@ -96,7 +97,7 @@ void Bubbles::Update() {
         single->ulStart = ulNow;
         single->lastPpm = single->GetRawPpm();
         NtpHandler *ntpTime = NtpHandler::getInstance();
-        single->lastTime = ntpTime->getJsonTime();
+        single->lastTime = ntpTime->Time;
         Log.verbose(F("Time is %s, PPM is %l:" CR), single->lastTime, single->lastPpm);
     }
 }
@@ -141,8 +142,8 @@ float Bubbles::GetPpm() {
     return single->lastPpm;
 }
 
-char* Bubbles::CreateBubbleJson() {
-    //const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
+void Bubbles::CreateBubbleJson() {
+    // const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
     const size_t capacity = 277;
     StaticJsonDocument<capacity> doc;
     JsonConfig *config = JsonConfig::getInstance();
@@ -163,7 +164,7 @@ char* Bubbles::CreateBubbleJson() {
     data["ambtemp"] = single->GetAmbientTemp();
     data["vestemp"] = single->GetVesselTemp();
 
-    char output[capacity] = {};
+    char output[capacity];
     serializeJson(doc, output, sizeof(output));
-    return output;
+    strlcpy(single->Bubble, output, sizeof(output));
 }
