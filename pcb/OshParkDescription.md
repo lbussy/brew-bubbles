@@ -1,9 +1,12 @@
+# Brew Bubbles Shield v1.0
+
 This shield provides the necessary component connections and circuitry for the [Brew Bubbles](https://www.brewbubbles.com/) project.  It is nearly identical in size to the Wemos D1 mini we use to provide a very compact and lightweight footprint.
 
 Since this uses 1 or 2 each of very common, very inexpensive components, you may find you are better off buying a resistor assortment for instance or end up buying 10 or 20 at a time.  Make several!
 
 | **Quan** | **Description** | **Placement** |
 |---|---|---|
+| 1 | 0.1μF 10V Ceramic Capacitor | C1 |
 | 1 | 150Ω 1/4W 5%  Axial resistor | R1, R2 |
 | *2 | 2.2kΩ 1/4W 5% Axial resistor | R3 |
 | *2 | 3-Pin 90° Header | VESSEL, ROOM |
