@@ -43,13 +43,14 @@ class JsonConfig {
         char bfkey[41];             // Brewer's Friend key
         unsigned long bffreq;       // Brewer's Friend frequency
         bool dospiffs;              // Update SPIFFS on reboot
+        char Config[700];           // Hold the Config JSON
 
         // Methods
         bool Parse(bool reset);
         bool Save();
         static JsonConfig* getInstance();
         ~JsonConfig() {instanceFlag = false;}
-        char* CreateSettingsJson(); // Provide serialized JSON string
+        void CreateSettingsJson();
 };
 
 #endif // _JSONCONFIG_H

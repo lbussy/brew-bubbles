@@ -35,7 +35,7 @@ JsonConfig* JsonConfig::getInstance()
 }
 
 bool JsonConfig::Parse(bool reset = false) {
-    const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(6) + 460;
+    const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7) + 480;
     StaticJsonDocument<capacity> doc;
 
     // Mount SPIFFS
@@ -136,7 +136,7 @@ bool JsonConfig::Parse(bool reset = false) {
 }
 
 bool JsonConfig::Save() {
-    const size_t capacity = CONFIG_CAP;
+    const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
     StaticJsonDocument<capacity> doc;
 
     // Serialize Access Point Settings Object
@@ -195,8 +195,9 @@ bool JsonConfig::Save() {
     }
 }
 
-char* JsonConfig::CreateSettingsJson() {
-    const size_t capacity = CONFIG_CAP;
+void JsonConfig::CreateSettingsJson() {
+    // const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
+    const size_t capacity = 700;
     StaticJsonDocument<capacity> doc;
 
     // Serialize Access Point Settings Object
@@ -230,7 +231,7 @@ char* JsonConfig::CreateSettingsJson() {
     // Serialize SPIFFS OTA update choice
     doc["dospiffs"] = single->dospiffs;
 
-    char output[capacity] = {};
+    char output[capacity];
     serializeJson(doc, output, sizeof(output));
-    return output;
+    strlcpy(single->Config, output, sizeof(output));
 }

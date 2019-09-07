@@ -113,8 +113,8 @@ void WebServer::aliases() {
             // Used to provide the Bubbles json
             Bubbles *bubble = Bubbles::getInstance();
             single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            char* json = bubble->CreateBubbleJson();
-            single->server->send(200, F("application/json"), json);
+            bubble->CreateBubbleJson();
+            single->server->send(200, F("application/json"), bubble->Bubble);
         });
 
     single->server->on(
@@ -124,8 +124,8 @@ void WebServer::aliases() {
             // Used to build the "Change Settings" page
             JsonConfig *config = JsonConfig::getInstance();
             single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            char* json = config->CreateSettingsJson();
-            single->server->send(200, F("application/json"), json);
+            config->CreateSettingsJson();
+            single->server->send(200, F("application/json"), config->Config);
         });
 
     single->server->on(
@@ -134,79 +134,113 @@ void WebServer::aliases() {
         []() {
             Log.verbose(F("Processing post to /config/update/." CR));
             String input = single->server->arg(F("plain"));
-            const size_t capacity = CONFIG_CAP;
+            const size_t capacity = 700;
+            // const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
             StaticJsonDocument<capacity> doc;
             DeserializationError err = deserializeJson(doc, input);
             if (!err) {
+                bool updated = false;
+
                 // Parse JSON
                 JsonConfig *config = JsonConfig::getInstance();
 
                 // Parse Access Point Settings Object
                 const char* ssid = doc["apconfig"]["ssid"];
-                if (ssid)
+                if ((ssid) && (strcmp (ssid, config->ssid) != 0)) {
+                    updated = true;
                     strlcpy(config->ssid, ssid, sizeof(config->ssid));
+                }
                 const char* appwd = doc["apconfig"]["appwd"];
-                if (appwd)
+                if ((appwd) && (strcmp (appwd, config->appwd) != 0)) {
+                    updated = true;
                     strlcpy(config->appwd, appwd, sizeof(config->appwd));
+                }
 
                 // Parse Hostname Settings Object
                 const char* hostname = doc["hostname"];
                 bool hostNameChanged = false;
-                if (hostname)
+                if ((hostname) && (strcmp (hostname, config->hostname) != 0)) {
+                    updated = true;
                     hostNameChanged = true;
                     strlcpy(config->hostname, hostname, sizeof(config->hostname));
+                }
 
                 // Parse Bubble Settings Object
                 const char* bubname = doc["bubbleconfig"]["name"];
-                if (hostname)
+                if ((bubname) && (strcmp (bubname, config->bubname) != 0)) {
+                    updated = true;
                     strlcpy(config->bubname, bubname, sizeof(config->bubname));
-                input.toLowerCase();
-                if (input.indexOf("tempinf") >= 0)
-                    config->tempinf = doc["tempinf"];
+                }
+                JsonVariant tempinf = doc["bubbleconfig"]["tempinf"];
+                if ((!tempinf.isNull()) && (!config->tempinf == tempinf)) {
+                    updated = true;
+                    config->tempinf = tempinf;
+                }
 
                 // Parse temperature calibration
                 double calAmbient = doc["calibrate"]["room"];
-                if (calAmbient)
+                if ((calAmbient) && (!calAmbient == config->calAmbient)) {
+                    updated = true;
                     config->calAmbient = calAmbient;
+                }
                 double calVessel = doc["calibrate"]["vessel"];
-                if (calVessel)
+                if ((calVessel) && (!calVessel == config->calVessel)) {
+                    updated = true;
                     config->calVessel =  calVessel;
+                }
 
                 // Parse Target Settings Object
                 const char* targeturl = doc["targetconfig"]["targeturl"];
-                if (targeturl)
-                    strlcpy(config->targeturl, targeturl, sizeof(config->targeturl));
-                unsigned long targetfreq = doc["targetconfig"]["freq"];
-                if (targetfreq)
+                if ((targeturl) && (strcmp (targeturl, config->targeturl) != 0)) {
+                    updated = true;
+                    strlcpy(config->targeturl, doc["targetconfig"]["targeturl"], sizeof(config->targeturl));
+                }
+                unsigned long targetfreq = doc["targetconfig"]["targeturl"];
+                if ((targetfreq) && (!targetfreq == config->targetfreq)) {
+                    updated = true;
                     config->targetfreq = targetfreq;
+                }
 
                 // Parse Brewer's Friend Settings Object
                 const char* bfkey = doc["bfconfig"]["bfkey"];
-                if (bfkey)
+                if ((bfkey) && (strcmp (bfkey, config->bfkey) != 0)) {
+                    updated = true;
                     strlcpy(config->bfkey, bfkey, sizeof(config->bfkey));
+                }
                 unsigned long bffreq = doc["bfconfig"]["freq"];
-                if (bffreq)
+                if ((bffreq) && (!bffreq == config->bffreq)) {
+                    updated = true;
                     config->bffreq = bffreq;
+                }
 
                 // Parse SPIFFS OTA update choice
-                input.toLowerCase();
-                if (input.indexOf("dospiffs") >= 0)
-                    config->dospiffs = doc["dospiffs"];
-
-                // Save configuration to file
-                config->Save();
-
-                // Reset hostname
-                if (hostNameChanged) {
-                    wifi_station_set_hostname(hostname);
-                    MDNS.setHostname(hostname);
-                    MDNS.notifyAPChange();
-                    MDNS.announce();
+                JsonVariant dospiffs = doc["dospiffs"];
+                if ((!dospiffs.isNull()) && (!dospiffs == config->dospiffs)) {
+                    updated = true;
+                    config->dospiffs = dospiffs;
                 }
+
+                char hostredirect[43];
+                if (updated) {
+                    // Save configuration to file
+                    config->Save();
+
+                    // Reset hostname
+                    if (hostNameChanged) {
+                        wifi_station_set_hostname(hostname);
+                        MDNS.setHostname(hostname);
+                        MDNS.notifyAPChange();
+                        MDNS.announce();
+                        strcpy(hostredirect, hostname);
+                        strcpy(hostredirect, ".local");
+                        Log.notice(F("Redirecting to new URL: http://%s.local/" CR), hostname);
+                    }
+                }
+                strcpy(hostredirect, "/settings/");
 
                 // Redirect to Settings page
                 single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-                single->server->sendHeader(F("Location"),F("/settings/"));
+                single->server->sendHeader(F("Location"), hostredirect);
                 single->server->send(303); 
             } else {
                 single->server->send(500, F("text/json"), err.c_str());
@@ -219,7 +253,7 @@ void WebServer::aliases() {
         []() {
             // Get heap status, analog input value and GPIO statuses
             // TODO: Make sure DI's actually display properly
-            const size_t capacity = 65;
+            const size_t capacity = JSON_OBJECT_SIZE(3);
             StaticJsonDocument<capacity> doc;
 
             doc["heap"] = String(ESP.getFreeHeap());
