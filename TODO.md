@@ -6,6 +6,8 @@
   - Add JSON to SPIFFS
   - Compare with repo
 - Add countdown on main page to next refresh?
+- Split up form items
+- Make sure time updates
 - Try to apply former configuration when updating firmware
 - Merge back in Target Handler
 - Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
