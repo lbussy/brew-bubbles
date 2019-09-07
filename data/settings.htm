@@ -103,15 +103,15 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
             <div class="page-header" id="banner">
                 <h1>Device Settings</h1>
             </div>
-            <div class="card border-dark mb-3">
 
+            <div class="card border-dark mb-3" id="controller">
                 <div class="card-header"> <!-- Controller Settings -->
                     <h4 class="card-title">Controller Settings</h4>
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <form id="controller">
+                            <form id="mDNS" action="?#controller">
                                 <div class="form-group row">
                                     <label for="mdnsID" class="col-sm-2 col-form-label" data-toggle="tooltip" 
                                             title="Change mDNS name (the hostname part in http://hostname.local/) Do not add the &ldquo;.local&rdquo; to the name">
@@ -124,6 +124,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                     <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
                                     </div>
                                 </div>
+                            </form>
+                            <form id="bubbleID" action="?#controller">
                                 <div class="form-group row">
                                     <label for="bubname" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Change the name of this fermenter">
                                         Bubble ID
@@ -141,15 +143,16 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                 </div>
             </div> <!-- Controller Settings -->
 
-            <div class="card border-dark mb-3"> <!-- Temperature Settings -->
+            <div class="card border-dark mb-3" id="temp"> <!-- Temperature Settings -->
                 <div class="card-header">
                     <h4 class="card-title">Temperature Settings</h4>
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
-                            <form id="temperature">
-                                <div class="container">
+                            <div class="container">
+
+                                <form id="tempFormat" action="?#temp">
                                     <fieldset class="form-group">
                                         <h5 class="legend">Temperature Format</h5>
                                         <div class="row justify-content-center">
@@ -184,44 +187,46 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                             </div>
                                         </div>
                                     </fieldset>
-                                    <hr class="my-4">
-                                    <fieldset class="form-group">
-                                        <h5 class="legend">Temperature Calibration</h5>
-                                        <form>
-                                            <div class="form-group row">
-                                                <label for="calRoom" class="col-sm-2 col-form-label"
-                                                    data-toggle="tooltip"
-                                                    title="Value by which the Room temperature display will be offset">Room</label>
-                                                <div class="col-sm-8">
-                                                    <input type="number" class="form-control" id="calRoom"
-                                                    name="calRoom" placeholder="0.0">
-                                                </div>
-                                                <div class="col-sm-2">
-                                                    <button class="btn btn-primary" id="submitSettings">Update</button></div>
-                                            </div>
-                                        </form>
+                                </form>
 
-                                        <form>
-                                            <div class="form-group row">
-                                                <label for="calVessel" class="col-sm-2 col-form-label"
-                                                    data-toggle="tooltip"
-                                                    title="Value by which the Vessel teperature display will be offset">Vessel</label>
-                                                <div class="col-sm-8">
-                                                    <input type="number" class="form-control" id="calVessel"
-                                                    name="calVessel" placeholder="0.0">
-                                                </div>
-                                                <div class="col-sm-2">
-                                                    <button class="btn btn-primary" id="submitSettings">Update</button></div>
+                                <hr class="my-4">
+
+                                <fieldset class="form-group">
+                                    <h5 class="legend">Temperature Calibration</h5>
+                                    <form id="roomCal" action="?#temp">
+                                        <div class="form-group row">
+                                            <label for="calRoom" class="col-sm-2 col-form-label"
+                                                data-toggle="tooltip"
+                                                title="Value by which the Room temperature display will be offset">Room</label>
+                                            <div class="col-sm-8">
+                                                <input type="number" class="form-control" id="calRoom"
+                                                name="calRoom" placeholder="0.0">
                                             </div>
-                                        </form>
-                                    </fieldset>
-                                </div>
-                            </form>
+                                            <div class="col-sm-2">
+                                                <button class="btn btn-primary" id="submitSettings">Update</button></div>
+                                        </div>
+                                    </form>
+
+                                    <form id="vesCal" action="?#temp">
+                                        <div class="form-group row">
+                                            <label for="calVessel" class="col-sm-2 col-form-label"
+                                                data-toggle="tooltip"
+                                                title="Value by which the Vessel teperature display will be offset">Vessel</label>
+                                            <div class="col-sm-8">
+                                                <input type="number" class="form-control" id="calVessel"
+                                                name="calVessel" placeholder="0.0">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <button class="btn btn-primary" id="submitSettings">Update</button></div>
+                                        </div>
+                                    </form>
+                                </fieldset>
+                            </div>
                         </li>
                 </div>
             </div> <!-- Temperature Settings -->
 
-            <div class="card border-dark mb-3">
+            <div class="card border-dark mb-3" id="target">
                 <!-- Target Settings -->
                 <div class="card-header">
                     <h4 class="card-title">Target Settings</h4>
@@ -233,7 +238,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         delete the URL.
                     </p>
 
-                    <form>
+                    <form id="target" action="?#target">
                         <div class="form-group row">
                             <label for="endpointURL" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                 title="HTML Endpoint URL. Delete to disable pushing to an HTML Endpoint. Ports other than 80 need to be in the format of: http://foo.com:8080/page.php">Target</label>
@@ -245,7 +250,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         </div>
                     </form>
 
-                    <form>
+                    <form id="targetFreq" action="?#target">
                         <div class="form-group row">
                             <label for="endpointPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                 title="How often (in seconds) to push data to HTML Endpoint">Frequency</label>
@@ -258,7 +263,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                 </div>
             </div> <!-- Target Settings -->
 
-            <div class="card border-dark mb-3">
+            <div class="card border-dark mb-3" id="bf">
                 <!-- Brewer's Friend Settings -->
                 <div class="card-header">
                     <h4 class="card-title">Brewer's Friend Settings</h4>
@@ -271,9 +276,10 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         To find your API key; log into your Brewer's Friend account and go to Profile > Account.
                         Your API key will be a 40-character string of letters and numbers (not a URL).
                     </p>
-                    <form>
+                    <form id="bfkey" action="?#bf">
                         <div class="form-group row">
-                            <label for="brewersFriendKey" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Enter the API key from your Brewer's Friend premium account.
+                            <label for="brewersFriendKey" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                title="Enter the API key from your Brewer's Friend premium account.
                                 To disable pushing to Brewer's Friend, delete the key.">Brewer's Friend Key
                             </label>
                             <div class="col-sm-8">
@@ -283,7 +289,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         </div>
                     </form>
 
-                    <form>
+                    <form id="bffreq" action="?#bf">
                         <div class="form-group row">
                             <label for="bfPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                 title="How often (in minutes) to push data to Brewer's Friend">Push Frequency</label>
