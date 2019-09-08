@@ -2,10 +2,10 @@
 
 ## Open
 
+- Fix mobile menu
 - Do a version check
   - Add JSON to SPIFFS
   - Compare with repo
-- Add countdown on main page to next refresh
 - Try to apply former configuration when updating firmware
 - Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
 - Add hostname change to AP Portal
@@ -13,6 +13,8 @@
 
 ## Complete
 
+- ~~Add countdown on main page to next refresh~~
+- ~~Handle doubles in form~~
 - ~~Make sure time updates~~
 - ~~BUG: Pages are not being found~~
 - ~~Add DNS resolution~~
