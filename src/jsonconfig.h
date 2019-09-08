@@ -36,14 +36,14 @@ class JsonConfig {
         char hostname[33];          // Hostname
         char bubname[33];           // This device
         bool tempinf;               // Is temp in F
-        float calAmbient;            // Calibration for Ambient sensor
-        float calVessel;             // Calibration for Vessel sensor
+        float calAmbient;           // Calibration for Ambient sensor
+        float calVessel;            // Calibration for Vessel sensor
         char targeturl[129];        // Target host
         unsigned long targetfreq;   // Target freqency
-        char bfkey[41];             // Brewer's Friend key
+        char bfkey[65];             // Brewer's Friend key
         unsigned long bffreq;       // Brewer's Friend frequency
         bool dospiffs;              // Update SPIFFS on reboot
-        char Config[700];           // Hold the Config JSON
+        char Config[CONFIGJSON];    // Hold the Config JSON
 
         // Methods
         bool Parse(bool reset);

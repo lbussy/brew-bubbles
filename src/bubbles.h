@@ -54,7 +54,7 @@ class Bubbles {
         float GetAmbientTemp();
         float GetVesselTemp();
         void CreateBubbleJson();
-        char Bubble[277];               // Hold the Bubble JSON
+        char Bubble[BUBBLEJSON];         // Hold the Bubble JSON
 };
 
 #endif // _BUBBLES_H
