@@ -2,12 +2,15 @@
 
 ## Open
 
-- Not reading config on startup
+- Fix not saving after restart:
+  - bfkey
+  - bffreq
+  - targetfreq
+- Not reading config on startup: 4300 E: Failed to open configuration file.
 - Do a version check
   - Add JSON to SPIFFS
   - Compare with repo
 - Add countdown on main page to next refresh
-- Get POSTs and apply
 - Try to apply former configuration when updating firmware
 - Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
 - Add hostname change to AP Portal
@@ -96,3 +99,4 @@
   - ~~Validate settings~~
 - ~~Merge back in Target Handler~~
 - ~~Split up form items~~
+- ~~Get POSTs and apply~~

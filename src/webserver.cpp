@@ -104,6 +104,133 @@ void WebServer::aliases() {
             resetWifi();    // Wipe settings, reset controller
         });
 
+    // Settings Update Handler
+
+    single->server->on(
+        F("/settings/update/"),
+        HTTP_POST,
+        []() { // Process POST configuration changes
+            Log.verbose(F("Processing post to /settings/update/." CR));
+
+            JsonConfig *config = JsonConfig::getInstance();
+
+            char redirect[66];
+            strcpy(redirect, "/settings/");
+
+            if (single->server->hasArg(F("mdnsID"))) { // Change Hostname
+                if ((single->server->arg("mdnsID").length() > 32) || (single->server->arg("mdnsID").length() < 3)) {
+                    Log.warning(F("Settings update error." CR));
+                } else {
+                    strlcpy(config->hostname, single->server->arg("mdnsID").c_str(), sizeof(config->hostname));
+                    config->Save();
+
+                    // Reset hostname
+                    wifi_station_set_hostname(config->hostname);
+                    MDNS.setHostname(config->hostname);
+                    MDNS.notifyAPChange();
+                    MDNS.announce();
+
+                    // Creeate a full URL for redirection
+                    char hostname[45];
+                    strcpy(hostname, "http://");
+                    strcat(hostname, config->hostname);
+                    strcat(hostname, ".local");
+                    strcpy(redirect, hostname);
+                    strcat(redirect, "/settings/");
+                    strcat(redirect, "#controller"); // Redirect to Controller box
+                    Log.verbose(F("POSTed mdnsID, redirecting to %s." CR), redirect);
+                }
+
+            } else if (single->server->hasArg(F("bubname"))) { // Change Bubble ID
+                if ((single->server->arg("bubname").length() > 32) || (single->server->arg("bubname").length() < 3)) {
+                    Log.warning(F("Settings update error." CR));
+                } else {
+                    strlcpy(config->bubname, single->server->arg("bubname").c_str(), sizeof(config->bubname));
+                    config->Save();
+                }
+                strcat(redirect, "#controller"); // Redirect to Controller box
+                Log.verbose(F("POSTed bubname, redirecting to %s." CR), redirect);
+
+            } else if (single->server->hasArg(F("tempInF"))) { // Change Temp in F
+                char option[8];
+                strcpy(option, single->server->arg("tempInF").c_str());
+                if (strcmp(option, "option0") == 0) {
+                    config->tempinf = false;
+                } else {
+                    config->tempinf = true;
+                    config->Save();
+                }
+                strcat(redirect, "#temp"); // Redirect to Temp Control
+                Log.verbose(F("POSTed tempInF, redirecting to %s." CR), redirect);
+
+            } else if (single->server->hasArg(F("calRoom"))) { // Change Room temp calibration
+                if ((single->server->arg("calRoom").toDouble() < -25) || (single->server->arg("calRoom").toDouble() > 25)) {
+                    Log.warning(F("Settings update error." CR));
+                } else {
+                    config->calAmbient = single->server->arg("calRoom").toDouble();
+                    config->Save();
+                }
+                strcat(redirect, "#temp"); // Redirect to Temp Control
+                Log.verbose(F("POSTed calRoom, redirecting to %s." CR), redirect);
+
+            } else if (single->server->hasArg(F("calVessel"))) { // Change Vessel temp calibration
+                if ((single->server->arg("calVessel").toDouble() < -25) || (single->server->arg("calVessel").toDouble() > 25)) {
+                    Log.warning(F("Settings update error." CR));
+                } else {
+                    config->calVessel = single->server->arg("calVessel").toDouble();
+                    config->Save();
+                }
+                strcat(redirect, "#temp"); // Redirect to Temp Control
+                Log.verbose(F("POSTed calVessel, redirecting to %s." CR), redirect);
+
+            } else if (single->server->hasArg(F("target"))) { // Change Target URL
+                if ((single->server->arg("target").length() > 128) || (single->server->arg("target").length() < 3)) {
+                    Log.warning(F("Settings update error." CR));
+                } else {
+                    strlcpy(config->targeturl, single->server->arg("target").c_str(), sizeof(config->targeturl));
+                    config->Save();
+                }
+                strcat(redirect, "#target"); // Redirect to Target Control
+                Log.verbose(F("POSTed target, redirecting to %s." CR), redirect);
+
+            } else if (single->server->hasArg(F("tfreq"))) { // Change Vessel temp calibration
+                if ((single->server->arg("tfreq").toInt() < 15) || (single->server->arg("tfreq").toInt() > 3600)) {
+                    Log.warning(F("Settings update error." CR));
+                } else {
+                    config->targetfreq = single->server->arg("tfreq").toInt();
+                    config->Save();
+                }
+                strcat(redirect, "#target"); // Redirect to Target Control
+                Log.verbose(F("POSTed tfreq, redirecting to %s." CR), redirect);
+
+            } else if (single->server->hasArg(F("bfkey"))) { // Change Brewer's Friend key
+                if ((single->server->arg("bfkey").length() > 64) || (single->server->arg("bfkey").length() < 20)) {
+                    Log.warning(F("Settings update error." CR));
+                } else {
+                    strlcpy(config->bfkey, single->server->arg("bfkey").c_str(), sizeof(config->bfkey));
+                    config->Save();
+                }
+                strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
+                Log.verbose(F("POSTed bfkey, redirecting to %s." CR), redirect);
+
+            } else if (single->server->hasArg(F("bfreq"))) { // Change Vessel temp calibration
+                if ((single->server->arg("bfreq").toInt() < 15) || (single->server->arg("bfreq").toInt() > 120)) {
+                    Log.warning(F("Settings update error." CR));
+                } else {
+                    config->bffreq = single->server->arg("bfreq").toInt();
+                    config->Save();
+                }
+                strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
+                Log.verbose(F("POSTed bfreq, redirecting to %s." CR), redirect);
+
+            }
+
+            // Redirect to Settings page
+            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
+            single->server->sendHeader(F("Location"), redirect);
+            single->server->send(303);
+        });
+
     // JSON Handlers
 
     single->server->on(
@@ -131,11 +258,11 @@ void WebServer::aliases() {
     single->server->on(
         F("/config/update/"),
         HTTP_POST,
-        []() {
+        []() {  // Process JSON POST configuration changes
             Log.verbose(F("Processing post to /config/update/." CR));
             String input = single->server->arg(F("plain"));
-            const size_t capacity = 700;
             // const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
+            const size_t capacity = CONFIGJSON;
             StaticJsonDocument<capacity> doc;
             DeserializationError err = deserializeJson(doc, input);
             if (!err) {

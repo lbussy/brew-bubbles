@@ -68,6 +68,5 @@ void NtpHandler::update() {
 }
 
 void NtpHandler::setJsonTime() {
-    char* datetime = new  char[21];
     sprintf(single->Time, "%04u-%02u-%02uT%02u:%02u:%02uZ", year(), month(), day(), hour(), minute(), second());
 }
