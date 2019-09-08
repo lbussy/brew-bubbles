@@ -2,17 +2,18 @@
 
 ## Open
 
-- Fix mobile menu
-- Do a version check
-  - Add JSON to SPIFFS
-  - Compare with repo
-- Try to apply former configuration when updating firmware
+- OTA changes
+  - Try to apply former configuration when updating firmware
+  - Do a version check
+    - Add JSON to SPIFFS
+    - Compare SPIFFS JSON with repo JSON
 - Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
 - Add hostname change to AP Portal
 - Fix deprecation error in http
 
 ## Complete
 
+- ~~Fix mobile menu~~
 - ~~Add countdown on main page to next refresh~~
 - ~~Handle doubles in form~~
 - ~~Make sure time updates~~
