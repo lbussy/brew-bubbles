@@ -35,7 +35,8 @@ JsonConfig* JsonConfig::getInstance()
 }
 
 bool JsonConfig::Parse(bool reset = false) {
-    const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7) + 480;
+    //const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7) + 480;
+    const size_t capacity = CONFIGJSON;
     StaticJsonDocument<capacity> doc;
 
     // Mount SPIFFS
@@ -136,7 +137,8 @@ bool JsonConfig::Parse(bool reset = false) {
 }
 
 bool JsonConfig::Save() {
-    const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
+    // const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
+     const size_t capacity = CONFIGJSON;
     StaticJsonDocument<capacity> doc;
 
     // Serialize Access Point Settings Object
@@ -197,7 +199,7 @@ bool JsonConfig::Save() {
 
 void JsonConfig::CreateSettingsJson() {
     // const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
-    const size_t capacity = 700;
+    const size_t capacity = CONFIGJSON;
     StaticJsonDocument<capacity> doc;
 
     // Serialize Access Point Settings Object

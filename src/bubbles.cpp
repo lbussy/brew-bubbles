@@ -146,7 +146,7 @@ float Bubbles::GetPpm() {
 
 void Bubbles::CreateBubbleJson() {
     // const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
-    const size_t capacity = 277;
+    const size_t capacity = BUBBLEJSON;
     StaticJsonDocument<capacity> doc;
     JsonConfig *config = JsonConfig::getInstance();
 
