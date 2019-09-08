@@ -99,12 +99,13 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 
     <main role="main" class="flex-shrink-0">
 
-            <div class="container" id="settingsapp"> <!-- Container -->
-    
-                <div class="page-header" id="banner">
-                    <h1>Bubble Sensor</h1>
-                </div>
-                <div class="card border-dark mb-3">
+        <div class="container" id="settingsapp">
+            <!-- Container -->
+
+            <div class="page-header" id="banner">
+                <h1>Bubble Sensor</h1>
+            </div>
+            <div class="card border-dark mb-3">
 
                 <!-- Sensor Readings -->
                 <div class="card-header">
@@ -132,9 +133,13 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                             <strong>Last Reading: </strong>
                             <span id="time">...loading</span>
                         </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Refresh in: </strong>
+                            <span id="time"><div id="countdown">...loading</div></span>
+                        </li>
                     </ul>
                 </div>
-            </div> <!-- Sensor Readingss -->
+            </div> <!-- Sensor Readings -->
 
         </div> <!-- Container -->
 
@@ -146,12 +151,26 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
         </div>
     </footer>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+        integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        crossorigin="anonymous">
+    </script>
 
     <script>
         $(document).ready(function () {
             loadPage(); // Load once on page load
-            var interval = setInterval(function () { loadPage(); }, 60000); // Then every 60 seconds
+
+            reloadPeriod = 60;
+            (function countdown(remaining) { // Refresh data every 60 secs
+                if (remaining === 0) {
+                    loadPage();
+                    remaining = reloadPeriod;
+                }
+                document.getElementById('countdown').innerHTML = remaining;
+                setTimeout(function () { countdown(remaining - 1); }, 1000);
+            })(reloadPeriod);
+
         });
 
         function loadPage() {
@@ -194,7 +213,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                     $("#time").text("Error loading JSON.");
                 })
                 .always(function () {
-                    //
+                    // Post load processing here
                 });
         }
     </script>

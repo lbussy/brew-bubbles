@@ -121,7 +121,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                     </label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" name="mdnsID" id="mdnsID"
-                                            placeholder="Hostname">
+                                            minlength="3" maxlength="32" placeholder="Hostname">
                                     </div>
                                     <div class="col-sm-2"><button class="btn btn-primary"
                                             id="submitSettings">Update</button>
@@ -136,7 +136,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                     </label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" name="bubname" id="bubname"
-                                            placeholder="Fermenter 1">
+                                        minlength="3" maxlength="32" placeholder="Fermenter 1">
                                     </div>
                                     <div class="col-sm-2"><button class="btn btn-primary"
                                             id="submitSettings">Update</button>
@@ -206,7 +206,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                                 title="Value by which the Room temperature display will be offset">Room</label>
                                             <div class="col-sm-8">
                                                 <input type="number" class="form-control" id="calRoom" name="calRoom"
-                                                    placeholder="0.0">
+                                                    min="-25" max="25" step=".01" placeholder="0.0">
                                             </div>
                                             <div class="col-sm-2">
                                                 <button class="btn btn-primary" id="submitSettings">Update</button>
@@ -219,8 +219,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                             <label for="calVessel" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                                 title="Value by which the Vessel teperature display will be offset">Vessel</label>
                                             <div class="col-sm-8">
-                                                <input type="number" class="form-control" id="calVessel"
-                                                    name="calVessel" placeholder="0.0">
+                                                <input type="number" class="form-control" id="calVessel" name="calVessel"
+                                                    min=-25 max=25 step=".01" placeholder="0.0">
                                             </div>
                                             <div class="col-sm-2">
                                                 <button class="btn btn-primary" id="submitSettings">Update</button>
@@ -251,7 +251,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                 title="HTML Endpoint URL. Delete to disable pushing to an HTML Endpoint. Ports other than 80 need to be in the format of: http://foo.com:8080/page.php">Target</label>
                             <div class="col-sm-8">
                                 <input type="url" class="form-control" id="target" name="target"
-                                    placeholder="http://brewpi.local/brew-bubbles-php">
+                                    minlength="3" maxlength="128" placeholder="http://brewpi.local/brew-bubbles-php">
                             </div>
                             <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
                             </div>
@@ -263,7 +263,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                             <label for="endpointPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                 title="How often (in seconds) to push data to HTML Endpoint">Frequency</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" id="tfreq" name="tfreq" placeholder="120">
+                                <input type="number" class="form-control" id="tfreq" name="tfreq" placeholder="120"
+                                    min="15" max="3600" >
                             </div>
                             <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
                             </div>
@@ -292,7 +293,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                             </label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control" id="bfkey" name="bfkey"
-                                    placeholder="000fa2ac454c1abf14ffa3">
+                                    minlength="20" maxlength="64" placeholder="000fa2ac454c1abf14ffa3">
                             </div>
                             <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
                             </div>
@@ -304,7 +305,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                             <label for="bfPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                 title="How often (in minutes) to push data to Brewer's Friend">Push Frequency</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" id="bfreq" name="bfreq" placeholder="15">
+                                <input type="number" class="form-control" id="bfreq" name="bfreq" placeholder="15"
+                                    min="15" max="120">
                             </div>
                             <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
                             </div>
@@ -350,60 +352,16 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 
     </main>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script 
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+        integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh"
+        crossorigin="anonymous">
+    </script>
 
     <script>
         $(document).ready(function () { // Wait till page is loaded
             loadPage(); // Populate form with controller settings
-
-            payload = getAllUrlParams(); // Process URI arguments
-            if (!jQuery.isEmptyObject(payload)) {
-                postJson(payload);
-            }
         });
-
-        function postJson(payload) {
-            console.log(payload) // DEBUG
-
-            switch (true) {
-                case payload.hasOwnProperty('mdnsid'):
-                    
-                    break;
-
-                case payload.hasOwnProperty('bubname'):
-                    
-                    break;
-
-                case payload.hasOwnProperty('tempinf'):
-                    
-                    break;
-
-                case payload.hasOwnProperty('calroom'):
-                    
-                    break;
-
-                case payload.hasOwnProperty('calvessel'):
-                    
-                    break;
-
-                case payload.hasOwnProperty('target'):
-                    
-                    break;
-
-                case payload.hasOwnProperty('tfreq'):
-                    
-                    break;
-
-                case payload.hasOwnProperty('bfkey'):
-                    
-                    break;
-
-                case payload.hasOwnProperty('bfreq'):
-                    
-                    break;
-
-            }
-        }
 
         function loadPage() { // Get current parameters
             var url = "/config/";
@@ -426,84 +384,16 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         $('input[name="bfreq"]').val(config.bfconfig.freq);
                     }
                     catch {
-                        // What do we do if there's an error?
+                        alert("Unable to parse configuration data from SPIFFS.");
                     }
                 })
                 .fail(function () {
-                    // What do we do if JSON load fails?
+                    alert("Unable to parse configuration data from SPIFFS.");
                 })
                 .always(function () {
-                    //
+                    // Can post-process here
                 });
         }
-
-        function getAllUrlParams(url) { // Return query string components as JSON
-            var obj = {};
-            // Get query string from url (optional) or window
-            var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
-
-            // If query string exists
-            if (queryString) {
-                // After # is the page anchor ref
-                queryString = queryString.split('#');
-                query = queryString[0];
-                aref = queryString[1];
-                console.log(aref);
-
-                // Decode query string
-                var query = decodeURIComponent(query);
-                // Replace '+' sign with a space
-                query = query.split('+').join(' ');
-
-                // Split query string into its component parts
-                var arr = query.split('&');
-
-                for (var i = 0; i < arr.length; i++) {
-                    // Separate the keys and the values
-                    var a = arr[i].split('=');
-
-                    // Set parameter name and value (use 'true' if empty)
-                    var paramName = a[0];
-                    var paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
-
-                    // (optional) Keep case consistent
-                    paramName = paramName.toLowerCase();
-                    if (typeof paramValue === 'string') paramValue = paramValue.toLowerCase();
-
-                    // If the paramName ends with square brackets, e.g. colors[] or colors[2]
-                    if (paramName.match(/\[(\d+)?\]$/)) {
-
-                        // create key if it doesn't exist
-                        var key = paramName.replace(/\[(\d+)?\]/, '');
-                        if (!obj[key]) obj[key] = [];
-
-                        // if it's an indexed array e.g. colors[2]
-                        if (paramName.match(/\[\d+\]$/)) {
-                            // get the index value and add the entry at the appropriate position
-                            var index = /\[(\d+)\]/.exec(paramName)[1];
-                            obj[key][index] = paramValue;
-                        } else {
-                            // otherwise add the value to the end of the array
-                            obj[key].push(paramValue);
-                        }
-                    } else { // Processing a string
-                        if (!obj[paramName]) {
-                            // if property doesn't exist, create it
-                            obj[paramName] = paramValue;
-                        } else if (obj[paramName] && typeof obj[paramName] === 'string') {
-                            // If property does exist and it's a string, convert it to an array
-                            obj[paramName] = [obj[paramName]];
-                            obj[paramName].push(paramValue);
-                        } else {
-                            // Otherwise add the property
-                            obj[paramName].push(paramValue);
-                        }
-                    }
-                }
-            }
-            return obj;
-        }
-
     </script>
 
     <footer class="footer mt-auto py-3">
