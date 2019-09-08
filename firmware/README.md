@@ -13,7 +13,7 @@ Optionally, for certain workflows I have included:
 
 **File Name**|**Description**|**Address**
 -----|-----|-----
-`blank.bin` | A blank file used to reset parts of the controller to defaults | 0xfe000 & 0x3fe000
+`blank.bin` | A blank file used to reset parts of the controller to defaults | 0x3FE000
 
 ## Flashing Firmware - Initial
 
@@ -43,12 +43,6 @@ If you desire to completely erase your controller, you may also use `esptool`'s 
 
 ```
 esptool erase_flash
-```
-
-If for some reason you are having issues with WiFi which is not addressed by any of the other methods presented, you may either use the erase flash option above, or use the `blank.bin` file in this repository:
-
-```
-esptool write_flash -fm dio -fs 4MB-c1 0xfe000 blank.bin 0x3fe000 blank.bin
 ```
 
 ### Mac Platforms
@@ -89,6 +83,8 @@ When setup is complete, click on the "*START*" button underneath the green box. 
 ![Finished Screen](Finish.PNG)]
 
 At this point, you may close the tool as well as the selection screen, and proceed with setup.
+
+If you desire to completely erase your controller, you may leverage the "*ERASE*" button within the Flash Download tool.
 
 ## Firmware Updates
 
