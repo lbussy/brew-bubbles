@@ -2,11 +2,6 @@
 
 ## Open
 
-- Fix not saving after restart:
-  - bfkey
-  - bffreq
-  - targetfreq
-- Not reading config on startup: 4300 E: Failed to open configuration file.
 - Do a version check
   - Add JSON to SPIFFS
   - Compare with repo
@@ -100,3 +95,8 @@
 - ~~Merge back in Target Handler~~
 - ~~Split up form items~~
 - ~~Get POSTs and apply~~
+- ~~Fix not saving after restart:~~
+  - ~~bfkey~~
+  - ~~bffreq~~
+  - ~~targetfreq~~
+- ~~Not reading config on startup: 4300 E: Failed to open configuration file.~~
