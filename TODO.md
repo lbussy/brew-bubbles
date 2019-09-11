@@ -2,13 +2,20 @@
 
 ## Open
 
+- Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
+- Add hostname change to AP Portal
+- Add AP instructions to firmware instructions
+- Add LED flashes to
+  - Initial connect in AP mode
+  - Seeking previous AP
+  - AP mode on failed connect
+  - Blocking loop for NTP
+  - Bubble flashes
 - OTA changes
   - Try to apply former configuration when updating firmware
   - Do a version check
     - Add JSON to SPIFFS
     - Compare SPIFFS JSON with repo JSON
-- Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
-- Add hostname change to AP Portal
 - Fix deprecation error in http
 
 ## Complete
@@ -30,7 +37,7 @@
 - ~~Add local OTA~~
 - ~~Add in NTP~~
   - ~~Add timestamp to JSON~~
-- ~~Add reset/forget WiFi for pin pulldown on starup~~
+- ~~Add reset/forget WiFi for pin pulldown on startup~~
 - ~~Configuration Work~~
   - ~~Remove NTP server from config~~
   - ~~Remove NTP interval from config~~
@@ -77,7 +84,7 @@
 - ~~Force NTP to make a blocking call to get time on startup~~
 - ~~BUG: IPL stopped working~~ (no longer using)
 - ~~Fix losing WiFi config on power loss~~
-- ~~Merge back in MDNS~~
+- ~~Merge back in mDNS~~
 - ~~Get web pages working~~
   - ~~Have bubbles display in home page~~
   - ~~Add endpoint to receive new settings~~

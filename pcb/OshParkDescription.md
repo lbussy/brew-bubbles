@@ -6,9 +6,9 @@ Since this uses 1 or 2 each of very common, very inexpensive components, you may
 
 | **Quan** | **Description** | **Placement** |
 |---|---|---|
-| 1 | 0.1μF 10V Ceramic Capacitor | C1 |
-| 1 | 150Ω 1/4W 5%  Axial resistor | R1, R2 |
-| *2 | 2.2kΩ 1/4W 5% Axial resistor | R3 |
+| 3 | 0.1μF 10V Ceramic Capacitor | C1, C2. C3 |
+| 1 | 150Ω 1/4W 5%  Axial resistor | R1 |
+| *2 | 2.2kΩ 1/4W 5% Axial resistor | R2, R3 |
 | *2 | 3-Pin 90° Header | VESSEL, ROOM |
 | 1 | Sharp GP1A57HR Transmissive Photointerrupter | U1 |
 | 2 | 8-pin male stackable header (nearly always comes with the D1) |  |
