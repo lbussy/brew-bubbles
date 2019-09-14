@@ -25,6 +25,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "webserver.h"
 #include "wifi.h"
 #include "version.h"
+#include "targethandler.h"
+#include "bubbles.h"
 #include <WiFiManager.h>
 #include <DoubleResetDetect.h>
 #include <ESP8266WiFi.h>

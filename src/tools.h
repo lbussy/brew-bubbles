@@ -20,8 +20,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "wifi.h"
 #include <EEPROM.h>
-#include <Ticker.h>
-#include <Arduino.h>
 
 #define EEPROM_ADDRESS 0x00
 

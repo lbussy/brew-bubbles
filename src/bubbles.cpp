@@ -66,7 +66,7 @@ void Bubbles::HandleInterrupts(void) { // Bubble Interrupt handler
         single->pulse++;    // Increment pulse count
     }
     interrupts();   // Turn on interrupts TODO:  See if I want to keep this
-    Log.verbose(F("..oO" CR)); // Looks like a bubble, right?
+    Log.verbose(F("॰°ₒ৹๐" CR)); // Looks like a bubble, right?
 }
 
 float Bubbles::GetRawPps() { // Return raw pulses per second (resets counter)
@@ -77,7 +77,6 @@ float Bubbles::GetRawPps() { // Return raw pulses per second (resets counter)
     float pps = (pulse / secs); // Calculate PPS
     single->pulse = 0; // Zero the pulse counter
     single->ulLastReport = millis(); // Store the last report timer
-    //return pps; // Return pulses per second
     return pps;
 }
 
@@ -104,7 +103,10 @@ void Bubbles::Update() {
         single->lastTime = ntpTime->Time;
         Log.verbose(F("Time is %s, PPM is %D." CR), single->lastTime, thisPpm);
     }
-    if (digitalRead(COUNTPIN) == LOW) digitalWrite(LED, HIGH);
+    if (digitalRead(COUNTPIN) == HIGH) // Non-interrupt driven LED logic
+        digitalWrite(LED, LOW); // Turn LED on/keep on if no water
+    else
+        digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble
 }
 
 float Bubbles::GetAmbientTemp() {

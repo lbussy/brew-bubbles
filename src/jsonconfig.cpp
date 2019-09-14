@@ -21,20 +21,20 @@ bool JsonConfig::instanceFlag = false;
 JsonConfig* JsonConfig::single = NULL;
 JsonConfig* JsonConfig::getInstance()
 {
-    if(! instanceFlag)
-    {
+    if(! instanceFlag) {
         single = new JsonConfig();
         instanceFlag = true;
         single->Parse(false); // True to wipe config.json for testing
         return single;
     }
-    else
-    {
+    else {
         return single;
     }
 }
 
 bool JsonConfig::Parse(bool reset = false) {
+    single->updateBFFreq = false;
+    single->updateTargetFreq = false;
     //const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7) + 480;
     const size_t capacity = CONFIGJSON;
     StaticJsonDocument<capacity> doc;
