@@ -31,19 +31,21 @@ class JsonConfig {
         JsonConfig() {} 
 
     public:
+        char Config[CONFIGJSON];    // Hold the Config JSON
         char ssid[33];              // AP SSID
         char appwd[65];             // AP Pwd
         char hostname[33];          // Hostname
         char bubname[33];           // This device
+        char targeturl[129];        // Target host
+        char bfkey[65];             // Brewer's Friend key
         bool tempinf;               // Is temp in F
+        bool dospiffs;              // Update SPIFFS on reboot
+        bool updateBFFreq;          // Need to update BF Loop timer
+        bool updateTargetFreq;      // Need to update Target Loop timer
         float calAmbient;           // Calibration for Ambient sensor
         float calVessel;            // Calibration for Vessel sensor
-        char targeturl[129];        // Target host
         unsigned long targetfreq;   // Target freqency
-        char bfkey[65];             // Brewer's Friend key
         unsigned long bffreq;       // Brewer's Friend frequency
-        bool dospiffs;              // Update SPIFFS on reboot
-        char Config[CONFIGJSON];    // Hold the Config JSON
 
         // Methods
         bool Parse(bool reset);

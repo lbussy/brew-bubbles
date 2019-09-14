@@ -21,7 +21,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "config.h"
 #include "tools.h" // DEBUG TODO
 #include <ArduinoLog.h>
-#include <Arduino.h>
 
 void serial();
 void printTimestamp(Print* _logOutput);

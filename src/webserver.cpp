@@ -198,6 +198,7 @@ void WebServer::aliases() {
                     Log.warning(F("Settings update error." CR));
                 } else {
                     config->targetfreq = single->server->arg("tfreq").toInt();
+                    config->updateTargetFreq = true;
                     config->Save();
                 }
                 strcat(redirect, "#target"); // Redirect to Target Control
@@ -218,6 +219,7 @@ void WebServer::aliases() {
                     Log.warning(F("Settings update error." CR));
                 } else {
                     config->bffreq = single->server->arg("bfreq").toInt();
+                    config->updateBFFreq = true;
                     config->Save();
                 }
                 strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control

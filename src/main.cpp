@@ -17,7 +17,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "main.h"
 
-WebServer *server = WebServer::getInstance();
 DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 
 void setup() {
@@ -46,17 +45,37 @@ void setup() {
         MDNS.addService("http", "tcp", 80);
     }
 
+    WebServer *server = WebServer::getInstance();
     server->initialize(PORT); // Turn on web server
 
     NtpHandler *ntpTime = NtpHandler::getInstance();
     ntpTime->start();
 
-    Log.notice(F("Started Brew Bubbles version %s (%s) [%s]." CR), version(), branch(), build());
+    Log.notice(F("Started %s version %s (%s) [%s]." CR), API_KEY, version(), branch(), build());
 }
 
 void loop() {
     Bubbles *bubble = Bubbles::getInstance();
+    JsonConfig *config = JsonConfig::getInstance();
+    WebServer *server = WebServer::getInstance();
+    Ticker postTimer;
+    Ticker bfTimer;
+    postTimer.attach(config->targetfreq, httpPost);
+    bfTimer.attach(config->bffreq * 60, bfPost);
     while (true) {
+        // If timers needs to be updated, update timers
+        if (config->updateTargetFreq) {
+            Log.notice(F("Resetting Target frequency timer to %l seconds." CR), config->targetfreq);
+            postTimer.detach();
+            postTimer.attach(config->targetfreq, httpPost);
+            config->updateTargetFreq = false;
+        }
+        if (config->updateBFFreq) {
+            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config->bffreq);
+            bfTimer.detach();
+            bfTimer.attach(config->bffreq * 60, bfPost);
+            config->updateBFFreq = false;
+        }
         bubble->Update();
         server->handleLoop();
         MDNS.update();

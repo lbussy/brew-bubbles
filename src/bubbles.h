@@ -23,7 +23,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "ntphandler.h"
 #include "DallasTemperature.h"
 #include "OneWire.h"
-#include <Arduino.h>
 
 class Bubbles {
     private:

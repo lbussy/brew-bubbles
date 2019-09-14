@@ -2,7 +2,6 @@
 
 ## Open
 
-- Add task registration/scheduling (<https://github.com/arkhipenko/TaskScheduler>)
 - Add hostname change to AP Portal
 - Add AP instructions to firmware instructions
 - OTA changes
@@ -11,6 +10,8 @@
     - Add JSON to SPIFFS
     - Compare SPIFFS JSON with repo JSON
 - Fix deprecation error in http
+- Fix log levels
+- Ensure use of compiler macro strings are using flash mem
 
 ## Complete
 
@@ -111,3 +112,4 @@
   - ~~Voluntary AP mode (0.5 Hz)~~
   - ~~Blocking loop for NTP (10 Hz)~~
   - ~~Bubble flashes~~
+- ~~Add task registration/scheduling~~
