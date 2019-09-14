@@ -2,7 +2,7 @@
 
 ## Open
 
-- Add task registration/scheduling (https://github.com/arkhipenko/TaskScheduler)
+- Add task registration/scheduling (<https://github.com/arkhipenko/TaskScheduler>)
 - Add hostname change to AP Portal
 - Add AP instructions to firmware instructions
 - Add LED flashes to
@@ -10,7 +10,7 @@
   - Seeking previous AP
   - AP mode on failed connect
   - Blocking loop for NTP
-  - Bubble flashes
+  - ~~Bubble flashes~~
 - OTA changes
   - Try to apply former configuration when updating firmware
   - Do a version check

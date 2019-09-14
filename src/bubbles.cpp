@@ -39,7 +39,8 @@ Bubbles* Bubbles::getInstance() {
 
 void Bubbles::Setup() {
     pinMode(COUNTPIN, INPUT);       // Change pinmode to input
-    attachInterrupt(digitalPinToInterrupt(COUNTPIN), HandleInterruptsStatic, FALLING); // FALLING, RISING or CHANGE
+    pinMode(LED, OUTPUT);
+    attachInterrupt(digitalPinToInterrupt(COUNTPIN), HandleInterruptsStatic, RISING); // FALLING, RISING or CHANGE
     pBubbles = single;              // Assign current instance to pointer 
     single->ulLastReport = millis();// Store the last report timer
     single->pulse = 0;              // Reset pulse counter
@@ -59,13 +60,14 @@ Bubbles::~Bubbles() {
 }
 
 void Bubbles::HandleInterrupts(void) { // Bubble Interrupt handler
-    noInterrupts(); // Turn off interrupts
+    digitalWrite(LED, LOW);
+    noInterrupts(); // Turn off interrupts TODO: See if I want to keep this
     unsigned long now = micros();
     if ((now - ulMicroLast) > RESOLUTION) { // Filter noise/bounce
         single->pulse++;    // Increment pulse count
     }
-    interrupts();   // Turn on interrupts
-    Log.verbose(F("."));
+    interrupts();   // Turn on interrupts TODO:  See if I want to keep this
+    Log.verbose(F("..oO" CR)); // Looks like a bubble, right?
 }
 
 float Bubbles::GetRawPps() { // Return raw pulses per second (resets counter)
@@ -95,13 +97,15 @@ void Bubbles::Update() {
     unsigned long ulNow = millis();
     if (ulNow - single->ulStart > BUBLOOP) {
         // If (now - start) > delay time, get new value
+        float thisPpm = single->GetRawPpm();
         single->ulStart = ulNow;
-        single->lastPpm = single->GetRawPpm();
+        single->lastPpm = thisPpm;
         NtpHandler *ntpTime = NtpHandler::getInstance();
         ntpTime->setJsonTime();
         single->lastTime = ntpTime->Time;
-        Log.verbose(F("Time is %s, PPM is %l:" CR), single->lastTime, single->lastPpm);
+        Log.verbose(F("Time is %s, PPM is %D:" CR), single->lastTime, thisPpm);
     }
+    if (digitalRead(COUNTPIN) == LOW) digitalWrite(LED, HIGH);
 }
 
 float Bubbles::GetAmbientTemp() {
