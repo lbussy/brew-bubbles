@@ -41,6 +41,8 @@ void NtpHandler::setup() {
 }
 
 void NtpHandler::start() {
+    Ticker blinker;
+    blinker.attach_ms(NTPBLINK, ntpBlinker);
     NTP.setInterval(63);
     NTP.setNTPTimeout(NTP_TIMEOUT);
     NTP.begin(TIMESERVER, 0, false, 0);
@@ -59,6 +61,8 @@ void NtpHandler::start() {
     single->setJsonTime();
     Log.notice(F("NTP Time: %s." CR), single->Time);
     #endif
+    if (blinker.active()) blinker.detach(); // Turn off blinker
+    digitalWrite(LED, HIGH); // Turn off LED
 }
 
 void NtpHandler::update() {
@@ -69,4 +73,8 @@ void NtpHandler::update() {
 
 void NtpHandler::setJsonTime() {
     sprintf(single->Time, "%04u-%02u-%02uT%02u:%02u:%02uZ", year(), month(), day(), hour(), minute(), second());
+}
+
+void ntpBlinker() {
+  digitalWrite(LED, !(digitalRead(LED)));  // Invert Current State of LED  
 }

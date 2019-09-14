@@ -26,6 +26,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #define NTP_TIMEOUT 1500
 
+void ntpBlinker();
+
 class NtpHandler {
     private:
         // Singleton Declarations

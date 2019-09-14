@@ -5,12 +5,6 @@
 - Add task registration/scheduling (<https://github.com/arkhipenko/TaskScheduler>)
 - Add hostname change to AP Portal
 - Add AP instructions to firmware instructions
-- Add LED flashes to
-  - Initial connect in AP mode
-  - Seeking previous AP
-  - AP mode on failed connect
-  - Blocking loop for NTP
-  - ~~Bubble flashes~~
 - OTA changes
   - Try to apply former configuration when updating firmware
   - Do a version check
@@ -110,3 +104,10 @@
   - ~~bffreq~~
   - ~~targetfreq~~
 - ~~Not reading config on startup: 4300 E: Failed to open configuration file.~~
+- ~~Add LED flashes to~~
+  - ~~Initial connect in AP mode~~
+  - ~~AP mode on failed connect~~
+  - ~~Seeking previous AP (1.5 Hz)~~
+  - ~~Voluntary AP mode (0.5 Hz)~~
+  - ~~Blocking loop for NTP (10 Hz)~~
+  - ~~Bubble flashes~~

@@ -23,6 +23,7 @@ DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 void setup() {
     bool rst = drd.detect(); // Check for double-reset
     serial(); // TODO:  Includes a 4000 ms delay
+    pinMode(LED, OUTPUT);
 
     _delay(200); // Let pins settle, else detect is inconsistent
     pinMode(RESETWIFI, INPUT_PULLUP);
