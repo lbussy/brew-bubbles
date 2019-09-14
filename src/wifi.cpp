@@ -18,6 +18,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "wifi.h"
 
 bool shouldSaveConfig = false;
+Ticker blinker;
 
 void presentPortal(bool ignore = false) { // Present AP and captive portal to allow new settings
     JsonConfig *config = JsonConfig::getInstance();
@@ -30,6 +31,7 @@ void presentPortal(bool ignore = false) { // Present AP and captive portal to al
     wifi_station_set_hostname(config->hostname);
 
     if (ignore) {
+        blinker.attach_ms(APBLINK, wifiBlinker);
         wifiManager.setTimeout(120);
         if (wifiManager.startConfigPortal(config->ssid, config->appwd)) {
             if (shouldSaveConfig) { // Save configuration
@@ -37,20 +39,31 @@ void presentPortal(bool ignore = false) { // Present AP and captive portal to al
             }
         } else {
             // Hit timeout on voluntary portal
+            if (blinker.active()) blinker.detach(); // Turn off blinker
+            digitalWrite(LED, LOW);
+            _delay(3000);
+            digitalWrite(LED, HIGH);
+            ESP.restart();
         }
     } else { // Normal WiFi connection attempt
+        blinker.attach_ms(STABLINK, wifiBlinker);
         if (!wifiManager.autoConnect(config->ssid, config->appwd)) {
             Log.warning(F("Failed to connect and hit timeout."));
+            if (blinker.active()) blinker.detach(); // Turn off blinker
+            digitalWrite(LED, LOW);
             _delay(3000);
+            digitalWrite(LED, HIGH);
             ESP.restart();
-            _delay(5000);
+            _delay(1000); // Just a hack to allow it to reset
         }
     }
+    if (blinker.active()) blinker.detach(); // Turn off blinker
+    digitalWrite(LED, HIGH); // Turn off LED
 
     wifi_station_set_hostname(config->hostname);
 
-    while (WiFi.status() != WL_CONNECTED)
-    {
+    while (WiFi.status() != WL_CONNECTED) {
+        blinker.attach_ms(STABLINK, wifiBlinker);
         _delay(500);
         #ifdef LOG_LEVEL
         Serial.print(F("."));
@@ -60,13 +73,18 @@ void presentPortal(bool ignore = false) { // Present AP and captive portal to al
     Serial.println();
     #endif
     Log.notice(F("Connected. IP address: %s." CR), WiFi.localIP().toString().c_str());
+    if (blinker.active()) blinker.detach(); // Turn off blinker
+    digitalWrite(LED, HIGH); // Turn off LED
 }
 
 void resetWifi() { // Wipe wifi settings and reset controller
     WiFiManager wifiManager;
     wifiManager.resetSettings();
+    if (blinker.active()) blinker.detach(); // Turn off blinker
+    digitalWrite(LED, LOW); // Turn on LED
     _delay(3000);
     ESP.restart();
+    _delay(1000);
 }
 
 void saveConfigCallback() { // Set flag to save config
@@ -75,7 +93,13 @@ void saveConfigCallback() { // Set flag to save config
 }
 
 void configModeCallback(WiFiManager *myWiFiManager) {
+    if (blinker.active()) blinker.detach(); // Turn off blinker
+    blinker.attach_ms(APBLINK, wifiBlinker);
     Log.notice(F("Entered portal mode; name: %s, IP: %s." CR),
         myWiFiManager->getConfigPortalSSID().c_str(),
         WiFi.localIP().toString().c_str());
+}
+
+void wifiBlinker() {
+  digitalWrite(LED, !(digitalRead(LED)));  // Invert Current State of LED  
 }

@@ -39,7 +39,6 @@ Bubbles* Bubbles::getInstance() {
 
 void Bubbles::Setup() {
     pinMode(COUNTPIN, INPUT);       // Change pinmode to input
-    pinMode(LED, OUTPUT);
     attachInterrupt(digitalPinToInterrupt(COUNTPIN), HandleInterruptsStatic, RISING); // FALLING, RISING or CHANGE
     pBubbles = single;              // Assign current instance to pointer 
     single->ulLastReport = millis();// Store the last report timer
@@ -103,7 +102,7 @@ void Bubbles::Update() {
         NtpHandler *ntpTime = NtpHandler::getInstance();
         ntpTime->setJsonTime();
         single->lastTime = ntpTime->Time;
-        Log.verbose(F("Time is %s, PPM is %D:" CR), single->lastTime, thisPpm);
+        Log.verbose(F("Time is %s, PPM is %D." CR), single->lastTime, thisPpm);
     }
     if (digitalRead(COUNTPIN) == LOW) digitalWrite(LED, HIGH);
 }
