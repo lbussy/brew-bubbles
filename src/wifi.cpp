@@ -101,5 +101,5 @@ void configModeCallback(WiFiManager *myWiFiManager) {
 }
 
 void wifiBlinker() {
-  digitalWrite(LED, !(digitalRead(LED)));  // Invert Current State of LED  
+    digitalWrite(LED, !(digitalRead(LED)));  // Invert Current State of LED
 }
