@@ -18,9 +18,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "execota.h"
 
 void execfw() {
-    const char* firmwareUrlBase = FIRMWAREURL;
     Log.verbose(F("Starting the Firmware OTA pull." CR));
-    t_httpUpdate_return ret = ESPhttpUpdate.update(firmwareUrlBase);
+    t_httpUpdate_return ret = ESPhttpUpdate.update(FIRMWAREURL);
 
     switch(ret) {
         case HTTP_UPDATE_FAILED:
@@ -33,13 +32,15 @@ void execfw() {
         
         case HTTP_UPDATE_OK:
             // This is just here to get rid of a compiler warning, since
-            // the system will reset after OTA, we will never need this.
+            // the system will reset after OTA, we will never hit this.
+            Log.notice(F("HTTP Firmware Update complete, restarting." CR));
+            ESP.restart();
+            _delay(1000);
             break;
     }
 }
 
 void execspiffs() {
-    const char* spiffsUrlBase = SPIFFSURL;
     Log.verbose(F("Starting the SPIFFS OTA pull." CR));
 
     // Reset SPIFFS update flag
@@ -47,7 +48,7 @@ void execspiffs() {
     config->dospiffs = false;
     config->Save();
 
-    t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(spiffsUrlBase);
+    t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(SPIFFSURL);
 
     switch(ret) {
         case HTTP_UPDATE_FAILED:
