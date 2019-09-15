@@ -154,7 +154,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 // Firmware URL
 //
 #ifndef FIRMWAREURL
-#define FIRMWAREURL "firmware.brewbubbles.com"
+#define FIRMWAREURL "http://www.brewbubbles.com/firmware/firmware.bin"
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
@@ -164,7 +164,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 // SPIFFS URL
 //
 #ifndef SPIFFSURL
-#define SPIFFSURL "spiffs.brewbubbles.com"
+#define SPIFFSURL "http://www.brewbubbles.com/spiffs/spiffs.bin"
 #endif
 //
 //////////////////////////////////////////////////////////////////////////

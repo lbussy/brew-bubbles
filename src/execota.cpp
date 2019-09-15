@@ -19,6 +19,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 void execfw() {
     Log.verbose(F("Starting the Firmware OTA pull." CR));
+    ESPhttpUpdate.setLedPin(LED, LOW);
     t_httpUpdate_return ret = ESPhttpUpdate.update(FIRMWAREURL);
 
     switch(ret) {
@@ -41,30 +42,33 @@ void execfw() {
 }
 
 void execspiffs() {
-    Log.verbose(F("Starting the SPIFFS OTA pull." CR));
-
-    // Reset SPIFFS update flag
     JsonConfig *config = JsonConfig::getInstance();
-    config->dospiffs = false;
-    config->Save();
+    if (config->dospiffs) {
+        Log.verbose(F("Starting the SPIFFS OTA pull." CR));
 
-    t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(SPIFFSURL);
+        // Reset SPIFFS update flag
+        config->dospiffs = false;
+        config->Save();
 
-    switch(ret) {
-        case HTTP_UPDATE_FAILED:
-            Log.error(F("HTTP SPIFFS Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-            break;
+        ESPhttpUpdate.setLedPin(LED, LOW);
+        t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(SPIFFSURL);
 
-        case HTTP_UPDATE_NO_UPDATES:
-            Log.notice(F("HTTP SPIFFS Update: No updates." CR));
-            break;
+        switch(ret) {
+            case HTTP_UPDATE_FAILED:
+                Log.error(F("HTTP SPIFFS Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+                break;
 
-        case HTTP_UPDATE_OK:
-            // This is just here to get rid of a compiler warning, since
-            // the system will reset after OTA, we will never hit this.
-            Log.notice(F("HTTP SPIFFS Update complete, restarting." CR));
-            ESP.restart();
-            _delay(1000);
-            break;
+            case HTTP_UPDATE_NO_UPDATES:
+                Log.notice(F("HTTP SPIFFS Update: No updates." CR));
+                break;
+
+            case HTTP_UPDATE_OK:
+                // This is just here to get rid of a compiler warning, since
+                // the system will reset after OTA, we will never hit this.
+                Log.notice(F("HTTP SPIFFS Update complete, restarting." CR));
+                ESP.restart();
+                _delay(1000);
+                break;
+        }
     }
 }
