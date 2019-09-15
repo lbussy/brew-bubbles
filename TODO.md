@@ -118,3 +118,4 @@
 - ~~Add formal docs~~
 - ~~Add AP instructions to firmware instructions~~
 - ~~Move Bubble update to Ticker~~
+- ~~Fix busted formatting in wifi/2 & ota/2~~
