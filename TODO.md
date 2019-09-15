@@ -3,7 +3,6 @@
 ## Open
 
 - Add hostname change to AP Portal
-- Add AP instructions to firmware instructions
 - OTA changes
   - Try to apply former configuration when updating firmware
   - Do a version check
@@ -12,6 +11,7 @@
 - Fix deprecation error in http
 - Fix log levels
 - Address key for BF
+- Consider moving all graphics to github
 
 ## Complete
 
@@ -115,3 +115,6 @@
 - ~~Add task registration/scheduling~~
 - ~~Remove target URL and put in defaults on web page~~
 - ~~Ensure use of compiler macro strings are using flash mem~~
+- ~~Add formal docs~~
+- ~~Add AP instructions to firmware instructions~~
+- ~~Move Bubble update to Ticker~~

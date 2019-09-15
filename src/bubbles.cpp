@@ -92,21 +92,13 @@ float Bubbles::GetRawPpm() { // Return raw pulses per minute (resets counter)
 }
 
 void Bubbles::Update() {
-    unsigned long ulNow = millis();
-    if (ulNow - single->ulStart > BUBLOOP) {
-        // If (now - start) > delay time, get new value
-        float thisPpm = single->GetRawPpm();
-        single->ulStart = ulNow;
-        single->lastPpm = thisPpm;
-        NtpHandler *ntpTime = NtpHandler::getInstance();
-        ntpTime->setJsonTime();
-        single->lastTime = ntpTime->Time;
-        Log.verbose(F("Time is %s, PPM is %D." CR), single->lastTime, thisPpm);
-    }
-    if (digitalRead(COUNTPIN) == HIGH) // Non-interrupt driven LED logic
-        digitalWrite(LED, LOW); // Turn LED on/keep on if no water
-    else
-        digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble
+    // If (now - start) > delay time, get new value
+    float thisPpm = single->GetRawPpm();
+    single->lastPpm = thisPpm;
+    NtpHandler *ntpTime = NtpHandler::getInstance();
+    ntpTime->setJsonTime();
+    single->lastTime = ntpTime->Time;
+    Log.verbose(F("Time is %s, PPM is %D." CR), single->lastTime, thisPpm);
 }
 
 float Bubbles::GetAmbientTemp() {
@@ -155,21 +147,21 @@ void Bubbles::CreateBubbleJson() {
     StaticJsonDocument<capacity> doc;
     JsonConfig *config = JsonConfig::getInstance();
 
-    doc["api_key"] = API_KEY;
-    doc["vessel"] = config->bubname;
-    doc["datetime"] = single->lastTime;
+    doc[F("api_key")] = F(API_KEY);
+    doc[F("vessel")] = config->bubname;
+    doc[F("datetime")] = single->lastTime;
     
     if (config->tempinf == true) {
-        doc["format"] = "F";
+        doc[F("format")] = F("F");
     } else {
-        doc["format"] = "C";
+        doc[F("format")] = F("C");
     }
 
     // Get bubbles per minute
-    JsonObject data = doc.createNestedObject("data");
-    data["bpm"] = single->lastPpm;
-    data["ambtemp"] = single->GetAmbientTemp();
-    data["vestemp"] = single->GetVesselTemp();
+    JsonObject data = doc.createNestedObject(F("data"));
+    data[F("bpm")] = single->lastPpm;
+    data[F("ambtemp")] = single->GetAmbientTemp();
+    data[F("vestemp")] = single->GetVesselTemp();
 
     char output[capacity];
     serializeJson(doc, output, sizeof(output));

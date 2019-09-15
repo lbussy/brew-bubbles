@@ -58,8 +58,10 @@ void loop() {
     Bubbles *bubble = Bubbles::getInstance();
     JsonConfig *config = JsonConfig::getInstance();
     WebServer *server = WebServer::getInstance();
+    Ticker bubUpdate;
     Ticker postTimer;
     Ticker bfTimer;
+    bubUpdate.attach_ms(BUBLOOP, updateBubbles);
     postTimer.attach(config->targetfreq, httpPost);
     bfTimer.attach(config->bffreq * 60, bfPost);
     while (true) {
@@ -76,8 +78,16 @@ void loop() {
             bfTimer.attach(config->bffreq * 60, bfPost);
             config->updateBFFreq = false;
         }
-        bubble->Update();
         server->handleLoop();
-        MDNS.update();
+        MDNS.update(); 
+        if (digitalRead(COUNTPIN) == HIGH) // Non-interrupt driven LED logic
+            digitalWrite(LED, LOW); // Turn LED on when not obstructed
+        else
+            digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble
     }
+}
+
+void updateBubbles() {
+    Bubbles *bubble = Bubbles::getInstance();
+    bubble->Update();
 }
