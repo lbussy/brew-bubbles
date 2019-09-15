@@ -11,7 +11,7 @@
     - Compare SPIFFS JSON with repo JSON
 - Fix deprecation error in http
 - Fix log levels
-- Ensure use of compiler macro strings are using flash mem
+- Address key for BF
 
 ## Complete
 
@@ -113,3 +113,5 @@
   - ~~Blocking loop for NTP (10 Hz)~~
   - ~~Bubble flashes~~
 - ~~Add task registration/scheduling~~
+- ~~Remove target URL and put in defaults on web page~~
+- ~~Ensure use of compiler macro strings are using flash mem~~

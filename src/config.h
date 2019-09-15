@@ -41,25 +41,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Task scheduler defines, uncomment to enable
-//
-#ifndef TASKSCHEDULER
-#define TASKSCHEDULER
-// #define _TASK_MICRO_RES // micro() instead of millis() resolution
-// #define _TASK_TIMECRITICAL // Time critical tracking option enabled
-// #define _TASK_SLEEP_ON_IDLE_RUN // Use SLEEP_MODE_IDLE state in between
-// #define _TASK_STATUS_REQUEST // Support for StatusRequest object
-// #define _TASK_WDT_IDS // Support for Task IDs and Control Points
-// #define _TASK_LTS_POINTER // Support for Local Task Storage pointer
-// #define _TASK_PRIORITY // Support for layered task prioritization
-// #define _TASK_STD_FUNCTION // Support for std::functions
-// #define _TASK_DEBUG // All methods and variables declared as public
-// #define _TASK_INLINE // All methods defined as inline
-// #define _TASK_TIMEOUT // Support for overall Task timeout
-#endif //TASKSCHEDULER
-
-//////////////////////////////////////////////////////////////////////////
-//
 // Define API Key (identifies application to target)
 //
 #ifndef API_KEY
@@ -163,7 +144,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 // Access point password
 //
 #ifndef AP_PASSWD
-#define AP_PASSWD "br3wbubbl3s"
+#define AP_PASSWD "brewbubbles"
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
@@ -220,16 +201,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Define whether to report temperatures
-//
-#ifndef READTEMP
-#define READTEMP
-#endif
-//
-//////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
-//
 // Define temperature format (true = Farenheit, false = Celcius)
 //
 #ifndef TEMPFORMAT
@@ -275,14 +246,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef BUBLOOP
 #define BUBLOOP 60000UL // One minute
 #endif
-//
-//////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
-//
-// Main loop timer - defines how often to print time debug
-//
-#define LOOPTIMER 5000
 //
 //////////////////////////////////////////////////////////////////////////
 
@@ -338,16 +301,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// HTTP endpoint address
-//
-#ifndef TARGETURL
-#define TARGETURL "http://brewpi.local/brew-bubbles.php"
-#endif
-//
-//////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
-//
 // Target Frequency (default 60 seconds)
 //
 #ifndef TARGETFREQ
@@ -382,19 +335,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 //
 #ifndef TIMESERVER
 #define TIMESERVER "pool.ntp.org"
-#endif
-//
-//////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
-//
-// NTP Definitions
-//
-#ifndef TIMEZONE
-#define TIMEZONE 0
-#define MINUTESTIMEZONE 0
-#define USEDST false
-#define NTP_TIMEOUT 1500
 #endif
 //
 //////////////////////////////////////////////////////////////////////////

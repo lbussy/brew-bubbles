@@ -184,7 +184,7 @@ void WebServer::aliases() {
                 Log.verbose(F("POSTed calVessel, redirecting to %s." CR), redirect);
 
             } else if (single->server->hasArg(F("target"))) { // Change Target URL
-                if ((single->server->arg("target").length() > 128) || (single->server->arg("target").length() < 3)) {
+                if (single->server->arg("target").length() > 128) {
                     Log.warning(F("Settings update error." CR));
                 } else {
                     strlcpy(config->targeturl, single->server->arg("target").c_str(), sizeof(config->targeturl));
