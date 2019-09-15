@@ -1,3 +1,5 @@
-# Brew Bubbles Placeholder Website
+[![Brew Bubbles Logo](https://i1.wp.com/www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")](http://www.brewbubbles.com/)
 
-This collection of pages is being used to provide landing pages for parts of the project which have not yet launched.
+# Web Pages
+
+These are the pages which serve as placeholders for various external links which are not yet active.
