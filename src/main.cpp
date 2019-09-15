@@ -50,6 +50,8 @@ void setup() {
 
     NtpHandler *ntpTime = NtpHandler::getInstance();
     ntpTime->start();
+    
+    execspiffs(); // Check for pending SPIFFS update
 
     Log.notice(F("Started %s version %s (%s) [%s]." CR), API_KEY, version(), branch(), build());
 }
