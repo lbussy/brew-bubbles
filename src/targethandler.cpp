@@ -31,16 +31,16 @@ void httpPost() {
         const size_t capacity = TJSON;
         StaticJsonDocument<capacity> doc;
 
-        doc["api_key"] = F(API_KEY);
-        doc["device_source"] = F(SOURCE);
-        doc["name"] = config->bubname;
-        doc["bpm"] = String(bubble->GetPpm(), 1);
-        doc["ambient"] = bubble->GetAmbientTemp();
-        doc["temp"] = bubble->GetVesselTemp();
+        doc[F("api_key")] = F(API_KEY);
+        doc[F("device_source")] = F(SOURCE);
+        doc[F("name")] = config->bubname;
+        doc[F("bpm")] = String(bubble->GetPpm(), 1);
+        doc[F("ambient")] = bubble->GetAmbientTemp();
+        doc[F("temp")] = bubble->GetVesselTemp();
         if (config->tempinf == true)
-            doc["temp_unit"] = F("F");
+            doc[F("temp_unit")] = F("F");
         else
-            doc["temp_unit"] = F("C");
+            doc[F("temp_unit")] = F("C");
 
         char output[capacity];
         serializeJson(doc, output);
@@ -81,9 +81,9 @@ void bfPost() {
         HTTPClient http; // Declare object of class HTTPClient
         Bubbles *bubble = Bubbles::getInstance();
 
-        Log.notice(F("Posting to: %s" CR), F(BFURL));
+        Log.notice(F("Posting to: %s" CR), BFURL);
         char bfUrl[94];
-        strcpy (bfUrl,BFURL);
+        strcpy (bfUrl, BFURL);
         strcat (bfUrl, config->bfkey);
 
         // Form BF JSON
@@ -91,16 +91,16 @@ void bfPost() {
         const size_t capacity = BFJSON;
         StaticJsonDocument<capacity> doc;
 
-        doc["api_key"] = F(API_KEY);
-        doc["device_source"] = F(SOURCE);
-        doc["name"] = config->bubname;
-        doc["comment"] = String(bubble->GetPpm(), 1) ;
-        doc["ambient"] = bubble->GetAmbientTemp();
-        doc["temp"] = bubble->GetVesselTemp();
+        doc[F("api_key")] = F(API_KEY);
+        doc[F("device_source")] = F(SOURCE);
+        doc[F("name")] = config->bubname;
+        doc[F("comment")] = String(bubble->GetPpm(), 1) ;
+        doc[F("ambient")] = bubble->GetAmbientTemp();
+        doc[F("temp")] = bubble->GetVesselTemp();
         if (config->tempinf == true)
-            doc["temp_unit"] = F("F");
+            doc[F("temp_unit")] = F("F");
         else
-            doc["temp_unit"] = F("C");
+            doc[F("temp_unit")] = F("C");
 
         char output[capacity];
         serializeJson(doc, output);
