@@ -90,7 +90,7 @@ bool JsonConfig::Parse(bool reset = false) {
         single->calVessel = 0.0;
         
         // Set defaults for Target Settings Object
-        strlcpy(single->targeturl, TARGETURL, sizeof(single->targeturl));
+        strlcpy(single->targeturl, "", sizeof(single->targeturl));
         single->targetfreq = TARGETFREQ;
 
         // Set defaults for Brewer's Friend Settings Object
@@ -123,7 +123,7 @@ bool JsonConfig::Parse(bool reset = false) {
         single->calVessel = doc["calibrate"]["vessel"] | 0.0;
 
         // Parse Target Settings Object
-        strlcpy(single->targeturl, doc["targetconfig"]["targeturl"] | TARGETURL, sizeof(single->targeturl));
+        strlcpy(single->targeturl, doc["targetconfig"]["targeturl"] | "", sizeof(single->targeturl));
         single->targetfreq = doc["targetconfig"]["freq"] | TARGETFREQ;
 
         // Parse Brewer's Friend Settings Object
