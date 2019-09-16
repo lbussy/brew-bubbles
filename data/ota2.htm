@@ -84,10 +84,10 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a class="nav-link" href="/settings/">Settings  <span class="sr-only">(current)</span></a>
                     </li>
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="/help/">Help</a>
                     </li>
                     <li class="nav-item">
@@ -113,9 +113,25 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                 </div>
                 <div class="card-body">
                     <p>
-						Your Brew Bubbles' firmware is being updated to the latest version. This can take up to 5
-						minutes, during which your Brew Bubbles will be unresponsive. Please do not disconnect the
-						power or reset your Brew Bubbles while this process is taking place.
+                        Your Brew Bubbles' firmware is being updated to the latest version.
+                        This can take up to 5 minutes, during which your Brew Bubbles will
+                        be unresponsive. Please do not disconnect the power or reset your
+                        Brew Bubbles while this process is taking place.
+                    </p>
+                    <p>
+                        <div class="text-danger" style="display: inline-block;"><strong>After</strong>
+                        the update is complete</div>, press the button below to re-load your
+                        previous settings.  If you skip this step, you will need to manually
+                        reconfigure all application settings. WiFi settings will not be affected.
+                    </p>
+                    <p>
+                        If you observe your controller's LED during the process, the LED will
+                        flash as the update is in progress.  As soon as the LED is steady off
+                        (if sensor is blocked) or on (if sensor is not blocked) then you may
+                        apply settings below and continue.
+                    </p>
+                    <p>
+                        <button class="btn btn-danger" id="submit" disabled="true">Re-apply Settings</button>
                     </p>
                 </div>
             </div> <!-- OTA In Progress Information -->
@@ -141,6 +157,51 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous">
+    </script>
+
+    <script>
+        var configuration = {};
+        $(document).ready(function () {
+            getConfig(function(configJson) {
+                configuration = configJson;
+                // Synchronous processing
+                console.log("Outside: " + JSON.stringify(configuration)); // DEBUG
+                document.getElementById("submit").disabled = false;
+                $.get("/otastart/", function(data){ // Semaphore the controller that it's safe to proceed
+                    console.log("OTAStart: " + data);
+                });
+
+                // Button Submit
+                $("#submit").on('click', function(){
+                    $.ajax({ // POST JSON to controller
+                        url: "/config/apply/", // url where to submit the request
+                        method : "POST",
+                        contentType : "application/json; charset=UTF-8",
+                        data : JSON.stringify(configuration), // Post/Get data
+                        dataType : 'text',
+                        success : function(result) {
+                            console.log(result);    // DEBUG
+                            // TODO:  Read success/failure and redirect
+                        },
+                        error: function(xhr, resp, text) {
+                            console.log(xhr, resp, text);   // DEBUG
+                        }
+                    })
+                });
+            });
+            // Object: 'configuration' is available here asynchronously
+        });
+
+        function getConfig(callback) {
+            var jqxhr = $.getJSON("/config/")
+                .done(function (data) {
+                    callback(data);
+                })
+                .fail(function () {
+                    alert("Failed to load configuration data.");
+                    callback({});
+                });
+        }
     </script>
 
 </body>

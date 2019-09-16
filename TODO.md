@@ -2,16 +2,14 @@
 
 ## Open
 
+- Possibly check for when controller is 100% back after OTA?
+- Detect success/failure from "/config/apply/"
+- Re-enable OTA code
 - Add hostname change to AP Portal
-- OTA changes
-  - Try to apply former configuration when updating firmware
-  - Do a version check
-    - Add JSON to SPIFFS
-    - Compare SPIFFS JSON with repo JSON
 - Fix deprecation error in http
 - Fix log levels
-- Address key for BF
-- Consider moving all graphics to github
+- Address key for BF (email 9/16/19: "Next week's release")
+- Add SSL support for upgrade? ([see the issue](https://github.com/esp8266/Arduino/issues/6523))
 
 ## Complete
 
@@ -119,3 +117,10 @@
 - ~~Add AP instructions to firmware instructions~~
 - ~~Move Bubble update to Ticker~~
 - ~~Fix busted formatting in wifi/2 & ota/2~~
+- ~~Consider moving all graphics to github or brewbubbles.com (depends on SSL)~~
+- ~~OTA changes~~
+  - ~~Try to apply former configuration when updating firmware~~
+  - ~~Do a version check~~
+    - ~~Add JSON to SPIFFS~~
+    - ~~Compare SPIFFS JSON with repo JSON~~
+- ~~Fix posting in full configuration~~
