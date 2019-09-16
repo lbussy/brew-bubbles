@@ -71,6 +71,13 @@ void WebServer::aliases() {
             {single->server->send(404, F("text/plain"), F("404: File not found."));}});
 
     single->server->on(
+        F("/ota2/"),
+        HTTP_GET,
+        []() {
+            single->handleFileRead(F("/ota2.htm"));
+        });
+
+    single->server->on(
         F("/settings/"),
         HTTP_GET,
         []() {if (!single->handleFileRead(F("/settings.htm")))
@@ -85,14 +92,15 @@ void WebServer::aliases() {
     // Action Page Handlers
 
     single->server->on(
-        F("/ota2/"),
-        HTTP_GET,
+        F("/otastart/"),
         []() {
-            single->handleFileRead(F("/ota2.htm"));
-            JsonConfig *config = JsonConfig::getInstance();
-            config->dospiffs = true; // Set config to update SPIFFS on restart
-            config->Save();
-            execfw();                // Trigger the OTA update
+            Log.notice(F("OTA upgrade started." CR));
+            // TODO: 
+            // JsonConfig *config = JsonConfig::getInstance();
+            // config->dospiffs = true; // Set config to update SPIFFS on restart
+            // config->Save();
+            // execfw();                // Trigger the OTA update
+            single->server->send(200, "text/html", "OTA started.");
         });
 
     single->server->on(
@@ -258,10 +266,10 @@ void WebServer::aliases() {
         });
 
     single->server->on(
-        F("/config/update/"),
+        F("/config/apply/"),
         HTTP_POST,
         []() {  // Process JSON POST configuration changes
-            Log.verbose(F("Processing post to /config/update/." CR));
+            Log.verbose(F("Processing post to /config/apply/." CR));
             String input = single->server->arg(F("plain"));
             // const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
             const size_t capacity = CONFIGJSON;
@@ -377,21 +385,37 @@ void WebServer::aliases() {
         });
 
     single->server->on(
-        F("/stats/"),
+        F("/thisVersion/"),
         HTTP_GET,
         []() {
-            // Get heap status, analog input value and GPIO statuses
-            // TODO: Make sure DI's actually display properly
-            const size_t capacity = JSON_OBJECT_SIZE(3);
+            Log.verbose(F("Serving /thisVersion/." CR));
+            //const size_t capacity = JSON_OBJECT_SIZE(3);
+            const size_t capacity = VERSIONJSON;
             StaticJsonDocument<capacity> doc;
 
-            doc["heap"] = String(ESP.getFreeHeap());
-            doc["analog"] = String(analogRead(A0));
-            doc["gpio"] = String((uint32_t)(((GPI | GPO) & 0xFFFF) | ((GP16I & 0x01) << 16)));
+            doc["version"] = version();
 
             char json[capacity] = {};
             serializeJson(doc, json, capacity);
             single->server->send(200, F("application/json"), json);
+        });
+
+    single->server->on(
+        F("/thatVersion/"),
+        HTTP_GET,
+        []() {
+            Log.verbose(F("Serving /thatVersion/." CR));
+
+            String versionJson = "";
+            HTTPClient http;
+            http.begin(F(VERSIONJSONLOC));
+            http.addHeader(F("Cache-Control"), F("no-cache"));
+            if (http.GET() > 0) {
+                versionJson = http.getString();
+            }
+            http.end();
+
+            single->server->send(200, F("application/json"), versionJson);
         });
 
     // File not found handler
