@@ -24,6 +24,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "tools.h"
 #include "jsonconfig.h"
 #include "serial.h"
+#include "version.h"
 #include <FS.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPClient.h>
@@ -49,7 +50,6 @@ class WebServer {
         // Other Declarations
         void initialize(int port);
         void handleLoop();
-    
 };
 
 #endif // _WEBSERVER_H

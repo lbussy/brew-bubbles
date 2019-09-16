@@ -84,10 +84,10 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a class="nav-link" href="/settings/">Settings  <span class="sr-only">(current)</span></a>
                     </li>
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a class="nav-link" href="/help/">Help</a>
                     </li>
                     <li class="nav-item">
@@ -113,16 +113,46 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                 </div>
                 <div class="card-body">
                     <p>
-                        If you are sure you want to update firmware, click the red "Update
-                        Firmware" button below.
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr class="table-success">
+                                    <th scope="row">Current Version:</th>
+                                    <td>
+                                        <div id="thisVersion">... loading</div>
+                                    </td>
+                                </tr>
+                                <tr class="table-info">
+                                    <th scope="row">Available version:</th>
+                                    <td>
+                                        <div id="thatVersion">... loading</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </p>
-                    <p>
-                        WiFi settings will not be reset, however the application settings will be. You will need to set
-                        up any previous configuration.
-                    </p>
-                    <p>
-                        <a href="/ota2/" class="btn btn-danger">Update Firmware</a>
-                    </p>
+
+                    <div class="card-body">
+                        <p>
+                            If you are sure you want to update firmware, click the red "Update
+                            Firmware" button below.
+                        </p>
+                        <p>
+                            WiFi settings will not be reset, however <strong>the application settings 
+                            require action on your part.</strong>  The page which will open upon execution
+                            of the OTA upgrade will allow you to re-set all original settings after
+                            the process is complete.
+                        </p>
+                        <p class="text-danger">
+                            If you close the window without re-applying your settings, you will
+                            need to configure all application settings again manually.
+                        </p>
+                        <p>
+                            <form action="/ota2/">
+                                <button class="btn btn-danger" id="proceed" disabled="true">Update Firmware</button>
+                            </form>
+                        </p>
+                    </div>
+
                 </div>
             </div> <!-- Update Firmware -->
 
@@ -148,6 +178,82 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous">
     </script>
+
+    <script>
+        $(document).ready(function () { // Wait till page is loaded
+            loadThisVersion(); // Populate form with controller settings
+            loadThatVersion(); // Populate form with controller settings
+            loadSettings();    // Populate hidden field with configuration settings
+        });
+
+        function loadThisVersion() { // Get current parameters
+            var thisVersionJson = "/thisVersion/";
+            var thisVersion = $.getJSON(thisVersionJson, function () {
+            })
+                .done(function (thisVersion) {
+                    try {
+                        $('#thisVersion').text(thisVersion.version);
+                    }
+                    catch {
+                        alert("Unable to parse version from controller.");
+                        $('#thisVersion').text("Error loading.");
+                    }
+                })
+                .fail(function () {
+                    alert("Unable to parse version from controller.");
+                    $('#thisVersion').text("Error loading.");
+                })
+                .always(function () {
+                    // Can post-process here
+                });
+        }
+
+        function loadThatVersion() { // Get current parameters
+            var thatVersionJson = "/thatVersion/";
+            var thatVersion = $.getJSON(thatVersionJson, function () {
+            })
+                .done(function (thatVersion) {
+                    try {
+                        $('#thatVersion').text(thatVersion.version);
+                        document.getElementById("proceed").disabled = false;
+                    }
+                    catch {
+                        alert("Unable to parse version from controller.");
+                        $('#thatVersion').text("Error loading.");
+                    }
+                })
+                .fail(function () {
+                    alert("Unable to parse version from controller.");
+                    $('#thatVersion').text("Error loading.");
+                })
+                .always(function () {
+                    // Can post-process here
+                });
+        }
+
+        function loadSettings() { // Get current parameters
+            var configJson = "/config/";
+            var config = $.getJSON(configJson, function () {
+            })
+                .done(function (config) {
+                    try {
+                        localStorage.setItem('configObj', JSON.stringify(config));
+                    }
+                    catch {
+                        alert("Unable to parse version from controller.");
+                        $('#config').val("Error loading.");
+                    }
+                })
+                .fail(function () {
+                    alert("Unable to parse version from controller.");
+                    $('#config').val("Error loading.");
+                })
+                .always(function () {
+                    // Can post-process here
+                });
+        }
+
+        </script>
 
 </body>
 
