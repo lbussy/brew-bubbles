@@ -60,12 +60,10 @@ Bubbles::~Bubbles() {
 
 void Bubbles::HandleInterrupts(void) { // Bubble Interrupt handler
     digitalWrite(LED, LOW);
-    noInterrupts(); // Turn off interrupts TODO: See if I want to keep this
     unsigned long now = micros();
     if ((now - ulMicroLast) > RESOLUTION) { // Filter noise/bounce
         single->pulse++;    // Increment pulse count
     }
-    interrupts();   // Turn on interrupts TODO:  See if I want to keep this
     Log.verbose(F("॰°ₒ৹๐" CR)); // Looks like a bubble, right?
 }
 
