@@ -94,7 +94,8 @@ void bfPost() {
         doc[F("api_key")] = F(API_KEY);
         doc[F("device_source")] = F(SOURCE);
         doc[F("name")] = config->bubname;
-        doc[F("comment")] = String(bubble->GetPpm(), 1) ;
+        //doc[F("comment")] = String(bubble->GetPpm(), 1);
+        doc[F("psi")] = bubble->GetPpm();
         doc[F("ambient")] = bubble->GetAmbientTemp();
         doc[F("temp")] = bubble->GetVesselTemp();
         if (config->tempinf == true)
