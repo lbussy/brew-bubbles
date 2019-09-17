@@ -119,16 +119,24 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         Brew Bubbles while this process is taking place.
                     </p>
                     <p>
-                        <div class="text-danger" style="display: inline-block;"><strong>After</strong>
-                        the update is complete</div>, press the button below to re-load your
-                        previous settings.  If you skip this step, you will need to manually
-                        reconfigure all application settings. WiFi settings will not be affected.
-                    </p>
-                    <p>
                         If you observe your controller's LED during the process, the LED will
                         flash as the update is in progress.  As soon as the LED is steady off
-                        (if sensor is blocked) or on (if sensor is not blocked) then you may
-                        apply settings below and continue.
+                        (if sensor is blocked) or on (if sensor is not blocked) the process
+                        is complete.
+                    </p>
+                    <p>
+                        When the update is complete, the button below will become enabled and
+                        you should press it to re-load your previous settings.  If you skip this
+                        step, you will need to manually reconfigure all application settings.
+                        WiFi settings will not be affected.
+                    </p>
+                    <p>
+                        <div class="text-danger" style="display: inline-block;">
+                            <strong>
+                                Do not refresh this page. If you do, all of your previous
+                                application settings will be lost.
+                            </strong>
+                        </div>
                     </p>
                     <p>
                         <button class="btn btn-danger" id="submit" disabled="true">Re-apply Settings</button>
@@ -165,8 +173,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
             getConfig(function(configJson) {
                 configuration = configJson;
                 // Synchronous processing
-                console.log("Outside: " + JSON.stringify(configuration)); // DEBUG
-                document.getElementById("submit").disabled = false;
+                console.log("Configuration: " + JSON.stringify(configuration)); // DEBUG
                 $.get("/otastart/", function(data){ // Semaphore the controller that it's safe to proceed
                     console.log("OTAStart: " + data);
                 });
@@ -180,22 +187,38 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         data : JSON.stringify(configuration), // Post/Get data
                         dataType : 'text',
                         success : function(result) {
+                            $.get("/clearupdate/", function(data){ // Semaphore the controller that it's safe to proceed
+                                console.log("Update complete.  Cleared update flag.");
+                            });
                             window.location.href = result; // New URL in result text
                         },
                         error: function(xhr, resp, text) {
                             alert(resp + " " + xhr.status + " " + text);
                             alert("Unable to POST settings, see console log for settings JSON.");
                             console.log(JSON.stringify(configuration));
-                            // console.log(xhr, resp, text);   // DEBUG
-                            // console.log(xhr.status);        // 404
-                            // console.log(resp);              // Error
-                            // console.log(text);              // Not Found
-                            window.location.href = "/";
+
+                            // console.log(xhr.status);        // DEBUG: 404
+                            // console.log(resp);              // DEBUG: Error
+                            // console.log(text);              // DEBUG: Not Found
                         }
                     })
                 });
+
+                var intervalID = window.setInterval(function(){
+                    checkSemaphore(function(semaphore) {
+                        didupdate = semaphore;
+                        if (didupdate == true) {
+                            // Update is complete, can apply configuration
+                            document.getElementById("submit").disabled = false;
+                            // TODO:  Maybe automatically apply config?
+                        } else {
+                            // Update is not complete. keep button disabled
+                            document.getElementById("submit").disabled = true;
+                        }
+                    });
+                }, 5000);
+
             });
-            // Object: 'configuration' is available here asynchronously
         });
 
         function getConfig(callback) {
@@ -205,6 +228,17 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                 })
                 .fail(function () {
                     alert("Failed to load configuration data.");
+                    callback({});
+                });
+        }
+
+        function checkSemaphore(callback) {
+            var jqxhr = $.getJSON("/config/")
+                .done(function (data) {
+                    callback(data.didupdate);
+                })
+                .fail(function () {
+                    // This will happen while controller resets
                     callback({});
                 });
         }

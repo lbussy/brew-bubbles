@@ -46,7 +46,12 @@ void execspiffs() {
     if (config->dospiffs) {
         Log.verbose(F("Starting the SPIFFS OTA pull." CR));
 
+        // Stop web server before OTA update - will restart on reset
+        WebServer *server = WebServer::getInstance();
+        server->stop();
+
         // Reset SPIFFS update flag
+        config->didupdate = true;
         config->dospiffs = false;
         config->Save();
 

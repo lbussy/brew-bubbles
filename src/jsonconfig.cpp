@@ -100,6 +100,9 @@ bool JsonConfig::Parse(bool reset = false) {
         // Set defaults for SPIFFS OTA update
         single->dospiffs = false;
 
+        // Set semaphore for OTA update
+        single->didupdate = false;
+
         // We created default configuration, save it
         single->Save();
 
@@ -132,6 +135,9 @@ bool JsonConfig::Parse(bool reset = false) {
 
         // Parse SPIFFS OTA update choice
         single->dospiffs = doc["dospiffs"] | false;
+
+        // Parse semaphore for OTA update choice
+        single->didupdate = doc["didupdate"] | false;
     }
     return true;
 }
@@ -171,6 +177,9 @@ bool JsonConfig::Save() {
 
     // Serialize SPIFFS OTA update choice
     doc["dospiffs"] = single->dospiffs;
+
+    // Parse semaphore for OTA update choice
+    doc["didupdate"] = single->didupdate;
 
     // Mount SPIFFS
     if (!SPIFFS.begin()) {
@@ -232,6 +241,9 @@ void JsonConfig::CreateSettingsJson() {
 
     // Serialize SPIFFS OTA update choice
     doc["dospiffs"] = single->dospiffs;
+
+    // Serialize semaphore for OTA update
+    doc["didupdate"] = single->didupdate;
 
     char output[capacity];
     serializeJson(doc, output, sizeof(output));

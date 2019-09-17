@@ -42,6 +42,7 @@ class WebServer {
         String getContentType(String);
         bool handleFileRead(String);
         void aliases();
+        bool running;
 
     public:
         // Singleton Declarations
@@ -50,6 +51,7 @@ class WebServer {
         // Other Declarations
         void initialize(int port);
         void handleLoop();
+        void stop();
 };
 
 #endif // _WEBSERVER_H
