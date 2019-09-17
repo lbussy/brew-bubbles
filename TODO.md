@@ -2,7 +2,6 @@
 
 ## Open
 
-- Possibly check for when controller is 100% back after OTA?
 - Add hostname change to AP Portal
 - Fix deprecation error in http
 - Fix log levels
@@ -124,3 +123,4 @@
 - ~~Fix posting in full configuration~~
 - ~~Re-enable OTA code~~
 - ~~Detect success/failure from "/config/apply/"~~
+- ~~Possibly check for when controller is 100% back after OTA?~~

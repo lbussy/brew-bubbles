@@ -84,7 +84,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 // Set Config json size
 //
 #ifndef CONFIGJSON
-#define CONFIGJSON 742
+#define CONFIGJSON 768
 #endif
 //
 //////////////////////////////////////////////////////////////////////////

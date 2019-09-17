@@ -42,6 +42,7 @@ class JsonConfig {
         bool dospiffs;              // Update SPIFFS on reboot
         bool updateBFFreq;          // Need to update BF Loop timer
         bool updateTargetFreq;      // Need to update Target Loop timer
+        bool didupdate;             // Semaphore to indicate OTA complete
         float calAmbient;           // Calibration for Ambient sensor
         float calVessel;            // Calibration for Vessel sensor
         unsigned long targetfreq;   // Target freqency

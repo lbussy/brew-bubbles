@@ -38,6 +38,7 @@ void WebServer::initialize (int port) {
     single->aliases();
 
     single->server->begin();
+    single->running = true;
     Log.verbose(F("HTTP server started on port %l." CR) , port);
     Log.verbose(F("Open: http://%s.local." CR), WiFi.hostname().c_str());
 }
@@ -46,7 +47,7 @@ void WebServer::aliases() {
 
     // Regular page aliases
 
-    single->server->on( // DEBUG
+    single->server->on( // DEBUG 200 Action
         F("/foo/"),
         HTTP_GET,
         []() {
@@ -99,23 +100,23 @@ void WebServer::aliases() {
     // Action Page Handlers
 
     single->server->on(
-        F("/otastart/"),
-        []() {
-            Log.notice(F("OTA upgrade started." CR));
-            JsonConfig *config = JsonConfig::getInstance();
-            config->dospiffs = true; // Set config to update SPIFFS on restart
-            config->Save();
-            execfw();                // Trigger the OTA update
-            single->server->send(200, F("text/html"), F("OTA started."));
-        });
-
-    single->server->on(
         F("/wifi2/"),
         HTTP_GET,
         []() {
             single->handleFileRead(F("/wifi2.htm"));
             _delay(5000);   // Let page load
             resetWifi();    // Wipe settings, reset controller
+        });
+
+    single->server->on(
+        F("/otastart/"),
+        []() {
+            Log.notice(F("OTA upgrade started." CR));
+            JsonConfig *config = JsonConfig::getInstance();
+            config->dospiffs = true; // Set config to update SPIFFS on restart // TODO
+            config->Save();
+            execfw();                // Trigger the OTA update
+            single->server->send(200, F("text/html"), F("OTA started."));
         });
 
     // Settings Update Handler
@@ -247,6 +248,16 @@ void WebServer::aliases() {
             single->server->send(303);
         });
 
+    single->server->on(
+        F("/clearupdate/"),
+        HTTP_GET,
+        []() {
+            JsonConfig *config = JsonConfig::getInstance();
+            config->didupdate = false;
+            config->Save();
+            single->server->send(200, F("text/html"), F("Update semaphore cleared"));
+        });
+
     // JSON Handlers
 
     single->server->on(
@@ -314,6 +325,7 @@ void WebServer::aliases() {
                     updated = true;
                     strlcpy(config->bubname, bubname, sizeof(config->bubname));
                 }
+            
                 JsonVariant tempinf = doc["bubbleconfig"]["tempinf"];
                 if ((!tempinf.isNull()) && (!config->tempinf == tempinf)) {
                     updated = true;
@@ -326,6 +338,7 @@ void WebServer::aliases() {
                     updated = true;
                     config->calAmbient = calAmbient;
                 }
+
                 double calVessel = doc["calibrate"]["vessel"];
                 if ((calVessel) && (!calVessel == config->calVessel)) {
                     updated = true;
@@ -338,6 +351,7 @@ void WebServer::aliases() {
                     updated = true;
                     strlcpy(config->targeturl, doc["targetconfig"]["targeturl"], sizeof(config->targeturl));
                 }
+
                 unsigned long targetfreq = doc["targetconfig"]["targeturl"];
                 if ((targetfreq) && (!targetfreq == config->targetfreq)) {
                     updated = true;
@@ -350,6 +364,7 @@ void WebServer::aliases() {
                     updated = true;
                     strlcpy(config->bfkey, bfkey, sizeof(config->bfkey));
                 }
+
                 unsigned long bffreq = doc["bfconfig"]["freq"];
                 if ((bffreq) && (!bffreq == config->bffreq)) {
                     updated = true;
@@ -363,7 +378,15 @@ void WebServer::aliases() {
                     config->dospiffs = dospiffs;
                 }
 
+                // Parse OTA update semaphore choice
+                JsonVariant didupdate = doc["didupdate"];
+                if ((!didupdate.isNull()) && (!didupdate == config->didupdate)) {
+                    updated = true;
+                    config->didupdate = didupdate;
+                }
+
                 if (updated) {
+
                     // Save configuration to file
                     config->Save();
 
@@ -377,12 +400,13 @@ void WebServer::aliases() {
                 }
 
                 char hostredirect[39];
-                strcpy(hostredirect, hostname);
-                strcpy(hostredirect, ".local");
+                strcpy(hostredirect, config->hostname);
+                strcat(hostredirect, ".local");
                 Log.notice(F("Redirecting to new URL: http://%s.local/" CR), hostname);
 
                 // Send redirect page
                 single->server->send(200, F("text/html"), hostredirect);
+
             } else {
                 single->server->send(500, F("text/json"), err.c_str());
             }
@@ -503,6 +527,12 @@ bool WebServer::handleFileRead(String path) {
     return false;
 }
 
+void::WebServer::stop() {
+    single->server->stop();
+    single->running = false;
+}
+
 void WebServer::handleLoop() {
-    single->server->handleClient();
+    if (single->running)
+        single->server->handleClient();
 }
