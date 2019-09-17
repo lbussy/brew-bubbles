@@ -3,8 +3,6 @@
 ## Open
 
 - Possibly check for when controller is 100% back after OTA?
-- Detect success/failure from "/config/apply/"
-- Re-enable OTA code
 - Add hostname change to AP Portal
 - Fix deprecation error in http
 - Fix log levels
@@ -124,3 +122,5 @@
     - ~~Add JSON to SPIFFS~~
     - ~~Compare SPIFFS JSON with repo JSON~~
 - ~~Fix posting in full configuration~~
+- ~~Re-enable OTA code~~
+- ~~Detect success/failure from "/config/apply/"~~

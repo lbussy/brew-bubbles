@@ -180,11 +180,17 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         data : JSON.stringify(configuration), // Post/Get data
                         dataType : 'text',
                         success : function(result) {
-                            console.log(result);    // DEBUG
-                            // TODO:  Read success/failure and redirect
+                            window.location.href = result; // New URL in result text
                         },
                         error: function(xhr, resp, text) {
-                            console.log(xhr, resp, text);   // DEBUG
+                            alert(resp + " " + xhr.status + " " + text);
+                            alert("Unable to POST settings, see console log for settings JSON.");
+                            console.log(JSON.stringify(configuration));
+                            // console.log(xhr, resp, text);   // DEBUG
+                            // console.log(xhr.status);        // 404
+                            // console.log(resp);              // Error
+                            // console.log(text);              // Not Found
+                            window.location.href = "/";
                         }
                     })
                 });

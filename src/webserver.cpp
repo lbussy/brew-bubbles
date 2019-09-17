@@ -46,6 +46,13 @@ void WebServer::aliases() {
 
     // Regular page aliases
 
+    single->server->on( // DEBUG
+        F("/foo/"),
+        HTTP_GET,
+        []() {
+            single->server->send(200, F("text/html"), F("Ok foo!"));
+            });
+
     single->server->on(
         F("/about/"),
         HTTP_GET,
@@ -95,12 +102,11 @@ void WebServer::aliases() {
         F("/otastart/"),
         []() {
             Log.notice(F("OTA upgrade started." CR));
-            // TODO: 
-            // JsonConfig *config = JsonConfig::getInstance();
-            // config->dospiffs = true; // Set config to update SPIFFS on restart
-            // config->Save();
-            // execfw();                // Trigger the OTA update
-            single->server->send(200, "text/html", "OTA started.");
+            JsonConfig *config = JsonConfig::getInstance();
+            config->dospiffs = true; // Set config to update SPIFFS on restart
+            config->Save();
+            execfw();                // Trigger the OTA update
+            single->server->send(200, F("text/html"), F("OTA started."));
         });
 
     single->server->on(
@@ -357,7 +363,6 @@ void WebServer::aliases() {
                     config->dospiffs = dospiffs;
                 }
 
-                char hostredirect[43];
                 if (updated) {
                     // Save configuration to file
                     config->Save();
@@ -368,17 +373,16 @@ void WebServer::aliases() {
                         MDNS.setHostname(hostname);
                         MDNS.notifyAPChange();
                         MDNS.announce();
-                        strcpy(hostredirect, hostname);
-                        strcpy(hostredirect, ".local");
-                        Log.notice(F("Redirecting to new URL: http://%s.local/" CR), hostname);
                     }
                 }
-                strcpy(hostredirect, "/settings/");
 
-                // Redirect to Settings page
-                single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-                single->server->sendHeader(F("Location"), hostredirect);
-                single->server->send(303); 
+                char hostredirect[39];
+                strcpy(hostredirect, hostname);
+                strcpy(hostredirect, ".local");
+                Log.notice(F("Redirecting to new URL: http://%s.local/" CR), hostname);
+
+                // Send redirect page
+                single->server->send(200, F("text/html"), hostredirect);
             } else {
                 single->server->send(500, F("text/json"), err.c_str());
             }
