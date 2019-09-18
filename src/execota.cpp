@@ -18,23 +18,45 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "execota.h"
 
 void execfw() {
-    Log.verbose(F("Starting the Firmware OTA pull." CR));
+    JsonConfig *config = JsonConfig::getInstance();
+    Log.notice(F("Starting the Firmware OTA pull, will reboot without notice." CR));
+
+    // Stop web server before OTA update - will restart on reset
+    WebServer *server = WebServer::getInstance();
+    server->stop();
+
+    // Have to set this here because we have no chance after update
+    config->dospiffs1 = true;
+    config->dospiffs2 = false;
+    config->didupdate = false;
+    config->Save();
+
     ESPhttpUpdate.setLedPin(LED, LOW);
     t_httpUpdate_return ret = ESPhttpUpdate.update(FIRMWAREURL);
 
     switch(ret) {
         case HTTP_UPDATE_FAILED:
-            Log.error(F("HTTP Firmware Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+            Log.error(F("HTTP Firmware OTA Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+            // Don't allow anything to proceed
+            config->dospiffs1 = false;
+            config->dospiffs2 = false;
+            config->didupdate = false;
+            config->Save();
             break;
 
         case HTTP_UPDATE_NO_UPDATES:
-            Log.notice(F("HTTP Firmware Update: No updates." CR));
+            Log.notice(F("HTTP Firmware OTA Update: No updates." CR));
+            // Don't allow anything to proceed
+            config->dospiffs1 = false;
+            config->dospiffs2 = false;
+            config->didupdate = false;
+            config->Save();
             break;
         
         case HTTP_UPDATE_OK:
-            // This is just here to get rid of a compiler warning, since
-            // the system will reset after OTA, we will never hit this.
-            Log.notice(F("HTTP Firmware Update complete, restarting." CR));
+            // We should never actually reach this as the controller
+            // resets after OTA
+            Log.notice(F("HTTP Firmware OTA Update complete, restarting." CR));
             ESP.restart();
             _delay(1000);
             break;
@@ -43,37 +65,49 @@ void execfw() {
 
 void execspiffs() {
     JsonConfig *config = JsonConfig::getInstance();
-    if (config->dospiffs) {
-        Log.verbose(F("Starting the SPIFFS OTA pull." CR));
+    if (config->dospiffs1) {
+        Log.notice(F("Rebooting a second time before SPIFFS OTA pull." CR));
+        config->dospiffs1 = false;
+        config->dospiffs2 = true;
+        config->didupdate = false;
+        config->Save();
+        // TODO:  Put a delay here to avoid triggering DRD
+        ESP.restart();
+        _delay(1000);
+    } else if (config->dospiffs2) {
+        Log.notice(F("Starting the SPIFFS OTA pull." CR));
+        config->dospiffs1 = false;
+        config->dospiffs2 = false;
+        config->didupdate = true;   // This really doesn't matter because
+                                    // we are about to overwrite with the 
+                                    // new spiffs.bin (should have it set 
+                                    // in that file)
+        config->Save();
 
         // Stop web server before OTA update - will restart on reset
         WebServer *server = WebServer::getInstance();
         server->stop();
-
-        // Reset SPIFFS update flag
-        config->didupdate = true;
-        config->dospiffs = false;
-        config->Save();
 
         ESPhttpUpdate.setLedPin(LED, LOW);
         t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(SPIFFSURL);
 
         switch(ret) {
             case HTTP_UPDATE_FAILED:
-                Log.error(F("HTTP SPIFFS Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+                Log.error(F("HTTP SPIFFS OTA Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
                 break;
 
             case HTTP_UPDATE_NO_UPDATES:
-                Log.notice(F("HTTP SPIFFS Update: No updates." CR));
+                Log.notice(F("HTTP SPIFFS OTA Update: No updates." CR));
                 break;
 
             case HTTP_UPDATE_OK:
-                // This is just here to get rid of a compiler warning, since
-                // the system will reset after OTA, we will never hit this.
-                Log.notice(F("HTTP SPIFFS Update complete, restarting." CR));
+                // Reset SPIFFS update flag
+                Log.notice(F("HTTP SPIFFS OTA Update complete, restarting." CR));
                 ESP.restart();
                 _delay(1000);
                 break;
         }
+    } else {
+        Log.notice(F("No OTA pending." CR));
     }
 }

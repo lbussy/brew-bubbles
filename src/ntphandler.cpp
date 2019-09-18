@@ -46,18 +46,22 @@ void NtpHandler::start() {
     NTP.setInterval(63);
     NTP.setNTPTimeout(NTP_TIMEOUT);
     NTP.begin(TIMESERVER, 0, false, 0);
-    Log.verbose(F("Entering blocking loop to get NTP time."));
+    Log.notice(F("Entering blocking loop to get NTP time."));
     single->update();
     while (!single->hasBeenSet) {
         #ifdef LOG_LEVEL
+#ifdef LOG_LEVEL
         Serial.print(F("."));
+#endif
         #endif
         _delay(500);
         single->update();
         yield();
     }
     #ifdef LOG_LEVEL
+#ifdef LOG_LEVEL
     Serial.println();
+#endif
     single->setJsonTime();
     Log.notice(F("NTP Time: %s." CR), single->Time);
     #endif

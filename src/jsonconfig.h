@@ -39,7 +39,8 @@ class JsonConfig {
         char targeturl[129];        // Target host
         char bfkey[65];             // Brewer's Friend key
         bool tempinf;               // Is temp in F
-        bool dospiffs;              // Update SPIFFS on reboot
+        bool dospiffs1;             // Reboot one time before SPIFFS OTA
+        bool dospiffs2;             // Update SPIFFS on reboot
         bool updateBFFreq;          // Need to update BF Loop timer
         bool updateTargetFreq;      // Need to update Target Loop timer
         bool didupdate;             // Semaphore to indicate OTA complete

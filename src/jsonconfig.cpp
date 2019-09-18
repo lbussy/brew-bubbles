@@ -98,7 +98,8 @@ bool JsonConfig::Parse(bool reset = false) {
         single->bffreq = BFFREQ;
 
         // Set defaults for SPIFFS OTA update
-        single->dospiffs = false;
+        single->dospiffs1 = false;
+        single->dospiffs2 = false;
 
         // Set semaphore for OTA update
         single->didupdate = false;
@@ -134,7 +135,8 @@ bool JsonConfig::Parse(bool reset = false) {
         single->bffreq = doc["bfconfig"]["freq"] | BFFREQ;
 
         // Parse SPIFFS OTA update choice
-        single->dospiffs = doc["dospiffs"] | false;
+        single->dospiffs1 = doc["dospiffs1"] | false;
+        single->dospiffs2 = doc["dospiffs2"] | false;
 
         // Parse semaphore for OTA update choice
         single->didupdate = doc["didupdate"] | false;
@@ -176,7 +178,8 @@ bool JsonConfig::Save() {
     bfconfig["freq"] = single->bffreq;
 
     // Serialize SPIFFS OTA update choice
-    doc["dospiffs"] = single->dospiffs;
+    doc["dospiffs1"] = single->dospiffs1;
+    doc["dospiffs2"] = single->dospiffs2;
 
     // Parse semaphore for OTA update choice
     doc["didupdate"] = single->didupdate;
@@ -200,7 +203,7 @@ bool JsonConfig::Save() {
             Log.error(F("Failed to serialize configuration." CR));
             return false;
         } else {
-            Log.notice(F("Saved configuration as %s." CR), filename);
+            Log.verbose(F("Saved configuration as %s." CR), filename);
             return true;
         }
     }
@@ -240,7 +243,8 @@ void JsonConfig::CreateSettingsJson() {
     bfconfig["freq"] = single->bffreq;
 
     // Serialize SPIFFS OTA update choice
-    doc["dospiffs"] = single->dospiffs;
+    doc["dospiffs1"] = single->dospiffs1;
+    doc["dospiffs2"] = single->dospiffs2;
 
     // Serialize semaphore for OTA update
     doc["didupdate"] = single->didupdate;

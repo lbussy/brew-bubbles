@@ -39,7 +39,7 @@ void WebServer::initialize (int port) {
 
     single->server->begin();
     single->running = true;
-    Log.verbose(F("HTTP server started on port %l." CR) , port);
+    Log.notice(F("HTTP server started on port %l." CR) , port);
     Log.verbose(F("Open: http://%s.local." CR), WiFi.hostname().c_str());
 }
 
@@ -81,9 +81,8 @@ void WebServer::aliases() {
     single->server->on(
         F("/ota2/"),
         HTTP_GET,
-        []() {
-            single->handleFileRead(F("/ota2.htm"));
-        });
+        []() {if (!single->handleFileRead(F("/ota2.htm")))
+            {single->server->send(404, F("text/plain"), F("404: File not found."));}});
 
     single->server->on(
         F("/settings/"),
@@ -112,11 +111,8 @@ void WebServer::aliases() {
         F("/otastart/"),
         []() {
             Log.notice(F("OTA upgrade started." CR));
-            JsonConfig *config = JsonConfig::getInstance();
-            config->dospiffs = true; // Set config to update SPIFFS on restart // TODO
-            config->Save();
-            execfw();                // Trigger the OTA update
             single->server->send(200, F("text/html"), F("OTA started."));
+            execfw(); // Trigger the OTA update
         });
 
     // Settings Update Handler
@@ -253,9 +249,11 @@ void WebServer::aliases() {
         HTTP_GET,
         []() {
             JsonConfig *config = JsonConfig::getInstance();
+            config->dospiffs1 = false;
+            config->dospiffs2 = false;
             config->didupdate = false;
             config->Save();
-            single->server->send(200, F("text/html"), F("Update semaphore cleared"));
+            single->server->send(200, F("text/html"), F("Update semaphores cleared."));
         });
 
     // JSON Handlers
@@ -372,13 +370,23 @@ void WebServer::aliases() {
                 }
 
                 // Parse SPIFFS OTA update choice
-                JsonVariant dospiffs = doc["dospiffs"];
-                if ((!dospiffs.isNull()) && (!dospiffs == config->dospiffs)) {
+                // TODO:  Do I need this?
+                JsonVariant dospiffs1 = doc["dospiffs1"];
+                if ((!dospiffs1.isNull()) && (!dospiffs1 == config->dospiffs1)) {
                     updated = true;
-                    config->dospiffs = dospiffs;
+                    config->dospiffs1 = dospiffs1;
+                }
+
+                // Parse SPIFFS OTA update choice
+                // TODO:  Do I need this?
+                JsonVariant dospiffs2 = doc["dospiffs2"];
+                if ((!dospiffs2.isNull()) && (!dospiffs2 == config->dospiffs2)) {
+                    updated = true;
+                    config->dospiffs2 = dospiffs2;
                 }
 
                 // Parse OTA update semaphore choice
+                // TODO:  Do I need this?
                 JsonVariant didupdate = doc["didupdate"];
                 if ((!didupdate.isNull()) && (!didupdate == config->didupdate)) {
                     updated = true;
@@ -396,16 +404,19 @@ void WebServer::aliases() {
                         MDNS.setHostname(hostname);
                         MDNS.notifyAPChange();
                         MDNS.announce();
+
+                        char hostredirect[39];
+                        strcpy(hostredirect, config->hostname);
+                        strcat(hostredirect, ".local");
+                        Log.notice(F("Redirecting to new URL: http://%s.local/" CR), hostname);
+
+                        // Send redirect page
+                        Log.verbose(F("Sending %s for redirect." CR), hostredirect);
+                        single->server->send(200, F("text/html"), hostredirect);
+                    } else {
+                        single->server->send(200, F("text/html"), F("Ok."));
                     }
                 }
-
-                char hostredirect[39];
-                strcpy(hostredirect, config->hostname);
-                strcat(hostredirect, ".local");
-                Log.notice(F("Redirecting to new URL: http://%s.local/" CR), hostname);
-
-                // Send redirect page
-                single->server->send(200, F("text/html"), hostredirect);
 
             } else {
                 single->server->send(500, F("text/json"), err.c_str());
@@ -530,6 +541,7 @@ bool WebServer::handleFileRead(String path) {
 void::WebServer::stop() {
     single->server->stop();
     single->running = false;
+    Log.notice(F("Web server stopped." CR));
 }
 
 void WebServer::handleLoop() {

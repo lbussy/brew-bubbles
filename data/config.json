@@ -1,0 +1,26 @@
+{
+    "apconfig":{
+        "ssid":"brewbubbles",
+        "appwd":"brewbubbles"
+    },
+    "hostname":"brewbubbles",
+    "bubbleconfig":{
+        "name":"Fermenter 1",
+        "tempinf":true
+    },
+    "calibrate":{
+        "room":0,
+        "vessel":0
+    },
+    "targetconfig":{
+        "targeturl":"",
+        "freq":60
+    },
+    "bfconfig":{
+        "bfkey":"",
+        "freq":15
+    },
+    "dospiffs1":false,
+    "dospiffs2":false,
+    "didupdate":true
+}
