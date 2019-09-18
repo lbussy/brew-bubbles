@@ -2,6 +2,7 @@
 
 ## Open
 
+- Add UI updates to /ota2/
 - Add hostname change to AP Portal
 - Fix deprecation error in http
 - Fix log levels
