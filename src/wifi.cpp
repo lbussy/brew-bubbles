@@ -43,6 +43,7 @@ void presentPortal(bool ignore = false) { // Present AP and captive portal to al
             digitalWrite(LED, LOW);
             _delay(3000);
             digitalWrite(LED, HIGH);
+            Log.notice(F("Hit timeout on portal, restarting." CR));
             ESP.restart();
         }
     } else { // Normal WiFi connection attempt
@@ -53,6 +54,7 @@ void presentPortal(bool ignore = false) { // Present AP and captive portal to al
             digitalWrite(LED, LOW);
             _delay(3000);
             digitalWrite(LED, HIGH);
+            Log.warning(F("Hit timeout on connect, restarting." CR));
             ESP.restart();
             _delay(1000); // Just a hack to allow it to reset
         }
@@ -62,16 +64,17 @@ void presentPortal(bool ignore = false) { // Present AP and captive portal to al
 
     wifi_station_set_hostname(config->hostname);
 
+    Log.notice(F("Connecting to access point."));
     while (WiFi.status() != WL_CONNECTED) {
         blinker.attach_ms(STABLINK, wifiBlinker);
         _delay(500);
-        #ifdef LOG_LEVEL
+#ifdef LOG_LEVEL
         Serial.print(F("."));
-        #endif
+#endif
     }
-    #ifdef LOG_LEVEL
+#ifdef LOG_LEVEL
     Serial.println();
-    #endif
+#endif
     Log.notice(F("Connected. IP address: %s." CR), WiFi.localIP().toString().c_str());
     if (blinker.active()) blinker.detach(); // Turn off blinker
     digitalWrite(LED, HIGH); // Turn off LED
@@ -83,6 +86,7 @@ void resetWifi() { // Wipe wifi settings and reset controller
     if (blinker.active()) blinker.detach(); // Turn off blinker
     digitalWrite(LED, LOW); // Turn on LED
     _delay(3000);
+    Log.warning(F("Restarting after clearing wifi settings." CR));
     ESP.restart();
     _delay(1000);
 }

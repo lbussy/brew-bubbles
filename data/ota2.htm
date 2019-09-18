@@ -168,60 +168,36 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
     </script>
 
     <script>
-        var configuration = {};
+        var configuration = {}; // Hold JSON config to be re-applied
         $(document).ready(function () {
+            $.get("/clearupdate/", function(data){}); // Clear all flags
             getConfig(function(configJson) {
                 configuration = configJson;
                 // Synchronous processing
-                console.log("Configuration: " + JSON.stringify(configuration)); // DEBUG
-                $.get("/otastart/", function(data){ // Semaphore the controller that it's safe to proceed
-                    console.log("OTAStart: " + data);
-                });
-
-                // Button Submit
-                $("#submit").on('click', function(){
-                    $.ajax({ // POST JSON to controller
-                        url: "/config/apply/", // url where to submit the request
-                        method : "POST",
-                        contentType : "application/json; charset=UTF-8",
-                        data : JSON.stringify(configuration), // Post/Get data
-                        dataType : 'text',
-                        success : function(result) {
-                            $.get("/clearupdate/", function(data){ // Semaphore the controller that it's safe to proceed
-                                console.log("Update complete.  Cleared update flag.");
-                            });
-                            window.location.href = result; // New URL in result text
-                        },
-                        error: function(xhr, resp, text) {
-                            alert(resp + " " + xhr.status + " " + text);
-                            alert("Unable to POST settings, see console log for settings JSON.");
-                            console.log(JSON.stringify(configuration));
-
-                            // console.log(xhr.status);        // DEBUG: 404
-                            // console.log(resp);              // DEBUG: Error
-                            // console.log(text);              // DEBUG: Not Found
-                        }
-                    })
-                });
-
-                var intervalID = window.setInterval(function(){
-                    checkSemaphore(function(semaphore) {
-                        didupdate = semaphore;
-                        if (didupdate == true) {
-                            // Update is complete, can apply configuration
-                            document.getElementById("submit").disabled = false;
-                            // TODO:  Maybe automatically apply config?
-                        } else {
-                            // Update is not complete. keep button disabled
-                            document.getElementById("submit").disabled = true;
-                        }
-                    });
-                }, 5000);
-
+                $.get("/otastart/", function(data){}); // Semaphore the controller that it's safe to proceed
             });
         });
 
-        function getConfig(callback) {
+        var intervalID = window.setInterval(function(){ // Poll every 5 seconds
+            checkSemaphore(function(semaphore) {
+                didupdate = semaphore;
+                if (didupdate == true) {
+                    // Update is complete, can apply configuration
+                    console.log("Update is complete, can apply configuration.");
+                    document.getElementById("submit").disabled = false;
+                    // TODO:
+                    //          Add delay
+                    //          Change elements to indicate success
+                    //          Show redirect about to happen
+                    applyConfig();
+                } else {
+                    // Update is not complete. keep button disabled
+                    document.getElementById("submit").disabled = true;
+                }
+            });
+        }, 5000);
+
+        function getConfig(callback) { // Get/store full config JSON
             var jqxhr = $.getJSON("/config/")
                 .done(function (data) {
                     callback(data);
@@ -232,15 +208,43 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                 });
         }
 
-        function checkSemaphore(callback) {
+        function checkSemaphore(callback) { // Check to see if the update is complete
             var jqxhr = $.getJSON("/config/")
                 .done(function (data) {
                     callback(data.didupdate);
                 })
                 .fail(function () {
-                    // This will happen while controller resets
+                    // This will fail while controller resets
                     callback({});
                 });
+        }
+
+        function applyConfig() { // Send former configuration to controller
+            $.ajax({ // POST JSON to controller
+                    url: "/config/apply/",
+                    method : "POST",
+                    contentType : "application/json; charset=UTF-8",
+                    data : JSON.stringify(configuration), // Post/Get data
+                    dataType : 'text',
+                    success : function(result) {
+                        if (!result == "Ok.") {
+                            $.get("/clearupdate/", function(data){}); // Clear all flags
+                            console.log("Redirecting to: " + result); // DEBUG
+                            window.location.href = result; // New URL in result text
+                        } else {
+                            console.log("Redirecting to /"); // DEBUG
+                            window.location.href = "/";
+                        }                    
+                    },
+                    error: function(xhr, resp, text) { 
+                        alert(resp + " " + xhr.status + " " + text);
+                        alert("Unable to POST settings, see console log for settings JSON.");
+                        console.log(JSON.stringify(configuration));
+                        // console.log(xhr.status);        // DEBUG: 404
+                        // console.log(resp);              // DEBUG: Error
+                        // console.log(text);              // DEBUG: Not Found
+                    }
+                })
         }
     </script>
 

@@ -41,7 +41,7 @@ void setup() {
     if (!MDNS.begin(config->hostname)) {
         Log.error(F("Error setting up MDNS responder."));
     } else {
-        Log.notice(F("mDNS responder started, hostname %s.local." CR), WiFi.hostname().c_str());
+        Log.notice(F("mDNS responder started, hostname: %s.local." CR), WiFi.hostname().c_str());
         MDNS.addService("http", "tcp", 80);
     }
 
@@ -57,7 +57,6 @@ void setup() {
 }
 
 void loop() {
-    Bubbles *bubble = Bubbles::getInstance();
     JsonConfig *config = JsonConfig::getInstance();
     WebServer *server = WebServer::getInstance();
     Ticker bubUpdate;
