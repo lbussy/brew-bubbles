@@ -62,9 +62,11 @@ void loop() {
     Ticker bubUpdate;
     Ticker postTimer;
     Ticker bfTimer;
+    Ticker heapReport;
     bubUpdate.attach_ms(BUBLOOP, updateBubbles);
     postTimer.attach(config->targetfreq, httpPost);
     bfTimer.attach(config->bffreq * 60, bfPost);
+    heapReport.attach(125, heapPrint);
     while (true) {
         // If timers needs to be updated, update timers
         if (config->updateTargetFreq) {
@@ -91,4 +93,8 @@ void loop() {
 void updateBubbles() {
     Bubbles *bubble = Bubbles::getInstance();
     bubble->Update();
+}
+
+void heapPrint() {
+    Log.verbose(F("Free Heap: %l" CR), ESP.getFreeHeap(),DEC);
 }
