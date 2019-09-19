@@ -173,6 +173,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
             $.get("/clearupdate/", function(data){}); // Clear all flags
             getConfig(function(configJson) {
                 configuration = configJson;
+
                 // Synchronous processing
                 $.get("/otastart/", function(data){}); // Semaphore the controller that it's safe to proceed
             });
@@ -209,7 +210,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
         }
 
         function checkSemaphore(callback) { // Check to see if the update is complete
-            var jqxhr = $.getJSON("/config/")
+            var jqxhr = $.getJSON("http://brewbubbles.local/config/") // This is always brewbubbles after SPIFFS
                 .done(function (data) {
                     callback(data.didupdate);
                 })
@@ -221,7 +222,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
 
         function applyConfig() { // Send former configuration to controller
             $.ajax({ // POST JSON to controller
-                    url: "/config/apply/",
+                    url: "http://brewbubbles.local/config/apply/", // This is always brewbubbles after SPIFFS
                     method : "POST",
                     contentType : "application/json; charset=UTF-8",
                     data : JSON.stringify(configuration), // Post/Get data
