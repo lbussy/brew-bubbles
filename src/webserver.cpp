@@ -47,13 +47,6 @@ void WebServer::aliases() {
 
     // Regular page aliases
 
-    single->server->on( // DEBUG 200 Action
-        F("/foo/"),
-        HTTP_GET,
-        []() {
-            single->server->send(200, F("text/html"), F("Ok foo!"));
-            });
-
     single->server->on(
         F("/about/"),
         HTTP_GET,
@@ -111,6 +104,7 @@ void WebServer::aliases() {
         F("/otastart/"),
         []() {
             Log.notice(F("OTA upgrade started." CR));
+            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
             single->server->send(200, F("text/html"), F("OTA started."));
             execfw(); // Trigger the OTA update
         });
@@ -249,11 +243,13 @@ void WebServer::aliases() {
         HTTP_GET,
         []() {
             JsonConfig *config = JsonConfig::getInstance();
+            Log.verbose(F("Clearing any update flags." CR));
             config->dospiffs1 = false;
             config->dospiffs2 = false;
             config->didupdate = false;
             config->Save();
-            single->server->send(200, F("text/html"), F("Update semaphores cleared."));
+            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
+            single->server->send(200, F("text/html"), F("Ok."));
         });
 
     // JSON Handlers
@@ -264,8 +260,8 @@ void WebServer::aliases() {
         []() {
             // Used to provide the Bubbles json
             Bubbles *bubble = Bubbles::getInstance();
-            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
             bubble->CreateBubbleJson();
+            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
             single->server->send(200, F("application/json"), bubble->Bubble);
         });
 
@@ -275,8 +271,8 @@ void WebServer::aliases() {
         []() {
             // Used to build the "Change Settings" page
             JsonConfig *config = JsonConfig::getInstance();
-            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
             config->CreateSettingsJson();
+            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
             single->server->send(200, F("application/json"), config->Config);
         });
 
@@ -412,13 +408,16 @@ void WebServer::aliases() {
 
                         // Send redirect page
                         Log.verbose(F("Sending %s for redirect." CR), hostredirect);
+                        single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
                         single->server->send(200, F("text/html"), hostredirect);
                     } else {
+                        single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
                         single->server->send(200, F("text/html"), F("Ok."));
                     }
                 }
 
             } else {
+                single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
                 single->server->send(500, F("text/json"), err.c_str());
             }
         });
@@ -462,7 +461,10 @@ void WebServer::aliases() {
     single->server->onNotFound(
         []() {
             if (!single->handleFileRead(single->server->uri()))
-                {single->server->send(404, F("text/plain"), F("404: File not found."));}});
+                {
+                    single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
+                    single->server->send(404, F("text/plain"), F("404: File not found."));
+                    }});
 }
 
 String WebServer::getContentType(String filename) {
@@ -531,6 +533,7 @@ bool WebServer::handleFileRead(String path) {
             path += F(".gz");
         }
         File file = filesystem->open(path, "r");
+        single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
         single->server->streamFile(file, contentType);
         file.close();
         return true;
