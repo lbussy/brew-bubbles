@@ -166,7 +166,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
     <script>
         var configuration = {}; // Hold JSON config to be re-applied
         $(document).ready(function () {
-            $.get("/clearupdate/", function(data){}); // Clear all flags
             clearUpdate(function(cleared) {
                 // Synchronous processing
                 $.get("/otastart/", function(data){}); // Semaphore the controller that it's safe to proceed
@@ -187,10 +186,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                                 // Cancel pressed.  No idea why
                             }
                         }
-                    }
-                );
-            }, 5000);
-
+                    });
+                }, 5000);
             });
         });
 
