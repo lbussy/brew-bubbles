@@ -64,7 +64,7 @@ void execfw() {
 }
 
 void execspiffs() {
-    JsonConfig *config = JsonConfig::getInstance();
+    JsonConfig *config = JsonConfig::getInstance(); // Must instantiate the config to save later
     if (config->dospiffs1) {
         Log.notice(F("Rebooting a second time before SPIFFS OTA pull." CR));
         config->dospiffs1 = false;
@@ -76,13 +76,6 @@ void execspiffs() {
         _delay(1000);
     } else if (config->dospiffs2) {
         Log.notice(F("Starting the SPIFFS OTA pull." CR));
-        config->dospiffs1 = false;
-        config->dospiffs2 = false;
-        config->didupdate = true;   // This really doesn't matter because
-                                    // we are about to overwrite with the 
-                                    // new spiffs.bin (should have it set 
-                                    // in that file)
-        config->Save();
 
         // Stop web server before OTA update - will restart on reset
         WebServer *server = WebServer::getInstance();
@@ -102,6 +95,11 @@ void execspiffs() {
 
             case HTTP_UPDATE_OK:
                 // Reset SPIFFS update flag
+                config->dospiffs1 = false;
+                config->dospiffs2 = false;
+                config->didupdate = true;
+                config->Save(); // This not only saves the flags, it saves the whole config after SPIFFS wipes it
+                _delay(1000);
                 Log.notice(F("HTTP SPIFFS OTA Update complete, restarting." CR));
                 ESP.restart();
                 _delay(1000);

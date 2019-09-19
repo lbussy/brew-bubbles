@@ -108,10 +108,10 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
             <div class="card border-dark mb-3">
 
                 <!-- OTA In Progress Information -->
-                <div class="card-header">
-                    <h4 class="card-title">Please Wait</h4>
+                <div id="subtitle" class="card-header">
+                    <h4 class="card-title">Please Wait ...</h4>
                 </div>
-                <div class="card-body">
+                <div id="message" class="card-body">
                     <p>
                         Your Brew Bubbles' firmware is being updated to the latest version.
                         This can take up to 5 minutes, during which your Brew Bubbles will
@@ -119,27 +119,23 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         Brew Bubbles while this process is taking place.
                     </p>
                     <p>
-                        If you observe your controller's LED during the process, the LED will
-                        flash as the update is in progress.  As soon as the LED is steady off
-                        (if sensor is blocked) or on (if sensor is not blocked) the process
-                        is complete.
+                        If you wish to observe your controller's LED during the process, the
+                        LED will flash as the update is in progress.  As soon as the LED is
+                        steady - either off if blocked or on if not blocked, the process is
+                        complete.
                     </p>
                     <p>
-                        When the update is complete, the button below will become enabled and
-                        you should press it to re-load your previous settings.  If you skip this
-                        step, you will need to manually reconfigure all application settings.
-                        WiFi settings will not be affected.
+                        When the update is complete, the controller will re-load your original
+                        application settings.  If this step fails, you will need to manually
+                        reconfigure all application settings. WiFi settings will not be affected.
                     </p>
                     <p>
                         <div class="text-danger" style="display: inline-block;">
                             <strong>
-                                Do not refresh this page. If you do, all of your previous
-                                application settings will be lost.
+                                Do not refresh this page. If you do, you will not be able to
+                                track the upgrade process.
                             </strong>
                         </div>
-                    </p>
-                    <p>
-                        <button class="btn btn-danger" id="submit" disabled="true">Re-apply Settings</button>
                     </p>
                 </div>
             </div> <!-- OTA In Progress Information -->
@@ -171,82 +167,57 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
         var configuration = {}; // Hold JSON config to be re-applied
         $(document).ready(function () {
             $.get("/clearupdate/", function(data){}); // Clear all flags
-            getConfig(function(configJson) {
-                configuration = configJson;
-
+            clearUpdate(function(cleared) {
                 // Synchronous processing
                 $.get("/otastart/", function(data){}); // Semaphore the controller that it's safe to proceed
+
+                // Wait for update to complete
+                var intervalID = window.setInterval(function(){ // Poll every 5 seconds
+                    checkSemaphore(function(semaphore) {
+                        didupdate = semaphore;
+                        if (didupdate == true) {
+                            // Update is complete
+                            console.log("Update is complete."); // DEBUG
+                            $("#banner").replaceWith('<h1>Firmware Update Complete</h1>');
+                            $("#subtitle").replaceWith('<h4 class="card-title">Redirect Pending</h4>');
+                            $("#message").replaceWith('<p>The firmware update is complete.</p>');
+                            if (window.confirm("Update complete.\nPress Ok to redirect to the home page.")) {
+                                window.location.href = "/";
+                            } else {
+                                // Cancel pressed.  No idea why
+                            }
+                        }
+                    }
+                );
+            }, 5000);
+
             });
         });
 
-        var intervalID = window.setInterval(function(){ // Poll every 5 seconds
-            checkSemaphore(function(semaphore) {
-                didupdate = semaphore;
-                if (didupdate == true) {
-                    // Update is complete, can apply configuration
-                    console.log("Update is complete, can apply configuration.");
-                    document.getElementById("submit").disabled = false;
-                    // TODO:
-                    //          Add delay
-                    //          Change elements to indicate success
-                    //          Show redirect about to happen
-                    applyConfig();
-                } else {
-                    // Update is not complete. keep button disabled
-                    document.getElementById("submit").disabled = true;
-                }
-            });
-        }, 5000);
-
-        function getConfig(callback) { // Get/store full config JSON
-            var jqxhr = $.getJSON("/config/")
+        function clearUpdate(callback) { // Clear any previous update flags
+            var jqxhr = $.getJSON("/clearupdate/")
                 .done(function (data) {
                     callback(data);
                 })
                 .fail(function () {
-                    alert("Failed to load configuration data.");
-                    callback({});
-                });
+                    alert("Failed to clear update flags.");
+                    callback();
+                }
+            );
         }
 
         function checkSemaphore(callback) { // Check to see if the update is complete
-            var jqxhr = $.getJSON("http://brewbubbles.local/config/") // This is always brewbubbles after SPIFFS
+            var jqxhr = $.getJSON("/config/")
                 .done(function (data) {
                     callback(data.didupdate);
                 })
                 .fail(function () {
                     // This will fail while controller resets
                     callback({});
-                });
+                }
+            );
         }
 
-        function applyConfig() { // Send former configuration to controller
-            $.ajax({ // POST JSON to controller
-                    url: "http://brewbubbles.local/config/apply/", // This is always brewbubbles after SPIFFS
-                    method : "POST",
-                    contentType : "application/json; charset=UTF-8",
-                    data : JSON.stringify(configuration), // Post/Get data
-                    dataType : 'text',
-                    success : function(result) {
-                        if (!result == "Ok.") {
-                            $.get("/clearupdate/", function(data){}); // Clear all flags
-                            console.log("Redirecting to: " + result); // DEBUG
-                            window.location.href = result; // New URL in result text
-                        } else {
-                            console.log("Redirecting to /"); // DEBUG
-                            window.location.href = "/";
-                        }                    
-                    },
-                    error: function(xhr, resp, text) { 
-                        alert(resp + " " + xhr.status + " " + text);
-                        alert("Unable to POST settings, see console log for settings JSON.");
-                        console.log(JSON.stringify(configuration));
-                        // console.log(xhr.status);        // DEBUG: 404
-                        // console.log(resp);              // DEBUG: Error
-                        // console.log(text);              // DEBUG: Not Found
-                    }
-                })
-        }
     </script>
 
 </body>

@@ -2,7 +2,6 @@
 
 ## Open
 
-- Add UI updates to /ota2/
 - Add hostname change to AP Portal
 - Fix deprecation error in http
 - Fix log levels
@@ -125,3 +124,5 @@
 - ~~Re-enable OTA code~~
 - ~~Detect success/failure from "/config/apply/"~~
 - ~~Possibly check for when controller is 100% back after OTA?~~
+- ~~Fix UI on OTA~~
+- ~~Add UI updates to /ota2/~~
