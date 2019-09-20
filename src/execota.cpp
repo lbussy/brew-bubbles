@@ -32,7 +32,8 @@ void execfw() {
     config->Save();
 
     ESPhttpUpdate.setLedPin(LED, LOW);
-    t_httpUpdate_return ret = ESPhttpUpdate.update(FIRMWAREURL);
+    // "http://www.brewbubbles.com/firmware/firmware.bin"
+    t_httpUpdate_return ret = ESPhttpUpdate.update(F(FIRMWAREURL));
 
     switch(ret) {
         case HTTP_UPDATE_FAILED:
@@ -82,7 +83,8 @@ void execspiffs() {
         server->stop();
 
         ESPhttpUpdate.setLedPin(LED, LOW);
-        t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(SPIFFSURL);
+        // "http://www.brewbubbles.com/firmware/spiffs.bin"
+        t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(F(SPIFFSURL));
 
         switch(ret) {
             case HTTP_UPDATE_FAILED:

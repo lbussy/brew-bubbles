@@ -446,6 +446,7 @@ void WebServer::aliases() {
 
             String versionJson = "";
             HTTPClient http;
+            // "http://www.brewbubbles.com/firmware/version.json"
             http.begin(F(VERSIONJSONLOC));
             http.addHeader(F("Cache-Control"), F("no-cache"));
             if (http.GET() > 0) {

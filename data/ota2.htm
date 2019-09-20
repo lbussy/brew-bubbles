@@ -164,44 +164,29 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
     </script>
 
     <script>
-        var configuration = {}; // Hold JSON config to be re-applied
         $(document).ready(function () {
-            clearUpdate(function(cleared) {
-                // Synchronous processing
-                $.get("/otastart/", function(data){}); // Semaphore the controller that it's safe to proceed
+            $.get("/clearupdate/", function(data){}); // Clear any previous update flags
+            $.get("/otastart/", function(data){}); // Semaphore the controller that it's safe to proceed
 
-                // Wait for update to complete
-                var intervalID = window.setInterval(function(){ // Poll every 5 seconds
-                    checkSemaphore(function(semaphore) {
-                        didupdate = semaphore;
-                        if (didupdate == true) {
-                            // Update is complete
-                            console.log("Update is complete."); // DEBUG
-                            $("#banner").replaceWith('<h1>Firmware Update Complete</h1>');
-                            $("#subtitle").replaceWith('<h4 class="card-title">Redirect Pending</h4>');
-                            $("#message").replaceWith('<p>The firmware update is complete.</p>');
-                            if (window.confirm("Update complete.\nPress Ok to redirect to the home page.")) {
-                                window.location.href = "/";
-                            } else {
-                                // Cancel pressed.  No idea why
-                            }
-                        }
-                    });
-                }, 5000);
-            });
+            // Wait for update to complete
+            var running = false;
+            var intervalID = window.setInterval(function(){ // Poll every 5 seconds
+                checkSemaphore(function(semaphore) {
+                    didupdate = semaphore;
+                    if ((didupdate == true) && (running == false)) {
+                        running = true;
+                        // Update is complete
+                        $.get("/clearupdate/", function(data){});
+                        console.log("Update is complete."); // DEBUG
+                        $("#banner").replaceWith("<h1>Firmware Update Complete</h1>");
+                        $("#subtitle").replaceWith("<h4 class='card-header' class='card-title'>Redirect Pending</h4>");
+                        $("#message").replaceWith("<p class='card-body'>The firmware update is complete.  You will be redirected momentarily.</p>");
+                        setTimeout(function(){window.location.href = "/";},5000);
+                    }
+                });
+            }, 5000);
+
         });
-
-        function clearUpdate(callback) { // Clear any previous update flags
-            var jqxhr = $.getJSON("/clearupdate/")
-                .done(function (data) {
-                    callback(data);
-                })
-                .fail(function () {
-                    alert("Failed to clear update flags.");
-                    callback();
-                }
-            );
-        }
 
         function checkSemaphore(callback) { // Check to see if the update is complete
             var jqxhr = $.getJSON("/config/")

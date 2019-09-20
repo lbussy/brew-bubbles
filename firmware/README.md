@@ -1,6 +1,6 @@
-[![Brew Bubbles Logo](https://i1.wp.com/www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")](http://www.brewbubbles.com/)
+# [![Brew Bubbles Logo](https://i1.wp.com/www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")](http://www.brewbubbles.com/)
 
-# Loading Brew Bubbles Firmware
+## Loading Brew Bubbles Firmware
 
 There are two important files in this project:
 
@@ -15,16 +15,16 @@ Optionally, for certain workflows I have included:
 -----|-----|-----
 `blank.bin` | A blank file used to reset parts of the controller to defaults | 0x3FE000
 
-## Flashing Firmware - Initial
+### Flashing Firmware - Initial
 
 Flashing the firmware may be done from many platforms with a variety of tools.  Following are some methods which have been tested.  Other methods may work however the author has no experience with them.
 
-### Unix-Based Platforms (or Windows with Python support)
+#### Unix-Based Platforms (or Windows with Python support)
 
 Espressif, the makers of the ESP8266, have adopted a python-based tool named [*esptool*](https://github.com/espressif/esptool).  Assuming you have either Python 2.7 or 3.4+ on your system, you can install *esptool* with *pip*:
 
 ```
-$ pip install esptool
+pip install esptool
 ```
 
 **Note:** With some Python installations this may not work and you'll receive an error, try `python -m pip install esptool` or `pip2 install esptool`.
@@ -37,7 +37,7 @@ Once *esptool* is installed, you may use the following command line to flash the
 esptool write_flash -fm dio -fs 4MB-c1 0x00000 firmware.bin 0x300000 spiffs.bin
 ```
 
-Please note that this takes advantage of *esptool*'s capability to auto-detect the controller attached via USB.  If you have other devices directly attached to your system this may fail and oyu will need to specify the port manually, for example: `-p /dev/ttyUSB0` (or `-p COM3` on Windows.)
+Please note that this takes advantage of *esptool*'s capability to auto-detect the controller attached via USB.  If you have other devices directly attached to your system this may fail and you will need to specify the port manually, for example: `-p /dev/ttyUSB0` (or `-p COM3` on Windows.)
 
 If you desire to completely erase your controller, you may also use `esptool`'s erase flash option:
 
@@ -45,11 +45,11 @@ If you desire to completely erase your controller, you may also use `esptool`'s 
 esptool erase_flash
 ```
 
-### Mac Platforms
+#### Mac Platforms
 
 I do not have access to a Mac, however anecdotally I believe Mac users may follow the "*Unix-Based Platforms*" above.
 
-### Windows-Based Platforms
+#### Windows-Based Platforms
 
 Using Espressif's Flash Download tool is the recommended method for Windows platforms.  [Download the tool](https://www.espressif.com/en/support/download/other-tools) directly from Espressif's website.  Unzip the tool to a convenient folder and execute the application (named `flash_download_tools_v3.6.7.exe` at the time of writing.)
 
@@ -86,6 +86,6 @@ At this point, you may close the tool as well as the selection screen, and proce
 
 If you desire to completely erase your controller, you may leverage the "*ERASE*" button within the Flash Download tool.
 
-## Firmware Updates
+### Firmware Updates
 
 The web application provides Over The Air (OTA) update functionality.  Navigate to the *Settings* page and scroll down to the *Update Firmware* section.
