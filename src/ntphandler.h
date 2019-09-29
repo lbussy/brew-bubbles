@@ -37,7 +37,9 @@ class NtpHandler {
         // Other Declarations
         boolean syncEventTriggered;
         NTPSyncEvent_t ntpEvent;
+        bool hasBeenSet;
         void setup();
+        void setJsonTime();
 
     public:
         // Singleton Declarations
@@ -46,8 +48,6 @@ class NtpHandler {
         // Other Declarations
         void start();
         void update();
-        void setJsonTime();
-        bool hasBeenSet;
         char Time[21];               // Hold the Time string
 };
 

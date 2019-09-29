@@ -73,6 +73,7 @@ void NtpHandler::update() {
     if (NTP.getLastNTPSync() > 0) {
         single->hasBeenSet = true;
     }
+    single->setJsonTime();
 }
 
 void NtpHandler::setJsonTime() {

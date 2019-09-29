@@ -2,9 +2,13 @@
 
 ## Open
 
+- Figure out why /ota/ is not working on some setups
+- Look to do a 15-minute loop for BF averages https://github.com/rlogiacco/CircularBuffer
 - Add hostname change to AP Portal
 - Fix deprecation error in http
 - Fix log levels
+- Search and evaluate "DEBUG"
+- Search and evaluate "TODO"
 - Address key for BF (email 9/16/19: "Next week's release")
 - Add SSL support for upgrade? ([see the issue](https://github.com/esp8266/Arduino/issues/6523))
 
