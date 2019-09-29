@@ -4,8 +4,7 @@
 
 - Figure out why /ota/ is not working on some setups
 - Look to do a 15-minute loop for BF averages https://github.com/rlogiacco/CircularBuffer
-- Add hostname change to AP Portal
-- Fix deprecation error in http
+- Add static IP change to AP Portal
 - Fix log levels
 - Search and evaluate "DEBUG"
 - Search and evaluate "TODO"
@@ -130,3 +129,5 @@
 - ~~Possibly check for when controller is 100% back after OTA?~~
 - ~~Fix UI on OTA~~
 - ~~Add UI updates to /ota2/~~
+- ~~Fix deprecation error in http~~
+- ~~Add hostname change to AP Portal~~
