@@ -27,7 +27,13 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 void wifiBlinker();
 void presentPortal(bool);
 void resetWifi();
+
+// WiFiManager Callbacks
+void apCallback(WiFiManager *myWiFiManager);
+void configResetCallback();
+void preSaveConfigCallback();
 void saveConfigCallback();
-void configModeCallback(WiFiManager *myWiFiManager);
+void saveParamsCallback();
+void webServerCallback();
 
 #endif // _WIFI_H

@@ -21,33 +21,64 @@ bool shouldSaveConfig = false;
 Ticker blinker;
 
 void presentPortal(bool ignore = false) { // Present AP and captive portal to allow new settings
+
+    WiFi.mode(WIFI_STA); // Explicitly set mode, esp defaults to STA+AP
+    WiFi.setSleepMode(WIFI_NONE_SLEEP); // Make sure sleep is disabled
+
     JsonConfig *config = JsonConfig::getInstance();
     WiFiManager wifiManager;
-    wifiManager.setSaveConfigCallback(saveConfigCallback); // Set callback to save settings
-    wifiManager.setAPCallback(configModeCallback); // Give some basic instructions via Serial
 
-    //wifiManager.resetSettings(); // DEBUG
+    // WiFiManager Callbacks
+    wifiManager.setAPCallback(apCallback); // Called after AP has started
+    wifiManager.setConfigResetCallback(configResetCallback); // Called after settings are reset
+    wifiManager.setPreSaveConfigCallback(preSaveConfigCallback); // Called before saving wifi creds 
+    wifiManager.setSaveConfigCallback(saveConfigCallback);
+    wifiManager.setSaveParamsCallback(saveParamsCallback); // Called after parameters are saved via params menu or wifi config
+    wifiManager.setWebServerCallback(webServerCallback); // Called after webserver is setup
 
-    wifi_station_set_hostname(config->hostname);
+    // DEBUG items
+#ifdef LOG_LEVEL
+    wifiManager.setDebugOutput(true); // Verbose debug is enabled by default
+#endif
+    //Log.verbose(F("DEBUG: Clearing wifi settings." CR));   // DEBUG
+    //wifiManager.resetSettings(); // Reset settings
 
-    if (ignore) {
+    // Set menu items
+    std::vector<const char *> menu = {"wifi","wifinoscan","sep","info","param","close","sep","erase","restart","exit"};
+    wifiManager.setMenu(menu);
+
+    wifiManager.setClass("invert"); // Set dark theme
+
+    // Set up additional portal items
+    WiFiManagerParameter custom_html("<p>Enter custom hostname or static IP address.</p>");
+    WiFiManagerParameter custom_hostname("hostname", "Host Name", config->hostname, 32);
+    WiFiManagerParameter custom_ipaddress("ipaddress", "Static IP", "", 15, "pattern='\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}'");
+
+    // Add portal items
+    wifiManager.addParameter(&custom_html);
+    wifiManager.addParameter(&custom_hostname);
+    wifiManager.addParameter(&custom_ipaddress);
+
+    wifiManager.setCountry("US"); // Setting wifi country seems to improve OSX soft ap connectivity, may help others as well
+    wifiManager.setWiFiAPChannel(3); // Set WiFi channel
+
+    if (ignore) { // Voluntary portal
         blinker.attach_ms(APBLINK, wifiBlinker);
-        wifiManager.setTimeout(120);
+        wifiManager.setConfigPortalTimeout(120);
         if (wifiManager.startConfigPortal(config->ssid, config->appwd)) {
-            if (shouldSaveConfig) { // Save configuration
-                config->Save();
-            }
+            // We finished with portal, do we need this?
         } else {
             // Hit timeout on voluntary portal
             if (blinker.active()) blinker.detach(); // Turn off blinker
             digitalWrite(LED, LOW);
             _delay(3000);
             digitalWrite(LED, HIGH);
-            Log.notice(F("Hit timeout on portal, restarting." CR));
-            ESP.restart();
+            Log.notice(F("Hit timeout for on-demand portal, exiting." CR));
         }
     } else { // Normal WiFi connection attempt
         blinker.attach_ms(STABLINK, wifiBlinker);
+        wifiManager.setConnectTimeout(30);
+        wifiManager.setConfigPortalTimeout(120);
         if (!wifiManager.autoConnect(config->ssid, config->appwd)) {
             Log.warning(F("Failed to connect and hit timeout."));
             if (blinker.active()) blinker.detach(); // Turn off blinker
@@ -57,14 +88,29 @@ void presentPortal(bool ignore = false) { // Present AP and captive portal to al
             Log.warning(F("Hit timeout on connect, restarting." CR));
             ESP.restart();
             _delay(1000); // Just a hack to allow it to reset
+        } else {
+            // We finished with portal (configured), do we need this?
         }
     }
+
     if (blinker.active()) blinker.detach(); // Turn off blinker
     digitalWrite(LED, HIGH); // Turn off LED
 
+    if (shouldSaveConfig) { // Save configuration
+        Log.notice(F("Saving configuration." CR));
+        strcpy(config->hostname, custom_hostname.getValue());
+        // TODO:  Add IP as parameter in JSON (do we need GW and DNS?)
+        //strcpy(config->ipaddress, custom_ipaddress.getValue());
+        //sets config for a static IP
+        //wifiManager.setSTAStaticIPConfig(IPAddress ip, IPAddress gw, IPAddress sn);
+        //sets config for a static IP with DNS
+        //wifiManager.setSTAStaticIPConfig(IPAddress ip, IPAddress gw, IPAddress sn, IPAddress dns);
+        config->Save();
+    }
+
     wifi_station_set_hostname(config->hostname);
 
-    Log.notice(F("Connecting to access point."));
+    Log.notice(F("Connecting to access point: %s."), WiFi.SSID().c_str());
     while (WiFi.status() != WL_CONNECTED) {
         blinker.attach_ms(STABLINK, wifiBlinker);
         _delay(500);
@@ -91,12 +137,14 @@ void resetWifi() { // Wipe wifi settings and reset controller
     _delay(1000);
 }
 
-void saveConfigCallback() { // Set flag to save config
-    Log.verbose(F("Callback: Saving config."));
-    shouldSaveConfig = true;
+void wifiBlinker() { // Invert Current State of LED
+    digitalWrite(LED, !(digitalRead(LED)));
 }
 
-void configModeCallback(WiFiManager *myWiFiManager) {
+// WiFiManager Callbacks
+
+void apCallback(WiFiManager *myWiFiManager) { // Entered Access Point mode
+    Log.verbose(F("[CALLBACK]: setAPCallback fired." CR));
     if (blinker.active()) blinker.detach(); // Turn off blinker
     blinker.attach_ms(APBLINK, wifiBlinker);
     Log.notice(F("Entered portal mode; name: %s, IP: %s." CR),
@@ -104,6 +152,23 @@ void configModeCallback(WiFiManager *myWiFiManager) {
         WiFi.localIP().toString().c_str());
 }
 
-void wifiBlinker() {
-    digitalWrite(LED, !(digitalRead(LED)));  // Invert Current State of LED
+void configResetCallback() {
+    Log.verbose(F("[CALLBACK]: setConfigResetCallback fired." CR));
+}
+
+void preSaveConfigCallback() {
+    Log.verbose(F("[CALLBACK]: setPreSaveConfigCallback fired." CR));
+}
+
+void saveConfigCallback() {
+    Log.verbose(F("[CALLBACK]: setSaveConfigCallback fired." CR));
+}
+
+void saveParamsCallback() { // Set flag to save config
+    Log.verbose(F("[CALLBACK]: setSaveParamsCallback fired." CR));
+    shouldSaveConfig = true;
+}
+
+void webServerCallback() {
+    Log.verbose(F("[CALLBACK]: setWebServerCallback fired." CR));
 }
