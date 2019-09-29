@@ -9,5 +9,6 @@
     ],
     "files.associations": {
         "functional": "cpp"
-    }
+    },
+    "restructuredtext.confPath": "${workspaceFolder}\\docs"
 }
