@@ -25,8 +25,6 @@ void serial() { // Start serial with auto-detected rate (default to BAUD)
     Serial.setDebugOutput(true);
     Serial.flush();
     Log.begin(LOG_LEVEL, &Serial, true);
-    Serial.print(F("DEBUG: Log level set to: ")); // DEBUG
-    Serial.println(LOG_LEVEL);                    // DEBUG
     Log.setPrefix(printTimestamp);
     Log.notice(F("Serial logging started at %l." CR), BAUD);
 }
