@@ -23,6 +23,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "ntphandler.h"
 #include "DallasTemperature.h"
 #include "OneWire.h"
+#include <CircularBuffer.h>
 
 class Bubbles {
     private:
@@ -30,7 +31,7 @@ class Bubbles {
         static bool instanceFlag;
         static Bubbles *single;
         Bubbles() {};
-        void Setup();
+        void start();
         // Other Declarations
         volatile unsigned long ulStart;     // Start time
         volatile unsigned int pulse;        // Store pulse count
@@ -39,20 +40,25 @@ class Bubbles {
         float lastPpm;                      // Holds most recent count
         char* lastTime;
         JsonConfig *config;
-        float GetRawPps();
-        float GetRawPpm();
+        CircularBuffer<float, TEMPAVG> *tempAmbAvg;
+        CircularBuffer<float, TEMPAVG> *tempVesAvg;
+        CircularBuffer<float, BUBAVG> *bubAvg;
+        float getRawPpm();
+        void createBubbleJson();
+        float getPpm();
+        float getAmbientTemp();
+        float getVesselTemp();
 
     public:
         // Singleton Declarations
         static Bubbles* getInstance();
         ~Bubbles();
         // Other Declarations
-        void HandleInterrupts(void);
-        void Update();
-        float GetPpm();
-        float GetAmbientTemp();
-        float GetVesselTemp();
-        void CreateBubbleJson();
+        void handleInterrupts(void);
+        void update();          // Call every 60 seconds
+        float getAvgAmbient();
+        float getAvgVessel();
+        float getAvgPpm();
         char Bubble[BUBBLEJSON];         // Hold the Bubble JSON
 };
 

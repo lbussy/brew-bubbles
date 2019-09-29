@@ -34,9 +34,9 @@ void httpPost() {
         doc[F("api_key")] = F(API_KEY);
         doc[F("device_source")] = F(SOURCE);
         doc[F("name")] = config->bubname;
-        doc[F("bpm")] = String(bubble->GetPpm(), 1);
-        doc[F("ambient")] = bubble->GetAmbientTemp();
-        doc[F("temp")] = bubble->GetVesselTemp();
+        doc[F("bpm")] = String(bubble->getAvgPpm(), 1);
+        doc[F("ambient")] = bubble->getAvgAmbient();
+        doc[F("temp")] = bubble->getAvgVessel();
         if (config->tempinf == true)
             doc[F("temp_unit")] = F("F");
         else
@@ -45,31 +45,31 @@ void httpPost() {
         char output[capacity];
         serializeJson(doc, output);
 
-    //     http.begin(config->targeturl); // Specify request destination
-    //     http.addHeader(F("Content-Type"), F("application/json")); // Specify content-type header
-    //     http.addHeader(F("X-API-KEY"), F(API_KEY));
-    //     int httpCode = http.POST(output); // Post json
+        http.begin(config->targeturl); // Specify request destination
+        http.addHeader(F("Content-Type"), F("application/json")); // Specify content-type header
+        http.addHeader(F("X-API-KEY"), F(API_KEY));
+        int httpCode = http.POST(output); // Post json
 
-    // #ifndef DISABLE_LOGGING
-    //     String payload = http.getString().c_str(); // Get the response payload
-    //     // Convert String to char array
-    //     int n = payload.length();
-    //     char p[n + 1]; 
-    //     strcpy(p, payload.c_str()); 
-    //     Log.notice(F("BF Post return code: %i" CR), httpCode);
-    //     Log.notice(F("BF Post response payload: %s" CR), p);
-    // #endif //DISABLE_LOGGING
+    #ifndef DISABLE_LOGGING
+        String payload = http.getString().c_str(); // Get the response payload
+        // Convert String to char array
+        int n = payload.length();
+        char p[n + 1]; 
+        strcpy(p, payload.c_str()); 
+        Log.notice(F("BF Post return code: %i" CR), httpCode);
+        Log.notice(F("BF Post response payload: %s" CR), p);
+    #endif //DISABLE_LOGGING
 
-    //     http.end(); // Close connection
-    //     if(httpCode == 200) { // 200 = ok
-    //         return;
-    //     } else {
-    //         return;
-    //     }
-        Log.verbose(F("Target JSON = %s" CR), output); // DEBUG
-        return; // DEBUG
+        http.end(); // Close connection
+        if(httpCode == 200) { // 200 = ok
+            Log.notice(F("Post ok." CR));
+            return;
+        } else {
+            Log.warning(F("Post failed." CR));
+            return;
+        }
     } else {
-        Log.notice(F("No target URL in configuration, skipping." CR));
+        Log.verbose(F("No target URL in configuration, skipping." CR));
         return;
     }
 }
@@ -94,10 +94,9 @@ void bfPost() {
         doc[F("api_key")] = F(API_KEY);
         doc[F("device_source")] = F(SOURCE);
         doc[F("name")] = config->bubname;
-        //doc[F("comment")] = String(bubble->GetPpm(), 1);
-        doc[F("psi")] = bubble->GetPpm();
-        doc[F("ambient")] = bubble->GetAmbientTemp();
-        doc[F("temp")] = bubble->GetVesselTemp();
+        doc[F("psi")] = bubble->getAvgPpm(); // TODO:  Change to Ppm
+        doc[F("ambient")] = bubble->getAvgAmbient();
+        doc[F("temp")] = bubble->getAvgVessel();
         if (config->tempinf == true)
             doc[F("temp_unit")] = F("F");
         else
@@ -106,31 +105,31 @@ void bfPost() {
         char output[capacity];
         serializeJson(doc, output);
 
-    //     http.begin(bfUrl); // Specify request destination
-    //     http.addHeader(F("Content-Type"), F("application/json")); // Specify content-type header
-    //     http.addHeader(F("X-API-KEY"), F(API_KEY));
-    //     int httpCode = http.POST(output); // Post json
+        http.begin(bfUrl); // Specify request destination
+        http.addHeader(F("Content-Type"), F("application/json")); // Specify content-type header
+        http.addHeader(F("X-API-KEY"), F(API_KEY));
+        int httpCode = http.POST(output); // Post json
 
-    // #ifndef DISABLE_LOGGING
-    //     String payload = http.getString().c_str(); // Get the response payload
-    //     // Convert String to char array
-    //     int n = payload.length();
-    //     char p[n + 1]; 
-    //     strcpy(p, payload.c_str()); 
-    //     Log.notice(F("BF Post return code: %i" CR), httpCode);
-    //     Log.notice(F("BF Post response payload: %s" CR), p);
-    // #endif //DISABLE_LOGGING
+    #ifndef DISABLE_LOGGING
+        String payload = http.getString().c_str(); // Get the response payload
+        // Convert String to char array
+        int n = payload.length();
+        char p[n + 1]; 
+        strcpy(p, payload.c_str()); 
+        Log.notice(F("BF Post return code: %i" CR), httpCode);
+        Log.notice(F("BF Post response payload: %s" CR), p);
+    #endif //DISABLE_LOGGING
 
-    //     http.end(); // Close connection
-    //     if(httpCode == 200) { // 200 = ok
-    //         return;
-    //     } else {
-    //         return;
-    //     }
-        Log.verbose(F("BF JSON = %s" CR), output); // DEBUG
-        return; // DEBUG
+        http.end(); // Close connection
+        if(httpCode == 200) { // 200 = ok
+            Log.notice(F("BF post ok." CR));
+            return;
+        } else {
+            Log.warning(F("BF post failed." CR));
+            return;
+        }
     } else {
-        Log.notice(F("No BF key in configuration, skipping." CR));
+        Log.verbose(F("No BF key in configuration, skipping." CR));
         return;
     }
 }

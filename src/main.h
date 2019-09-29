@@ -43,7 +43,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 // DEBUG mDNS issues
 #define DEBUG_ESP_MDNS_ERR
 
-void updateBubbles();
+void bubUpdate();
 void heapPrint();
 
 #endif // _MAIN_H

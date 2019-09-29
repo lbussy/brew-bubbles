@@ -20,45 +20,70 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 Bubbles *pBubbles; // Pointer to Counter class
 
 static ICACHE_RAM_ATTR void HandleInterruptsStatic(void) { // External interrupt handler
-    pBubbles->HandleInterrupts(); // Calls class member handler
+    pBubbles->handleInterrupts(); // Calls class member handler
 }
 
 bool Bubbles::instanceFlag = false;
+
 Bubbles* Bubbles::single = NULL; // Holds pointer to class
 
 Bubbles* Bubbles::getInstance() {
     if(!instanceFlag) {
         single = new Bubbles();
         instanceFlag = true;
-        single->Setup();
+        single->start();
         return single;
     } else {
         return single;
     }
 }
 
-void Bubbles::Setup() {
+void Bubbles::start() {
     pinMode(COUNTPIN, INPUT);       // Change pinmode to input
     attachInterrupt(digitalPinToInterrupt(COUNTPIN), HandleInterruptsStatic, RISING); // FALLING, RISING or CHANGE
     pBubbles = single;              // Assign current instance to pointer 
     single->ulLastReport = millis();// Store the last report timer
     single->pulse = 0;              // Reset pulse counter
 
-    // Get starting values
+    // Set starting values
     unsigned long ulNow = millis();
     single->ulStart = ulNow;
     single->lastPpm = 0.0;
+    
+    // Set starting time
     NtpHandler *ntpTime = NtpHandler::getInstance();
-    ntpTime->setJsonTime();
-    single->lastTime = ntpTime->Time;
+    ntpTime->update();
+    single->lastTime, ntpTime->Time;
+
+    // Set starting Bubble
     strlcpy(single->Bubble, "{}", 3);
+
+    // Set circular buffers 
+    CircularBuffer<float, TEMPAVG> *tempAmbAvg;
+    CircularBuffer<float, TEMPAVG> *tempVesAvg;
+    CircularBuffer<float, BUBAVG> *bubAvg;
 }
 
 Bubbles::~Bubbles() {
     instanceFlag = false;
 }
 
-void Bubbles::HandleInterrupts(void) { // Bubble Interrupt handler
+void Bubbles::update() {
+    // Handle NTP Time
+    NtpHandler *ntpTime = NtpHandler::getInstance();
+    ntpTime->update();
+    single->lastTime = ntpTime->Time;
+    // Handle PPM Calculations
+    single->lastPpm = single->getRawPpm();
+    single->bubAvg->push(single->lastPpm);
+    // Handle Temps
+    single->tempVesAvg->push(single->getVesselTemp());
+    single->tempAmbAvg->push(single->getAmbientTemp());
+    single->createBubbleJson(); // Update current JSON
+    Log.verbose(F("Time is %s, PPM is %D." CR), single->lastTime, single->lastPpm);
+}
+
+void Bubbles::handleInterrupts(void) { // Bubble Interrupt handler
     digitalWrite(LED, LOW);
     unsigned long now = micros();
     if ((now - ulMicroLast) > RESOLUTION) { // Filter noise/bounce
@@ -67,18 +92,7 @@ void Bubbles::HandleInterrupts(void) { // Bubble Interrupt handler
     Log.verbose(F("॰°ₒ৹๐" CR)); // Looks like a bubble, right?
 }
 
-float Bubbles::GetRawPps() { // Return raw pulses per second (resets counter)
-    unsigned long thisTime = millis(); // Get timer value now
-    unsigned long ulLapsed = thisTime - single->ulLastReport; // Millis since last run
-    float fLapsed = (float) ulLapsed; // Cast to float
-    float secs = fLapsed / 1000.0; // Seconds since last request
-    float pps = (pulse / secs); // Calculate PPS
-    single->pulse = 0; // Zero the pulse counter
-    single->ulLastReport = millis(); // Store the last report timer
-    return pps;
-}
-
-float Bubbles::GetRawPpm() { // Return raw pulses per minute (resets counter)
+float Bubbles::getRawPpm() { // Return raw pulses per minute (resets counter)
     unsigned long thisTime = millis(); // Get timer value now
     unsigned long ulLapsed = thisTime - single->ulLastReport; // Millis since last run
     float fLapsed = (float) ulLapsed; // Cast to float
@@ -89,17 +103,11 @@ float Bubbles::GetRawPpm() { // Return raw pulses per minute (resets counter)
     return ppm; // Return pulses per minute
 }
 
-void Bubbles::Update() {
-    // If (now - start) > delay time, get new value
-    float thisPpm = single->GetRawPpm();
-    single->lastPpm = thisPpm;
-    NtpHandler *ntpTime = NtpHandler::getInstance();
-    ntpTime->setJsonTime();
-    single->lastTime = ntpTime->Time;
-    Log.verbose(F("Time is %s, PPM is %D." CR), single->lastTime, thisPpm);
+float Bubbles::getPpm() {
+    return single->lastPpm;
 }
 
-float Bubbles::GetAmbientTemp() {
+float Bubbles::getAmbientTemp() {
     OneWire ambient(AMBSENSOR);
     byte addrAmb[8];
     float fAmbTemp = -100.0;
@@ -117,7 +125,7 @@ float Bubbles::GetAmbientTemp() {
     return fAmbTemp;
 }
 
-float Bubbles::GetVesselTemp() {
+float Bubbles::getVesselTemp() {
     OneWire vessel(VESSENSOR);
     byte addrVes[8];
     float fVesTemp = -100.0;
@@ -135,11 +143,26 @@ float Bubbles::GetVesselTemp() {
     return fVesTemp;
 }
 
-float Bubbles::GetPpm() {
-    return single->lastPpm;
+float Bubbles::getAvgAmbient() {
+    // Retrieve TEMPAVG readings to calculate average
+    // float avg = 0.0;
+    // uint8_t size = single->tempAmbAvg->size();
+    // for (int i = 0; i < single->tempAmbAvg->size(); i++) {
+    //     float thisTemp = single->tempAmbAvg[i];
+    //     avg += single->tempAmbAvg[i] / size;
+    // }
+    // return(avg);
 }
 
-void Bubbles::CreateBubbleJson() {
+float Bubbles::getAvgVessel() {
+    // Return TEMPAVG readings to calculate average
+}
+
+float Bubbles::getAvgPpm() {
+    // Return BUBAVG readings to calculate average
+}
+
+void Bubbles::createBubbleJson() {
     // const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
     const size_t capacity = BUBBLEJSON;
     StaticJsonDocument<capacity> doc;
@@ -155,11 +178,11 @@ void Bubbles::CreateBubbleJson() {
         doc[F("format")] = F("C");
     }
 
-    // Get bubbles per minute
+    // Get bubbles data (updated by minute, no averages)
     JsonObject data = doc.createNestedObject(F("data"));
     data[F("bpm")] = single->lastPpm;
-    data[F("ambtemp")] = single->GetAmbientTemp();
-    data[F("vestemp")] = single->GetVesselTemp();
+    data[F("ambtemp")] = single->getAmbientTemp();
+    data[F("vestemp")] = single->getVesselTemp();
 
     char output[capacity];
     serializeJson(doc, output, sizeof(output));

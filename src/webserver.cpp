@@ -260,9 +260,8 @@ void WebServer::aliases() {
         []() {
             // Used to provide the Bubbles json
             Bubbles *bubble = Bubbles::getInstance();
-            bubble->CreateBubbleJson();
             single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            single->server->send(200, F("application/json"), bubble->Bubble);
+            single->server->send(200, F("application/json"), bubble->Bubble); 
         });
 
     single->server->on(
