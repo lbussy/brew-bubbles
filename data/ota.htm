@@ -137,16 +137,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                             Firmware" button below.
                         </p>
                         <p>
-                            WiFi settings will not be reset, however <strong>the application settings 
-                            require action on your part.</strong>  The page which will open upon execution
-                            of the OTA upgrade will allow you to re-set all original settings after
-                            the process is complete.
-                        </p>
-                        <p class="text-danger">
-                            If you close the window without re-applying your settings, you will
-                            need to configure all application settings again manually.
-                        </p>
-                        <p>
                             <form action="/ota2/">
                                 <button class="btn btn-danger" id="proceed" disabled="true">Update Firmware</button>
                             </form>
@@ -183,7 +173,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
         $(document).ready(function () { // Wait till page is loaded
             loadThisVersion(); // Populate form with controller settings
             loadThatVersion(); // Populate form with controller settings
-            loadSettings();    // Populate hidden field with configuration settings
         });
 
         function loadThisVersion() { // Get current parameters
@@ -195,12 +184,12 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         $('#thisVersion').text(thisVersion.version);
                     }
                     catch {
-                        alert("Unable to parse version from controller.");
+                        alert("Unable to parse current version from controller.");
                         $('#thisVersion').text("Error loading.");
                     }
                 })
                 .fail(function () {
-                    alert("Unable to parse version from controller.");
+                    alert("Failed getting current version from controller.");
                     $('#thisVersion').text("Error loading.");
                 })
                 .always(function () {
@@ -218,35 +207,13 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         document.getElementById("proceed").disabled = false;
                     }
                     catch {
-                        alert("Unable to parse version from controller.");
+                        alert("Unable to parse available version from web repository.");
                         $('#thatVersion').text("Error loading.");
                     }
                 })
                 .fail(function () {
-                    alert("Unable to parse version from controller.");
+                    alert("Failed getting available version from web repository.");
                     $('#thatVersion').text("Error loading.");
-                })
-                .always(function () {
-                    // Can post-process here
-                });
-        }
-
-        function loadSettings() { // Get current parameters
-            var configJson = "/config/";
-            var config = $.getJSON(configJson, function () {
-            })
-                .done(function (config) {
-                    try {
-                        localStorage.setItem('configObj', JSON.stringify(config));
-                    }
-                    catch {
-                        alert("Unable to parse version from controller.");
-                        $('#config').val("Error loading.");
-                    }
-                })
-                .fail(function () {
-                    alert("Unable to parse version from controller.");
-                    $('#config').val("Error loading.");
                 })
                 .always(function () {
                     // Can post-process here
