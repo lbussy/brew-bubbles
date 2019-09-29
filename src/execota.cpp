@@ -100,7 +100,7 @@ void execspiffs() {
                 config->dospiffs1 = false;
                 config->dospiffs2 = false;
                 config->didupdate = true;
-                config->Save(); // This not only saves the flags, it saves the whole config after SPIFFS wipes it
+                config->Save(); // This not only saves the flags, it (re)saves the whole config after SPIFFS wipes it
                 _delay(1000);
                 Log.notice(F("HTTP SPIFFS OTA Update complete, restarting." CR));
                 ESP.restart();
@@ -108,6 +108,6 @@ void execspiffs() {
                 break;
         }
     } else {
-        Log.notice(F("No OTA pending." CR));
+        Log.verbose(F("No OTA pending." CR));
     }
 }
