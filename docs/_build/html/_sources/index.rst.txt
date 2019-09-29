@@ -1,16 +1,16 @@
-.. Brew Bubbles documentation master file, created by
-   sphinx-quickstart on Sun Sep 15 06:51:10 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to Brew Bubbles's documentation!
+Brew Bubbles Documentation
 ========================================
+
+This documentation is absolutely a work in progress, in that I depend on *you* to help me make sure it is relevant and easy to read.  *I* know how to work with Brew Bubbles.  My goal is to make you an expert too.  Anything that is confusing is a bug and I want to know about it please.
+
+For spelling/grammatical errors, please feel free to issue a pull request with the update.  For questions, issues, or confusing sections, please `open an issue on GitHub`_.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-
+   install
+   support
 
 Indices and tables
 ==================
