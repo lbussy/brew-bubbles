@@ -56,30 +56,29 @@ void Bubbles::start() {
     single->lastTime, ntpTime->Time;
 
     // Set starting Bubble
-    strlcpy(single->Bubble, "{}", 3);
+    strlcpy(single->bubStatus, "{}", 3);
 
     // Set circular buffers 
-    CircularBuffer<float, TEMPAVG> *tempAmbAvg;
-    CircularBuffer<float, TEMPAVG> *tempVesAvg;
-    CircularBuffer<float, BUBAVG> *bubAvg;
+    //CircularBuffer<float, TEMPAVG> *tempAmbAvg;
+    //CircularBuffer<float, TEMPAVG> *tempVesAvg;
+    //CircularBuffer<float, BUBAVG> *bubAvg;
 }
 
 Bubbles::~Bubbles() {
     instanceFlag = false;
 }
 
-void Bubbles::update() {
+void Bubbles::update() { // Regular update loop, once per minute
     // Handle NTP Time
     NtpHandler *ntpTime = NtpHandler::getInstance();
     ntpTime->update();
     single->lastTime = ntpTime->Time;
-    // Handle PPM Calculations
-    single->lastPpm = single->getRawPpm();
-    single->bubAvg->push(single->lastPpm);
-    // Handle Temps
-    single->tempVesAvg->push(single->getVesselTemp());
-    single->tempAmbAvg->push(single->getAmbientTemp());
-    single->createBubbleJson(); // Update current JSON
+
+    // Store last BPM
+    single->lastPpm = single->getRawBpm();
+
+    single->createBubbleJson();
+
     Log.verbose(F("Time is %s, PPM is %D." CR), single->lastTime, single->lastPpm);
 }
 
@@ -92,7 +91,7 @@ void Bubbles::handleInterrupts(void) { // Bubble Interrupt handler
     Log.verbose(F("॰°ₒ৹๐" CR)); // Looks like a bubble, right?
 }
 
-float Bubbles::getRawPpm() { // Return raw pulses per minute (resets counter)
+float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)
     unsigned long thisTime = millis(); // Get timer value now
     unsigned long ulLapsed = thisTime - single->ulLastReport; // Millis since last run
     float fLapsed = (float) ulLapsed; // Cast to float
@@ -103,7 +102,7 @@ float Bubbles::getRawPpm() { // Return raw pulses per minute (resets counter)
     return ppm; // Return pulses per minute
 }
 
-float Bubbles::getPpm() {
+float Bubbles::getBpm() {
     return single->lastPpm;
 }
 
@@ -158,7 +157,7 @@ float Bubbles::getAvgVessel() {
     // Return TEMPAVG readings to calculate average
 }
 
-float Bubbles::getAvgPpm() {
+float Bubbles::getAvgBpm() {
     // Return BUBAVG readings to calculate average
 }
 
@@ -186,5 +185,5 @@ void Bubbles::createBubbleJson() {
 
     char output[capacity];
     serializeJson(doc, output, sizeof(output));
-    strlcpy(single->Bubble, output, sizeof(output));
+    strlcpy(single->bubStatus, output, sizeof(output));
 }

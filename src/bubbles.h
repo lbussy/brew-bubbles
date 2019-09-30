@@ -27,10 +27,10 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 class Bubbles {
     private:
+        Bubbles() {};
         // Singleton Declarations
         static bool instanceFlag;
         static Bubbles *single;
-        Bubbles() {};
         void start();
         // Other Declarations
         volatile unsigned long ulStart;     // Start time
@@ -43,9 +43,9 @@ class Bubbles {
         CircularBuffer<float, TEMPAVG> *tempAmbAvg;
         CircularBuffer<float, TEMPAVG> *tempVesAvg;
         CircularBuffer<float, BUBAVG> *bubAvg;
-        float getRawPpm();
+        float getRawBpm();
         void createBubbleJson();
-        float getPpm();
+        float getBpm();
         float getAmbientTemp();
         float getVesselTemp();
 
@@ -58,8 +58,8 @@ class Bubbles {
         void update();          // Call every 60 seconds
         float getAvgAmbient();
         float getAvgVessel();
-        float getAvgPpm();
-        char Bubble[BUBBLEJSON];         // Hold the Bubble JSON
+        float getAvgBpm();
+        char bubStatus[BUBBLEJSON];         // Hold the Bubble JSON
 };
 
 #endif // _BUBBLES_H
