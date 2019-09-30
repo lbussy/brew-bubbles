@@ -261,7 +261,7 @@ void WebServer::aliases() {
             // Used to provide the Bubbles json
             Bubbles *bubble = Bubbles::getInstance();
             single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            single->server->send(200, F("application/json"), bubble->Bubble); 
+            single->server->send(200, F("application/json"), bubble->bubStatus);
         });
 
     single->server->on(
@@ -365,7 +365,6 @@ void WebServer::aliases() {
                 }
 
                 // Parse SPIFFS OTA update choice
-                // TODO:  Do I need this?
                 JsonVariant dospiffs1 = doc["dospiffs1"];
                 if ((!dospiffs1.isNull()) && (!dospiffs1 == config->dospiffs1)) {
                     updated = true;
@@ -373,7 +372,6 @@ void WebServer::aliases() {
                 }
 
                 // Parse SPIFFS OTA update choice
-                // TODO:  Do I need this?
                 JsonVariant dospiffs2 = doc["dospiffs2"];
                 if ((!dospiffs2.isNull()) && (!dospiffs2 == config->dospiffs2)) {
                     updated = true;
@@ -381,7 +379,6 @@ void WebServer::aliases() {
                 }
 
                 // Parse OTA update semaphore choice
-                // TODO:  Do I need this?
                 JsonVariant didupdate = doc["didupdate"];
                 if ((!didupdate.isNull()) && (!didupdate == config->didupdate)) {
                     updated = true;
