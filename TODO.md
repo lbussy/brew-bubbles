@@ -2,6 +2,7 @@
 
 ## Open
 
+- Fix /bubble/
 - Figure out why /ota/ is not working on some setups
 - Look to do a 15-minute loop for BF averages https://github.com/rlogiacco/CircularBuffer
 - Add static IP change to AP Portal
