@@ -72,7 +72,7 @@ void execspiffs() {
         config->dospiffs2 = true;
         config->didupdate = false;
         config->Save();
-        // TODO:  Put a delay here to avoid triggering DRD
+        _delay(3000);
         ESP.restart();
         _delay(1000);
     } else if (config->dospiffs2) {
