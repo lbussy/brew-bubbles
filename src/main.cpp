@@ -62,16 +62,16 @@ void loop() {
     Bubbles *bubble = Bubbles::getInstance();
 
     // Circular buffer/averages
-    Ticker aTempAvgUpdate;
-    Ticker vTempAvgUpdate;
-    Ticker bAvgUpdate;
+    // Ticker aTempAvgUpdate;
+    // Ticker vTempAvgUpdate;
+    // Ticker bAvgUpdate;
     //aTempAvgUpdate.attach(60, NULL); // DEBUG disabled
     //vTempAvgUpdate.attach(60, NULL); // DEBUG disabled
     //bAvgUpdate.attach(60, NULL); // DEBUG disabled
 
     // Regular Bubble loop to create 60 second JSON
     Ticker bubUpdate;
-    //bubUpdate.attach(BUBLOOP, [bubble](){ bubble->update(); });
+    bubUpdate.attach(BUBLOOP, [bubble](){ bubble->update(); });
 
     // Target loops
     // Ticker postTimer; // DEBUG disabled

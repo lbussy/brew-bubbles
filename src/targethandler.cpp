@@ -34,7 +34,7 @@ void httpPost() {
         doc[F("api_key")] = F(API_KEY);
         doc[F("device_source")] = F(SOURCE);
         doc[F("name")] = config->bubname;
-        doc[F("bpm")] = String(bubble->getAvgPpm(), 1);
+        doc[F("bpm")] = String(bubble->getAvgBpm(), 1);
         doc[F("ambient")] = bubble->getAvgAmbient();
         doc[F("temp")] = bubble->getAvgVessel();
         if (config->tempinf == true)
@@ -94,7 +94,7 @@ void bfPost() {
         doc[F("api_key")] = F(API_KEY);
         doc[F("device_source")] = F(SOURCE);
         doc[F("name")] = config->bubname;
-        doc[F("psi")] = bubble->getAvgPpm(); // TODO:  Change to Ppm
+        doc[F("psi")] = bubble->getAvgBpm();
         doc[F("ambient")] = bubble->getAvgAmbient();
         doc[F("temp")] = bubble->getAvgVessel();
         if (config->tempinf == true)
