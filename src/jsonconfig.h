@@ -25,12 +25,17 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 class JsonConfig {
     private:
-        const char * filename = "/config.json";
-        static bool instanceFlag;
-        static JsonConfig *single;
+        // Singleton Declarations
         JsonConfig() {} 
+        static JsonConfig *single;
+        // Other Declarations
+        const char * filename = "/config.json";
 
     public:
+        // Singleton Declarations
+        ~JsonConfig() {single = NULL;}
+        static JsonConfig* getInstance();
+        // Other Declarations
         char Config[CONFIGJSON];    // Hold the Config JSON
         char ssid[33];              // AP SSID
         char appwd[65];             // AP Pwd
@@ -52,8 +57,6 @@ class JsonConfig {
         // Methods
         bool Parse(bool reset);
         bool Save();
-        static JsonConfig* getInstance();
-        ~JsonConfig() {instanceFlag = false;}
         void CreateSettingsJson();
 };
 

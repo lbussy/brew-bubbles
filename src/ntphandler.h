@@ -31,9 +31,8 @@ void ntpBlinker();
 class NtpHandler {
     private:
         // Singleton Declarations
-        static bool instanceFlag;
-        static NtpHandler *single;
         NtpHandler() {}
+        static NtpHandler *single;
         // Other Declarations
         boolean syncEventTriggered;
         NTPSyncEvent_t ntpEvent;
@@ -44,7 +43,7 @@ class NtpHandler {
     public:
         // Singleton Declarations
         static NtpHandler* getInstance();
-        ~NtpHandler() {instanceFlag = false;}
+        ~NtpHandler() {single = NULL;}
         // Other Declarations
         void start();
         void update();

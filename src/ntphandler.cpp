@@ -17,18 +17,14 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "ntphandler.h"
 
-bool NtpHandler::instanceFlag = false;
 NtpHandler* NtpHandler::single = NULL;
 
 NtpHandler* NtpHandler::getInstance() {
-    if(!instanceFlag) {
+    if (!single) {
         single = new NtpHandler();
-        instanceFlag = true;
         single->setup();
-        return single;
-    } else {
-        return single;
     }
+    return single;
 }
 
 void NtpHandler::setup() {

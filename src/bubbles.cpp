@@ -23,19 +23,14 @@ static ICACHE_RAM_ATTR void HandleInterruptsStatic(void) { // External interrupt
     pBubbles->handleInterrupts(); // Calls class member handler
 }
 
-bool Bubbles::instanceFlag = false;
-
 Bubbles* Bubbles::single = NULL; // Holds pointer to class
 
 Bubbles* Bubbles::getInstance() {
-    if(!instanceFlag) {
+    if (!single) {
         single = new Bubbles();
-        instanceFlag = true;
         single->start();
-        return single;
-    } else {
-        return single;
     }
+    return single;
 }
 
 void Bubbles::start() {
@@ -64,10 +59,6 @@ void Bubbles::start() {
     //CircularBuffer<float, BUBAVG> *bubAvg;
 }
 
-Bubbles::~Bubbles() {
-    instanceFlag = false;
-}
-
 void Bubbles::update() { // Regular update loop, once per minute
     // Handle NTP Time
     NtpHandler *ntpTime = NtpHandler::getInstance();
@@ -88,7 +79,7 @@ void Bubbles::handleInterrupts(void) { // Bubble Interrupt handler
     if ((now - ulMicroLast) > RESOLUTION) { // Filter noise/bounce
         single->pulse++;    // Increment pulse count
     }
-    Log.verbose(F("॰°ₒ৹๐" CR)); // Looks like a bubble, right?
+    Log.verbose(F("॰ₒ°৹๐" CR)); // Looks like a bubble, right?
 }
 
 float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)

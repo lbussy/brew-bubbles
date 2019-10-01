@@ -32,9 +32,8 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 class WebServer {
     private:
         // Singleton Declarations
-        static bool instanceFlag;
-        static WebServer *single;
         WebServer() {}
+        static WebServer *single;
         // External Declarations
         FS *filesystem;
         ESP8266WebServer *server;
@@ -47,7 +46,7 @@ class WebServer {
     public:
         // Singleton Declarations
         static WebServer* getInstance();
-        ~WebServer() {instanceFlag = false;}
+        ~WebServer() {single = NULL;}
         // Other Declarations
         void initialize(int port);
         void handleLoop();
