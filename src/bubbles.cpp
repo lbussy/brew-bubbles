@@ -72,7 +72,7 @@ void Bubbles::update() { // Regular update loop, once per minute
     tempVesAvg.push(single->lastVes);
     bubAvg.push(single->lastBpm);
 
-    Log.verbose(F("Time is %s." CR), single->lastTime);
+    Log.verbose(F("Time is %s, BPM is %D." CR), single->lastTime, single->lastBpm);
     Log.verbose(F("Bubble: %s" CR), single->bubStatus);
     Log.verbose(F("Averages: BPM = %D (%l sample), Ambient = %D (%l sample), Vessel = %D (%l sample)." CR),
         single->getAvgBpm(), bubAvg.size(),
@@ -87,7 +87,7 @@ void Bubbles::handleInterrupts(void) { // Bubble Interrupt handler
     if ((now - ulMicroLast) > RESOLUTION) { // Filter noise/bounce
         single->pulse++;    // Increment pulse count
     }
-    Log.verbose(F("॰ₒ°৹๐" CR)); // Looks like a bubble, right?
+    Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right?
 }
 
 float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)

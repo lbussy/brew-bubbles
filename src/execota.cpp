@@ -29,7 +29,7 @@ void execfw() {
     config->dospiffs1 = true;
     config->dospiffs2 = false;
     config->didupdate = false;
-    config->Save();
+    config->save();
 
     ESPhttpUpdate.setLedPin(LED, LOW);
     // "http://www.brewbubbles.com/firmware/firmware.bin"
@@ -42,7 +42,7 @@ void execfw() {
             config->dospiffs1 = false;
             config->dospiffs2 = false;
             config->didupdate = false;
-            config->Save();
+            config->save();
             break;
 
         case HTTP_UPDATE_NO_UPDATES:
@@ -51,7 +51,7 @@ void execfw() {
             config->dospiffs1 = false;
             config->dospiffs2 = false;
             config->didupdate = false;
-            config->Save();
+            config->save();
             break;
         
         case HTTP_UPDATE_OK:
@@ -71,7 +71,7 @@ void execspiffs() {
         config->dospiffs1 = false;
         config->dospiffs2 = true;
         config->didupdate = false;
-        config->Save();
+        config->save();
         _delay(3000);
         ESP.restart();
         _delay(1000);
@@ -100,7 +100,7 @@ void execspiffs() {
                 config->dospiffs1 = false;
                 config->dospiffs2 = false;
                 config->didupdate = true;
-                config->Save(); // This not only saves the flags, it (re)saves the whole config after SPIFFS wipes it
+                config->save(); // This not only saves the flags, it (re)saves the whole config after SPIFFS wipes it
                 _delay(1000);
                 Log.notice(F("HTTP SPIFFS OTA Update complete, restarting." CR));
                 ESP.restart();

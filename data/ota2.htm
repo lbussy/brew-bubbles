@@ -177,7 +177,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. -->
                         running = true;
                         // Update is complete
                         $.get("/clearupdate/", function(data){});
-                        console.log("Update is complete."); // DEBUG
                         $("#banner").replaceWith("<h1>Firmware Update Complete</h1>");
                         $("#subtitle").replaceWith("<h4 class='card-header' class='card-title'>Redirect Pending</h4>");
                         $("#message").replaceWith("<p class='card-body'>The firmware update is complete.  You will be redirected momentarily.</p>");

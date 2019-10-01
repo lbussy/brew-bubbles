@@ -22,12 +22,12 @@ JsonConfig* JsonConfig::single = NULL;
 JsonConfig* JsonConfig::getInstance() {
     if (!single) {
         single = new JsonConfig();
-        single->Parse(false); // True to wipe config.json for testing
+        single->parse(); // True to wipe config.json for testing
     }
     return single;
 }
 
-bool JsonConfig::Parse(bool reset = false) {
+bool JsonConfig::parse() {
     single->updateBFFreq = false;
     single->updateTargetFreq = false;
     //const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7) + 480;
@@ -38,11 +38,6 @@ bool JsonConfig::Parse(bool reset = false) {
     if (!SPIFFS.begin()) {
         Log.error(F("Failed to mount SPIFFS." CR));
         return false;
-    }
-
-    if (reset == true) {
-        Log.verbose(F("Deleted %s." CR), filename);
-        SPIFFS.remove(filename); // DEBUG use
     }
 
     // Open file for reading
@@ -100,7 +95,7 @@ bool JsonConfig::Parse(bool reset = false) {
         single->didupdate = false;
 
         // We created default configuration, save it
-        single->Save();
+        single->save();
 
     } else { // Parse from file
 
@@ -139,7 +134,7 @@ bool JsonConfig::Parse(bool reset = false) {
     return true;
 }
 
-bool JsonConfig::Save() {
+bool JsonConfig::save() {
     // const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
      const size_t capacity = CONFIGJSON;
     StaticJsonDocument<capacity> doc;
@@ -204,7 +199,7 @@ bool JsonConfig::Save() {
     }
 }
 
-void JsonConfig::CreateSettingsJson() {
+void JsonConfig::createSettingsJson() {
     // const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
     const size_t capacity = CONFIGJSON;
     StaticJsonDocument<capacity> doc;
@@ -246,5 +241,5 @@ void JsonConfig::CreateSettingsJson() {
 
     char output[capacity];
     serializeJson(doc, output, sizeof(output));
-    strlcpy(single->Config, output, sizeof(output));
+    strlcpy(single->config, output, sizeof(output));
 }

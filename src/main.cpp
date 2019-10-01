@@ -21,12 +21,8 @@ DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 
 void setup() {
     bool rst = drd.detect(); // Check for double-reset
-    serial(); // TODO:  Includes a 4000 ms delay
+    serial();
     pinMode(LED, OUTPUT);
-
-    // DEBUG: Get WiFi setup remotely if it tanks
-    // WiFi.begin("SSID", "PASSWORD"); // DEBUG: Get WiFi setup remotely if it tanks
-    // DEBUG: Get WiFi setup remotely if it tanks
 
     _delay(200); // Let pins settle, else detect is inconsistent
     pinMode(RESETWIFI, INPUT_PULLUP);
