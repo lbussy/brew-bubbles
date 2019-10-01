@@ -27,5 +27,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 void httpPost();
 void bfPost();
+String getPostJson();
 
 #endif // _TARGETHANDLER_H
