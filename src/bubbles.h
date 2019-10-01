@@ -55,11 +55,11 @@ class Bubbles {
         ~Bubbles() {single = NULL;}
         // Other Declarations
         void handleInterrupts(void);
-        void update();          // Call every 60 seconds
+        void update();                  // Call every 60 seconds
         float getAvgAmbient();
         float getAvgVessel();
         float getAvgBpm();
-        char bubStatus[BUBBLEJSON];         // Hold the Bubble JSON
+        char bubStatus[BUBBLEJSON];     // Hold the Bubble JSON
 };
 
 #endif // _BUBBLES_H
