@@ -9,8 +9,11 @@ For spelling/grammatical errors, please feel free to issue a pull request with t
    :maxdepth: 2
    :caption: Contents:
 
-   install
-   support
+   install/index.rst
+   wifi/index.rst
+   setup/index.rst
+   targets/index.rst
+   support/index.rst
 
 Indices and tables
 ==================

@@ -1,6 +1,6 @@
 # [![Brew Bubbles Logo](https://i1.wp.com/www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")](http://www.brewbubbles.com/)
 
-# Loading Brew Bubbles Firmware
+# Installing Brew Bubbles Firmware
 
 There are two important files in this project:
 
