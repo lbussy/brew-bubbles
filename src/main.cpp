@@ -61,40 +61,34 @@ void loop() {
     WebServer *server = WebServer::getInstance();
     Bubbles *bubble = Bubbles::getInstance();
 
-    // Circular buffer/averages
-    // Ticker aTempAvgUpdate;
-    // Ticker vTempAvgUpdate;
-    // Ticker bAvgUpdate;
-    //aTempAvgUpdate.attach(60, NULL); // DEBUG disabled
-    //vTempAvgUpdate.attach(60, NULL); // DEBUG disabled
-    //bAvgUpdate.attach(60, NULL); // DEBUG disabled
-
-    // Regular Bubble loop to create 60 second JSON
+    // Bubble loop to create 60 second readings
     Ticker bubUpdate;
     bubUpdate.attach(BUBLOOP, [bubble](){ bubble->update(); });
 
     // Target loops
-    // Ticker postTimer; // DEBUG disabled
-    // Ticker bfTimer; // DEBUG disabled
-    // postTimer.attach(config->targetfreq, httpPost); // DEBUG disabled
-    // bfTimer.attach(config->bffreq * 60, bfPost); // DEBUG disabled
+    Ticker postTimer;
+    Ticker bfTimer;
+    postTimer.attach(config->targetfreq * 60, httpPost);
+    bfTimer.attach(config->bffreq * 60, bfPost);
 
     while (true) {
         // If timers needs to be updated, update timers
-        // if (config->updateTargetFreq) { // DEBUG disabled
-        //     Log.notice(F("Resetting Target frequency timer to %l seconds." CR), config->targetfreq); // DEBUG disabled
-        //     postTimer.detach(); // DEBUG disabled
-        //     postTimer.attach(config->targetfreq, httpPost); // DEBUG disabled
-        //     config->updateTargetFreq = false; // DEBUG disabled
-        // } // DEBUG disabled
-        // if (config->updateBFFreq) { // DEBUG disabled
-        //     Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config->bffreq); // DEBUG disabled
-        //     bfTimer.detach(); // DEBUG disabled
-        //     bfTimer.attach(config->bffreq * 60, bfPost); // DEBUG disabled
-        //     config->updateBFFreq = false; // DEBUG disabled
-        // } // DEBUG disabled
-        server->handleLoop();
-        MDNS.update(); 
+        if (config->updateTargetFreq) {
+            Log.notice(F("Resetting Target frequency timer to %l minutes." CR), config->targetfreq);
+            postTimer.detach();
+            postTimer.attach(config->targetfreq, httpPost);
+            config->updateTargetFreq = false;
+        }
+        if (config->updateBFFreq) {
+            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config->bffreq);
+            bfTimer.detach();
+            bfTimer.attach(config->bffreq * 60, bfPost);
+            config->updateBFFreq = false;
+        }
+
+        server->handleLoop();   // Handle html requests
+        MDNS.update();          // Handle mDNS requests
+
         if (digitalRead(COUNTPIN) == HIGH) // Non-interrupt driven LED logic
             digitalWrite(LED, LOW); // Turn LED on when not obstructed
         else

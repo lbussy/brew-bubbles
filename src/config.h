@@ -251,7 +251,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Bubble loop time in milliseconds - Must be declared as an UL
+// Bubble loop time in seconds
 //
 #ifndef BUBLOOP
 #define BUBLOOP 60 // One minute
@@ -261,7 +261,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Number of BPM readings in a sliding window for average
+// Number of BPM readings in a sliding window for averaging (one per min)
 //
 #ifndef BUBAVG
 #define BUBAVG 15
@@ -271,7 +271,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Number of temp readings in a sliding window for averaging
+// Number of temp readings in a sliding window for averaging (one per min)
 //
 #ifndef TEMPAVG
 #define TEMPAVG 5
@@ -331,10 +331,10 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Target Frequency (default 60 seconds)
+// Target Frequency (default 2 minutes)
 //
 #ifndef TARGETFREQ
-#define TARGETFREQ 60
+#define TARGETFREQ 2
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
