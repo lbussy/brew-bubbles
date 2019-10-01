@@ -51,7 +51,7 @@ void Bubbles::start() {
     single->lastTime = ntpTime->Time;
 
     // Set starting Bubble
-    strlcpy(single->bubStatus, "{}", 3);
+    single->createBubbleJson();
 }
 
 void Bubbles::update() { // Regular update loop, once per minute

@@ -2,7 +2,6 @@
 
 ## Open
 
-- Fix /bubble/ and/or home page
 - Figure out why /ota/ is not working on some setups
 - Add static IP change to AP Portal
 - Fix log levels
@@ -133,3 +132,4 @@
 - ~~Add hostname change to AP Portal~~
 - ~~Look to do a 15-minute loop for BF BPM averages~~
 - ~~Look to do a 5-minute loop for BF temp averages~~
+- ~~Fix /bubble/ and/or home page~~
