@@ -43,20 +43,15 @@ void Bubbles::start() {
     // Set starting values
     unsigned long ulNow = millis();
     single->ulStart = ulNow;
-    single->lastPpm = 0.0;
+    single->lastBpm = 0.0;
     
     // Set starting time
     NtpHandler *ntpTime = NtpHandler::getInstance();
     ntpTime->update();
-    single->lastTime, ntpTime->Time;
+    single->lastTime = ntpTime->Time;
 
     // Set starting Bubble
     strlcpy(single->bubStatus, "{}", 3);
-
-    // Set circular buffers 
-    //CircularBuffer<float, TEMPAVG> *tempAmbAvg;
-    //CircularBuffer<float, TEMPAVG> *tempVesAvg;
-    //CircularBuffer<float, BUBAVG> *bubAvg;
 }
 
 void Bubbles::update() { // Regular update loop, once per minute
@@ -65,12 +60,25 @@ void Bubbles::update() { // Regular update loop, once per minute
     ntpTime->update();
     single->lastTime = ntpTime->Time;
 
-    // Store last BPM
-    single->lastPpm = single->getRawBpm();
-
+    // Store last values
+    single->lastBpm = single->getRawBpm();
+    single->lastAmb = single->getAmbientTemp();
+    single->lastVes = single->getVesselTemp();
+    // Update the web page source
     single->createBubbleJson();
 
-    Log.verbose(F("Time is %s, PPM is %D." CR), single->lastTime, single->lastPpm);
+    // Push values to circular buffers
+    tempAmbAvg.push(single->lastAmb);
+    tempVesAvg.push(single->lastVes);
+    bubAvg.push(single->lastBpm);
+
+    Log.verbose(F("Time is %s." CR), single->lastTime);
+    Log.verbose(F("Bubble: %s" CR), single->bubStatus);
+    Log.verbose(F("Averages: BPM = %D (%l sample), Ambient = %D (%l sample), Vessel = %D (%l sample)." CR),
+        single->getAvgBpm(), bubAvg.size(),
+        single->getAvgAmbient(), tempAmbAvg.size(),
+        single->getAvgVessel(), tempVesAvg.size()
+    );
 }
 
 void Bubbles::handleInterrupts(void) { // Bubble Interrupt handler
@@ -91,10 +99,6 @@ float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)
     single->pulse = 0; // Zero the pulse counter
     single->ulLastReport = millis(); // Store the last report timer
     return ppm; // Return pulses per minute
-}
-
-float Bubbles::getBpm() {
-    return single->lastPpm;
 }
 
 float Bubbles::getAmbientTemp() {
@@ -123,7 +127,7 @@ float Bubbles::getVesselTemp() {
         DallasTemperature sensorVessel(&vessel);
         sensorVessel.begin();
         sensorVessel.requestTemperatures();
-
+        
         JsonConfig *config = JsonConfig::getInstance();
         if (config->tempinf == true)
             fVesTemp = sensorVessel.getTempFByIndex(0) + config->calVessel;
@@ -135,21 +139,35 @@ float Bubbles::getVesselTemp() {
 
 float Bubbles::getAvgAmbient() {
     // Retrieve TEMPAVG readings to calculate average
-    // float avg = 0.0;
-    // uint8_t size = single->tempAmbAvg->size();
-    // for (int i = 0; i < single->tempAmbAvg->size(); i++) {
-    //     float thisTemp = single->tempAmbAvg[i];
-    //     avg += single->tempAmbAvg[i] / size;
-    // }
-    // return(avg);
+    float avg = 0.0;
+    uint8_t size = tempAmbAvg.size();
+    for (int i = 0; i < tempAmbAvg.size(); i++) {
+        float thisTemp = tempAmbAvg[i];
+        avg += tempAmbAvg[i] / size;
+    }
+    return(avg);
 }
 
 float Bubbles::getAvgVessel() {
     // Return TEMPAVG readings to calculate average
+    float avg = 0.0;
+    uint8_t size = tempVesAvg.size();
+    for (int i = 0; i < tempVesAvg.size(); i++) {
+        float thisTemp = tempVesAvg[i];
+        avg += tempVesAvg[i] / size;
+    }
+    return(avg);
 }
 
 float Bubbles::getAvgBpm() {
     // Return BUBAVG readings to calculate average
+    float avg = 0.0;
+    uint8_t size = bubAvg.size();
+    for (int i = 0; i < bubAvg.size(); i++) {
+        float thisTemp = bubAvg[i];
+        avg += bubAvg[i] / size;
+    }
+    return(avg);
 }
 
 void Bubbles::createBubbleJson() {
@@ -170,9 +188,9 @@ void Bubbles::createBubbleJson() {
 
     // Get bubbles data (updated by minute, no averages)
     JsonObject data = doc.createNestedObject(F("data"));
-    data[F("bpm")] = single->lastPpm;
-    data[F("ambtemp")] = single->getAmbientTemp();
-    data[F("vestemp")] = single->getVesselTemp();
+    data[F("bpm")] = single->lastBpm;
+    data[F("ambtemp")] = single->lastAmb;
+    data[F("vestemp")] = single->lastVes;
 
     char output[capacity];
     serializeJson(doc, output, sizeof(output));
