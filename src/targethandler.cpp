@@ -22,33 +22,11 @@ void httpPost() {
     JsonConfig *config = JsonConfig::getInstance();
     if (strlen(config->targeturl) > 3) {
         HTTPClient http; // Declare object of class HTTPClient
-        Bubbles *bubble = Bubbles::getInstance();
-
         Log.notice(F("Posting to: %s" CR), config->targeturl);
-
-        // Form BF JSON
-        // const size_t capacity = JSON_OBJECT_SIZE(7);
-        const size_t capacity = TJSON;
-        StaticJsonDocument<capacity> doc;
-
-        doc[F("api_key")] = F(API_KEY);
-        doc[F("device_source")] = F(SOURCE);
-        doc[F("name")] = config->bubname;
-        doc[F("bpm")] = String(bubble->getAvgBpm(), 1);
-        doc[F("ambient")] = bubble->getAvgAmbient();
-        doc[F("temp")] = bubble->getAvgVessel();
-        if (config->tempinf == true)
-            doc[F("temp_unit")] = F("F");
-        else
-            doc[F("temp_unit")] = F("C");
-
-        char output[capacity];
-        serializeJson(doc, output);
-
         http.begin(config->targeturl); // Specify request destination
         http.addHeader(F("Content-Type"), F("application/json")); // Specify content-type header
         http.addHeader(F("X-API-KEY"), F(API_KEY));
-        int httpCode = http.POST(output); // Post json
+        int httpCode = http.POST(getPostJson()); // Post json
 
     #ifndef DISABLE_LOGGING
         String payload = http.getString().c_str(); // Get the response payload
@@ -56,16 +34,16 @@ void httpPost() {
         int n = payload.length();
         char p[n + 1]; 
         strcpy(p, payload.c_str()); 
-        Log.notice(F("BF Post return code: %i" CR), httpCode);
-        Log.notice(F("BF Post response payload: %s" CR), p);
+        Log.notice(F("Target post return code: %i" CR), httpCode);
+        Log.notice(F("Target post response payload: %s" CR), p);
     #endif //DISABLE_LOGGING
 
         http.end(); // Close connection
         if(httpCode == 200) { // 200 = ok
-            Log.notice(F("Post ok." CR));
+            Log.notice(F("Target post ok." CR));
             return;
         } else {
-            Log.warning(F("Post failed." CR));
+            Log.warning(F("Target post failed." CR));
             return;
         }
     } else {
@@ -79,36 +57,16 @@ void bfPost() {
     JsonConfig *config = JsonConfig::getInstance();
     if (strlen(config->bfkey) > 3) {
         HTTPClient http; // Declare object of class HTTPClient
-        Bubbles *bubble = Bubbles::getInstance();
 
         Log.notice(F("Posting to: %s" CR), BFURL);
         char bfUrl[94];
         strcpy (bfUrl, BFURL);
         strcat (bfUrl, config->bfkey);
 
-        // Form BF JSON
-        // const size_t capacity = JSON_OBJECT_SIZE(7);
-        const size_t capacity = BFJSON;
-        StaticJsonDocument<capacity> doc;
-
-        doc[F("api_key")] = F(API_KEY);
-        doc[F("device_source")] = F(SOURCE);
-        doc[F("name")] = config->bubname;
-        doc[F("psi")] = bubble->getAvgBpm();
-        doc[F("ambient")] = bubble->getAvgAmbient();
-        doc[F("temp")] = bubble->getAvgVessel();
-        if (config->tempinf == true)
-            doc[F("temp_unit")] = F("F");
-        else
-            doc[F("temp_unit")] = F("C");
-
-        char output[capacity];
-        serializeJson(doc, output);
-
         http.begin(bfUrl); // Specify request destination
         http.addHeader(F("Content-Type"), F("application/json")); // Specify content-type header
         http.addHeader(F("X-API-KEY"), F(API_KEY));
-        int httpCode = http.POST(output); // Post json
+        int httpCode = http.POST(getPostJson()); // Post json
 
     #ifndef DISABLE_LOGGING
         String payload = http.getString().c_str(); // Get the response payload
@@ -116,8 +74,8 @@ void bfPost() {
         int n = payload.length();
         char p[n + 1]; 
         strcpy(p, payload.c_str()); 
-        Log.notice(F("BF Post return code: %i" CR), httpCode);
-        Log.notice(F("BF Post response payload: %s" CR), p);
+        Log.notice(F("BF post return code: %i" CR), httpCode);
+        Log.notice(F("BF post response payload: %s" CR), p);
     #endif //DISABLE_LOGGING
 
         http.end(); // Close connection
@@ -132,4 +90,30 @@ void bfPost() {
         Log.verbose(F("No BF key in configuration, skipping." CR));
         return;
     }
+}
+
+String getPostJson() { // Form Target JSON
+    JsonConfig *config = JsonConfig::getInstance();
+    Bubbles *bubble = Bubbles::getInstance();
+    // const size_t capacity = JSON_OBJECT_SIZE(7);
+    const size_t capacity = TJSON;
+    StaticJsonDocument<capacity> doc;
+
+    doc[F("api_key")] = F(API_KEY);
+    doc[F("device_source")] = F(SOURCE);
+    doc[F("name")] = config->bubname;
+    doc[F("bpm")] = bubble->getAvgBpm();
+    doc[F("ambient")] = bubble->getAvgAmbient();
+    doc[F("temp")] = bubble->getAvgVessel();
+    if (config->tempinf == true)
+        doc[F("temp_unit")] = F("F");
+    else
+        doc[F("temp_unit")] = F("C");
+
+#ifndef DISABLE_LOGGING
+    char output[capacity];
+    serializeJson(doc, output);
+#endif
+    Log.verbose(F("Target JSON: %s" CR), output);
+    return doc.as<String>();
 }
