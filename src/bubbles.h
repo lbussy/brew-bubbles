@@ -24,6 +24,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "DallasTemperature.h"
 #include "OneWire.h"
 #include <CircularBuffer.h>
+#include <Arduino.h>
 
 class Bubbles {
     private:
@@ -32,19 +33,19 @@ class Bubbles {
         static Bubbles *single;
         // Other Declarations
         void start();
+        CircularBuffer<float, TEMPAVG> tempAmbAvg;
+        CircularBuffer<float, TEMPAVG> tempVesAvg;
+        CircularBuffer<float, BUBAVG> bubAvg;
         volatile unsigned long ulStart;     // Start time
         volatile unsigned int pulse;        // Store pulse count
         volatile unsigned long ulLastReport;// Store time of last report (millis())
         volatile unsigned long ulMicroLast; // Last pulse time for resolution (micros())
-        float lastPpm;                      // Holds most recent count
+        float lastBpm;                      // Holds most recent count
+        float lastAmb;
+        float lastVes;
         char* lastTime;
-        JsonConfig *config;
-        CircularBuffer<float, TEMPAVG> *tempAmbAvg;
-        CircularBuffer<float, TEMPAVG> *tempVesAvg;
-        CircularBuffer<float, BUBAVG> *bubAvg;
         float getRawBpm();
         void createBubbleJson();
-        float getBpm();
         float getAmbientTemp();
         float getVesselTemp();
 

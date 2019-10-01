@@ -2,9 +2,8 @@
 
 ## Open
 
-- Fix /bubble/
+- Fix /bubble/ and/or home page
 - Figure out why /ota/ is not working on some setups
-- Look to do a 15-minute loop for BF averages https://github.com/rlogiacco/CircularBuffer
 - Add static IP change to AP Portal
 - Fix log levels
 - Search and evaluate "DEBUG"
@@ -132,3 +131,5 @@
 - ~~Add UI updates to /ota2/~~
 - ~~Fix deprecation error in http~~
 - ~~Add hostname change to AP Portal~~
+- ~~Look to do a 15-minute loop for BF BPM averages~~
+- ~~Look to do a 5-minute loop for BF temp averages~~

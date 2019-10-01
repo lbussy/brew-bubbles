@@ -271,7 +271,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Number of Ppm readings in a sliding window for average
+// Number of BPM readings in a sliding window for average
 //
 #ifndef BUBAVG
 #define BUBAVG 15
@@ -284,7 +284,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 // Number of temp readings in a sliding window for averaging
 //
 #ifndef TEMPAVG
-#define TEMPAVG 60
+#define TEMPAVG 5
 #endif
 //
 //////////////////////////////////////////////////////////////////////////

@@ -24,6 +24,10 @@ void setup() {
     serial(); // TODO:  Includes a 4000 ms delay
     pinMode(LED, OUTPUT);
 
+    // DEBUG: Get WiFi setup remotely if it tanks
+    // WiFi.begin("SSID", "PASSWORD"); // DEBUG: Get WiFi setup remotely if it tanks
+    // DEBUG: Get WiFi setup remotely if it tanks
+
     _delay(200); // Let pins settle, else detect is inconsistent
     pinMode(RESETWIFI, INPUT_PULLUP);
     if (digitalRead(RESETWIFI) == LOW) {
