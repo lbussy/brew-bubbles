@@ -17,17 +17,13 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "webserver.h"
 
-bool WebServer::instanceFlag = false;
 WebServer* WebServer::single = NULL;
 
 WebServer* WebServer::getInstance() {
-    if (!instanceFlag) {
+    if (!single) {
         single = new WebServer();
-        instanceFlag = true;
-        return single;
-    } else {
-        return single;
     }
+    return single;
 }
 
 void WebServer::initialize (int port) {

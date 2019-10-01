@@ -17,19 +17,14 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "jsonconfig.h"
 
-bool JsonConfig::instanceFlag = false;
 JsonConfig* JsonConfig::single = NULL;
-JsonConfig* JsonConfig::getInstance()
-{
-    if(! instanceFlag) {
+
+JsonConfig* JsonConfig::getInstance() {
+    if (!single) {
         single = new JsonConfig();
-        instanceFlag = true;
         single->Parse(false); // True to wipe config.json for testing
-        return single;
     }
-    else {
-        return single;
-    }
+    return single;
 }
 
 bool JsonConfig::Parse(bool reset = false) {
@@ -70,7 +65,7 @@ bool JsonConfig::Parse(bool reset = false) {
         }
     }
 
-    if(loaded == false){ // Load defaults
+    if(loaded == false) { // Load defaults
 
         Log.notice(F("Using default configuration." CR));
 

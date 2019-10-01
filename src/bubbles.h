@@ -27,12 +27,11 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 class Bubbles {
     private:
-        Bubbles() {};
         // Singleton Declarations
-        static bool instanceFlag;
+        Bubbles() {};
         static Bubbles *single;
-        void start();
         // Other Declarations
+        void start();
         volatile unsigned long ulStart;     // Start time
         volatile unsigned int pulse;        // Store pulse count
         volatile unsigned long ulLastReport;// Store time of last report (millis())
@@ -52,7 +51,7 @@ class Bubbles {
     public:
         // Singleton Declarations
         static Bubbles* getInstance();
-        ~Bubbles();
+        ~Bubbles() {single = NULL;}
         // Other Declarations
         void handleInterrupts(void);
         void update();          // Call every 60 seconds
