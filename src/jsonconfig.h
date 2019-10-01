@@ -36,7 +36,8 @@ class JsonConfig {
         ~JsonConfig() {single = NULL;}
         static JsonConfig* getInstance();
         // Other Declarations
-        char Config[CONFIGJSON];    // Hold the Config JSON
+        bool parse();
+        char config[CONFIGJSON];    // Hold the Config JSON
         char ssid[33];              // AP SSID
         char appwd[65];             // AP Pwd
         char hostname[33];          // Hostname
@@ -55,9 +56,8 @@ class JsonConfig {
         unsigned long bffreq;       // Brewer's Friend frequency
 
         // Methods
-        bool Parse(bool reset);
-        bool Save();
-        void CreateSettingsJson();
+        bool save();
+        void createSettingsJson();
 };
 
 #endif // _JSONCONFIG_H

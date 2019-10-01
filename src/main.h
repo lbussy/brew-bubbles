@@ -40,9 +40,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #define DRD_TIMEOUT 2.0
 #define DRD_ADDRESS 0x00
 
-// DEBUG mDNS issues
-#define DEBUG_ESP_MDNS_ERR
-
 void bubUpdate();
 void heapPrint();
 

@@ -123,7 +123,7 @@ void WebServer::aliases() {
                     Log.warning(F("Settings update error." CR));
                 } else {
                     strlcpy(config->hostname, single->server->arg("mdnsID").c_str(), sizeof(config->hostname));
-                    config->Save();
+                    config->save();
 
                     // Reset hostname
                     wifi_station_set_hostname(config->hostname);
@@ -147,7 +147,7 @@ void WebServer::aliases() {
                     Log.warning(F("Settings update error." CR));
                 } else {
                     strlcpy(config->bubname, single->server->arg("bubname").c_str(), sizeof(config->bubname));
-                    config->Save();
+                    config->save();
                 }
                 strcat(redirect, "#controller"); // Redirect to Controller box
                 Log.verbose(F("POSTed bubname, redirecting to %s." CR), redirect);
@@ -159,7 +159,7 @@ void WebServer::aliases() {
                     config->tempinf = false;
                 } else {
                     config->tempinf = true;
-                    config->Save();
+                    config->save();
                 }
                 strcat(redirect, "#temp"); // Redirect to Temp Control
                 Log.verbose(F("POSTed tempInF, redirecting to %s." CR), redirect);
@@ -169,7 +169,7 @@ void WebServer::aliases() {
                     Log.warning(F("Settings update error." CR));
                 } else {
                     config->calAmbient = single->server->arg("calRoom").toDouble();
-                    config->Save();
+                    config->save();
                 }
                 strcat(redirect, "#temp"); // Redirect to Temp Control
                 Log.verbose(F("POSTed calRoom, redirecting to %s." CR), redirect);
@@ -179,7 +179,7 @@ void WebServer::aliases() {
                     Log.warning(F("Settings update error." CR));
                 } else {
                     config->calVessel = single->server->arg("calVessel").toDouble();
-                    config->Save();
+                    config->save();
                 }
                 strcat(redirect, "#temp"); // Redirect to Temp Control
                 Log.verbose(F("POSTed calVessel, redirecting to %s." CR), redirect);
@@ -189,7 +189,7 @@ void WebServer::aliases() {
                     Log.warning(F("Settings update error." CR));
                 } else {
                     strlcpy(config->targeturl, single->server->arg("target").c_str(), sizeof(config->targeturl));
-                    config->Save();
+                    config->save();
                 }
                 strcat(redirect, "#target"); // Redirect to Target Control
                 Log.verbose(F("POSTed target, redirecting to %s." CR), redirect);
@@ -200,7 +200,7 @@ void WebServer::aliases() {
                 } else {
                     config->targetfreq = single->server->arg("tfreq").toInt();
                     config->updateTargetFreq = true;
-                    config->Save();
+                    config->save();
                 }
                 strcat(redirect, "#target"); // Redirect to Target Control
                 Log.verbose(F("POSTed tfreq, redirecting to %s." CR), redirect);
@@ -210,7 +210,7 @@ void WebServer::aliases() {
                     Log.warning(F("Settings update error." CR));
                 } else {
                     strlcpy(config->bfkey, single->server->arg("bfkey").c_str(), sizeof(config->bfkey));
-                    config->Save();
+                    config->save();
                 }
                 strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
                 Log.verbose(F("POSTed bfkey, redirecting to %s." CR), redirect);
@@ -221,7 +221,7 @@ void WebServer::aliases() {
                 } else {
                     config->bffreq = single->server->arg("bfreq").toInt();
                     config->updateBFFreq = true;
-                    config->Save();
+                    config->save();
                 }
                 strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
                 Log.verbose(F("POSTed bfreq, redirecting to %s." CR), redirect);
@@ -243,7 +243,7 @@ void WebServer::aliases() {
             config->dospiffs1 = false;
             config->dospiffs2 = false;
             config->didupdate = false;
-            config->Save();
+            config->save();
             single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
             single->server->send(200, F("text/html"), F("Ok."));
         });
@@ -266,9 +266,9 @@ void WebServer::aliases() {
         []() {
             // Used to build the "Change Settings" page
             JsonConfig *config = JsonConfig::getInstance();
-            config->CreateSettingsJson();
+            config->createSettingsJson();
             single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            single->server->send(200, F("application/json"), config->Config);
+            single->server->send(200, F("application/json"), config->config);
         });
 
     single->server->on(
@@ -384,7 +384,7 @@ void WebServer::aliases() {
                 if (updated) {
 
                     // Save configuration to file
-                    config->Save();
+                    config->save();
 
                     // Reset hostname
                     if (hostNameChanged) {

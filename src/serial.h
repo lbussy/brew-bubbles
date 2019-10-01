@@ -19,7 +19,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #define SERIAL_H
 
 #include "config.h"
-#include "tools.h" // DEBUG TODO Only needed for _delay()
+#include "tools.h"
 #include <ArduinoLog.h>
 
 void serial();

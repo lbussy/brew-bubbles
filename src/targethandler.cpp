@@ -113,7 +113,7 @@ String getPostJson() { // Form Target JSON
 #ifndef DISABLE_LOGGING
     char output[capacity];
     serializeJson(doc, output);
-#endif
     Log.verbose(F("Target JSON: %s" CR), output);
+#endif
     return doc.as<String>();
 }

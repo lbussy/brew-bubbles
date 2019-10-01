@@ -34,7 +34,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 //
 #ifndef LOG_LEVEL
 #define LOG_LEVEL LOG_LEVEL_VERBOSE
-// #define DISABLE_LOGGING
+// #define DISABLE_LOGGING // Uncomment to disable all logging
 #endif
 //
 //////////////////////////////////////////////////////////////////////////

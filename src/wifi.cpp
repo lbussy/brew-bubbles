@@ -36,12 +36,11 @@ void presentPortal(bool ignore = false) { // Present AP and captive portal to al
     wifiManager.setSaveParamsCallback(saveParamsCallback); // Called after parameters are saved via params menu or wifi config
     wifiManager.setWebServerCallback(webServerCallback); // Called after webserver is setup
 
-    // DEBUG items
-#ifdef LOG_LEVEL
+#ifndef DISABLE_LOGGING
     wifiManager.setDebugOutput(true); // Verbose debug is enabled by default
+#else
+    wifiManager.setDebugOutput(false);
 #endif
-    //Log.verbose(F("DEBUG: Clearing wifi settings." CR));   // DEBUG
-    //wifiManager.resetSettings(); // Reset settings
 
     // Set menu items
     std::vector<const char *> menu = {"wifi","wifinoscan","sep","info","param","close","sep","erase","restart","exit"};
@@ -105,7 +104,7 @@ void presentPortal(bool ignore = false) { // Present AP and captive portal to al
         //wifiManager.setSTAStaticIPConfig(IPAddress ip, IPAddress gw, IPAddress sn);
         //sets config for a static IP with DNS
         //wifiManager.setSTAStaticIPConfig(IPAddress ip, IPAddress gw, IPAddress sn, IPAddress dns);
-        config->Save();
+        config->save();
     }
 
     wifi_station_set_hostname(config->hostname);
