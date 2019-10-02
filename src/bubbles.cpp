@@ -44,6 +44,8 @@ void Bubbles::start() {
     unsigned long ulNow = millis();
     single->ulStart = ulNow;
     single->lastBpm = 0.0;
+    single->lastAmb = 0.0;
+    single->lastVes = 0.0;
     
     // Set starting time
     NtpHandler *ntpTime = NtpHandler::getInstance();
