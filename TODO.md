@@ -3,7 +3,6 @@
 ## Open
 
 - Figure out why /ota/ is not working on some setups
-- Make sure temps are read correctly at startup
 - Add static IP change to AP Portal
 - Address key for BF (email 9/16/19: "Next week's release")
 - Add SSL support for upgrade? ([see the issue](https://github.com/esp8266/Arduino/issues/6523))
@@ -137,3 +136,4 @@
 - ~~Look to do a 5-minute loop for BF temp averages~~
 - ~~Fix /bubble/ and/or home page~~
 - ~~Fix log levels~~
+- ~~Make sure temps are read correctly at startup~~
