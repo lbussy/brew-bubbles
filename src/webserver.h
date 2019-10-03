@@ -23,7 +23,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "bubbles.h"
 #include "tools.h"
 #include "jsonconfig.h"
-#include "serial.h"
+#include "bubserial.h"
 #include "version.h"
 #include <FS.h>
 #include <ESP8266WebServer.h>
