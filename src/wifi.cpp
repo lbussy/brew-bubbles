@@ -20,13 +20,17 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 bool shouldSaveConfig = false;
 Ticker blinker;
 
-void presentPortal(bool ignore = false) { // Present AP and captive portal to allow new settings
+// Strings table
+//const char *const stringTable[] PROGMEM = {_html1, _html2};
+
+void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current config
+    WiFiManager wifiManager;
+    JsonConfig *config = JsonConfig::getInstance();
 
     WiFi.mode(WIFI_STA); // Explicitly set mode, esp defaults to STA+AP
     WiFi.setSleepMode(WIFI_NONE_SLEEP); // Make sure sleep is disabled
-
-    JsonConfig *config = JsonConfig::getInstance();
-    WiFiManager wifiManager;
+    wifiManager.setCountry(WIFI_COUNTRY); // Setting wifi country seems to improve OSX soft ap connectivity, may help others as well
+    wifiManager.setWiFiAPChannel(WIFI_CHAN); // Set WiFi channel
 
     // WiFiManager Callbacks
     wifiManager.setAPCallback(apCallback); // Called after AP has started
@@ -42,24 +46,47 @@ void presentPortal(bool ignore = false) { // Present AP and captive portal to al
     wifiManager.setDebugOutput(false);
 #endif
 
-    // Set menu items
-    std::vector<const char *> menu = {"wifi","wifinoscan","sep","info","param","close","sep","erase","restart","exit"};
-    wifiManager.setMenu(menu);
+    std::vector<const char *> _wfmPortalMenu = {
+        "wifi",
+        "wifinoscan",
+        "sep",
+        "info",
+        "param",
+        "close",
+        "sep",
+        "erase",
+        "restart",
+        "exit"
+    };
 
-    wifiManager.setClass("invert"); // Set dark theme
+    wifiManager.setMenu(_wfmPortalMenu);   // Set menu items
+    wifiManager.setClass(F("invert"));     // Set dark theme
 
     // Set up additional portal items
-    WiFiManagerParameter custom_html("<p>Enter custom hostname or static IP address.</p>");
-    WiFiManagerParameter custom_hostname("hostname", "Host Name", config->hostname, 32);
-    WiFiManagerParameter custom_ipaddress("ipaddress", "Static IP", "", 15, "pattern='\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}'");
+    //
+    // const char *ipVal = _wfmIpPattern;
+    // const char *hostVal = _wfmHostPattern;
+    // Hostname
+    // WiFiManagerParameter wfmCustHtml1(_wfmHtml1);
+    // WiFiManagerParameter wfmCustHost("hostname", "Host Name", config->hostname, 24, hostVal, 1);
+    // Static IP
+    // WiFiManagerParameter wfmCustHtml2(_wfmHtml2);
+    // WiFiManagerParameter wfmCustIP("ipaddress", "Static IP", "", 15, ipVal, 1);
+    // WiFiManagerParameter wfmCustGW("gateway", "Gateway", "", 15, ipVal, 1);
+    // WiFiManagerParameter wfmCustSN("subnet", "Subnet Mask", "255.255.255.0", 15, ipVal, 1);
+    // WiFiManagerParameter wfmCustDNS("dns", "DNS Server", "1.1.1.1", 15, ipVal, 1);
 
     // Add portal items
-    wifiManager.addParameter(&custom_html);
-    wifiManager.addParameter(&custom_hostname);
-    wifiManager.addParameter(&custom_ipaddress);
-
-    wifiManager.setCountry("US"); // Setting wifi country seems to improve OSX soft ap connectivity, may help others as well
-    wifiManager.setWiFiAPChannel(3); // Set WiFi channel
+    //
+    // Hostname
+    // wifiManager.addParameter(&wfmCustHtml1);
+    // wifiManager.addParameter(&wfmCustHost);
+    // Static IP
+    // wifiManager.addParameter(&wfmCustHtml2);
+    // wifiManager.addParameter(&wfmCustIP);
+    // wifiManager.addParameter(&wfmCustGW);
+    // wifiManager.addParameter(&wfmCustSN);
+    // wifiManager.addParameter(&wfmCustDNS);
 
     if (ignore) { // Voluntary portal
         blinker.attach_ms(APBLINK, wifiBlinker);
@@ -97,14 +124,24 @@ void presentPortal(bool ignore = false) { // Present AP and captive portal to al
 
     if (shouldSaveConfig) { // Save configuration
         Log.notice(F("Saving configuration." CR));
-        strcpy(config->hostname, custom_hostname.getValue());
-        // TODO:  Add IP as parameter in JSON (do we need GW and DNS?)
-        //strcpy(config->ipaddress, custom_ipaddress.getValue());
-        //sets config for a static IP
-        //wifiManager.setSTAStaticIPConfig(IPAddress ip, IPAddress gw, IPAddress sn);
-        //sets config for a static IP with DNS
-        //wifiManager.setSTAStaticIPConfig(IPAddress ip, IPAddress gw, IPAddress sn, IPAddress dns);
-        config->save();
+
+        // Check if we updated hostname
+        // if (!isNullField(wfmCustHost.getValue())) {
+        //     strcpy(config->hostname, wfmCustHost.getValue());
+        // }
+
+        // Check if we provided (complete) IP information
+        // if (
+        //     !isNullField(wfmCustIP.getValue()) &&
+        //     !isNullField(wfmCustGW.getValue()) &&
+        //     !isNullField(wfmCustSN.getValue()) &&
+        //     !isNullField(wfmCustDNS.getValue())
+        // ) {
+            // TODO: Add IP information to config
+            // TODO: Add IP information to WiFiConfig startup
+        // }
+
+        //config->save();
     }
 
     wifi_station_set_hostname(config->hostname);
@@ -170,4 +207,16 @@ void saveParamsCallback() { // Set flag to save config
 
 void webServerCallback() {
     Log.verbose(F("[CALLBACK]: setWebServerCallback fired." CR));
+}
+
+// Misc helpers
+
+bool validIP(const char charIP) {
+    IPAddress addr;
+    // return addr.fromString(charIP);
+    return true;
+}
+
+bool isNullField(const char *field) {
+    return ((field == NULL) || (field[0] == '\0'));
 }
