@@ -15,29 +15,14 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
-#include "serial.h"
+#ifndef _BUB_SERIAL_H
+#define _BUB_SERIAL_H
 
-#ifndef DISABLE_LOGGING
+#include "config.h"
+#include "tools.h"
+#include <ArduinoLog.h>
 
-void serial() { // Start serial with auto-detected rate (default to BAUD)
-    _delay(3000); // Delay to allow monitor to start
-    Serial.begin(BAUD);
-    Serial.setDebugOutput(true);
-    Serial.flush();
-    Log.begin(LOG_LEVEL, &Serial, true);
-    Log.setPrefix(printTimestamp);
-    Log.notice(F("Serial logging started at %l." CR), BAUD);
-}
+void serial();
+void printTimestamp(Print* _logOutput);
 
-void printTimestamp(Print* _logOutput) {
-  char c[12];
-  //int m = 
-  sprintf(c, "%10lu ", millis());
-  _logOutput->print(c);
-}
-
-#else // DISABLE_LOGGING
-
-void serial(){}
-
-#endif // Debug
+#endif //_BUB_SERIAL_H
