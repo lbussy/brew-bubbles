@@ -341,7 +341,7 @@ void WebServer::aliases() {
                     strlcpy(config->targeturl, doc["targetconfig"]["targeturl"], sizeof(config->targeturl));
                 }
 
-                unsigned long targetfreq = doc["targetconfig"]["targeturl"];
+                unsigned long targetfreq = doc["targetconfig"]["targetfreq"];
                 if ((targetfreq) && (!targetfreq == config->targetfreq)) {
                     updated = true;
                     config->targetfreq = targetfreq;
