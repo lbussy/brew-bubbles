@@ -28,13 +28,13 @@ void setup() {
     pinMode(RESETWIFI, INPUT_PULLUP);
     if (digitalRead(RESETWIFI) == LOW) {
         Log.notice(F("%s low, presenting portal." CR), RESETWIFI);
-        presentPortal(true);
+        doWiFi(true);
     } else if (rst == true) {
         Log.notice(F("DRD: Double reset boot, presenting portal." CR));
-        presentPortal(true);
+        doWiFi(true);
     } else {
         Log.verbose(F("DRD: Normal boot." CR));
-        presentPortal(false);
+        doWiFi(false);
     }
 
     JsonConfig *config = JsonConfig::getInstance();
