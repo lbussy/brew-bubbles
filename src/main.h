@@ -18,7 +18,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef _MAIN_H
 #define _MAIN_H
 
-#include "serial.h"
+#include "bubserial.h"
 #include "config.h"
 #include "jsonconfig.h"
 #include "ntphandler.h"
