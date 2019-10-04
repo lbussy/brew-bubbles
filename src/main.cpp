@@ -76,7 +76,7 @@ void loop() {
         if (config->updateTargetFreq) {
             Log.notice(F("Resetting Target frequency timer to %l minutes." CR), config->targetfreq);
             postTimer.detach();
-            postTimer.attach(config->targetfreq, httpPost);
+            postTimer.attach(config->targetfreq * 60, httpPost);
             config->updateTargetFreq = false;
         }
         if (config->updateBFFreq) {
