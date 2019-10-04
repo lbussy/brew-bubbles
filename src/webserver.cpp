@@ -195,7 +195,7 @@ void WebServer::aliases() {
                 Log.verbose(F("POSTed target, redirecting to %s." CR), redirect);
 
             } else if (single->server->hasArg(F("tfreq"))) { // Change Vessel temp calibration
-                if ((single->server->arg("tfreq").toInt() < 15) || (single->server->arg("tfreq").toInt() > 3600)) {
+                if ((single->server->arg("tfreq").toInt() < 1) || (single->server->arg("tfreq").toInt() > 60)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
                     config->targetfreq = single->server->arg("tfreq").toInt();
