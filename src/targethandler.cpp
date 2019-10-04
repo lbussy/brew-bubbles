@@ -25,17 +25,14 @@ void httpPost() {
         Log.notice(F("Posting to: %s" CR), config->targeturl);
         http.begin(config->targeturl); // Specify request destination
         http.addHeader(F("Content-Type"), F("application/json")); // Specify content-type header
+        http.addHeader(F("Content-Length"), F("application/json")); // Specify content-type header
         http.addHeader(F("X-API-KEY"), F(API_KEY));
         int httpCode = http.POST(getPostJson()); // Post json
+        const char *payload = http.getString().c_str(); // Get the response payload
 
     #ifndef DISABLE_LOGGING
-        String payload = http.getString().c_str(); // Get the response payload
-        // Convert String to char array
-        int n = payload.length();
-        char p[n + 1]; 
-        strcpy(p, payload.c_str()); 
         Log.notice(F("Target post return code: %i" CR), httpCode);
-        Log.notice(F("Target post response payload: %s" CR), p);
+        Log.notice(F("Target post response payload: %s" CR), payload);
     #endif //DISABLE_LOGGING
 
         http.end(); // Close connection
@@ -72,8 +69,8 @@ void bfPost() {
         String payload = http.getString().c_str(); // Get the response payload
         // Convert String to char array
         int n = payload.length();
-        char p[n + 1]; 
-        strcpy(p, payload.c_str()); 
+        char p[n + 1];
+        strcpy(p, payload.c_str());
         Log.notice(F("BF post return code: %i" CR), httpCode);
         Log.notice(F("BF post response payload: %s" CR), p);
     #endif //DISABLE_LOGGING
