@@ -22,23 +22,21 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 // const dataType variableName[] PROGMEM = {data0, data1, data3…?};
 
-namespace {
-    const char _wfmHtml1[] PROGMEM = "<p>Enter a custom hostname if you would like something other than \"brewbubbles.\" Do not enter the \".local\" portion, this will be added automatically.</p>";
-    const char _wfmHtml2[] PROGMEM = "<p>If you would like to provide static IP information, enter it here.  All fields must be correctly filled in or else configuration will not be applied.</p>";
-    const char _wfmIpPattern[] PROGMEM = "pattern='((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$'";
-    const char _wfmHostPattern[] PROGMEM = "pattern='^[a-zA-Z][a-zA-Z\d-]{1,22}[a-zA-Z\d]$'";
-    std::vector<const char *> _wfmPortalMenu PROGMEM = {
-        "wifi",
-        "wifinoscan",
-        "sep",
-        "info",
-        "param",
-        "close",
-        "sep",
-        "erase",
-        "restart",
-        "exit"
-    };
-}
+static const char _wfmHtml1[] PROGMEM = "<p>Enter a custom hostname if you would like something other than \"brewbubbles.\" Do not enter the \".local\" portion, this will be added automatically.</p>";
+static const char _wfmHtml2[] PROGMEM = "<p>If you would like to provide static IP information, enter it here.  All fields must be correctly filled in or else configuration will not be applied.</p>";
+static const char _wfmIpPattern[] PROGMEM = "pattern='((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$'";
+static const char _wfmHostPattern[] PROGMEM = "pattern='^[a-zA-Z][a-zA-Z\d-]{1,22}[a-zA-Z\d]$'";
+static std::vector<const char *> _wfmPortalMenu PROGMEM = {
+    "wifi",
+    "wifinoscan",
+    "sep",
+    "info",
+    "param",
+    "close",
+    "sep",
+    "erase",
+    "restart",
+    "exit"
+};
 
 #endif // _BUB_STRINGS_H
