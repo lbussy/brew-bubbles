@@ -33,8 +33,7 @@ bool ipl() { // Determine if this is the first start after loading image
     return _ipl;
 }
 
-void _delay(unsigned long ulDelay)
-{
+void _delay(unsigned long ulDelay) {
     // Safe blocking delay() replacement with yield()
     unsigned long ulNow = millis();
     unsigned long ulThen = ulNow + ulDelay;
