@@ -2,9 +2,9 @@
 "C1";"0.1μF";"C-EU025-024X044";"C025-024X044";"CAPACITOR, European symbol";"56";"";"";"C";"";
 "C2";"0.1μF";"C-EU025-024X044";"C025-024X044";"CAPACITOR, European symbol";"56";"";"";"C";"";
 "C3";"0.1μF";"C-EU025-024X044";"C025-024X044";"CAPACITOR, European symbol";"56";"";"";"C";"";
-"R1";"150Ω";"150OHM-HORIZ-1/4W-5%";"AXIAL-0.3";"150Ω resistor";"";"RES-8371";"";"";"150";
+"R1";"2.2kΩ";"2K2OHM-HORIZ-1/4W-5%";"AXIAL-0.3";"2K2Ω resistor";"";"RES-8371";"";"";"2200";
 "R2";"2.2kΩ";"2K2OHM-HORIZ-1/4W-5%";"AXIAL-0.3";"2K2Ω resistor";"";"RES-8371";"";"";"2200";
-"R3";"2.2kΩ";"2K2OHM-HORIZ-1/4W-5%";"AXIAL-0.3";"2K2Ω resistor";"";"RES-8371";"";"";"2200";
+"R3";"150Ω";"150OHM-HORIZ-1/4W-5%";"AXIAL-0.3";"150Ω resistor";"";"RES-8371";"";"";"150";
 "ROOM";"3PIN90";"PINHD-1X3/90";"1X03/90";"PIN HEADER";"17";"";"";"";"";
 "U1";"GP1A57HR";"GP1A57HR";"GP1A57HR";"Sharp GP1A57HR Transmissive Photointerrupter";"";"";"SEN-09299";"";"";
 "U2";"WEMOS-D1-MINI";"WEMOS-D1-MINI";"WEMOS-D1-MINI";"WEMOS D1 mini";"";"";"";"";"";
