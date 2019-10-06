@@ -29,6 +29,7 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
 
     WiFi.mode(WIFI_STA); // Explicitly set mode, esp defaults to STA+AP
     WiFi.setSleepMode(WIFI_NONE_SLEEP); // Make sure sleep is disabled
+
     wifiManager.setCountry(WIFI_COUNTRY); // Setting wifi country seems to improve OSX soft ap connectivity, may help others as well
     wifiManager.setWiFiAPChannel(WIFI_CHAN); // Set WiFi channel
 
@@ -51,9 +52,9 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
         "wifinoscan",
         "sep",
         "info",
-        "param",
-        "close",
-        "sep",
+        //"param",
+        //"close",
+        //"sep",
         "erase",
         "restart",
         "exit"
@@ -193,7 +194,7 @@ void configResetCallback() {
 }
 
 void preSaveConfigCallback() {
-    Log.verbose(F("[CALLBACK]: setPreSaveConfigCallback fired." CR));
+    Log.verbose(F("[CALLBACK]:  " CR));
 }
 
 void saveConfigCallback() {
@@ -213,7 +214,7 @@ void webServerCallback() {
 
 bool validIP(const char charIP) {
     IPAddress addr;
-    // return addr.fromString(charIP);
+    // return addr.fromString(charIP); TODO: Fix this
     return true;
 }
 

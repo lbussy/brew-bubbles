@@ -74,7 +74,7 @@ void loop() {
     while (true) {
         // If timers needs to be updated, update timers
         if (config->updateTargetFreq) {
-            Log.notice(F("Resetting Target frequency timer to %l minutes." CR), config->targetfreq);
+            Log.notice(F("Resetting target frequency timer to %l minutes." CR), config->targetfreq);
             postTimer.detach();
             postTimer.attach(config->targetfreq * 60, httpPost);
             config->updateTargetFreq = false;
