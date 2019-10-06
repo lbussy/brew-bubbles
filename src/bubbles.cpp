@@ -89,7 +89,7 @@ void Bubbles::handleInterrupts(void) { // Bubble Interrupt handler
     if ((now - ulMicroLast) > RESOLUTION) { // Filter noise/bounce
         single->pulse++;    // Increment pulse count
     }
-    Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right?
+    Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right? TODO:  Remove Serial print from interrupt
 }
 
 float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)
