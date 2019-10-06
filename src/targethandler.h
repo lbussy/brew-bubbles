@@ -21,12 +21,15 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "config.h"
 #include "jsonconfig.h"
 #include "bubbles.h"
+#include <LCBUrl.h>
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
+#include <WiFiClient.h>
 #include <ESP8266HTTPClient.h>
 
 void httpPost();
 void bfPost();
-String getPostJson();
+bool postJson(String);
+bool postJson(String, const char*);
 
 #endif // _TARGETHANDLER_H

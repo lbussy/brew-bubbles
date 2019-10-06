@@ -21,22 +21,9 @@ void httpPost() {
     Log.verbose(F("Triggered httpPost()." CR));
     JsonConfig *config = JsonConfig::getInstance();
     if (strlen(config->targeturl) > 3) {
-        HTTPClient http; // Declare object of class HTTPClient
         Log.notice(F("Posting to: %s" CR), config->targeturl);
-        http.begin(config->targeturl); // Specify request destination
-        http.addHeader(F("Content-Type"), F("application/json")); // Specify content-type header
-        http.addHeader(F("Content-Length"), F("application/json")); // Specify content-type header
-        http.addHeader(F("X-API-KEY"), F(API_KEY));
-        int httpCode = http.POST(getPostJson()); // Post json
-        const char *payload = http.getString().c_str(); // Get the response payload
 
-    #ifndef DISABLE_LOGGING
-        Log.notice(F("Target post return code: %i" CR), httpCode);
-        Log.notice(F("Target post response payload: %s" CR), payload);
-    #endif //DISABLE_LOGGING
-
-        http.end(); // Close connection
-        if(httpCode == 200) { // 200 = ok
+        if (postJson(config->targeturl, API_KEY)) {
             Log.notice(F("Target post ok." CR));
             return;
         } else {
@@ -53,34 +40,18 @@ void bfPost() {
     Log.verbose(F("Triggered bfPost()." CR));
     JsonConfig *config = JsonConfig::getInstance();
     if (strlen(config->bfkey) > 3) {
-        HTTPClient http; // Declare object of class HTTPClient
-
         Log.notice(F("Posting to: %s" CR), BFURL);
+
+        // Concatenat BF URL
         char bfUrl[94];
         strcpy (bfUrl, BFURL);
         strcat (bfUrl, config->bfkey);
 
-        http.begin(bfUrl); // Specify request destination
-        http.addHeader(F("Content-Type"), F("application/json")); // Specify content-type header
-        http.addHeader(F("X-API-KEY"), F(API_KEY));
-        int httpCode = http.POST(getPostJson()); // Post json
-
-    #ifndef DISABLE_LOGGING
-        String payload = http.getString().c_str(); // Get the response payload
-        // Convert String to char array
-        int n = payload.length();
-        char p[n + 1];
-        strcpy(p, payload.c_str());
-        Log.notice(F("BF post return code: %i" CR), httpCode);
-        Log.notice(F("BF post response payload: %s" CR), p);
-    #endif //DISABLE_LOGGING
-
-        http.end(); // Close connection
-        if(httpCode == 200) { // 200 = ok
-            Log.notice(F("BF post ok." CR));
+        if (postJson(bfUrl, API_KEY)) {
+            Log.notice(F("BF target post ok." CR));
             return;
         } else {
-            Log.warning(F("BF post failed." CR));
+            Log.warning(F("BF target post failed." CR));
             return;
         }
     } else {
@@ -89,28 +60,102 @@ void bfPost() {
     }
 }
 
-String getPostJson() { // Form Target JSON
-    JsonConfig *config = JsonConfig::getInstance();
-    Bubbles *bubble = Bubbles::getInstance();
-    // const size_t capacity = JSON_OBJECT_SIZE(7);
-    const size_t capacity = TJSON;
-    StaticJsonDocument<capacity> doc;
+bool postJson(String targetUrl, const char* key) {
+    LCBUrl url;
+    if (url.setUrl(targetUrl)) {
+        JsonConfig *config = JsonConfig::getInstance();
+        Bubbles *bubble = Bubbles::getInstance();
+        //const size_t capacity = JSON_OBJECT_SIZE(7);
+        const size_t capacity = TJSON;
+        StaticJsonDocument<capacity> doc;
 
-    doc[F("api_key")] = F(API_KEY);
-    doc[F("device_source")] = F(SOURCE);
-    doc[F("name")] = config->bubname;
-    doc[F("bpm")] = bubble->getAvgBpm();
-    doc[F("ambient")] = bubble->getAvgAmbient();
-    doc[F("temp")] = bubble->getAvgVessel();
-    if (config->tempinf == true)
-        doc[F("temp_unit")] = F("F");
-    else
-        doc[F("temp_unit")] = F("C");
+        doc[F("api_key")] = F(API_KEY);
+        doc[F("device_source")] = F(SOURCE);
+        doc[F("name")] = config->bubname;
+        doc[F("bpm")] = bubble->getAvgBpm();
+        doc[F("ambient")] = bubble->getAvgAmbient();
+        doc[F("temp")] = bubble->getAvgVessel();
+        if (config->tempinf == true)
+            doc[F("temp_unit")] = F("F");
+        else
+            doc[F("temp_unit")] = F("C");
 
-#ifndef DISABLE_LOGGING
-    char output[capacity];
-    serializeJson(doc, output);
-    Log.verbose(F("Target JSON: %s" CR), output);
-#endif
-    return doc.as<String>();
+        // Connect to the HTTP server
+        WiFiClient client;
+        client.setTimeout(10000);
+        Log.verbose(F("Connecting to: %s, %l" CR), url.getHost().c_str(), url.getPort());
+        if (!client.connect(url.getHost(), url.getPort()) == 1) {
+            // SUCCESS 1
+            // TIMED_OUT -1
+            // INVALID_SERVER -2
+            // TRUNCATED -3
+            // INVALID_RESPONSE -4 
+            Log.error(F("Connection failed: %s, %l" CR), url.getHost().c_str(), url.getPort());
+            return false;
+        } else {
+            Log.notice(F("Connected to: %s, %l" CR), url.getHost().c_str(), url.getPort());
+            Log.verbose("Connected to endpoint." CR);
+
+            // Open POST connection
+            Log.verbose(F("POST %s HTTP/1.1" CR), url.getPath().c_str());
+            client.print(F("POST "));
+            client.print(url.getPath());
+            client.println(F(" HTTP/1.1"));
+
+            // Begin headers
+            //
+            // Host
+            Log.verbose(F("Host: %s" CR), url.getHost().c_str());
+            client.print(F("Host: "));
+            client.println(url.getHost());
+
+            Log.verbose(F("Connection: close" CR));
+            client.println(F("Connection: close"));
+
+            // Content
+            Log.verbose(F("Content-Length: %l" CR), measureJson(doc));
+            client.print(F("Content-Length: "));
+            client.println(measureJson(doc));
+
+            // Content Type
+            Log.verbose(F("Content-Type: application/json" CR)); 
+            client.println(F("Content-Type: application/json"));
+
+            // Key
+            if (key) {
+                Log.verbose(F("X-AIO-Key: %s" CR), key);
+                client.print(F("X-AIO-Key: "));
+                client.println(key);
+            }
+
+            // Terminate headers with a blank line
+            Log.verbose(F("End headers." CR));
+            client.println();
+            // End Headers
+
+            // Send the JSON document in body
+            Serial.println();
+            Serial.println(F("JSON:"));
+            serializeJsonPretty(doc, Serial);
+            Serial.println();
+            serializeJson(doc, client);
+
+            // Check the  HTTP status (should be "HTTP/1.1 200 OK")
+            char status[32] = {0};
+            client.readBytesUntil('\r', status, sizeof(status));
+            client.stop();
+
+
+            Log.verbose(F("Status: %s" CR), status);
+            if (strcmp(status + 9, "200 OK") != 0) {
+                Log.error(F("Unexpected status: %s" CR), status);
+                return false;
+            } else {
+                Log.notice("JSON posted." CR);
+                return true;
+            }
+        }
+    } else {
+        return false;
+    }
 }
