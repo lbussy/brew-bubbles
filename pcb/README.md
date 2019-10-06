@@ -13,10 +13,10 @@ The shield provides the necessary component connections and circuitry for the ES
 While the shield is comparatively small, the components chosen are simple through-hole parts which may be easily soldered by a beginner with a little patience.  I recommend the following order for ease of assembly:
 
 1. Resistors - As the shortest mounted components, soldering the three resistors to the board first will be easiest.  They are also some of hte most tolerant components so these will give you some experience to get you going.
-2. Capacitors - These are mounted next.  Be sure to get them as close to the board as possible as having them stick up will change their impact on the circuit.
-3. 3-Pin headers - These components are not sensitive to the heat at all except for the plastic 
-4. 8-pin female headers - These are the tallest items on the front side of the board and will be the last pieces to go on this side.  Lightly tack on one pin and make sure the header is straight.  When you have it positioned correctly, start from the other end and solder the pins properly.  If you have a D1 laying around with the pin headers soldered on it already, using that to steady the parts will help.
-5. 8-pin male headers - These need to be soldered on the controller board.  It is easiest to solder if you plug the pins into the female headers which are on the board at this point, and then place the controller over them.  This way you can be sure they are straight when you do your soldering.
+2. 3-Pin headers - These components are not sensitive to the heat at all except for the plastic 
+3. Capacitors - These are mounted next.  Be sure to get them as close to the board as possible as having them stick up will change their impact on the circuit.
+4. 8-pin female headers - These are the tallest items on the front side of the board and will be the last pieces to go on this side.  Lightly tack on one pin and make sure the header is straight.  When you have it positioned correctly, start from the other end and solder the pins properly.  If you have a D1 laying around with the pin headers soldered on it already, using that to steady the parts will help.  This is a chicken or the egg choice with #5.  The first part, either controller or shield, will be hte most difficult.  After that you can use a completed "opposite" to steady the headers of the first.
+5. 8-pin male headers - These need to be soldered on the controller board.  See note on #4 above.
 6. GP1A57HR photointerrupter - If the controller is still plugged in, take it off temporarily.  The photointerrupter goes on the *back* side of the circuit board in the outline provided, therefore you solder it on the top side.
 
 ## Bill of Materials
@@ -28,8 +28,8 @@ Since this uses 1 or 2 each of very common, very inexpensive components, you may
 | **Quan** | **Description** | **Placement** |
 |---|---|---|
 | 3 | 0.1μF 10V Ceramic Capacitor | C1, C2. C3 |
-| 1 | 150Ω 1/4W 5%  Axial resistor | R1 |
-| *2 | 2.2kΩ 1/4W 5% Axial resistor | R2, R3 |
+| *2 | 2.2kΩ 1/4W 5% Axial resistor | R1, R2 |
+| 1 | 150Ω 1/4W 5%  Axial resistor | R3 |
 | *2 | 3-Pin 90° Header | VESSEL, ROOM |
 | 1 | Sharp GP1A57HR Transmissive Photointerrupter | U1 |
 
@@ -39,7 +39,7 @@ This BOM is available on Mouser [via this link](https://www.mouser.com/ProjectMa
 
 | **Quan** | **Description** | **Placement** |
 |---|---|---|
-| 1 | Wemos D1 Mini R2 | U2 |
+| 1 | WeMos D1 Mini R2 | U2 |
 | 2 | 8-pin male stackable header (nearly always comes with the D1) |  |
 | 2 | 8-pin female stackable header (nearly always comes with the D1) |  |
 | *2 | Waterproof DS18B20 Temperature Sensor with lead | VESSEL, ROOM |
@@ -50,7 +50,7 @@ The items marked with an *asterisk above are optional.  They are in the design t
 
 ### Order Boards
 
-Order 3 boards for $5.65 from [Oshpark using this link](https://oshpark.com/shared_projects/JBwD0wI7), or download the Brew-Bubbles.brd file and use it with the board fabrication house of your choosing.
+Order 3 boards for $5.65 from [Oshpark using this link](https://oshpark.com/shared_projects/NNPU5x7b), or download the Brew-Bubbles.brd file and use it with the board fabrication house of your choosing.
 
 ## Modifying These Files
 If you would like to personalize these board designs, you may modify them with [Autodesk's EAGLE](https://www.autodesk.com/products/eagle/overview). EAGLE is a scriptable electronic design automation (EDA) application with schematic capture, printed circuit board (PCB) layout, auto-router and computer-aided manufacturing (CAM) features. EAGLE stands for Easily Applicable Graphical Layout Editor and is developed by CadSoft Computer GmbH. The company was acquired by Autodesk Inc. in 2016.  
