@@ -5,7 +5,12 @@
     },
     "python.pythonPath": "C:\\Python27\\python.exe",
     "cSpell.words": [
-        "Bussy"
+        "Autodesk's",
+        "Bussy",
+        "Photointerrupter",
+        "fermenter",
+        "scriptable",
+        "thermowell"
     ],
     "files.associations": {
         "functional": "cpp"
