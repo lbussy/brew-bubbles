@@ -161,6 +161,14 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
     Log.notice(F("Connected. IP address: %s." CR), WiFi.localIP().toString().c_str());
     if (blinker.active()) blinker.detach(); // Turn off blinker
     digitalWrite(LED, HIGH); // Turn off LED
+
+    // DEBUG:  Config static IP
+    // IPAddress local_ip(192, 168, 168, 155);         // Where xx is the desired IP Address
+    // IPAddress gateway(192, 168, 168, 1);            // Set gateway to match your network
+    // IPAddress dns1(8, 8, 8, 8);                     // DNS Server #1
+    // IPAddress dns2(8, 8, 4, 4);                     // DNS Server #2
+    // IPAddress subnet(255, 255, 255, 0);             // Set subnet mask to match your network
+    // WiFi.config(ip, gateway, subnet, dns1, dns2);   // Set WiFi config
 }
 
 void resetWifi() { // Wipe wifi settings and reset controller
