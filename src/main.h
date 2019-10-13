@@ -27,6 +27,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "version.h"
 #include "targethandler.h"
 #include "bubbles.h"
+#include <LCBUrl.h>
 #include <WiFiManager.h>
 #include <DoubleResetDetect.h>
 #include <ESP8266WiFi.h>
@@ -39,8 +40,5 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 //
 #define DRD_TIMEOUT 2.0
 #define DRD_ADDRESS 0x00
-
-void bubUpdate();
-void heapPrint();
 
 #endif // _MAIN_H
