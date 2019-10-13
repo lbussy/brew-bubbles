@@ -32,4 +32,7 @@ void bfPost();
 bool postJson(String);
 bool postJson(String, const char*);
 
+void printDNSServers();
+void printIPAddressOfHost(const char*);
+
 #endif // _TARGETHANDLER_H

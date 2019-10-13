@@ -18,17 +18,27 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "targethandler.h"
 
 void httpPost() {
-    Log.verbose(F("Triggered httpPost()." CR));
     JsonConfig *config = JsonConfig::getInstance();
+
+    Log.verbose(F("Triggered httpPost()." CR));
+
     if (strlen(config->targeturl) > 3) {
         Log.notice(F("Posting to: %s" CR), config->targeturl);
 
-        if (postJson(config->targeturl, API_KEY)) {
-            Log.notice(F("Target post ok." CR));
-            return;
+        LCBUrl url;
+        if (url.setUrl(config->targeturl)) {
+            printDNSServers();
+            printIPAddressOfHost(url.getHost().c_str());
+
+            if (postJson(config->targeturl, API_KEY)) {
+                Log.notice(F("Target post ok." CR));
+                return;
+            } else {
+                Log.error(F("Target post failed." CR));
+                return;
+            }
         } else {
-            Log.warning(F("Target post failed." CR));
-            return;
+            Log.error(F("Unable to parse target URL." CR));
         }
     } else {
         Log.verbose(F("No target URL in configuration, skipping." CR));
@@ -37,27 +47,27 @@ void httpPost() {
 }
 
 void bfPost() {
-    Log.verbose(F("Triggered bfPost()." CR));
-    JsonConfig *config = JsonConfig::getInstance();
-    if (strlen(config->bfkey) > 3) {
-        Log.notice(F("Posting to: %s" CR), BFURL);
+    // Log.verbose(F("Triggered bfPost()." CR));
+    // JsonConfig *config = JsonConfig::getInstance();
+    // if (strlen(config->bfkey) > 3) {
+    //     Log.notice(F("Posting to: %s" CR), BFURL);
 
-        // Concatenat BF URL
-        char bfUrl[94];
-        strcpy (bfUrl, BFURL);
-        strcat (bfUrl, config->bfkey);
+    //     // Concatenat BF URL
+    //     char bfUrl[94];
+    //     strcpy (bfUrl, BFURL);
+    //     strcat (bfUrl, config->bfkey);
 
-        if (postJson(bfUrl, API_KEY)) {
-            Log.notice(F("BF target post ok." CR));
-            return;
-        } else {
-            Log.warning(F("BF target post failed." CR));
-            return;
-        }
-    } else {
-        Log.verbose(F("No BF key in configuration, skipping." CR));
-        return;
-    }
+    //     if (postJson(bfUrl, API_KEY)) {
+    //         Log.notice(F("BF target post ok." CR));
+    //         return;
+    //     } else {
+    //         Log.warning(F("BF target post failed." CR));
+    //         return;
+    //     }
+    // } else {
+    //     Log.verbose(F("No BF key in configuration, skipping." CR));
+    //     return;
+    // }
 }
 
 bool postJson(String targetUrl, const char* key) {
@@ -84,13 +94,15 @@ bool postJson(String targetUrl, const char* key) {
         WiFiClient client;
         client.setTimeout(10000);
         Log.verbose(F("Connecting to: %s, %l" CR), url.getHost().c_str(), url.getPort());
-        if (!client.connect(url.getHost(), url.getPort()) == 1) {
-            // SUCCESS 1
-            // TIMED_OUT -1
-            // INVALID_SERVER -2
-            // TRUNCATED -3
-            // INVALID_RESPONSE -4 
-            Log.error(F("Connection failed: %s, %l" CR), url.getHost().c_str(), url.getPort());
+        int retval = client.connect(url.getHost(), url.getPort());
+        //  1 = SUCCESS
+        //  0 = FAILED
+        // -1 = TIMED_OUT
+        // -2 = INVALID_SERVER
+        // -3 = TRUNCATED
+        // -4 = INVALID_RESPONSE 
+        if (!retval == 1) {
+            Log.warning(F("Connection failed, Host: %s, Port: %l (Err: %d)" CR), url.getHost().c_str(), url.getPort(), retval);
             return false;
         } else {
             Log.notice(F("Connected to: %s, %l" CR), url.getHost().c_str(), url.getPort());
@@ -156,6 +168,19 @@ bool postJson(String targetUrl, const char* key) {
             }
         }
     } else {
+        Log.error(F("Unable to parse target URL: %s" CR), targetUrl.c_str());
         return false;
     }
+}
+
+void printDNSServers() {
+    Log.verbose(F("DNS #1: %s, DNS #2: %s" CR), WiFi.dnsIP().toString().c_str(), WiFi.dnsIP(1).toString().c_str());
+}
+
+void printIPAddressOfHost(const char* host) {
+    IPAddress resolvedIP;
+    if (!WiFi.hostByName(host, resolvedIP)) {
+        Log.error(F("Host lookup failed for %s." CR), host);
+    }
+    Log.verbose(F("Host: %s, IP: %s" CR), host, resolvedIP.toString().c_str());
 }
