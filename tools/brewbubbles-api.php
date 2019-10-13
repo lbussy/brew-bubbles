@@ -32,12 +32,19 @@ $args = "LOCK_EX | FILE_APPEND"; // Separate multiples with pipe
 $json = file_get_contents('php://input');
 $json .= "\n"; // Add a line return for easy reviewing
 
-if (!file_put_contents($file, $json, )) {
-    // 500 = Internal Server Error
-    header('X-PHP-Response-Code: 500', true, 500);
-} else {
+//Open the File Stream
+$handle = fopen($file, "a");
+
+//Lock File, error if unable to lock
+if(flock($handle, LOCK_EX)) {
+    fwrite($handle, $json);     //Write the $data into file
+    flock($handle, LOCK_UN);    //Unlock File
     // 200 = Ok
     header('X-PHP-Response-Code: 200', true, 200);
+} else {
+    // 500 = Internal Server Error
+    header('X-PHP-Response-Code: 500', true, 500);
 }
+//Close Stream
 
 ?>
