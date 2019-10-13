@@ -31,7 +31,6 @@ void serial() { // Start serial with auto-detected rate (default to BAUD)
 
 void printTimestamp(Print* _logOutput) {
   char c[12];
-  //int m = 
   sprintf(c, "%10lu ", millis());
   _logOutput->print(c);
 }
