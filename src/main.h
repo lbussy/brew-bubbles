@@ -27,7 +27,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "version.h"
 #include "targethandler.h"
 #include "bubbles.h"
-#include <LCBUrl.h>
 #include <WiFiManager.h>
 #include <DoubleResetDetect.h>
 #include <ESP8266WiFi.h>
