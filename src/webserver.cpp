@@ -50,12 +50,6 @@ void WebServer::aliases() {
              {single->server->send(404, F("text/plain"), F("404: File not found."));}});
 
     single->server->on(
-        F("/debug/"),
-        HTTP_GET,
-        []() {if (!single->handleFileRead(F("/debug.htm")))
-            {single->server->send(404, F("text/plain"), F("404: File not found."));}});
-
-    single->server->on(
         F("/help/"),
         HTTP_GET,
         []() {if (!single->handleFileRead(F("/help.htm")))
