@@ -39,4 +39,4 @@ void printTimestamp(Print* _logOutput) {
 
 void serial(){}
 
-#endif // Debug
+#endif // DISABLE_LOGGING
