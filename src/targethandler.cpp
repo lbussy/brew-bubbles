@@ -173,11 +173,11 @@ bool postJson(String targetUrl, const char* key) {
     }
 }
 
-void printDNSServers() {
+void printDNSServers() { // DEBUG
     Log.verbose(F("DNS #1: %s, DNS #2: %s" CR), WiFi.dnsIP().toString().c_str(), WiFi.dnsIP(1).toString().c_str());
 }
 
-void printIPAddressOfHost(const char* host) {
+void printIPAddressOfHost(const char* host) { // DEBUG
     IPAddress resolvedIP;
     if (!WiFi.hostByName(host, resolvedIP)) {
         Log.error(F("Host lookup failed for %s." CR), host);
