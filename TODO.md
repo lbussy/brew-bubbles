@@ -2,6 +2,7 @@
 
 ## Open
 
+- Test mDNS for Target changes
 - Figure out why /ota/ is not working on some setups
 - Add static IP change to AP Portal
 - Add static IP change to settings
