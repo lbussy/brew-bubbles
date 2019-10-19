@@ -22,7 +22,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include "jsonconfig.h"
 #include "bubbles.h"
 #include <LCBUrl.h>
-#include <ESP8266mDNS.h>
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
 #include <WiFiClient.h>

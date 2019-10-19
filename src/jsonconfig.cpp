@@ -30,8 +30,7 @@ JsonConfig* JsonConfig::getInstance() {
 bool JsonConfig::parse() {
     single->updateBFFreq = false;
     single->updateTargetFreq = false;
-    //const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7) + 480;
-    const size_t capacity = CONFIGJSON;
+    const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7) + 481;
     StaticJsonDocument<capacity> doc;
 
     // Mount SPIFFS
@@ -135,8 +134,7 @@ bool JsonConfig::parse() {
 }
 
 bool JsonConfig::save() {
-    // const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
-     const size_t capacity = CONFIGJSON;
+    const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7) + 481;
     StaticJsonDocument<capacity> doc;
 
     // Serialize Access Point Settings Object
@@ -197,49 +195,4 @@ bool JsonConfig::save() {
             return true;
         }
     }
-}
-
-void JsonConfig::createSettingsJson() {
-    // const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
-    const size_t capacity = CONFIGJSON;
-    StaticJsonDocument<capacity> doc;
-
-    // Serialize Access Point Settings Object
-    JsonObject apconfig = doc.createNestedObject("apconfig");
-    apconfig["ssid"] = single->ssid;
-    apconfig["appwd"] = single->appwd;
-
-    // Serialize Hostname Settings Object
-    doc["hostname"] = single->hostname;
-
-    // Serialize Bubble Settings Object
-    JsonObject bubbleconfig = doc.createNestedObject("bubbleconfig");
-    bubbleconfig["name"] = single->bubname;
-    bubbleconfig["tempinf"] = single->tempinf;
-
-    // Serialize temperature calibration
-    JsonObject calibrate = doc.createNestedObject("calibrate");
-    calibrate["room"] = single->calAmbient;
-    calibrate["vessel"] = single->calVessel;
-
-    // Serialize Target Settings Object
-    JsonObject targetconfig = doc.createNestedObject("targetconfig");
-    targetconfig["targeturl"] = single->targeturl;
-    targetconfig["freq"] = single->targetfreq;
-
-    // Serialize Brewer's Friend Settings Object
-    JsonObject bfconfig = doc.createNestedObject("bfconfig");
-    bfconfig["bfkey"] = single->bfkey;
-    bfconfig["freq"] = single->bffreq;
-
-    // Serialize SPIFFS OTA update choice
-    doc["dospiffs1"] = single->dospiffs1;
-    doc["dospiffs2"] = single->dospiffs2;
-
-    // Serialize semaphore for OTA update
-    doc["didupdate"] = single->didupdate;
-
-    char output[capacity];
-    serializeJson(doc, output, sizeof(output));
-    strlcpy(single->config, output, sizeof(output));
 }

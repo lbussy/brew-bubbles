@@ -37,7 +37,6 @@ class JsonConfig {
         static JsonConfig* getInstance();
         // Other Declarations
         bool parse();
-        char config[CONFIGJSON];    // Hold the Config JSON
         char ssid[33];              // AP SSID
         char appwd[65];             // AP Pwd
         char hostname[33];          // Hostname
@@ -57,7 +56,6 @@ class JsonConfig {
 
         // Methods
         bool save();
-        void createSettingsJson();
 };
 
 #endif // _JSONCONFIG_H
