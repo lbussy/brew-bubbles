@@ -250,19 +250,81 @@ void WebServer::aliases() {
         []() {
             // Used to provide the Bubbles json
             Bubbles *bubble = Bubbles::getInstance();
+            JsonConfig *config = JsonConfig::getInstance();
+
+            //const size_t capacity = JSON_OBJECT_SIZE(8);
+            const size_t capacity = JSON_OBJECT_SIZE(8) + 210;
+            StaticJsonDocument<capacity> doc;
+
+            doc[F("api_key")] = F(API_KEY);
+            doc[F("device_source")] = F(SOURCE);
+            doc[F("name")] = config->bubname;
+            doc[F("bpm")] = bubble->getAvgBpm();
+            doc[F("ambient")] = bubble->getAvgAmbient();
+            doc[F("temp")] = bubble->getAvgVessel();
+            if (config->tempinf == true)
+                doc[F("temp_unit")] = F("F");
+            else
+                doc[F("temp_unit")] = F("C");
+            doc[F("datetime")] = bubble->lastTime;
+
+            String json;
+            serializeJsonPretty(doc, json);
+
             single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            single->server->send(200, F("application/json"), bubble->bubStatus);
+            single->server->send(200, F("application/json"), json);
         });
 
     single->server->on(
         F("/config/"),
         HTTP_GET,
         []() {
-            // Used to build the "Change Settings" page
+            // Used to provide the Config json
             JsonConfig *config = JsonConfig::getInstance();
-            config->createSettingsJson();
+
+            const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(8) + 481;
+            StaticJsonDocument<capacity> doc;
+
+            // Serialize Access Point Settings Object
+            JsonObject apconfig = doc.createNestedObject("apconfig");
+            apconfig["ssid"] = config->ssid;
+            apconfig["appwd"] = config->appwd;
+
+            // Serialize Hostname Settings Object
+            doc["hostname"] = config->hostname;
+
+            // Serialize Bubble Settings Object
+            JsonObject bubbleconfig = doc.createNestedObject("bubbleconfig");
+            bubbleconfig["name"] = config->bubname;
+            bubbleconfig["tempinf"] = config->tempinf;
+
+            // Serialize temperature calibration
+            JsonObject calibrate = doc.createNestedObject("calibrate");
+            calibrate["room"] = config->calAmbient;
+            calibrate["vessel"] = config->calVessel;
+
+            // Serialize Target Settings Object
+            JsonObject targetconfig = doc.createNestedObject("targetconfig");
+            targetconfig["targeturl"] = config->targeturl;
+            targetconfig["freq"] = config->targetfreq;
+
+            // Serialize Brewer's Friend Settings Object
+            JsonObject bfconfig = doc.createNestedObject("bfconfig");
+            bfconfig["bfkey"] = config->bfkey;
+            bfconfig["freq"] = config->bffreq;
+
+            // Serialize SPIFFS OTA update choice
+            doc["dospiffs1"] = config->dospiffs1;
+            doc["dospiffs2"] = config->dospiffs2;
+
+            // Serialize semaphore for OTA update
+            doc["didupdate"] = config->didupdate;
+
+            String json;
+            serializeJsonPretty(doc, json);
+
             single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            single->server->send(200, F("application/json"), config->config);
+            single->server->send(200, F("application/json"), json);
         });
 
     single->server->on(
@@ -271,8 +333,7 @@ void WebServer::aliases() {
         []() {  // Process JSON POST configuration changes
             Log.verbose(F("Processing post to /config/apply/." CR));
             String input = single->server->arg(F("plain"));
-            // const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
-            const size_t capacity = CONFIGJSON;
+            const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
             StaticJsonDocument<capacity> doc;
             DeserializationError err = deserializeJson(doc, input);
             if (!err) {
@@ -413,14 +474,15 @@ void WebServer::aliases() {
         HTTP_GET,
         []() {
             Log.verbose(F("Serving /thisVersion/." CR));
-            //const size_t capacity = JSON_OBJECT_SIZE(3);
-            const size_t capacity = VERSIONJSON;
+            const size_t capacity = JSON_OBJECT_SIZE(3);
             StaticJsonDocument<capacity> doc;
 
             doc["version"] = version();
 
-            char json[capacity] = {};
-            serializeJson(doc, json, capacity);
+            String json;
+            serializeJsonPretty(doc, json);
+
+            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
             single->server->send(200, F("application/json"), json);
         });
 
@@ -430,17 +492,16 @@ void WebServer::aliases() {
         []() {
             Log.verbose(F("Serving /thatVersion/." CR));
 
-            String versionJson = "";
+            String json = "";
             HTTPClient http;
-            // "http://www.brewbubbles.com/firmware/version.json"
             http.begin(F(VERSIONJSONLOC));
             http.addHeader(F("Cache-Control"), F("no-cache"));
             if (http.GET() > 0) {
-                versionJson = http.getString();
+                json = http.getString();
             }
             http.end();
 
-            single->server->send(200, F("application/json"), versionJson);
+            single->server->send(200, F("application/json"), json);
         });
 
     // File not found handler

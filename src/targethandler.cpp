@@ -47,27 +47,27 @@ void httpPost() {
 }
 
 void bfPost() {
-    // Log.verbose(F("Triggered bfPost()." CR));
-    // JsonConfig *config = JsonConfig::getInstance();
-    // if (strlen(config->bfkey) > 3) {
-    //     Log.notice(F("Posting to: %s" CR), BFURL);
+    Log.verbose(F("Triggered bfPost()." CR));
+    JsonConfig *config = JsonConfig::getInstance();
+    if (strlen(config->bfkey) > 3) {
+        Log.notice(F("Posting to: %s" CR), BFURL);
 
-    //     // Concatenat BF URL
-    //     char bfUrl[94];
-    //     strcpy (bfUrl, BFURL);
-    //     strcat (bfUrl, config->bfkey);
+        // Concatenat BF URL
+        char bfUrl[94];
+        strcpy (bfUrl, BFURL);
+        strcat (bfUrl, config->bfkey);
 
-    //     if (postJson(bfUrl, API_KEY)) {
-    //         Log.notice(F("BF target post ok." CR));
-    //         return;
-    //     } else {
-    //         Log.warning(F("BF target post failed." CR));
-    //         return;
-    //     }
-    // } else {
-    //     Log.verbose(F("No BF key in configuration, skipping." CR));
-    //     return;
-    // }
+        if (postJson(bfUrl, API_KEY)) {
+            Log.notice(F("BF target post ok." CR));
+            return;
+        } else {
+            Log.warning(F("BF target post failed." CR));
+            return;
+        }
+    } else {
+        Log.verbose(F("No BF key in configuration, skipping." CR));
+        return;
+    }
 }
 
 bool postJson(String targetUrl, const char* key) {
@@ -75,8 +75,7 @@ bool postJson(String targetUrl, const char* key) {
     if (url.setUrl(targetUrl)) {
         JsonConfig *config = JsonConfig::getInstance();
         Bubbles *bubble = Bubbles::getInstance();
-        //const size_t capacity = JSON_OBJECT_SIZE(7);
-        const size_t capacity = TJSON;
+        const size_t capacity = JSON_OBJECT_SIZE(7);
         StaticJsonDocument<capacity> doc;
 
         doc[F("api_key")] = F(API_KEY);

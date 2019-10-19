@@ -51,9 +51,6 @@ void Bubbles::start() {
     NtpHandler *ntpTime = NtpHandler::getInstance();
     ntpTime->update();
     single->lastTime = ntpTime->Time;
-
-    // Set starting Bubble
-    single->createBubbleJson();
 }
 
 void Bubbles::update() { // Regular update loop, once per minute
@@ -66,8 +63,6 @@ void Bubbles::update() { // Regular update loop, once per minute
     single->lastBpm = single->getRawBpm();
     single->lastAmb = single->getAmbientTemp();
     single->lastVes = single->getVesselTemp();
-    // Update the web page source
-    single->createBubbleJson();
 
     // Push values to circular buffers
     tempAmbAvg.push(single->lastAmb);
@@ -75,7 +70,6 @@ void Bubbles::update() { // Regular update loop, once per minute
     bubAvg.push(single->lastBpm);
 
     Log.verbose(F("Time is %s, BPM is %D." CR), single->lastTime, single->lastBpm);
-    Log.verbose(F("Bubble: %s" CR), single->bubStatus);
     Log.verbose(F("Averages: BPM = %D (%l sample), Ambient = %D (%l sample), Vessel = %D (%l sample)." CR),
         single->getAvgBpm(), bubAvg.size(),
         single->getAvgAmbient(), tempAmbAvg.size(),
@@ -170,31 +164,4 @@ float Bubbles::getAvgBpm() {
         avg += bubAvg[i] / size;
     }
     return(avg);
-}
-
-void Bubbles::createBubbleJson() {
-    // const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(5);
-    const size_t capacity = BUBBLEJSON;
-    StaticJsonDocument<capacity> doc;
-    JsonConfig *config = JsonConfig::getInstance();
-
-    doc[F("api_key")] = F(API_KEY);
-    doc[F("vessel")] = config->bubname;
-    doc[F("datetime")] = single->lastTime;
-    
-    if (config->tempinf == true) {
-        doc[F("format")] = F("F");
-    } else {
-        doc[F("format")] = F("C");
-    }
-
-    // Get bubbles data (updated by minute, no averages)
-    JsonObject data = doc.createNestedObject(F("data"));
-    data[F("bpm")] = single->lastBpm;
-    data[F("ambtemp")] = single->lastAmb;
-    data[F("vestemp")] = single->lastVes;
-
-    char output[capacity];
-    serializeJson(doc, output, sizeof(output));
-    strlcpy(single->bubStatus, output, sizeof(output));
 }

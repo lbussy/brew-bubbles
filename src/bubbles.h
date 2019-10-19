@@ -43,9 +43,7 @@ class Bubbles {
         float lastBpm;                      // Holds most recent count
         float lastAmb;
         float lastVes;
-        char* lastTime;
         float getRawBpm();
-        void createBubbleJson();
         float getAmbientTemp();
         float getVesselTemp();
 
@@ -56,10 +54,10 @@ class Bubbles {
         // Other Declarations
         void handleInterrupts(void);
         void update();                  // Call every 60 seconds
+        char* lastTime;
         float getAvgAmbient();
         float getAvgVessel();
         float getAvgBpm();
-        char bubStatus[BUBBLEJSON];     // Hold the Bubble JSON
 };
 
 #endif // _BUBBLES_H
