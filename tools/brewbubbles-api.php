@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License along
 // with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>.
 
-// This demonstrates a minimal endoint for Brew Bubbles, saving the
+// This demonstrates a minimal endpoint for Brew Bubbles, saving the
 // json to a local file.  The argument on file_put_contents defines
 // it's behavior:
 //      FILE_USE_INCLUDE_PATH -     Will check the include path for
