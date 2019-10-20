@@ -6,7 +6,6 @@
 - Figure out why /ota/ is not working on some setups
 - Add static IP change to AP Portal
 - Add static IP change to settings
-- Add pattern matching to settings
 - Address key for BF (email 9/16/19: "Next week's release")
 - Add SSL support for upgrade? ([see the issue](https://github.com/esp8266/Arduino/issues/6523))
 
