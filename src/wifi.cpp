@@ -30,8 +30,19 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
     WiFi.mode(WIFI_STA); // Explicitly set mode, esp defaults to STA+AP
     WiFi.setSleepMode(WIFI_NONE_SLEEP); // Make sure sleep is disabled
 
-    wifiManager.setCountry(WIFI_COUNTRY); // Setting wifi country seems to improve OSX soft ap connectivity, may help others as well
+    wifiManager.setCountry(WIFI_COUNTRY); // Setting wifi country seems to improve OSX soft ap connectivity
     wifiManager.setWiFiAPChannel(WIFI_CHAN); // Set WiFi channel
+
+    // WiFi Callbacks:
+    // WiFiEventHandler onStationModeConnected();
+    // WiFiEventHandler onStationModeDisconnected();
+    // WiFiEventHandler onStationModeAuthModeChanged();
+    // WiFiEventHandler onStationModeGotIP();
+    // WiFiEventHandler onStationModeDHCPTimeout();
+    // WiFiEventHandler onSoftAPModeStationConnected();
+    // WiFiEventHandler onSoftAPModeStationDisconnected();
+    // WiFiEventHandler onSoftAPModeProbeRequestReceived();
+    // WiFiEventHandler onWiFiModeChange();
 
     // WiFiManager Callbacks
     wifiManager.setAPCallback(apCallback); // Called after AP has started
@@ -47,47 +58,52 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
     wifiManager.setDebugOutput(false);
 #endif
 
-    std::vector<const char *> _wfmPortalMenu = {
-        "wifi",
-        "wifinoscan",
-        "sep",
-        "info",
-        //"param",
-        //"close",
-        //"sep",
-        "erase",
-        "restart",
-        "exit"
-    };
+    // const char * _wfmHtml1 = "<p>Enter a custom hostname if you would like something other than \"brewbubbles.\" Do not enter the \".local\" portion, this will be added automatically.</p>";
+    // const char * _wfmHtml2 = "<p>If you would like to provide static IP information, enter it here.  All fields must be correctly filled in or else configuration will not be applied.</p>";
+    // const char * _wfmIpPattern = "pattern='((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$'";
+    // const char * _wfmHostPattern = "pattern='^[a-zA-Z][a-zA-Z\d-]{1,22}[a-zA-Z\d]$'";
 
-    wifiManager.setMenu(_wfmPortalMenu);   // Set menu items
+    // std::vector<const char *> _wfmPortalMenu = {
+    //     "wifi",
+    //     "wifinoscan",
+    //     "sep",
+    //     "info",
+    //     //"param",
+    //     //"close",
+    //     //"sep",
+    //     "erase",
+    //     "restart",
+    //     "exit"
+    // };
+
+    // wifiManager.setMenu(_wfmPortalMenu);   // Set menu items
     wifiManager.setClass(F("invert"));     // Set dark theme
 
-    // Set up additional portal items
-    //
-    // const char *ipVal = _wfmIpPattern;
-    // const char *hostVal = _wfmHostPattern;
-    // Hostname
+    // // Set up additional portal items
+    // //
+    // // Hostname
     // WiFiManagerParameter wfmCustHtml1(_wfmHtml1);
-    // WiFiManagerParameter wfmCustHost("hostname", "Host Name", config->hostname, 24, hostVal, 1);
-    // Static IP
+    // WiFiManagerParameter wfmCustHost("hostname", "Host Name", config->hostname, 24, _wfmHostPattern, 1);
+    // // Static IP
     // WiFiManagerParameter wfmCustHtml2(_wfmHtml2);
-    // WiFiManagerParameter wfmCustIP("ipaddress", "Static IP", "", 15, ipVal, 1);
-    // WiFiManagerParameter wfmCustGW("gateway", "Gateway", "", 15, ipVal, 1);
-    // WiFiManagerParameter wfmCustSN("subnet", "Subnet Mask", "255.255.255.0", 15, ipVal, 1);
-    // WiFiManagerParameter wfmCustDNS("dns", "DNS Server", "1.1.1.1", 15, ipVal, 1);
+    // WiFiManagerParameter wfmCustIP("ipaddress", "Static IP", "", 15, _wfmIpPattern, 1);
+    // WiFiManagerParameter wfmCustGW("gateway", "Gateway", "", 15, _wfmIpPattern, 1);
+    // WiFiManagerParameter wfmCustSN("subnet", "Subnet Mask", "", 15, _wfmIpPattern, 1);
+    // WiFiManagerParameter wfmCustDNS1("dns", "DNS Server 1", "", 15, _wfmIpPattern, 1);
+    // WiFiManagerParameter wfmCustDNS2("dns", "DNS Server 2", "", 15, _wfmIpPattern, 1);
 
-    // Add portal items
-    //
-    // Hostname
+    // // Add portal items
+    // //
+    // // Hostname
     // wifiManager.addParameter(&wfmCustHtml1);
     // wifiManager.addParameter(&wfmCustHost);
-    // Static IP
+    // // Static IP
     // wifiManager.addParameter(&wfmCustHtml2);
     // wifiManager.addParameter(&wfmCustIP);
     // wifiManager.addParameter(&wfmCustGW);
     // wifiManager.addParameter(&wfmCustSN);
-    // wifiManager.addParameter(&wfmCustDNS);
+    // wifiManager.addParameter(&wfmCustDNS1);
+    // wifiManager.addParameter(&wfmCustDNS2);
 
     if (ignore) { // Voluntary portal
         blinker.attach_ms(APBLINK, wifiBlinker);
@@ -219,12 +235,6 @@ void webServerCallback() {
 }
 
 // Misc helpers
-
-bool validIP(const char charIP) {
-    IPAddress addr;
-    // return addr.fromString(charIP); TODO: Fix this
-    return true;
-}
 
 bool isNullField(const char *field) {
     return ((field == NULL) || (field[0] == '\0'));

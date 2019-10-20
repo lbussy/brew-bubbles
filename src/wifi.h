@@ -20,7 +20,6 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "main.h"
 #include "config.h"
-//#include "bubstrings.h"
 #include <ESP8266WiFi.h>        //ESP8266 Core WiFi Library
 #include <DNSServer.h>          //Local DNS Server used for redirecting all requests to the configuration portal
 #include <ESP8266WebServer.h>   //Local WebServer used to serve the configuration portal
@@ -38,7 +37,6 @@ void saveConfigCallback();
 void saveParamsCallback();
 void webServerCallback();
 
-bool validIP(const char);
 bool isNullField(const char *);
 
 #endif // _WIFI_H
