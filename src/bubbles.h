@@ -18,6 +18,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #ifndef _BUBBLES_H
 #define _BUBBLES_H
 
+#include "main.h"
 #include "config.h"
 #include "jsonconfig.h"
 #include "ntphandler.h"
@@ -58,6 +59,7 @@ class Bubbles {
         float getAvgAmbient();
         float getAvgVessel();
         float getAvgBpm();
+        bool doBub;
 };
 
 #endif // _BUBBLES_H

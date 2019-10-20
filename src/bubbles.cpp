@@ -39,6 +39,7 @@ void Bubbles::start() {
     pBubbles = single;              // Assign current instance to pointer 
     single->ulLastReport = millis();// Store the last report timer
     single->pulse = 0;              // Reset pulse counter
+    single->doBub = false;
 
     // Set starting values
     unsigned long ulNow = millis();
@@ -83,7 +84,7 @@ void Bubbles::handleInterrupts(void) { // Bubble Interrupt handler
     if ((now - ulMicroLast) > RESOLUTION) { // Filter noise/bounce
         single->pulse++;    // Increment pulse count
     }
-    Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right? TODO:  Remove Serial print from interrupt
+    doBub = true;
 }
 
 float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)
