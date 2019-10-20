@@ -27,8 +27,8 @@ void httpPost() {
 
         LCBUrl url;
         if (url.setUrl(config->targeturl)) {
-            printDNSServers();
-            printIPAddressOfHost(url.getHost().c_str());
+            printDNSServers(); // DEBUG
+            printIPAddressOfHost(url.getHost().c_str()); /// DEBUG
 
             if (postJson(config->targeturl, API_KEY)) {
                 Log.notice(F("Target post ok." CR));
@@ -92,7 +92,7 @@ bool postJson(String targetUrl, const char* key) {
         // Connect to the HTTP server
         WiFiClient client;
         client.setTimeout(10000);
-        Log.verbose(F("Connecting to: %s, %l" CR), url.getHost().c_str(), url.getPort());
+        Log.verbose(F("postJson(): Connecting to: %s, %l" CR), url.getHost().c_str(), url.getPort());
         int retval = client.connect(url.getHost(), url.getPort());
         //  1 = SUCCESS
         //  0 = FAILED
