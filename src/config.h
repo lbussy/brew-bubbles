@@ -103,7 +103,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Set serial baud rate
+// Set serial baud rate (if not set via PlatformIO build flag)
 //
 #ifndef BAUD
 #define BAUD 74880
@@ -193,7 +193,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Define temperature format (true = Farenheit, false = Celcius)
+// Define temperature format (true = Fahrenheit, false = Celsius)
 //
 #ifndef TEMPFORMAT
 #define TEMPFORMAT true
@@ -223,7 +223,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Define reset wifi on boot pin - reset if pulled low on boot
+// Define reset WiFi on boot pin - reset if pulled low on boot
 //
 #ifndef RESETWIFI
 #define RESETWIFI D5
@@ -263,7 +263,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Resolution time in microseconds (debouncer) - Must be declared as an UL
+// Resolution time in microseconds (de-bouncer) - Must be declared as an UL
 //
 #ifndef RESOLUTION
 #define RESOLUTION 500UL
@@ -313,7 +313,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Target Frequency (default 2 minutes)
+// Default Target Frequency (default 2 minutes)
 //
 #ifndef TARGETFREQ
 #define TARGETFREQ 2
@@ -323,7 +323,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Brewer's Friend Frequency (default 15 mins)
+// Default Brewer's Friend Frequency (default 15 mins)
 //
 #ifndef BFFREQ
 #define BFFREQ 15
@@ -336,7 +336,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 // Brewer's Friend URL
 //
 #ifndef BFURL
-#define BFURL "log.brewersfriend.com/stream/"
+#define BFURL "http://log.brewersfriend.com/stream/"
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
