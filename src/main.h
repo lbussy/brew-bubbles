@@ -40,4 +40,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #define DRD_TIMEOUT 2.0
 #define DRD_ADDRESS 0x00
 
+static bool doTarget = false;  // Semaphore for Target timer
+static bool doBF = false;      // Semaphore for BF timer
+
 #endif // _MAIN_H

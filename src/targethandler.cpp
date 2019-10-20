@@ -17,6 +17,9 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 
 #include "targethandler.h"
 
+IPAddress bfIp = INADDR_NONE;
+IPAddress targetIp = INADDR_NONE;
+
 void httpPost() {
     JsonConfig *config = JsonConfig::getInstance();
 
@@ -27,10 +30,7 @@ void httpPost() {
 
         LCBUrl url;
         if (url.setUrl(config->targeturl)) {
-            printDNSServers(); // DEBUG
-            printIPAddressOfHost(url.getHost().c_str()); /// DEBUG
-
-            if (postJson(config->targeturl, API_KEY)) {
+            if (postJson(config->targeturl)) {
                 Log.notice(F("Target post ok." CR));
                 return;
             } else {
@@ -70,12 +70,17 @@ void bfPost() {
     }
 }
 
+bool postJson(String targetUrl) {
+    const char* key = ""; //'\0';  
+    return postJson(targetUrl, key);
+}
+
 bool postJson(String targetUrl, const char* key) {
     LCBUrl url;
     if (url.setUrl(targetUrl)) {
         JsonConfig *config = JsonConfig::getInstance();
         Bubbles *bubble = Bubbles::getInstance();
-        const size_t capacity = JSON_OBJECT_SIZE(7);
+        const size_t capacity = JSON_OBJECT_SIZE(8) + 210;
         StaticJsonDocument<capacity> doc;
 
         doc[F("api_key")] = F(API_KEY);
@@ -89,11 +94,55 @@ bool postJson(String targetUrl, const char* key) {
         else
             doc[F("temp_unit")] = F("C");
 
+        // Check if we are using mDNS
+        // bool mDNS = false;
+        // if (url.getHost().endsWith(F(".local"))) {
+        //     mDNS = true;
+        // }
+
+        // Resolve hostname first, or use backup
+        //
+        // This is necessary due to flakey name resolution and because
+        // WiFiClient::connect() does not use mDNS
+        IPAddress resolvedIP;
+        if (!WiFi.hostByName(url.getHost().c_str(), resolvedIP)) {
+            Log.warning(F("Host lookup failed for %s." CR), url.getHost().c_str());
+            // Failed but see if we resolved this previously
+            if (key && !key[0]) {
+                // Lookup failed and we're doing a target
+                if (targetIp != INADDR_NONE) {
+                    resolvedIP = targetIp;
+                } else {
+                    Log.error(F("No cached IP for %s." CR), url.getHost().c_str());
+                    return false;
+                }
+            } else {
+                // Lookup failed and we're doing BF
+                if (bfIp != INADDR_NONE) {
+                    resolvedIP = bfIp;
+                } else {
+                    Log.error(F("No cached IP for %s." CR), url.getHost().c_str());
+                    return false;
+                }
+           }
+        } else { // We resolved the name to an IP
+             if (key && !key[0]) {
+                // Lookup succeeded and we're doing Target
+                targetIp = resolvedIP;
+            } else {
+                // Lookup succeeded and we're doing BF
+                bfIp = resolvedIP;
+           }           
+        }
+        Log.verbose(F("Resolved host %s to IP %s" CR), url.getHost().c_str(), resolvedIP.toString().c_str());
+
         // Connect to the HTTP server
+        //
+        // Use the IP address we resolved if we are connecting with mDNS
+        Log.verbose(F("Connecting to: %s, %l" CR), url.getHost().c_str(), url.getPort());
         WiFiClient client;
         client.setTimeout(10000);
-        Log.verbose(F("postJson(): Connecting to: %s, %l" CR), url.getHost().c_str(), url.getPort());
-        int retval = client.connect(url.getHost(), url.getPort());
+        int retval = client.connect(resolvedIP, url.getPort());
         //  1 = SUCCESS
         //  0 = FAILED
         // -1 = TIMED_OUT
@@ -108,8 +157,8 @@ bool postJson(String targetUrl, const char* key) {
             Log.verbose("Connected to endpoint." CR);
 
             // Open POST connection
-            Log.verbose(F("POST %s HTTP/1.1" CR), url.getPath().c_str());
-            client.print(F("POST "));
+            Log.verbose(F("POST /%s HTTP/1.1" CR), url.getPath().c_str());
+            client.print(F("POST /"));
             client.print(url.getPath());
             client.println(F(" HTTP/1.1"));
 
@@ -119,67 +168,50 @@ bool postJson(String targetUrl, const char* key) {
             Log.verbose(F("Host: %s" CR), url.getHost().c_str());
             client.print(F("Host: "));
             client.println(url.getHost());
-
+            //
             Log.verbose(F("Connection: close" CR));
             client.println(F("Connection: close"));
-
             // Content
             Log.verbose(F("Content-Length: %l" CR), measureJson(doc));
             client.print(F("Content-Length: "));
             client.println(measureJson(doc));
-
             // Content Type
             Log.verbose(F("Content-Type: application/json" CR)); 
             client.println(F("Content-Type: application/json"));
-
             // Key
-            if (key) {
+            if (key && !key[0]) {
                 Log.verbose(F("X-AIO-Key: %s" CR), key);
                 client.print(F("X-AIO-Key: "));
                 client.println(key);
             }
-
             // Terminate headers with a blank line
             Log.verbose(F("End headers." CR));
             client.println();
             // End Headers
 
             // Send the JSON document in body
-            Serial.println();
-            Serial.println(F("JSON:"));
+#ifdef LOG_LEVEL
+            Log.verbose(F("JSON:" CR));
             serializeJsonPretty(doc, Serial);
             Serial.println();
+#endif
             serializeJson(doc, client);
 
             // Check the  HTTP status (should be "HTTP/1.1 200 OK")
             char status[32] = {0};
             client.readBytesUntil('\r', status, sizeof(status));
-            client.stop();
-
-
+            client.stop(); 
             Log.verbose(F("Status: %s" CR), status);
-            if (strcmp(status + 9, "200 OK") != 0) {
+            if ((String(status).endsWith("200 OK"))) {
+                Log.verbose("JSON posted." CR);
+                return true;
+            } else {
                 Log.error(F("Unexpected status: %s" CR), status);
                 return false;
-            } else {
-                Log.notice("JSON posted." CR);
-                return true;
             }
         }
     } else {
         Log.error(F("Unable to parse target URL: %s" CR), targetUrl.c_str());
         return false;
     }
-}
-
-void printDNSServers() { // DEBUG
-    Log.verbose(F("DNS #1: %s, DNS #2: %s" CR), WiFi.dnsIP().toString().c_str(), WiFi.dnsIP(1).toString().c_str());
-}
-
-void printIPAddressOfHost(const char* host) { // DEBUG
-    IPAddress resolvedIP;
-    if (!WiFi.hostByName(host, resolvedIP)) {
-        Log.error(F("Host lookup failed for %s." CR), host);
-    }
-    Log.verbose(F("Host: %s, IP: %s" CR), host, resolvedIP.toString().c_str());
 }

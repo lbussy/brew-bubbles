@@ -65,13 +65,26 @@ void loop() {
     Ticker bubUpdate;
     bubUpdate.attach(BUBLOOP, [bubble](){ bubble->update(); });
 
-    // Target loops
+    // Target timer
     Ticker postTimer;
+    postTimer.attach(config->targetfreq * 60, [postTimer](){ doTarget = true; });
+    
+    // Brewer's friend timer
     Ticker bfTimer;
-    postTimer.attach(config->targetfreq * 60, httpPost);
-    bfTimer.attach(config->bffreq * 60, bfPost);
+    bfTimer.attach(config->bffreq * 60, [bfTimer](){ doBF = true; });
 
     while (true) {
+
+        // Handle JSON posts
+        if (doTarget) { // Do Target post
+            doTarget = false;
+            httpPost();
+        }
+        if (doBF) { // Do BF post
+            doBF = false;
+            bfPost();
+        }
+
         // If timers needs to be updated, update timers
         if (config->updateTargetFreq) {
             Log.notice(F("Resetting target frequency timer to %l minutes." CR), config->targetfreq);
@@ -86,12 +99,22 @@ void loop() {
             config->updateBFFreq = false;
         }
 
-        server->handleLoop();   // Handle html requests
-        MDNS.update();          // Handle mDNS requests
-
-        if (digitalRead(COUNTPIN) == HIGH) // Non-interrupt driven LED logic
+        // Handle the board LED
+        if (digitalRead(COUNTPIN) == HIGH) { // Non-interrupt driven LED logic
             digitalWrite(LED, LOW); // Turn LED on when not obstructed
-        else
-            digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble
+        } else {
+            digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble4
+        }
+
+        if (bubble->doBub) { // Serial log for bubble detect
+#ifdef LOG_LEVEL
+            Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right?
+#endif
+            bubble->doBub = false;
+        }
+
+        // Regular loop handlers
+        server->handleLoop();   // Handle HTML requests
+        MDNS.update();          // Handle mDNS requests
     }
 }
