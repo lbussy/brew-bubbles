@@ -26,6 +26,7 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 #include <WiFiManager.h>        //https://github.com/tzapu/WiFiManager WiFi Configuration Magic
 
 void wifiBlinker();
+void doWiFi();
 void doWiFi(bool);
 void resetWifi();
 

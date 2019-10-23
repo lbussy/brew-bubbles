@@ -2,11 +2,8 @@
 
 ## Open
 
-- Test mDNS for Target changes
 - Figure out why /ota/ is not working on some setups
-- Add static IP change to AP Portal
-- Add static IP change to settings
-- Address key for BF (email 9/16/19: "Next week's release")
+
 - Add SSL support for upgrade? ([see the issue](https://github.com/esp8266/Arduino/issues/6523))
 
 ## Final
@@ -139,3 +136,7 @@
 - ~~Fix /bubble/ and/or home page~~
 - ~~Fix log levels~~
 - ~~Make sure temps are read correctly at startup~~
+- ~~Address key for BF (email 9/16/19: "Next week's release")~~
+- ~~Test mDNS for Target changes~~
+- ~~Add static IP change to AP Portal~~
+- ~~Add static IP change to settings~~
