@@ -144,7 +144,7 @@ void WebServer::aliases() {
                     config->save();
                 }
                 strcat(redirect, "#controller"); // Redirect to Controller box
-                Log.verbose(F("POSTed bubname, redirecting to %s." CR), redirect);
+                Log.notice(F("POSTed bubname, redirecting to %s." CR), redirect);
 
             } else if (single->server->hasArg(F("tempInF"))) { // Change Temp in F
                 char option[8];
@@ -156,7 +156,7 @@ void WebServer::aliases() {
                     config->save();
                 }
                 strcat(redirect, "#temp"); // Redirect to Temp Control
-                Log.verbose(F("POSTed tempInF, redirecting to %s." CR), redirect);
+                Log.notice(F("POSTed tempInF, redirecting to %s." CR), redirect);
 
             } else if (single->server->hasArg(F("calRoom"))) { // Change Room temp calibration
                 if ((single->server->arg("calRoom").toDouble() < -25) || (single->server->arg("calRoom").toDouble() > 25)) {
@@ -166,7 +166,7 @@ void WebServer::aliases() {
                     config->save();
                 }
                 strcat(redirect, "#temp"); // Redirect to Temp Control
-                Log.verbose(F("POSTed calRoom, redirecting to %s." CR), redirect);
+                Log.notice(F("POSTed calRoom, redirecting to %s." CR), redirect);
 
             } else if (single->server->hasArg(F("calVessel"))) { // Change Vessel temp calibration
                 if ((single->server->arg("calVessel").toDouble() < -25) || (single->server->arg("calVessel").toDouble() > 25)) {
@@ -176,7 +176,7 @@ void WebServer::aliases() {
                     config->save();
                 }
                 strcat(redirect, "#temp"); // Redirect to Temp Control
-                Log.verbose(F("POSTed calVessel, redirecting to %s." CR), redirect);
+                Log.notice(F("POSTed calVessel, redirecting to %s." CR), redirect);
 
             } else if (single->server->hasArg(F("target"))) { // Change Target URL
                 if (single->server->arg("target").length() > 128) {
@@ -186,7 +186,7 @@ void WebServer::aliases() {
                     config->save();
                 }
                 strcat(redirect, "#target"); // Redirect to Target Control
-                Log.verbose(F("POSTed target, redirecting to %s." CR), redirect);
+                Log.notice(F("POSTed target, redirecting to %s." CR), redirect);
 
             } else if (single->server->hasArg(F("tfreq"))) { // Change Vessel temp calibration
                 if ((single->server->arg("tfreq").toInt() < 1) || (single->server->arg("tfreq").toInt() > 60)) {
@@ -197,7 +197,7 @@ void WebServer::aliases() {
                     config->save();
                 }
                 strcat(redirect, "#target"); // Redirect to Target Control
-                Log.verbose(F("POSTed tfreq, redirecting to %s." CR), redirect);
+                Log.notice(F("POSTed tfreq, redirecting to %s." CR), redirect);
 
             } else if (single->server->hasArg(F("bfkey"))) { // Change Brewer's Friend key
                 if ((single->server->arg("bfkey").length() > 64) || (single->server->arg("bfkey").length() < 20)) {
@@ -207,7 +207,7 @@ void WebServer::aliases() {
                     config->save();
                 }
                 strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
-                Log.verbose(F("POSTed bfkey, redirecting to %s." CR), redirect);
+                Log.notice(F("POSTed bfkey, redirecting to %s." CR), redirect);
 
             } else if (single->server->hasArg(F("bfreq"))) { // Change Vessel temp calibration
                 if ((single->server->arg("bfreq").toInt() < 15) || (single->server->arg("bfreq").toInt() > 120)) {
@@ -218,7 +218,7 @@ void WebServer::aliases() {
                     config->save();
                 }
                 strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
-                Log.verbose(F("POSTed bfreq, redirecting to %s." CR), redirect);
+                Log.notice(F("POSTed bfreq, redirecting to %s." CR), redirect);
 
             }
 

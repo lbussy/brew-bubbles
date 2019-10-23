@@ -34,7 +34,7 @@ void setup() {
         doWiFi(true);
     } else {
         Log.verbose(F("DRD: Normal boot." CR));
-        doWiFi(false);
+        doWiFi();
     }
 
     JsonConfig *config = JsonConfig::getInstance();

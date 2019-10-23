@@ -20,29 +20,14 @@ with Brew Bubbles. If not, see <https://www.gnu.org/licenses/>. */
 bool shouldSaveConfig = false;
 Ticker blinker;
 
-// Strings table
-//const char *const stringTable[] PROGMEM = {_html1, _html2};
+void doWiFi() {
+    doWiFi(false);
+}
 
 void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current config
+
     WiFiManager wifiManager;
     JsonConfig *config = JsonConfig::getInstance();
-
-    WiFi.mode(WIFI_STA); // Explicitly set mode, esp defaults to STA+AP
-    WiFi.setSleepMode(WIFI_NONE_SLEEP); // Make sure sleep is disabled
-
-    wifiManager.setCountry(WIFI_COUNTRY); // Setting wifi country seems to improve OSX soft ap connectivity
-    wifiManager.setWiFiAPChannel(WIFI_CHAN); // Set WiFi channel
-
-    // WiFi Callbacks:
-    // WiFiEventHandler onStationModeConnected();
-    // WiFiEventHandler onStationModeDisconnected();
-    // WiFiEventHandler onStationModeAuthModeChanged();
-    // WiFiEventHandler onStationModeGotIP();
-    // WiFiEventHandler onStationModeDHCPTimeout();
-    // WiFiEventHandler onSoftAPModeStationConnected();
-    // WiFiEventHandler onSoftAPModeStationDisconnected();
-    // WiFiEventHandler onSoftAPModeProbeRequestReceived();
-    // WiFiEventHandler onWiFiModeChange();
 
     // WiFiManager Callbacks
     wifiManager.setAPCallback(apCallback); // Called after AP has started
@@ -58,52 +43,27 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
     wifiManager.setDebugOutput(false);
 #endif
 
-    // const char * _wfmHtml1 = "<p>Enter a custom hostname if you would like something other than \"brewbubbles.\" Do not enter the \".local\" portion, this will be added automatically.</p>";
-    // const char * _wfmHtml2 = "<p>If you would like to provide static IP information, enter it here.  All fields must be correctly filled in or else configuration will not be applied.</p>";
-    // const char * _wfmIpPattern = "pattern='((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$'";
-    // const char * _wfmHostPattern = "pattern='^[a-zA-Z][a-zA-Z\d-]{1,22}[a-zA-Z\d]$'";
+    std::vector<const char *> _wfmPortalMenu = {
+        "wifi",
+        "wifinoscan",
+        "sep",
+        "info",
+        //"param",
+        //"close",
+        //"sep",
+        "erase",
+        "restart",
+        "exit"
+    };
 
-    // std::vector<const char *> _wfmPortalMenu = {
-    //     "wifi",
-    //     "wifinoscan",
-    //     "sep",
-    //     "info",
-    //     //"param",
-    //     //"close",
-    //     //"sep",
-    //     "erase",
-    //     "restart",
-    //     "exit"
-    // };
-
-    // wifiManager.setMenu(_wfmPortalMenu);   // Set menu items
+    wifiManager.setMenu(_wfmPortalMenu);   // Set menu items
     wifiManager.setClass(F("invert"));     // Set dark theme
 
-    // // Set up additional portal items
-    // //
-    // // Hostname
-    // WiFiManagerParameter wfmCustHtml1(_wfmHtml1);
-    // WiFiManagerParameter wfmCustHost("hostname", "Host Name", config->hostname, 24, _wfmHostPattern, 1);
-    // // Static IP
-    // WiFiManagerParameter wfmCustHtml2(_wfmHtml2);
-    // WiFiManagerParameter wfmCustIP("ipaddress", "Static IP", "", 15, _wfmIpPattern, 1);
-    // WiFiManagerParameter wfmCustGW("gateway", "Gateway", "", 15, _wfmIpPattern, 1);
-    // WiFiManagerParameter wfmCustSN("subnet", "Subnet Mask", "", 15, _wfmIpPattern, 1);
-    // WiFiManagerParameter wfmCustDNS1("dns", "DNS Server 1", "", 15, _wfmIpPattern, 1);
-    // WiFiManagerParameter wfmCustDNS2("dns", "DNS Server 2", "", 15, _wfmIpPattern, 1);
+    wifiManager.setCountry(WIFI_COUNTRY); // Setting wifi country seems to improve OSX soft ap connectivity
+    wifiManager.setWiFiAPChannel(WIFI_CHAN); // Set WiFi channel
 
-    // // Add portal items
-    // //
-    // // Hostname
-    // wifiManager.addParameter(&wfmCustHtml1);
-    // wifiManager.addParameter(&wfmCustHost);
-    // // Static IP
-    // wifiManager.addParameter(&wfmCustHtml2);
-    // wifiManager.addParameter(&wfmCustIP);
-    // wifiManager.addParameter(&wfmCustGW);
-    // wifiManager.addParameter(&wfmCustSN);
-    // wifiManager.addParameter(&wfmCustDNS1);
-    // wifiManager.addParameter(&wfmCustDNS2);
+    wifiManager.setShowStaticFields(true); // force show static ip fields
+    wifiManager.setShowDnsFields(true);    // force show dns field always
 
     if (ignore) { // Voluntary portal
         blinker.attach_ms(APBLINK, wifiBlinker);
@@ -130,38 +90,23 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
             digitalWrite(LED, HIGH);
             Log.warning(F("Hit timeout on connect, restarting." CR));
             ESP.restart();
-            _delay(1000); // Just a hack to allow it to reset
+            _delay(1000); // Just a hack to give it time to reset
         } else {
             // We finished with portal (configured), do we need this?
         }
     }
 
+    WiFi.mode(WIFI_STA); // Explicitly set mode, esp defaults to STA+AP
+    WiFi.setSleepMode(WIFI_NONE_SLEEP); // Make sure sleep is disabled
+
     if (blinker.active()) blinker.detach(); // Turn off blinker
-    digitalWrite(LED, HIGH); // Turn off LED
+        digitalWrite(LED, HIGH); // Turn off LED
 
     if (shouldSaveConfig) { // Save configuration
         Log.notice(F("Saving configuration." CR));
-
-        // Check if we updated hostname
-        // if (!isNullField(wfmCustHost.getValue())) {
-        //     strcpy(config->hostname, wfmCustHost.getValue());
-        // }
-
-        // Check if we provided (complete) IP information
-        // if (
-        //     !isNullField(wfmCustIP.getValue()) &&
-        //     !isNullField(wfmCustGW.getValue()) &&
-        //     !isNullField(wfmCustSN.getValue()) &&
-        //     !isNullField(wfmCustDNS.getValue())
-        // ) {
-            // TODO: Add IP information to config
-            // TODO: Add IP information to WiFiConfig startup
-        // }
-
-        //config->save();
     }
 
-    wifi_station_set_hostname(config->hostname);
+    WiFi.hostname(config->hostname);
 
     Log.notice(F("Connecting to access point: %s."), WiFi.SSID().c_str());
     while (WiFi.status() != WL_CONNECTED) {
@@ -177,14 +122,6 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
     Log.notice(F("Connected. IP address: %s." CR), WiFi.localIP().toString().c_str());
     if (blinker.active()) blinker.detach(); // Turn off blinker
     digitalWrite(LED, HIGH); // Turn off LED
-
-    // DEBUG:  Config static IP
-    // IPAddress local_ip(192, 168, 168, 155);         // Where xx is the desired IP Address
-    // IPAddress gateway(192, 168, 168, 1);            // Set gateway to match your network
-    // IPAddress dns1(8, 8, 8, 8);                     // DNS Server #1
-    // IPAddress dns2(8, 8, 4, 4);                     // DNS Server #2
-    // IPAddress subnet(255, 255, 255, 0);             // Set subnet mask to match your network
-    // WiFi.config(ip, gateway, subnet, dns1, dns2);   // Set WiFi config
 }
 
 void resetWifi() { // Wipe wifi settings and reset controller
