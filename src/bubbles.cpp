@@ -139,7 +139,7 @@ float Bubbles::getAvgAmbient() {
     float avg = 0.0;
     uint8_t size = tempAmbAvg.size();
     for (int i = 0; i < tempAmbAvg.size(); i++) {
-        float thisTemp = tempAmbAvg[i];
+        // float thisTemp = tempAmbAvg[i];
         avg += tempAmbAvg[i] / size;
     }
     return(avg);
@@ -150,7 +150,7 @@ float Bubbles::getAvgVessel() {
     float avg = 0.0;
     uint8_t size = tempVesAvg.size();
     for (int i = 0; i < tempVesAvg.size(); i++) {
-        float thisTemp = tempVesAvg[i];
+        // float thisTemp = tempVesAvg[i];
         avg += tempVesAvg[i] / size;
     }
     return(avg);
@@ -161,7 +161,7 @@ float Bubbles::getAvgBpm() {
     float avg = 0.0;
     uint8_t size = bubAvg.size();
     for (int i = 0; i < bubAvg.size(); i++) {
-        float thisTemp = bubAvg[i];
+        // float thisTemp = bubAvg[i];
         avg += bubAvg[i] / size;
     }
     return(avg);
