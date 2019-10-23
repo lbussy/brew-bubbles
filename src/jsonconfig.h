@@ -35,8 +35,12 @@ class JsonConfig {
         // Singleton Declarations
         ~JsonConfig() {single = NULL;}
         static JsonConfig* getInstance();
-        // Other Declarations
+
+        // Methods
         bool parse();
+        bool save();
+
+        // Other Declarations
         char ssid[33];              // AP SSID
         char appwd[65];             // AP Pwd
         char hostname[33];          // Hostname
@@ -53,9 +57,6 @@ class JsonConfig {
         float calVessel;            // Calibration for Vessel sensor
         unsigned long targetfreq;   // Target freqency
         unsigned long bffreq;       // Brewer's Friend frequency
-
-        // Methods
-        bool save();
 };
 
 #endif // _JSONCONFIG_H
