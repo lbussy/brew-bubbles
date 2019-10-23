@@ -3,13 +3,7 @@
 ## Open
 
 - Figure out why /ota/ is not working on some setups
-
 - Add SSL support for upgrade? ([see the issue](https://github.com/esp8266/Arduino/issues/6523))
-
-## Final
-
-- Search and evaluate "DEBUG"
-- Search and evaluate "TODO"
 
 ## Complete
 
@@ -140,3 +134,5 @@
 - ~~Test mDNS for Target changes~~
 - ~~Add static IP change to AP Portal~~
 - ~~Add static IP change to settings~~
+- ~~Search and evaluate "DEBUG"~~
+- ~~Search and evaluate "TODO"~~
