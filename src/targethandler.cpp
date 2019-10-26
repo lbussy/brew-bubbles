@@ -188,15 +188,8 @@ bool postJson(String targetUrl, const char* key) {
             Log.verbose(F("End headers." CR));
             client.println();
             // End Headers
-
-            // Send the JSON document in body
-#ifdef LOG_LEVEL
-            Log.verbose(F("JSON:" CR));
-            serializeJsonPretty(doc, Serial);
-            Serial.println();
-#endif
+            Log.verbose(F("Posting JSON to target." CR));
             serializeJson(doc, client);
-
             // Check the  HTTP status (should be "HTTP/1.1 200 OK")
             char status[32] = {0};
             client.readBytesUntil('\r', status, sizeof(status));

@@ -5,6 +5,9 @@
 .vscode
 *.code-workspace
 
+# Project files
+.picasa*
+
 # PCB and Schematic File Backups
 *.*\#[0-9]
 
