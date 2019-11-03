@@ -1,0 +1,155 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Device Assembly &#8212; Brew Bubbles 0.1.1 documentation</title>
+    <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Installing the Firmware" href="../installation/index.html" />
+    <link rel="prev" title="Brew Bubbles Documentation" href="../index.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>Brew Bubbles 0.1.1 documentation</span></a></h1>
+        <h2 class="heading"><span>Device Assembly</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="../index.html">Brew Bubbles Documentation</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="../installation/index.html">Installing the Firmware</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="device-assembly">
+<h1>Device Assembly<a class="headerlink" href="#device-assembly" title="Permalink to this headline">¶</a></h1>
+<p>Brew Bubbles runs on an ESP8266 controller. In order to detect the information to be logged, certain devices need to be connected to the controller.  A circuit board design is provided to make this easier.</p>
+<p>Assembly is not difficult, but it does require some basic soldering.</p>
+<div class="section" id="materials-required">
+<h2>Materials Required<a class="headerlink" href="#materials-required" title="Permalink to this headline">¶</a></h2>
+<p>Since this uses 1 or 2 each of very common, very inexpensive components, you may find you are better off buying a resistor assortment for instance or buying 10 or 20 of a piece at a time fpr a nominal cost. Make several!</p>
+<p>Gather the following parts and pieces:</p>
+<div class="section" id="controller">
+<h3>Controller<a class="headerlink" href="#controller" title="Permalink to this headline">¶</a></h3>
+<p>The ESP8266 controller is paired with many different “developer boards” to make connections easier.  The combo used in this project is the <strong>Wemos D1 Mini</strong>.  Wherever you get it, make sure it is an ESP-12F (if that information is listed) and that it says 4MB (or sometimes shown as 32Mb which is 4 megaBYTES converted to megabits.)  Also be sure it comes with the 8-pin male and female headers or else you will need to get them elsewhere.  You can find the Wemos D1 Mini in many places, here are a few:</p>
+<ol class="arabic simple">
+<li><strong>The “Legitimate” Way</strong>:  The Wemos D1 Mini has been knocked off mercilessly.  This is ironic since Esspressif makes the ESP-8266 controller itself and they are a Chinese company.  In the past, <a class="reference external" href="https://www.wemos.cc/en/latest/index.html">wemos.cc</a> was the was to buy the “original” Wemos D1 Min, however they no longer appear to sell them and instead the website is a wiki-type information source.</li>
+<li><strong>The Quick Way</strong>:  Why, Amazon of course.  You can search for “Wemos D1 Mini” and find a large number of different ways to buy.  My preference is to get a handful at a time since they are cheaper that way.  <a class="reference external" href="https://www.amazon.com/IZOKEE-NodeMcu-Internet-Development-Compatible/dp/B076F52NQD/">This</a> link will get you five for $17.99 in a couple of days with free Prime shipping ($3.60/ea.)</li>
+<li><strong>The Cheap Way</strong>:  <a class="reference external" href="https://www.aliexpress.com/item/32688079351.html">AliExpress</a> has everything anyone would ever need, so long as that person can wait a month or more for delivery.  For $1.99 each this is as cheap as it gets.  Be aware that there are different sellers on there and each will ship separately.  Sometimes it’s better if you are buying multiple things to spend a little more just to get everything from one seller and save on shipping.</li>
+</ol>
+</div>
+<div class="section" id="printed-circuit-board">
+<h3>Printed Circuit Board<a class="headerlink" href="#printed-circuit-board" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="https://github.com/lbussy/brew-bubbles/tree/master/pcb">pcb</a> directory in the <a class="reference external" href="https://github.com/lbussy/brew-bubbles/">repository</a> contains the Eagle files for printed circuit board shield supporting Brew Bubbles.  The shield provides the necessary component connections and circuitry for the ESP-8266 controller used in this project. It is nearly identical in size to the Wemos D1 mini we use to provide a very compact and lightweight footprint.  Order 3 boards for $5.65 from Oshpark using this <a class="reference external" href="https://pcb-oshpark.brewpiremix.com">link</a>, or download the Brew-Bubbles.brd file and use it with the board fabrication house of your choosing.</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/Top.PNG"><img alt="Top view of printed circuit board" src="../_images/Top.PNG" style="width: 452.7px; height: 509.4px;" /></a>
+<p class="caption"><span class="caption-text">This is a view of the top of the printed circuit board, as rendered by OshPark.</span></p>
+</div>
+<div class="figure align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/Bottom.PNG"><img alt="Bottom view of printed circuit board" src="../_images/Bottom.PNG" style="width: 452.7px; height: 509.4px;" /></a>
+<p class="caption"><span class="caption-text">This is a view of the bottom of the printed circuit board, as rendered by OshPark.</span></p>
+</div>
+<p>If you would like to personalize these board designs, you may modify them with Autodesk’s <a class="reference external" href="https://www.autodesk.com/products/eagle/overview">EAGLE</a>. EAGLE is a scriptable electronic design automation (EDA) application with schematic capture, printed circuit board (PCB) layout, auto-router and computer-aided manufacturing (CAM) features. EAGLE stands for Easily Applicable Graphical Layout Editor and is developed by CadSoft Computer GmbH.</p>
+</div>
+<div class="section" id="general-parts">
+<h3>General Parts<a class="headerlink" href="#general-parts" title="Permalink to this headline">¶</a></h3>
+<p>These are the parts which you can get pretty much anywhere.</p>
+<p>The items marked with an *asterisk below are optional. They are in the design to provide a means to monitor and trend the ambient temperature where the fermenter is placed, and/or the fermenting liquid’s temperature via a thermowell or insulated in contact with the fermenter. If you chooses not to use these, the firmware will automatically skip reporting these readings.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="69%" />
+<col width="22%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Quan</th>
+<th class="head">Description</th>
+<th class="head">Placement</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>3</td>
+<td>0.1uF 10V Ceramic Capacitor</td>
+<td>C1, C2, C3</td>
+</tr>
+<tr class="row-odd"><td>2*</td>
+<td>2.2k ohm 1/4W 5% Axial resistor</td>
+<td>R1, R2</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>150 ohm 1/4W 5% Axial resistor</td>
+<td>R3</td>
+</tr>
+<tr class="row-odd"><td>2*</td>
+<td>3-Pin 90-degree Header</td>
+<td>VESSEL, ROOM</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>GP1A57HR Transmissive Photointerrupter</td>
+<td>U1</td>
+</tr>
+</tbody>
+</table>
+<p>This BOM is available on <a class="reference external" href="https://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=216fcbe935">Mouser</a>.</p>
+<p>If you choose to use the temperature sensors, you will need to obtain two (2) Waterproof <a class="reference external" href="https://www.amazon.com/Vktech-Waterproof-Digital-Temperature-DS18b20/dp/B00EU70ZL8/">DS18B20</a> Temperature Sensor with lead.  These are the same as used with teh various fermenter temperature control projects such as BrewPi Remix.  You will also need to crimp on a three terminal female plug.  You can get a <a class="reference external" href="https://www.amazon.com/MG-SN-28B-Ratchet-Wire-Crimper/dp/B07FCX1M6Q/">kit</a> on Amazon with more terminals than you will ever need and the crimping tool for about $25, or do some careful AliExpress shopping.</p>
+</div>
+</div>
+<div class="section" id="component-installation">
+<h2>Component Installation<a class="headerlink" href="#component-installation" title="Permalink to this headline">¶</a></h2>
+<p>You are going to have to solder.  If you have legitimately never soldered anything before, I recommend you go spend a few minutes on YouTube and watch a few videos.  It is not hard at all once you get the hang of it.  And, while the shield is comparatively small, the components chosen are simple through-hole parts which may be easily soldered by a beginner with a little patience.</p>
+<p>I will not give a step-by-step on how to solder here, but I will recommend the following part installation order for ease of assembly:</p>
+<ol class="arabic simple">
+<li>Resistors - As the shortest mounted components, soldering the three resistors to the board first will be easiest. They are also some of the most tolerant components so these will give you some experience to get you going.</li>
+<li>3-Pin headers - These components are not sensitive to the heat at all except for the plastic.</li>
+<li>Capacitors - These are mounted next. Be sure to get them as close to the board as possible as having them stick up will change their impact on the circuit.</li>
+<li>8-pin female headers - These are the tallest items on the front side of the board and will be the last pieces to go on this side. Lightly tack on one pin and make sure the header is straight. When you have it positioned correctly, start from the other end and solder the pins properly. If you have a D1 laying around with the pin headers soldered on it already, using that to steady the parts will help. This is a chicken or the egg choice with #5. The first part, either controller or shield, will be the most difficult. After that you can use a completed “opposite” to steady the headers of the first.</li>
+<li>8-pin male headers - These need to be soldered on the controller board. See note on #4 above.</li>
+<li>GP1A57HR photointerrupter - If the controller is still attached, take it off temporarily. The photointerrupter goes on the <em>back</em> side of the circuit board in the outline provided, therefore you solder it from the top side.  If you out it on the wrong side you can remove the solder (more YouTube work) but I’m not going to lie: it is frustrating.</li>
+</ol>
+<p>Once you have finished soldering the shield, make sure to clean off the flux.  You can use cheap vodka or Everclear, or a commercially available flux solvent.</p>
+</div>
+<div class="section" id="final-assembly">
+<h2>Final Assembly<a class="headerlink" href="#final-assembly" title="Permalink to this headline">¶</a></h2>
+<p>It should be painfully obvious by now that the Wemos should plug into the shield.  There is a notch in the shield which should correspond to the notch in the Wemos, and the controller should be on the sme side as the components as shown:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/complete.jpg"><img alt="Completed assembly" src="../_images/complete.jpg" style="width: 360.0px; height: 480.0px;" /></a>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="../index.html">Brew Bubbles Documentation</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="../index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="../installation/index.html">Installing the Firmware</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Lee C. Bussy.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>
