@@ -15,6 +15,7 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
+import subprocess
 import recommonmark
 from recommonmark.transform import AutoStructify
 
@@ -25,10 +26,15 @@ project = u'Brew Bubbles'
 copyright = u'2019, Lee C. Bussy'
 author = u'Lee C. Bussy'
 
+
+# Get 0.0.0 version from latest Git tag
+tagcmd = "git describe --tags --abbrev=0"
+version = subprocess.check_output(tagcmd, shell=True).decode().strip()
+
 # The short X.Y version
-version = u''
+version = version
 # The full version, including alpha/beta/rc tags
-release = u'1.0.0'
+release = version
 
 
 # -- General configuration ---------------------------------------------------
@@ -75,7 +81,7 @@ pygments_style = None
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'haiku'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -102,7 +108,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'BrewBubblesdoc'
+htmlhelp_basename = 'BrewBubblesDocs'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -151,8 +157,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'BrewBubbles', u'Brew Bubbles Documentation',
-     author, 'BrewBubbles', 'One line description of project.',
-     'Miscellaneous'),
+     author, 'BrewBubbles', 'Fermentation progress for homebrewers.',
+     'Howto'),
 ]
 
 
@@ -173,7 +179,7 @@ epub_title = project
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
 
-# USe AutoStructify tp convert markdown to rST
+# Use AutoStructify tp convert markdown to rST
 def setup(app):
     app.add_config_value('recommonmark_config', {
             'url_resolver': lambda url: github_doc_root + url,
