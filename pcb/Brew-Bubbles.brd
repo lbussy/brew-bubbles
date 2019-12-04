@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.5.1">
+<eagle version="9.5.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -159,17 +159,23 @@
 <board>
 <fusionsync huburn="a.cGVyc29uYWw6dWUyODZkMjAz" projecturn="a.cGVyc29uYWw6dWUyODZkMjAzI0QyMDE2MTExMzUwODExODUx" f3durn="urn:adsk.wipprod:dm.lineage:MLlsr9vlTViqnB-TMc0w0w" pcbguid="9daba508-4cd0-4a0c-8a93-8bf912c45092" lastpulledtime="" lastsyncedchangeguid="227e19ab-8c40-ec9c-751c-eb66027dfc6e"/>
 <plain>
-<wire x1="1.94" y1="0.03" x2="1.94" y2="7.02" width="0" layer="20"/>
-<wire x1="1.94" y1="7.02" x2="0.03" y2="7.02" width="0" layer="20"/>
-<wire x1="0.03" y1="7.02" x2="0.03" y2="28.74" width="0" layer="20"/>
-<wire x1="1.94" y1="0.03" x2="25.57" y2="0.03" width="0" layer="20"/>
-<wire x1="0.03" y1="28.74" x2="25.55" y2="28.75" width="0" layer="20"/>
-<text x="6.43585" y="9.355" size="0.8" layer="26" font="vector" rot="MR90" align="top-left">Designed by @LBussy
+<wire x1="0.347375" y1="28.740125" x2="25.232596875" y2="28.749875" width="0" layer="20"/>
+<wire x1="25.232596875" y1="28.749875" x2="25.550221875" y2="28.4313875" width="0" layer="20" curve="-89.926017"/>
+<wire x1="25.550221875" y1="28.4313875" x2="25.569778125" y2="0.3486125" width="0" layer="20"/>
+<wire x1="25.569778125" y1="0.3486125" x2="25.252278125" y2="0.03" width="0" layer="20" curve="-90.040039"/>
+<wire x1="25.252278125" y1="0.03" x2="2.2575" y2="0.03" width="0" layer="20"/>
+<wire x1="2.2575" y1="0.03" x2="1.94" y2="0.3475" width="0" layer="20" curve="-90"/>
+<wire x1="1.94" y1="0.3475" x2="1.94" y2="6.7025" width="0" layer="20"/>
+<wire x1="1.94" y1="6.7025" x2="1.6225" y2="7.02" width="0" layer="20" curve="90"/>
+<wire x1="1.6225" y1="7.02" x2="0.3475" y2="7.02" width="0" layer="20"/>
+<wire x1="0.3475" y1="7.02" x2="0.03" y2="7.3375" width="0" layer="20" curve="-90"/>
+<wire x1="0.03" y1="7.3375" x2="0.03" y2="28.422625" width="0" layer="20"/>
+<wire x1="0.03" y1="28.422625" x2="0.347375" y2="28.740125" width="0" layer="20" curve="-89.977443"/>
+<text x="6.55015" y="8.3771" size="0.8128" layer="26" font="vector" rot="MR90" align="top-left">Designed by @LBussy
 www.brewbubbles.com</text>
 <text x="18.63" y="6.2" size="0.8" layer="25" font="vector" align="bottom-center">DAT</text>
 <text x="21.1821" y="6.2" size="0.8" layer="25" font="vector" align="bottom-center">VCC</text>
 <text x="23.71" y="6.2" size="0.8" layer="25" font="vector" align="bottom-center">GND</text>
-<wire x1="25.55" y1="28.75" x2="25.57" y2="0.03" width="0" layer="20"/>
 <text x="3.7" y="6.2" size="0.8" layer="25" font="vector" align="bottom-center">DAT</text>
 <text x="6.3" y="6.2" size="0.8" layer="25" font="vector" align="bottom-center">VCC</text>
 <text x="8.8" y="6.2" size="0.8" layer="25" font="vector" align="bottom-center">GND</text>
