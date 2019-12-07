@@ -2,7 +2,8 @@
 
 ## Open
 
-- Figure out why /ota/ is not working on some setups
+- Add Thingspeak support
+- Add Brewfather support
 - Add SSL support for upgrade? ([see the issue](https://github.com/esp8266/Arduino/issues/6523))
 
 ## Complete
@@ -136,3 +137,4 @@
 - ~~Add static IP change to settings~~
 - ~~Search and evaluate "DEBUG"~~
 - ~~Search and evaluate "TODO"~~
+- ~~Figure out why /ota/ is not working on some setups~~
