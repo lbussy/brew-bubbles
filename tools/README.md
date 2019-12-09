@@ -6,7 +6,6 @@ The tools in this directory are primarily used during the development process.
 
 **File Name**|**Description**
 -----|-----
-`brew-bubbles.php`|Minimal PHP endpoint for Brew Bubbles.
-`flashFirmware.sh`|Uses `esptool.py` to flash firmware files to ESP-32.  Uses files in {git base}/bin directory.
-`git_rev.py`|Used by PlatformIO to provide information about the Git repo to the compiler.
-`name_firmware.py`|Used by PlatformIO to name the firmware generated.
+`brewbubbles-api.php`| Minimal PHP endpoint example for Brew Bubbles.
+`git_rev.py`| Used by PlatformIO to provide information about the Git repo to the compiler.
+`name_firmware.py`| Used by PlatformIO to name the firmware generated.

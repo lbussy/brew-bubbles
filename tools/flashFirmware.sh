@@ -22,7 +22,7 @@ chip="esp8266"          # {auto,esp8266,esp32}
 before="default_reset"  # {hard_reset,soft_reset,no_reset}
 after="hard_reset"      # {hard_reset,soft_reset,no_reset}
 arg="write_flash"       # Positional arguments:
-                        #   {load_ram,dump_mem,read_mem,write_mem,write_flash,
+                        #   {load_ram,dump_mem,read_mem,write_mem,write_flash,py
                         #   run,image_info,make_image,elf2image,read_mac,
                         #   chip_id,flash_id,read_flash_status,
                         #   write_flash_status,read_flash,verify_flash,
@@ -49,3 +49,5 @@ else
     echo -e "\nFlashing firmware to $chip.\n"
     eval "$cmd"
 fi
+
+# "esptool.py --chip esp8266 --before default_reset --after $after $arg $loc1 $img1 $loc2 $img2"
