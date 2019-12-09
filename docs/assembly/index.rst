@@ -26,7 +26,7 @@ The ESP8266 controller is paired with many different "developer boards" to make 
 Printed Circuit Board
 `````````````````````
 
-The pcb_ directory in the repository_ contains the Eagle files for printed circuit board shield supporting Brew Bubbles.  The shield provides the necessary component connections and circuitry for the ESP-8266 controller used in this project. It is nearly identical in size to the Wemos D1 mini we use to provide a very compact and lightweight footprint.  Order 3 boards for $5.65 from Oshpark using this link_, or download the Brew-Bubbles.brd file and use it with the board fabrication house of your choosing.
+The pcb_ directory in the repository_ contains the Eagle files for printed circuit board shield supporting Brew Bubbles.  The shield provides the necessary component connections and circuitry for the ESP-8266 controller used in this project. It is nearly identical in size to the Wemos D1 mini we use to provide a very compact and lightweight footprint.  Order boards for $4.55 per set of 4 from PCBs.io using this link_, or download the Brew-Bubbles.brd file and use it with the board fabrication house of your choosing.
 
 .. figure:: Top.PNG
    :scale: 90 %
@@ -101,7 +101,7 @@ It should be painfully obvious by now that the Wemos should plug into the shield
 .. _AliExpress: https://www.aliexpress.com/item/32688079351.html
 .. _pcb: https://github.com/lbussy/brew-bubbles/tree/master/pcb
 .. _repository: https://github.com/lbussy/brew-bubbles/
-.. _link: https://pcb-oshpark.brewpiremix.com
+.. _link: https://pcbs.io/share/4lgy0
 .. _EAGLE: https://www.autodesk.com/products/eagle/overview
 .. _Mouser: https://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=216fcbe935
 .. _DS18B20: https://www.amazon.com/Vktech-Waterproof-Digital-Temperature-DS18b20/dp/B00EU70ZL8/
