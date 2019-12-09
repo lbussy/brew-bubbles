@@ -8,6 +8,7 @@
 # Python Files
 __pycache__/
 *.pyc
+out.txt
 
 # PyInstaller Files
 /build
