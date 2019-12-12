@@ -13,7 +13,7 @@ spiffs.bin_    The Brew Bubbles web file system        0x300000
 Flashing Firmware - Initial
 ---------------------------
 
-Flashing the firmware may be done from many platforms with a variety of tools.  Following are some methods which have been tested.  Other methods may work however I have no experience with them.
+Flashing the firmware may be done from many platforms with a variety of tools.  The following are some methods that have been tested.  Other methods may work however I have no experience with them.
 
 Before proceeding, connect your controller via the USB port to your workstation.
 
@@ -46,9 +46,9 @@ I do not have access to a Mac, however, anecdotally I believe Mac users may foll
 Windows-Based Platforms
 ```````````````````````
 
-Espressif's Flash Download tool is the recommended method for Windows platforms.  Download_ directly from Espressif's website.  Unzip the tool to a convenient folder and execute the application (named `flash_download_tools_v3.6.7.exe` at the time of writing.)
+Espressif's Flash Download tool is the recommended method for Windows platforms.  Download_ it directly from Espressif's website.  Unzip the tool to a convenient folder and execute the application (named `flash_download_tools_v3.6.7.exe` at the time of writing.)
 
-You will see a console window and a main screen:
+You will see a console window and the main screen:
 
 .. figure:: Splash.PNG
    :scale: 60%
