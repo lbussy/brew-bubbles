@@ -30,14 +30,14 @@ Printed Circuit Board
 
 The pcb_ directory in the repository_ contains the Eagle files for printed circuit board shield supporting Brew Bubbles.  The shield provides the necessary component connections and circuitry for the ESP8266 controller used in this project. It is nearly identical in size to the Wemos D1 mini we use to provide a very compact and lightweight footprint.  Order boards for $4.55 per set of 4 from PCBs.io using this link_, or download the Brew-Bubbles.brd file and use it with the board fabrication house of your choosing.
 
-.. figure:: Top.PNG
+.. figure:: Top.png
    :scale: 90 %
    :align: center
    :alt: Top view of printed circuit board
 
    This is a view of the top of the printed circuit board, as rendered by PBCs.io.
 
-.. figure:: Bottom.PNG
+.. figure:: Bottom.png
    :scale: 90 %
    :align: center
    :alt: Bottom view of printed circuit board
