@@ -88,15 +88,32 @@ I will not give a step-by-step on how to solder here, but I will recommend the f
 
 Once you have finished soldering the shield, make sure to clean off the flux. You can use cheap vodka or Everclear, or a commercially available flux solvent.
 
-Final Assembly
---------------
-
 It should be painfully obvious by now that the Wemos should plug into the shield.  There is a notch in the shield which should correspond to the notch in the Wemos, and the controller should be on the same side as the components as shown:
 
 .. figure:: complete.jpg
    :scale: 100 %
    :align: center
    :alt: Completed assembly
+
+Bracket and Mounting
+--------------------
+
+The photo-receptor is positioned such that the gap surrounds the bottom of a fermentation S-Lock. In this way when bubbles pass by they are registered and counted.
+
+.. figure:: sensor-bend.jpg
+   :scale: 45 %
+   :align: center
+   :alt: Position of sensor around airlock
+
+You should certainly feel free to use duct tape or a rubber-band or whatever suits you.  For those who desire a more finished approach, a 3-D printable bracket_ model is included in the project.  The finished device is slid into the top so that the temperature sensor connectors are exposed on the top.  The airlock is then passed through the hole and into the carboy stopper.  The hole may need to be adjusted larger or drilled out depending on the size of your airlock. If it is too loose around the airlock, a drill stop or even tape may be used on the tube under the bracket to hold it in place.
+
+There is a hole in the side intended to allow using a pop-rivet or small screw to secure the temperature sensor cable(s) with an R-type cable clamp_. This is recommended to avoid strain on the small wires.
+
+.. figure:: mounted.jpg
+   :scale: 45 %
+   :align: center
+   :alt: Completed assembly on fermenter
+
 
 .. _wemos.cc: https://www.wemos.cc/en/latest/index.html
 .. _This: https://www.amazon.com/IZOKEE-NodeMcu-Internet-Development-Compatible/dp/B076F52NQD/
@@ -108,3 +125,5 @@ It should be painfully obvious by now that the Wemos should plug into the shield
 .. _Mouser: https://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=216fcbe935
 .. _DS18B20: https://www.amazon.com/Vktech-Waterproof-Digital-Temperature-DS18b20/dp/B00EU70ZL8/
 .. _kit: https://www.amazon.com/MG-SN-28B-Ratchet-Wire-Crimper/dp/B07FCX1M6Q/
+.. _bracket: https://github.com/lbussy/brew-bubbles/tree/master/bracket
+.. _clamp: https://www.amazon.com/InstallerParts-Pack-R-Type-Cable-Clamp/dp/B01DEX6J4U

@@ -24,7 +24,7 @@ Espressif, the makers of the ESP8266, have adopted a python-based tool named esp
 
     pip install esptool
 
-**Note:** With some Python installations this may not work and you'll receive an error, try `python -m pip install esptool` or `pip2 install esptool`.
+**Note:** With some Python installations this may not work and you'll receive an error, try `python -m pip install esptool` or `pip2 install esptool` (the latter especially if you are on Python3).
 
 After installing, you will have esptool.py installed into the default Python executables directory.  For manual installation instructions, please visit the GitHub repository_.
 
@@ -96,7 +96,7 @@ If you desire to completely erase your controller, you may leverage the "*ERASE*
 Firmware Updates
 ----------------
 
-The web application provides Over The Air (OTA) update functionality.  Navigate to the *Settings* page and scroll down to the *Update Firmware* section.
+The web application provides Over The Air (OTA) update functionality for upgrades.  Navigate to the *Settings* page and scroll down to the *Update Firmware* section.
 
 .. _firmware.bin: https://github.com/lbussy/brew-bubbles/raw/master/firmware/firmware.bin
 .. _spiffs.bin: https://github.com/lbussy/brew-bubbles/raw/master/firmware/spiffs.bin
