@@ -1,5 +1,0 @@
-
-Flashing controller.  This may take a minute.
-
-Controller flash completed successfully.
-Waiting to exit.
