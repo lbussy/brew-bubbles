@@ -1,3 +1,5 @@
+[![Brew Bubbles Logo](https://i1.wp.com/www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")](http://www.brewbubbles.com/)
+
 # Patent and Prior Art
 
 After an admittedly amateur search, no patents were found which may be considered infringed-upon by this project.  The [patent in this folder](US6814992.pdf), 6,814,992 B2 dated November 9, 2004, was the only similar patent unearthed.  If one were to look only at the title and the pictures, one may be concerned that this patent is applicable, however upon additional digging it is apparent that the patent applies to an electro-conductive detection methodology.  Brew Bubbles similarly utilizes a commercially available product to facilitate detection, however differentially uses a photo-electric sensor to detect an event.

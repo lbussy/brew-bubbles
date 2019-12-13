@@ -2,4 +2,4 @@
 
 # Web Pages
 
-These are the pages which are loaded onto the controller which provide user interaction functionality with the Brew Bubbles application.
+These are the pages that are loaded onto the controller that provide user interaction functionality with the Brew Bubbles application.
