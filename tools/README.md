@@ -1,8 +1,10 @@
 [![Brew Bubbles Logo](https://i1.wp.com/www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")](http://www.brewbubbles.com/)
 
-## Tools in this Directory
+# Brew Bubbles Tools
 
 The tools in this directory are primarily used during the development process.
+
+## Tools in this Directory
 
 **File Name**|**Description**
 -----|-----
