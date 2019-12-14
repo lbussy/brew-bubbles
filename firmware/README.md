@@ -8,7 +8,8 @@ This directory contains the firmware files and scripts to prepare the controller
 
 **File Name**|**Description**
 -----|-----
+`createInstaller.py` | Freezes the Python environment and packages a cross-platform installer.
 `flashFirmware.py`| Uses `esptool.py` to flash firmware files to ESP-8266.
 `firmware.bin`| Main firmware file containing the Brew Bubbles application.
-`spiffs.bin`| Controler filesystem image containing the web pages used by Brew Bubbles.
+`spiffs.bin`| Controller filesystem image containing the web pages used by Brew Bubbles.
 `version.json` | File used for version control.
