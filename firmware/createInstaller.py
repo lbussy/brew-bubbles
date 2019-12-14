@@ -92,11 +92,8 @@ def freezeFlasher():
     sourceInstaller = "{0}\dist\{1}.exe".format(currentPath, installer)
     destInstaller = "{0}\{1}.exe".format(currentPath, installer)
 
-    #subprocess.run("pyinstaller --icon favicon.ico --add-binary logo.gif;logo.gif --add-binary firmware.bin;firmware.bin --add-binary spiffs.bin;spiffs.bin --noupx -y flashFirmware.py")
     # TODO:  Use version
-    # TODO:  Fix logo
     # TODO:  Fix icon
-    # TODO:  Use --onefile
 
     process = subprocess.Popen([
             shutil.which('pyinstaller'),
