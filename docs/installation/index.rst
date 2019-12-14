@@ -17,6 +17,9 @@ Flashing the firmware may be done from many platforms with a variety of tools.  
 
 Before proceeding, connect your controller via the USB port to your workstation.
 
+Important Note:
+    The ESP8266 has a memory section which is not erased or written over by flashing firmware. If you have previously used your controller for any other tasks, it is recommended that you erase flash before you begin. The method to do that differs by tool, and is contained in the sections below.
+
 Unix-Based Platforms (or Windows with Python)
 ``````````````````````````````````````````````````````
 
