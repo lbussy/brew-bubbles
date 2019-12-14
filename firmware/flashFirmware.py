@@ -70,6 +70,9 @@ def press(button):
     global running
     if not running:
         if button == "Continue":
+            app.disableButton("Continue")
+            app.setLabel("title", "Please wait ...")
+            app.setButton("Continue", "Working")
             t = threading.Thread(target=handleFlash)
             t.start()
         else:
@@ -97,6 +100,7 @@ def createGui(path):
     app.go()
 
 def handleFlash():
+    global app
     global running
     global path
     running = True
@@ -137,6 +141,14 @@ def handleFlash():
             for output in process.stdout.readlines():
                 print(output.strip())
             break
+    app.setLabel("title", "Flash complete.")
+    app.enableButton("Continue")
+    app.setButton("Continue", "Exit")
+    app.setButton("Continue", exit)
+
+def exit():
+    global app
+    app.stop()
 
 def main():
     global app
