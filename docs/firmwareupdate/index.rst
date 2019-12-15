@@ -29,6 +29,8 @@ Warning:
 
 During this process, both the firmware and the SPIFFS updates apply.  When the update is complete, the application settings are re-applied, and a completion message is displayed.
 
+The controller's onboard LED may flicker during the upgrade.  Once complete, the LED remains steady on or off, depending on whether the sensor is blocked.
+
 .. figure:: 3_update_firmware.jpg
    :scale: 45 %
    :align: center
