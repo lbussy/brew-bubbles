@@ -126,6 +126,7 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
 
 void resetWifi() { // Wipe wifi settings and reset controller
     WiFiManager wifiManager;
+    _delay(3000); // Allow page to load
     wifiManager.resetSettings();
     if (blinker.active()) blinker.detach(); // Turn off blinker
     digitalWrite(LED, LOW); // Turn on LED

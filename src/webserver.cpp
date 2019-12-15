@@ -86,7 +86,6 @@ void WebServer::aliases() {
         HTTP_GET,
         []() {
             single->handleFileRead(F("/wifi2.htm"));
-            _delay(5000);   // Let page load
             resetWifi();    // Wipe settings, reset controller
         });
 
