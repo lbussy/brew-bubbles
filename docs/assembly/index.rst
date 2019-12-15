@@ -126,3 +126,8 @@ There is a hole in the side of the bracket intended to allow using a pop-rivet o
 .. _kit: https://www.amazon.com/MG-SN-28B-Ratchet-Wire-Crimper/dp/B07FCX1M6Q/
 .. _bracket: https://github.com/lbussy/brew-bubbles/tree/master/bracket
 .. _clamp: https://www.amazon.com/InstallerParts-Pack-R-Type-Cable-Clamp/dp/B01DEX6J4U
+
+Power
+-----
+
+Power the device via its USB port with a standard 5V cell phone type charger or power supply.
