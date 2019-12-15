@@ -1,7 +1,37 @@
 Firmware Update
 ===============
 
-.. figure:: 5_target_settings.jpg
+Once you flash the controller initially, you may update Brew Bubbles via the web page when new versions are released.  This may be done without erasing any of the Brew Bubbles' settings.  If you choose to flash new firmware and SPIFFS manually, your application configuration is lost.  Click the "Update Firmware" button to continue.
+
+.. figure:: 1_update_firmware.jpg
    :scale: 45 %
    :align: center
-   :alt: Target Settings
+   :alt: Update Firmware
+
+The next page displays your controller's current version, as well as the latest version available.
+
+.. figure:: 2_update_firmware.jpg
+   :scale: 45 %
+   :align: center
+   :alt: Version comparison
+
+If you wish to proceed, clicking "Update Firmware" one more time begins the process.
+
+.. figure:: 3_update_firmware.jpg
+   :scale: 45 %
+   :align: center
+   :alt: Version comparison
+
+A page displays while the upgrade is in progress.
+
+Warning:
+    Do not close this page.  If you close the page before the update is complete, you may lose your application settings.
+
+During this process, both the firmware and the SPIFFS updates apply.  When the update is complete, the application settings are re-applied, and a completion message is displayed.
+
+.. figure:: 3_update_firmware.jpg
+   :scale: 45 %
+   :align: center
+   :alt: Version comparison
+
+The page redirects after this message and opens the main page, or you may navigate there manually.
