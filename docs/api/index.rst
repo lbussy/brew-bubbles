@@ -3,34 +3,34 @@ Brew Bubbles API
 
 Brew Bubbles utilizes JSON to send and receive data.  The device likewise stores its configuration in JSON within SPIFFS:
 
-```
-{
-    "apconfig":{
-        "ssid":"brewbubbles",
-        "appwd":"brewbubbles"
-    },
-    "hostname":"brewbubbles",
-    "bubbleconfig":{
-        "name":"Fermenter 1",
-        "tempinf":true
-    },
-    "calibrate":{
-        "room":0,
-        "vessel":0
-    },
-    "targetconfig":{
-        "targeturl":"",
-        "freq":2
-    },
-    "bfconfig":{
-        "bfkey":"c6e88f70f575c4ecdca3dcb686381185",
-        "freq":15
-    },
-    "dospiffs1":false,
-    "dospiffs2":false,
-    "didupdate":false
-}
-```
+::
+
+    {
+        "apconfig":{
+            "ssid":"brewbubbles",
+            "appwd":"brewbubbles"
+        },
+        "hostname":"brewbubbles",
+        "bubbleconfig":{
+            "name":"Fermenter 1",
+            "tempinf":true
+        },
+        "calibrate":{
+            "room":0,
+            "vessel":0
+        },
+        "targetconfig":{
+            "targeturl":"",
+            "freq":2
+        },
+        "bfconfig":{
+            "bfkey":"c6e88f70f575c4ecdca3dcb686381185",
+            "freq":15
+        },
+        "dospiffs1":false,
+        "dospiffs2":false,
+        "didupdate":false
+    }
 
 These keys represent the following settings:
 
@@ -82,27 +82,29 @@ Outbound API
 /bubble/:
     Triggers the controller to send the last status payload
 
-```
-{
-    "api_key":"Brew Bubbles",
-    "device_source":"Brew Bubbles",
-    "name":"Fermenter 1",
-    "bpm":3.2,
-    "ambient":65.3,
-    "temp":65.525,
-    "temp_unit":"F",
-    "datetime":"2019-12-15T21:48:07Z"
-}
-```
+::
+
+    {
+        "api_key":"Brew Bubbles",
+        "device_source":"Brew Bubbles",
+        "name":"Fermenter 1",
+        "bpm":3.2,
+        "ambient":65.3,
+        "temp":65.525,
+        "temp_unit":"F",
+        "datetime":"2019-12-15T21:48:07Z"
+    }
+
 
 /thisVersion/:
     Returns the current controller firmware and SPIFFS version in JSON format:
 
-```
-{
-    "version": "0.1.1"
-}
-```
+::
+
+    {
+        "version": "0.1.1"
+    }
+
 
 /thatVersion/:
     Returns the currently available controller firmware and SPIFFS version from the Brew Bubbles website in the same format as the local version
