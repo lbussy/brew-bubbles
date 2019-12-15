@@ -7,7 +7,6 @@ For spelling/grammatical errors, or if you would like to improve the documentati
 
 .. toctree::
     :maxdepth: 2
-    :caption: Contents:
 
     assembly/index.rst
     installation/index.rst
@@ -15,13 +14,7 @@ For spelling/grammatical errors, or if you would like to improve the documentati
     configuration/index.rst
     firmwareupdate/index.rst
     wifireset/index.rst
+    api/index.rst
     troubleshooting/index.rst
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 .. _open an issue on GitHub: https://github.com/lbussy/brew-bubbles/issues

@@ -10,7 +10,7 @@ The Brew Bubbles device leverages a multicast Domain Naming System (mDNS) to mak
 
 Since I designed Brew Bubbles to be accessed and configured via a web page, you need to know its address.  Your local WiFi automatically assigns an IP address if you did not enter a static address in the WiFi configuration.  You can always type in something like `192.168.4.100`, but that's not as easy to remember as `brewbubbles.local.`
 
-MacOS and Linus (including Raspberri Pi's) have implementationso of mDNS which will natively allow them to use the *.local name.  Windows requires a small program to be installed to support mDNS.  Support for mDNS is indicate in the table below:
+MacOS and Linus (including Raspberri Pi's) have implementationso of mDNS which will natively allow them to use the \*.local name.  Windows requires a small program to be installed to support mDNS.  Support for mDNS is indicate in the table below:
 
 ================  ============================================================
 Operating System  mDNS Support
@@ -32,14 +32,14 @@ Menu
 Across the top of every page, a menu displays.  The standard desktop page looks like the below:
 
 .. figure:: desktop_header.JPG
-   :scale: 45 %
+   :scale: 100 %
    :align: center
    :alt: Desktop menu view
 
 The mobile header looks like the below:
 
 .. figure:: mobile_header.jpg
-   :scale: 45 %
+   :scale: 100 %
    :align: center
    :alt: Mobile menu view
 
@@ -161,15 +161,15 @@ Target:
     
     If a port number is required, it comes immediately after the hostname.  Basic URI rules are:
 
-```
-http:[//authority]/path[?query][#fragment]
-```
+::
+
+    http:[//authority]/path[?query][#fragment]
 
 Authority is made up of:
 
-```
-authority = [userinfo@]host[:port]
-```
+::
+
+    authority = [userinfo@]host[:port]
 
 For more information, please review the Wiki_ article.
 
