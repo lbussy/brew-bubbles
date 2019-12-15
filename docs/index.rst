@@ -6,14 +6,16 @@ This documentation is absolutely a work in progress, in that I depend on *you* t
 For spelling/grammatical errors, or if you would like to improve the documentation, please feel free to issue a pull request with the update.  For technical issues with the documentation, please  `open an issue on GitHub`_.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
+    :caption: Contents:
 
-   assembly/index.rst
-   installation/index.rst
-   setup/index.rst
-   targets/index.rst
-   troubleshooting/index.rst
+    assembly/index.rst
+    installation/index.rst
+    setup/index.rst
+    configuration/index.rst
+    firmwareupdate/index.rst
+    wifireset/index.rst
+    troubleshooting/index.rst
 
 Indices and tables
 ==================

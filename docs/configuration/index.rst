@@ -1,3 +1,3 @@
-Configuring Targets
+Configuration
 ===================
 
