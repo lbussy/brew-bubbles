@@ -45,6 +45,7 @@ path = None
 app = None
 running = False
 
+
 class Unbuffered(object):
    def __init__(self, stream):
        self.stream = stream
@@ -66,6 +67,7 @@ def getPath():
         path = ospath
     return path
 
+
 def press(button):
     global running
     if not running:
@@ -78,12 +80,13 @@ def press(button):
         else:
             pass
 
+
 def createGui(path):
     global app
     if getattr(sys, 'frozen', False):
-        logo = "{0}\{1}\{2}".format(path, logoname, logoname)
+        logo = os.path.join(path, logoname, logoname)
     else:
-        logo = "{0}\{1}".format(path, logoname)
+        logo = os.path.join(path, logoname)
     # Overall attributes
     app.setBg("white")
     app.setFont(18)
@@ -99,6 +102,7 @@ def createGui(path):
     # Start the GUI
     app.go()
 
+
 def handleFlash():
     global app
     global running
@@ -111,11 +115,11 @@ def handleFlash():
     sys.stdout = u(sys.__stdout__)
 
     if getattr(sys, 'frozen', False):
-        firmware = "{0}\{1}\{2}".format(path, img1, img1)
-        spiffs = "{0}\{1}\{2}".format(path, img2, img2)
+        firmware = os.path.join(path, img1, img1)
+        spiffs = os.path.join(path, img2, img2)
     else:
-        firmware = "{0}\{1}".format(path, img1)
-        spiffs = "{0}\{1}".format(path, img2)
+        firmware = os.path.join(path, img1)
+        spiffs = os.path.join(path, img2)
 
     # esptool.py --chip esp8266 --before default_reset --after hard_reset write_flash 0x00000000 firmware.bin 0x00300000 spiffs.bin
     process = subprocess.Popen([
@@ -130,7 +134,7 @@ def handleFlash():
         stdout=subprocess.PIPE,
         universal_newlines=True)
 
-    while True: # Loop while running
+    while True:  # Loop while running
         output = process.stdout.readline()
         print(output.strip())
         # TODO:  Maybe status updates according to output?
@@ -146,9 +150,11 @@ def handleFlash():
     app.setButton("Continue", "Exit")
     app.setButton("Continue", exit)
 
+
 def exit():
     global app
     app.stop()
+
 
 def main():
     global app
@@ -157,6 +163,7 @@ def main():
     path = getPath()
     app = gui(appName)
     createGui(path)
+
 
 if __name__ == "__main__":
     # execute only if run as a script

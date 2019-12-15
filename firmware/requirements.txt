@@ -1,4 +1,4 @@
 esptool          # For flashing ESP8266 controllers
 appJar           # For creating a GUI
-PyInstaller      # For 'freezing' the app an creating an executable
 
+git+https://github.com/pyinstaller/pyinstaller.git@develop   # develop branch required for python 3.8 support
