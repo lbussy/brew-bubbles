@@ -1,4 +1,4 @@
-Setting up the Environment
+Setting up the Networking
 ==========================
 
 Once you have flashed the firmware and spiffs files to your controller, it starts in Access Point mode with a captive portal.   A captive portal is similar to what you get when you connect to free WiFi which has a login web page.  Any network communication will be redirected to the portal page, allowing you to login.  This captive portal is how you initially configure Brew Bubbles, allowing it to connect to your local WiFi.
