@@ -1,4 +1,4 @@
-.. figure:: _static\bb_logo.gif
+.. figure:: _static/bb_logo.gif
     :scale: 13 %
     :align: center
     :alt: Brew Bubbles Logo
