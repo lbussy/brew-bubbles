@@ -1,7 +1,12 @@
 Brew Bubbles API
 ================
 
-Brew Bubbles utilizes JSON to send and receive data.  The device likewise stores its configuration in JSON within SPIFFS:
+Brewbubbles stores and communicates with external agents via JSON.  This document details those mechanics.
+
+Configuration Storage
+---------------------
+
+The device likewise stores its configuration in JSON within SPIFFS.  The application stores configuration data in the following format:
 
 ::
 
@@ -139,3 +144,52 @@ The following pages take action upon access:
 /otastart/:
     Accessing this page begins the OTA update process
 
+Downstream Targets
+------------------
+
+Downstream targets are systems to which Brew Bubbles sends data on a schedule.  Sending data to various targets is done in similar yet specific formats.
+
+Note that since the temperature probes are optional, they report as -100 in either temperature format when not connected.  A sensor failure also results in this reading.
+
+General HTTP Targets
+````````````````````
+
+General targets are targets that take an unqualified HTTP post.  Currently, systems that are known to support Brew Bubbles are BrewPi Remix and Fermentrack.
+
+Brew Bubbles makes the post with no authentication nor key, and in the following format:
+
+::
+
+    {
+        "api_key":"Brew Bubbles",
+        "device_source":"Brew Bubbles",
+        "name":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "bpm":99.999,
+        "ambient":70.3625,
+        "temp":-196.6,
+        "temp_unit":"F",
+        "datetime":"2019-11-16T23:59:01.123Z"
+    }
+
+Brewer's Friend Target
+``````````````````````
+
+Brew Bubbles natively and specifically supports posting data to Brewer's Friend.
+
+X-AIO-Key:
+    Brewer's Friend requires an API key to either be sent in the header or as part of the URL.  To help protect the integrity of the key from simple sniffing, Brew Bubbles puts the API key in the header as an X-AIO-Key.
+
+Payload:
+
+::
+
+    {
+        "api_key":"Brew Bubbles",
+        "device_source":"Brew Bubbles",
+        "name":"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "bpm":99.999,
+        "ambient":70.3625,
+        "temp":-196.6,
+        "temp_unit":"F",
+        "datetime":"2019-11-16T23:59:01.123Z"
+    }
