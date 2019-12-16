@@ -9,7 +9,7 @@ Blink Mode:
     The LED on the ESP8266 is an indicator of various modes during operation.  When in AP mode, the LED blinks on and off at 0.5Hz.  That is, it is on for a second and off for a second.  When in this mode, the access point shows up in the list of available access points on your client.
 
 Connect to Captive Portal
-=========================
+-------------------------
 
 Connect to the access point as follows:
 
@@ -61,7 +61,7 @@ IP Configuration:
 These methods should allow you to configure the portal.  If you cannot connect to the portal, please try another system or method before logging an issue.
 
 Portal Configuration
-====================
+--------------------
 
 When you access the captive portal, you have six choices:
 
