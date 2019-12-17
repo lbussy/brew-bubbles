@@ -55,15 +55,16 @@ These are the parts which you can get pretty much anywhere.
 
 The items marked with an \*asterisk below are optional. They are in the design to provide a means to monitor and trend the ambient temperature where you place the fermenter, and the fermenting liquid's temperature via a thermowell or insulated in contact with the fermenter. If you choose not to use these, the firmware automatically skips reporting these readings.
 
-=====  ======================================  ==========
+=====  ======================================  ============
 Quan   Description                             Placement
-=====  ======================================  ==========
+=====  ======================================  ============
 3      0.1uF 10V Ceramic Capacitor             C1, C2, C3
 2*     2.2k ohm 1/4W 5% Axial resistor         R1, R2
 1      150 ohm 1/4W 5% Axial resistor          R3
 2*     3-Pin 90-degree Header                  VESSEL, ROOM
 1      GP1A57HR Transmissive Photointerrupter  U1
-=====  ======================================  ==========
+2*     DS18B20 Temperature sensor and lead     VESSEL, ROOM
+=====  ======================================  ============
 
 This BOM is available on Mouser_.  You can find these parts just about any of the usual places.  Make sure they are the proper rating and form factor.
 
@@ -97,6 +98,11 @@ It should be apparent by now that the Wemos should plug into the shield.  There 
    :align: center
    :alt: Completed assembly
 
+Sensors
+-------
+
+Obtain some Dupont headers and a crimper from any of the usual places.  Crimp a 3-pin female header on your sensors and plug them in.
+
 Bracket and Mounting
 --------------------
 
@@ -116,6 +122,12 @@ There is a hole in the side of the bracket intended to allow using a pop-rivet o
    :align: center
    :alt: Completed assembly on fermenter
 
+Power
+-----
+
+Power the device via its USB port with a standard 5V cell phone type charger or power supply.
+
+
 .. _wemos.cc: https://www.wemos.cc/en/latest/index.html
 .. _This: https://www.amazon.com/IZOKEE-NodeMcu-Internet-Development-Compatible/dp/B076F52NQD/
 .. _AliExpress: https://www.aliexpress.com/item/32688079351.html
@@ -129,7 +141,3 @@ There is a hole in the side of the bracket intended to allow using a pop-rivet o
 .. _bracket: https://github.com/lbussy/brew-bubbles/tree/master/bracket
 .. _clamp: https://www.amazon.com/InstallerParts-Pack-R-Type-Cable-Clamp/dp/B01DEX6J4U
 
-Power
------
-
-Power the device via its USB port with a standard 5V cell phone type charger or power supply.
