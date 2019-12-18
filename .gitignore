@@ -56,5 +56,4 @@ firmware/*.spec
 *.app
 *.exe
 !flashFirmware.exe
-
-
+!flashFirmware_win.exe
