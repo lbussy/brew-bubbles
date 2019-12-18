@@ -15,6 +15,7 @@ __pycache__
 # PyInstaller Files
 firmware/build
 firmware/dist
+firmware/*.spec
 
 # Project files
 .picasa*
@@ -55,3 +56,5 @@ firmware/dist
 *.app
 *.exe
 !flashFirmware.exe
+
+

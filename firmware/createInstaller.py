@@ -22,10 +22,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from shutil import copyfile
+from shutil import copyfile, copymode
 import sys
 from pathlib import Path
-import os
+import os, platform
 import time
 import PyInstaller.__main__
 import subprocess
@@ -43,9 +43,23 @@ logo = "logo.gif"
 currentPath = os.path.dirname(os.path.realpath(__file__))
 path = Path(currentPath)
 parentPath = path.parent
-firmwarePath = r"{0}\.pio\build\{1}".format(parentPath, env)
-graphicsPath = r"{0}\graphics".format(parentPath)
-iconPath = r"{0}\icons".format(graphicsPath)
+
+# Paths used for copying over new builds to the relevant (this) folder
+# firmwarePath = r"{0}\.pio\build\{1}".format(parentPath, env)
+firmwarePath = os.path.join(parentPath, ".pio", "build", env)
+# graphicsPath = r"{0}\graphics".format(parentPath)
+graphicsPath = os.path.join(parentPath, "graphics")
+# iconPath = r"{0}\icons".format(graphicsPath)
+iconPath = os.path.join(graphicsPath, "icons")
+
+
+executable_suffix = ""  # Used when finding the generated executable (only a thing on Windows)
+
+if platform.system() == "Darwin":
+    system_suffix = "_mac"
+elif platform.system() == "Windows":
+    executable_suffix = ".exe"
+    system_suffix = "_win.exe"
 
 
 class Unbuffered(object):
@@ -70,6 +84,7 @@ sys.stdout = u(sys.__stdout__)
 def handleCp(source, dest):
     try:
         copyfile(source, dest)
+        copymode(source, dest)
     except FileNotFoundError:
         print("ERROR: File not found: {0} does not exist.".format(source))
     except IOError:
@@ -79,23 +94,25 @@ def handleCp(source, dest):
 
 
 def copyFiles():
-    firmwareSrc = "{0}\{1}".format(firmwarePath, firmware)
-    firmwareDest = "{0}\{1}".format(currentPath, firmware)
+    firmwareSrc = os.path.join(firmwarePath, firmware)
+    firmwareDest = os.path.join(currentPath, firmware)
     handleCp(firmwareSrc, firmwareDest)
-    spiffsSrc = "{0}\{1}".format(firmwarePath, spiffs)
-    spiffsDest = "{0}\{1}".format(currentPath, spiffs)
-    graphicsSrc = "{0}\{1}".format(graphicsPath, logo)
-    graphicsDest = "{0}\{1}".format(currentPath, logo)
-    iconSrc = "{0}\{1}".format(iconPath, icon)
-    iconDest = "{0}\{1}".format(currentPath, icon)
+    spiffsSrc = os.path.join(firmwarePath, spiffs)
+    spiffsDest = os.path.join(currentPath, spiffs)
+    graphicsSrc = os.path.join(graphicsPath, logo)
+    graphicsDest = os.path.join(currentPath, logo)
+    iconSrc = os.path.join(iconPath, icon)
+    iconDest = os.path.join(currentPath, icon)
     handleCp(spiffsSrc, spiffsDest)
     handleCp(graphicsSrc, graphicsDest)
     handleCp(iconSrc, iconDest)
 
 
 def freezeFlasher():
-    sourceInstaller = "{0}\dist\{1}.exe".format(currentPath, installer)
-    destInstaller = "{0}\{1}.exe".format(currentPath, installer)
+    # sourceInstaller = "{0}\dist\{1}.exe".format(currentPath, installer)
+    sourceInstaller = os.path.join(currentPath, "dist", installer) + executable_suffix
+    # destInstaller = "{0}\{1}.exe".format(currentPath, installer)
+    destInstaller = os.path.join(currentPath, installer) + system_suffix
 
     # TODO:  Use version
     # TODO:  Fix icon
@@ -105,12 +122,12 @@ def freezeFlasher():
             '--onefile',
             '--icon',
             './favicon.ico',
-            '--add-binary',
-            './logo.gif;./logo.gif',
-            '--add-binary',
-            './firmware.bin;./firmware.bin',
-            '--add-binary',
-            './spiffs.bin;./spiffs.bin',
+            '--add-data',
+            './logo.gif' + os.pathsep + './logo.gif',
+            '--add-data',
+            './firmware.bin' + os.pathsep + './firmware.bin',
+            '--add-data',
+            './spiffs.bin' + os.pathsep + './spiffs.bin',
             '--noupx',
             '-y',
             'flashFirmware.py'
