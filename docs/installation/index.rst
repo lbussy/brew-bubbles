@@ -67,6 +67,8 @@ I have provided a single-file installer in the `firmware/` directory named `flas
    :align: center
    :alt: Automatic installer for Windows
 
+If you should have an issue with that installer, it may be that your system lacks a set of Microsoft tools that ships with many applications. Download and install `Windows 10 Universal C Runtime`_, and you may be successful.
+
 Espressif Tools
 :::::::::::::::
 
@@ -128,3 +130,4 @@ The web application provides Over The Air (OTA) update functionality for upgrade
 .. _repository: https://github.com/espressif/esptool
 .. _download: https://www.espressif.com/en/support/download/other-tools
 .. _`flashFirmware.exe`: https://github.com/lbussy/brew-bubbles/raw/master/firmware/flashFirmware.exe
+.. _`Windows 10 Universal C Runtime`: https://www.microsoft.com/en-us/download/details.aspx?id=48234
