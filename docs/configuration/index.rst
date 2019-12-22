@@ -26,7 +26,7 @@ You can undoubtedly work with Brew Bubbles without mDNS. However, it makes your 
 
 Now you may access Brew Bubbles by entering the name `brewbubbles.local` (or the IP address) in your browser.
 
-If you have an issue accessing a *.local address, it may be that your router does not support multicasting. Very old routers and some routers which are supplied by your cable company may be in this category.  If this is the case, you need to use the IP address.
+If you have an issue accessing a \*.local address, it may be that your router does not support multicasting. Very old routers and some routers which are supplied by your cable company may be in this category.  If this is the case, you need to use the IP address.
 
 Menu
 ----
@@ -159,7 +159,7 @@ Target settings control how Brew Bubbles reports to HTML endpoints such as BrewP
 Target:
     The target may be any DNS or mDNS name.  If you are using mDNS, be sure to include the ".local" portion.  The address should be a complete URI, including the target page and port, if needed.  For BrewPi Remix, the name will be `http://{hostname}.local/brewpi-api.php`.  Remember to click "Update" after entering the target URL.
 
-    If you are unable to access Brew Bubbles using the *.local name, you are not able to use a target with a .local name either.  In this case, use the IP address of your target.
+    If you are unable to access Brew Bubbles using the \*.local name, you are not able to use a target with a .local name either.  In this case, use the IP address of your target.
     
     Only HTTP (not HTTPS) is supported.  Support for SSL on controllers is extremely resource intensive as well as unstable at this time.  If the libraries improve in the future, https support will be considered.
     
