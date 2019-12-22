@@ -1,2 +1,2 @@
 sphinx
-pylons-sphinx-themes
+sphinx_bootstrap_theme
