@@ -88,6 +88,8 @@ def press(button):
 
 def createGui(path):
     global app
+    global logoname
+    global appName
     if getattr(sys, 'frozen', False):
         logo = os.path.join(path, logoname, logoname)
     else:
@@ -112,6 +114,15 @@ def handleFlash():
     global app
     global running
     global path
+    global exe
+    global chip
+    global before
+    global after
+    global arg
+    global img1
+    global loc1
+    global img2
+    global loc2
     running = True
 
     # Use unbuffered
@@ -120,36 +131,52 @@ def handleFlash():
     sys.stdout = u(sys.__stdout__)
 
     if getattr(sys, 'frozen', False):
+        print("DEBUG: Frozen.")
         firmware = os.path.join(path, img1, img1)
         spiffs = os.path.join(path, img2, img2)
     else:
+        print("DEBUG: Not Frozen.")
         firmware = os.path.join(path, img1)
         spiffs = os.path.join(path, img2)
 
     # esptool.py --chip esp8266 --before default_reset --after hard_reset write_flash 0x00000000 firmware.bin 0x00300000 spiffs.bin
-    process = subprocess.Popen([
-            shutil.which('esptool.py'),
-            '--chip', chip,
-            '--before', before,
-            '--after', after,
-            arg,
-            loc1, firmware,
-            loc2, spiffs
-        ],
-        stdout=subprocess.PIPE,
-        universal_newlines=True)
+    try:
+        process = subprocess.Popen([
+                shutil.which('esptool.py'),
+                '--chip', chip,
+                '--before', before,
+                '--after', after,
+                arg,
+                loc1, firmware,
+                loc2, spiffs
+            ],
+            stdout=subprocess.PIPE,
+            universal_newlines=True)
 
-    while True:  # Loop while running
-        output = process.stdout.readline()
-        print(output.strip())
-        # TODO:  Maybe status updates according to output?
-        return_code = process.poll()
-        if return_code is not None:
-            print('Return code = {0}'.format(return_code))
-            # Process has finished, read rest of the output 
-            for output in process.stdout.readlines():
-                print(output.strip())
-            break
+        while True:  # Loop while running
+            output = process.stdout.readline()
+            print(output.strip())
+            # TODO:  Maybe status updates according to output?
+            return_code = process.poll()
+            if return_code is not None:
+                print('Return code = {0}'.format(return_code))
+                # Process has finished, read rest of the output 
+                for output in process.stdout.readlines():
+                    print(output.strip())
+                break
+
+    except:
+        print("Failed miserably, probably the fault of the user. Even so here's some information:")
+        print("ESPTool: {}".format(shutil.which('esptool.py')))
+        print("Chip: {}".format(chip))
+        print("Before: ".format(before))
+        print("After: ".format(after))
+        print("Argument: ".format(arg))
+        print("Location 1: ".format(loc1))
+        print("Firmware 1: ".format(firmware))
+        print("Location 2: ".format(loc2))
+        print("SPIFFS 1: ".format(spiffs))
+
     app.setLabel("title", "Flash complete.")
     app.enableButton("Continue")
     app.setButton("Continue", "Exit")

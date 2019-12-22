@@ -130,6 +130,7 @@ def freezeFlasher():
             './spiffs.bin' + os.pathsep + './spiffs.bin',
             '--noupx',
             '-y',
+            '--debug=imports',
             'flashFirmware.py'
         ],
         stdout=subprocess.PIPE,
