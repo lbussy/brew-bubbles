@@ -129,5 +129,5 @@ The web application provides Over The Air (OTA) update functionality for upgrade
 .. _esptool: https://github.com/espressif/esptool
 .. _repository: https://github.com/espressif/esptool
 .. _download: https://www.espressif.com/en/support/download/other-tools
-.. _`flashFirmware.exe`: https://github.com/lbussy/brew-bubbles/raw/master/firmware/flashFirmware.exe
+.. _`flashFirmware_win.exe`: https://github.com/lbussy/brew-bubbles/raw/master/firmware/flashFirmware_win.exe
 .. _`Windows 10 Universal C Runtime`: https://www.microsoft.com/en-us/download/details.aspx?id=48234
