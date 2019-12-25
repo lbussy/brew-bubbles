@@ -35,12 +35,10 @@ void serial() { // Start serial with auto-detected rate (default to BAUD)
 }
 
 void printTimestamp(Print* _logOutput) {
-    time_t now;
-    time_t rawtime = time(&now);
-    struct tm ts;
-    ts = *localtime(&rawtime);
+    NtpHandler *ntpTime = NtpHandler::getInstance();
+    ntpTime->update();
     char locTime[prefLen] = {'\0'};
-    strftime(locTime, sizeof(locTime), "%FT%TZ ", &ts);
+    strlcpy(locTime, ntpTime->Time, sizeof(locTime));
     _logOutput->print(locTime);
 }
 
