@@ -25,6 +25,7 @@ SOFTWARE. */
 void execfw() {
     JsonConfig *config = JsonConfig::getInstance();
     Log.notice(F("Starting the Firmware OTA pull, will reboot without notice." CR));
+    _delay(5000); // Let page finish loading
 
     // Stop web server before OTA update - will restart on reset
     WebServer *server = WebServer::getInstance();
