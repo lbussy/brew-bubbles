@@ -30,4 +30,6 @@ SOFTWARE. */
 void serial();
 void printTimestamp(Print* _logOutput);
 
+#define prefLen 22
+
 #endif //_BUB_SERIAL_H
