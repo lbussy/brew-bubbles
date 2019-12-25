@@ -30,6 +30,7 @@ import time
 import PyInstaller.__main__
 import subprocess
 import shutil
+import json
 
 # Get Environment
 env = "d1_mini"
@@ -43,6 +44,15 @@ logo = "logo.gif"
 currentPath = os.path.dirname(os.path.realpath(__file__))
 path = Path(currentPath)
 parentPath = path.parent
+
+# Get 0.0.0 version from latest Git tag
+tagcmd = "git describe --tags --abbrev=0"
+version = subprocess.check_output(tagcmd, shell=True).decode().strip()
+jsonVersion = {
+    'version': version
+}
+with open('version.json', 'w') as json_file:
+    json.dump(jsonVersion, json_file)
 
 # Paths used for copying over new builds to the relevant (this) folder
 # firmwarePath = r"{0}\.pio\build\{1}".format(parentPath, env)
