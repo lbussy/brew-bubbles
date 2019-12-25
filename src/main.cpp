@@ -82,7 +82,7 @@ void loop() {
     Ticker mDNSTimer;
     mDNSTimer.attach(MDNSTIMER, [](){
         JsonConfig *config = JsonConfig::getInstance();
-        MDNS.end;
+        MDNS.end();
         if (!MDNS.begin(config->hostname)) {
             Log.error(F("Error resetting MDNS responder."));
         } else {
