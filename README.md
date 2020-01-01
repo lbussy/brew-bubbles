@@ -2,7 +2,9 @@
 ---
 *It beats watching the grass grow!*
 
-I just did a Google search on "how long does it take homebrew to bubble" and got back over 1,510,000 results.
+I just did a Google search:
+
+![alt text](https://raw.githubusercontent.com/lbussy/brew-bubbles/master/graphics/Google.png "Brew Bubbles")
 
 That seems to be pretty important to many homebrewers. Nobody agrees what's "right," and about all the Internet can do is help you pass the time in between trips to stare at the airlock.
 
