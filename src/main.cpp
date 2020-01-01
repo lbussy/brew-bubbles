@@ -91,6 +91,14 @@ void loop() {
         }
     });
 
+    // Reboot timer - I wish controllers could be counted on to be more
+    // stable but at least it only takes a few seconds.
+    Ticker rebootTimer;
+    rebootTimer.attach(REBOOTTIMER, [](){
+        Log.notice(F("Reboot timer - rebooting system."));
+        ESP.restart();
+    });
+
     while (true) {
 
         // Handle JSON posts
