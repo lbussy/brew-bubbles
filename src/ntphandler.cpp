@@ -55,7 +55,7 @@ void NtpHandler::start() {
         Serial.print(F("."));
 #endif
         #endif
-        _delay(500);
+        _delay(1000);
         single->update();
         yield();
     }
