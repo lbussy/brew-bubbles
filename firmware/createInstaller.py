@@ -97,10 +97,13 @@ def handleCp(source, dest):
         copymode(source, dest)
     except FileNotFoundError:
         print("ERROR: File not found: {0} does not exist.".format(source))
+        sys.exit(1)
     except IOError:
         print("ERROR: Unable to write file {0}.".format(dest))
+        sys.exit(1)
     except:
         print("ERROR: Unhandled error copying {0}".format(firmware))
+        sys.exit(1)
 
 
 def copyFiles():
