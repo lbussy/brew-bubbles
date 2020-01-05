@@ -32,6 +32,7 @@ SOFTWARE. */
 #include "version.h"
 #include "targethandler.h"
 #include "bubbles.h"
+#include "mdns.h"
 #include <WiFiManager.h>
 #include <DoubleResetDetect.h>
 #include <ESP8266WiFi.h>
