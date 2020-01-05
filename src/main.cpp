@@ -56,7 +56,8 @@ void setup() {
     NtpHandler *ntpTime = NtpHandler::getInstance();
     ntpTime->start();
     
-    execspiffs(); // Check for pending SPIFFS update
+    execspiffs();   // Check for pending SPIFFS update
+    loadBpm() ;     // Get last Bpm reading if it was a controlled reboot
 
     Log.notice(F("Started %s version %s (%s) [%s]." CR), API_KEY, version(), branch(), build());
 }
@@ -94,10 +95,7 @@ void loop() {
     // Reboot timer - I wish controllers could be counted on to be more
     // stable but at least it only takes a few seconds.
     Ticker rebootTimer;
-    rebootTimer.attach(REBOOTTIMER, [](){
-        Log.notice(F("Reboot timer - rebooting system."));
-        ESP.restart();
-    });
+    rebootTimer.attach(REBOOTTIMER, reboot);
 
     while (true) {
 

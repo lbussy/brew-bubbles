@@ -46,3 +46,64 @@ void _delay(unsigned long ulDelay) {
         yield();
     }
 }
+
+void reboot() {
+    Log.notice(F("Reboot timer - rebooting system." CR));
+    saveBpm();
+    ESP.restart();
+}
+
+void loadBpm() {
+    Bubbles *bubble = Bubbles::getInstance();
+    const size_t capacity = JSON_OBJECT_SIZE(1) + 10;
+    DynamicJsonDocument doc(capacity);
+    const char * bpmFileName = "lastBpm.json";
+
+    // Mount SPIFFS
+    if (!SPIFFS.begin()) {
+        Log.error(F("CONFIG: Failed to mount SPIFFS." CR));
+        return;
+    }
+
+    // Open file for reading
+    File file = SPIFFS.open(bpmFileName, "r");
+    if (!SPIFFS.exists(bpmFileName) || !file) {
+        Log.notice(F("No lastBpm available." CR));
+    } else {
+        // Parse the JSON object in the file
+        DeserializationError err = deserializeJson(doc, file);
+        if (err) {
+            Log.error(F("Failed to deserialize lastBpm." CR));
+            Log.error(err.c_str());         
+        } else {
+            bubble->setLast(doc["lastBpm"]);
+            Log.notice(F("Loaded lastBpm." CR));
+        }
+        // Delete file
+        SPIFFS.remove(bpmFileName);
+    }
+}
+
+void saveBpm() {
+    Bubbles *bubble = Bubbles::getInstance();
+    const size_t capacity = JSON_OBJECT_SIZE(1) + 10;
+    DynamicJsonDocument doc(capacity);
+    const char * bpmFileName = "lastBpm.json";
+
+    doc["lastBpm"] = bubble->getAvgBpm();
+
+    // Open file for writing
+    File file = SPIFFS.open(bpmFileName, "w");
+    if (!file) {
+        Log.error(F("Failed to open lastBpm file." CR));
+    } else {
+        // Serialize the JSON object to the file
+        bool success = serializeJson(doc, file);
+        // This may fail if the JSON is invalid
+        if (!success) {
+            Log.error(F("Failed to serialize lastBpm." CR));
+        } else {
+            Log.verbose(F("Saved lastBpm." CR), bpmFileName);
+        }
+    }
+}

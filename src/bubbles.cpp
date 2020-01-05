@@ -171,3 +171,7 @@ float Bubbles::getAvgBpm() {
     }
     return(avg);
 }
+
+void Bubbles::setLast(double last) {
+    bubAvg.push(last);
+}
