@@ -29,5 +29,8 @@ SOFTWARE. */
 #define EEPROM_ADDRESS 0x00
 
 void _delay(unsigned long);
+void reboot();
+void loadBpm();
+void saveBpm();
 
 #endif

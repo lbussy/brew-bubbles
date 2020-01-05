@@ -65,6 +65,7 @@ class Bubbles {
         float getAvgVessel();
         float getAvgBpm();
         bool doBub;
+        void setLast(double);                // Push last reading on reboot
 };
 
 #endif // _BUBBLES_H
