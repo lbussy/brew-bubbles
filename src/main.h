@@ -42,10 +42,10 @@ SOFTWARE. */
 // DRD_ADDRESS =    Address to the block in the RTC user memory change it
 //                  if it collides with another usage of the address block
 //
-#define DRD_TIMEOUT 2.0
+#define DRD_TIMEOUT 3.0
 #define DRD_ADDRESS 0x00
 
-static bool doTarget = false;  // Semaphore for Target timer
-static bool doBF = false;      // Semaphore for BF timer
+static bool __attribute__((unused)) doTarget = false;  // Semaphore for Target timer
+static bool __attribute__((unused)) doBF = false;      // Semaphore for BF timer
 
 #endif // _MAIN_H
