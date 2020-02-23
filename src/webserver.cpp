@@ -498,7 +498,8 @@ void WebServer::aliases() {
 
             String json = "";
             HTTPClient http;
-            http.begin(F(VERSIONJSONLOC));
+            WiFiClient client;
+            http.begin(client, F(VERSIONJSONLOC));
             http.addHeader(F("Cache-Control"), F("no-cache"));
             if (http.GET() > 0) {
                 json = http.getString();
