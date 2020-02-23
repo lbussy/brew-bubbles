@@ -27,6 +27,7 @@ SOFTWARE. */
 #include <ArduinoLog.h>
 #include <FS.h>
 #include <ArduinoJson.h>
+#include <ArduinoLog.h>
 
 class JsonConfig {
     private:

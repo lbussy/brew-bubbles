@@ -25,18 +25,18 @@ SOFTWARE. */
 
 #include "bubserial.h"
 #include "config.h"
+#include "execota.h"
 #include "jsonconfig.h"
-#include "ntphandler.h"
 #include "webserver.h"
 #include "wifi.h"
 #include "version.h"
-#include "targethandler.h"
+#include "urltarget.h"
 #include "bubbles.h"
 #include "mdns.h"
-#include <WiFiManager.h>
 #include <DoubleResetDetect.h>
-#include <ESP8266WiFi.h>
+#include <ArduinoLog.h>
 #include <ESP8266mDNS.h>
+#include <Arduino.h>
 
 // DRD_TIMEOUT =    Maximum number of seconds between resets that counts
 //                  as a double reset
@@ -45,8 +45,5 @@ SOFTWARE. */
 //
 #define DRD_TIMEOUT 3.0
 #define DRD_ADDRESS 0x00
-
-static bool __attribute__((unused)) doTarget = false;  // Semaphore for Target timer
-static bool __attribute__((unused)) doBF = false;      // Semaphore for BF timer
 
 #endif // _MAIN_H

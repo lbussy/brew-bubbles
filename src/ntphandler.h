@@ -25,8 +25,9 @@ SOFTWARE. */
 
 #include "config.h"
 #include "tools.h"
-#include <TimeLib.h>
+// #include <TimeLib.h>
 #include <NtpClientLib.h>
+#include <ArduinoLog.h>
 #include <ArduinoLog.h>
 
 #define NTP_TIMEOUT 1500
@@ -39,7 +40,7 @@ class NtpHandler {
         NtpHandler() {}
         static NtpHandler *single;
         // Other Declarations
-        boolean syncEventTriggered;
+        bool syncEventTriggered;
         NTPSyncEvent_t ntpEvent;
         bool hasBeenSet;
         void setup();

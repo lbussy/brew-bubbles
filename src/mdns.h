@@ -27,9 +27,11 @@ SOFTWARE. */
 #ifndef _MDNS_H
 #define _MDNS_H
 
-#include "main.h"
+#include "config.h"
+#include "jsonconfig.h"
 #include <ArduinoLog.h>
 #include <ESP8266mDNS.h>
+#include <ESP8266WiFi.h>
 
 void mdnssetup();
 IPAddress mdnsquery(char hostname[65]);
