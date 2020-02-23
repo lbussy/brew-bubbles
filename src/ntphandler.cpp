@@ -64,7 +64,7 @@ void NtpHandler::start() {
     Serial.println();
 #endif
     single->setJsonTime();
-    Log.notice(F("NTP Time: %s." CR), single->Time);
+    Log.notice(F("NTP Time set." CR));
     #endif
     if (blinker.active()) blinker.detach(); // Turn off blinker
     digitalWrite(LED, HIGH); // Turn off LED
