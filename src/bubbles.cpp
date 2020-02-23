@@ -108,10 +108,9 @@ float Bubbles::getTemp(uint8_t pin) {
     DS18B20 sensor(&oneWire);
     sensor.begin();
     float retVal = -100.00;
-    sensor.setResolution(13);
+    sensor.setResolution(12);
     sensor.requestTemperatures();
     while (!sensor.isConversionComplete());
-
     // Get Temps
     JsonConfig *config = JsonConfig::getInstance();
     if (config->tempinf) {
