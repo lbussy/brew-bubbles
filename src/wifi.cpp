@@ -109,6 +109,9 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
 
     if (shouldSaveConfig) { // Save configuration
         Log.notice(F("Saving configuration." CR));
+        _delay(2000);
+        Log.notice(F("Resetting." CR));
+        ESP.restart(); // If we don't reset, it hangs connecting to AP
     }
 
     WiFi.hostname(config->hostname);
