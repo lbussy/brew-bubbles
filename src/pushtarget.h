@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -20,21 +20,41 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _TARGETHANDLER_H
-#define _TARGETHANDLER_H
+#ifndef _PUSHTARGET_H
+#define _PUSHTARGET_H
 
-#include "config.h"
-#include "jsonconfig.h"
 #include "bubbles.h"
+#include "jsonconfig.h"
 #include <LCBUrl.h>
-#include <ArduinoLog.h>
+// #include <ArduinoLog.h>
 #include <ArduinoJson.h>
-#include <WiFiClient.h>
-#include <ESP8266HTTPClient.h>
+#include <ESP8266WiFi.h>
+// #include <Arduino.h>
 
-void httpPost();
-void bfPost();
-bool postJson(String);
-bool postJson(String, const char*);
+struct pushPoint {
+    bool enabled;   // Whether to send or not
+    char name[129]; // What to call the data point
+};
 
-#endif // _TARGETHANDLER_H
+class PushTarget {
+    private:
+
+    public:
+        PushTarget() {};
+        pushPoint target;       // Target enabled and name
+        pushPoint checkBody;    // Check return body for success
+        char url[129];               // URL of target
+        IPAddress ip;           // Resolved address of target
+        pushPoint apiName;      // i.e. "Brew Bubbles"
+        pushPoint bubName;      // mDNS name i.e. "brewbubbles"
+        pushPoint lastTime;     // Time of last send
+        pushPoint tempFormat;   // F or C
+        pushPoint ambientTemp;  // Room or chamber temp
+        pushPoint vesselTemp;   // Brew temp
+        pushPoint bpm;          // Bubbles per minute
+};
+
+IPAddress resolveHost(PushTarget*);
+bool pushTarget(PushTarget*);
+
+#endif // _PUSHTARGET_H
