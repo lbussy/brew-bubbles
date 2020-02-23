@@ -67,8 +67,8 @@ void Bubbles::update() { // Regular update loop, once per minute
 
     // Store last values
     single->lastBpm = single->getRawBpm();
-    single->lastAmb = single->getAmbientTemp();
-    single->lastVes = single->getVesselTemp();
+    single->lastAmb = single->getTemp(AMBSENSOR);
+    single->lastVes = single->getTemp(VESSENSOR);
 
     // Push values to circular buffers
     tempAmbAvg.push(single->lastAmb);
@@ -103,40 +103,31 @@ float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)
     return ppm; // Return pulses per minute
 }
 
-float Bubbles::getAmbientTemp() {
-    OneWire ambient(AMBSENSOR);
-    byte addrAmb[8];
-    float fAmbTemp = -100.0;
-    while (ambient.search(addrAmb)) { // Make sure we have a sensor
-        DallasTemperature sensorAmbient(&ambient);
-        sensorAmbient.begin();
-        sensorAmbient.requestTemperatures();
+float Bubbles::getTemp(uint8_t pin) {
+    OneWire oneWire(pin);
+    DS18B20 sensor(&oneWire);
+    sensor.begin();
+    float retVal = -100.00;
+    sensor.setResolution(13);
+    sensor.requestTemperatures();
+    while (!sensor.isConversionComplete());
 
-        JsonConfig *config = JsonConfig::getInstance();
-        if (config->tempinf == true)
-            fAmbTemp = sensorAmbient.getTempFByIndex(0) + config->calAmbient;
-        else
-            fAmbTemp = sensorAmbient.getTempCByIndex(0) + config->calAmbient;
+    // Get Temps
+    JsonConfig *config = JsonConfig::getInstance();
+    if (config->tempinf) {
+        retVal = sensor.getTempC();
+        retVal = retVal * 9/5 + 32;
+    } else {
+        retVal = sensor.getTempC();
     }
-    return fAmbTemp;
-}
+    // Apply calibration
+    if (pin == AMBSENSOR) {
+        retVal = retVal + config->calAmbient;
+    } else if (pin == VESSENSOR) {
+        retVal = retVal + config->calVessel;
+    }
 
-float Bubbles::getVesselTemp() {
-    OneWire vessel(VESSENSOR);
-    byte addrVes[8];
-    float fVesTemp = -100.0;
-    while (vessel.search(addrVes)) { // Make sure we have a sensor
-        DallasTemperature sensorVessel(&vessel);
-        sensorVessel.begin();
-        sensorVessel.requestTemperatures();
-        
-        JsonConfig *config = JsonConfig::getInstance();
-        if (config->tempinf == true)
-            fVesTemp = sensorVessel.getTempFByIndex(0) + config->calVessel;
-        else
-            fVesTemp = sensorVessel.getTempCByIndex(0) + config->calVessel;
-    }
-    return fVesTemp;
+    return retVal;
 }
 
 float Bubbles::getAvgAmbient() {
