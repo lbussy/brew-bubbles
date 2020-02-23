@@ -23,12 +23,12 @@ SOFTWARE. */
 #ifndef _BUBBLES_H
 #define _BUBBLES_H
 
-#include "main.h"
 #include "config.h"
 #include "jsonconfig.h"
 #include "ntphandler.h"
-#include "DallasTemperature.h"
+#include "DS18B20.h"
 #include "OneWire.h"
+#include <ArduinoLog.h>
 #include <CircularBuffer.h>
 #include <Arduino.h>
 
@@ -50,8 +50,7 @@ class Bubbles {
         float lastAmb;
         float lastVes;
         float getRawBpm();
-        float getAmbientTemp();
-        float getVesselTemp();
+        float getTemp(uint8_t);
 
     public:
         // Singleton Declarations
