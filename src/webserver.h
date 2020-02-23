@@ -26,13 +26,20 @@ SOFTWARE. */
 #include "wifi.h"
 #include "execota.h"
 #include "bubbles.h"
-#include "tools.h"
+// #include "tools.h"
 #include "jsonconfig.h"
-#include "bubserial.h"
+// #include "bubserial.h"
 #include "version.h"
+#include "config.h"
+#include <ArduinoLog.h>
+#include <ArduinoJson.h>
 #include <FS.h>
+#include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPClient.h>
+#include <ESP8266mDNS.h>
+#include <Arduino.h>
+
 
 class WebServer {
     private:
