@@ -77,7 +77,6 @@ bool URLTarget::push() {
             single->target->ip = resolveHost(single->target);
             if (single->target->ip != INADDR_NONE) {
                 Log.verbose(F("Resolved host %s to IP %s." CR), lcburl.getHost().c_str(), single->target->ip.toString().c_str());
-                Log.notice(F("Posting to: %s" CR), single->target->url);
                 if (pushTarget(single->target)) {
                     Log.notice(F("%s post ok." CR), single->target->target.name);
                     return true;

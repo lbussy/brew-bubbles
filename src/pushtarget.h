@@ -26,10 +26,11 @@ SOFTWARE. */
 #include "bubbles.h"
 #include "jsonconfig.h"
 #include <LCBUrl.h>
-// #include <ArduinoLog.h>
+#include <ArduinoLog.h>
+#include <ESP8266mDNS.h>
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
-// #include <Arduino.h>
+#include <Arduino.h>
 
 struct pushPoint {
     bool enabled;   // Whether to send or not

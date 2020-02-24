@@ -25,17 +25,17 @@ SOFTWARE. */
 IPAddress resolveHost(PushTarget *target) {
     LCBUrl lcburl;
     lcburl.setUrl(String(target->url));
-    // Resolve hostname. This is necessary due to flakey name resolution
-    // and because WiFiClient::connect() does not use mDNS
-    IPAddress resolvedIP = INADDR_NONE;
-    if (!WiFi.hostByName(lcburl.getHost().c_str(), resolvedIP)) {
-        // Failed so set to the previous IP
-        resolvedIP = target->ip;
+    Log.verbose(F("Host lookup: %s." CR), lcburl.getHost().c_str());
+    IPAddress returnIP;
+    if (WiFi.hostByName(lcburl.getHost().c_str(), returnIP, 10000) == 0) {
+        Log.error(F("Host lookup error, using cached IP (if any.)" CR));
+        returnIP = target->ip;
     }
-    return resolvedIP;
+    return returnIP;
 }
 
 bool pushTarget(PushTarget *target) {
+    Log.notice(F("Posting to: %s" CR), target->url);
     LCBUrl lcburl;
     lcburl.setUrl(String(target->url));
 
@@ -64,7 +64,7 @@ bool pushTarget(PushTarget *target) {
     // Post JSON to Server
     //
     // Use the IP address we resolved if we are connecting with mDNS
-    Log.verbose(F("Connecting to: %s, %l" CR), lcburl.getHost().c_str(), lcburl.getHost().c_str());
+    Log.verbose(F("Connecting to: %s, %s" CR), lcburl.getHost().c_str(), target->ip.toString().c_str());
     WiFiClient client;
     client.setTimeout(10000);
     int retval = client.connect(target->ip, lcburl.getPort());
@@ -76,7 +76,7 @@ bool pushTarget(PushTarget *target) {
     // -4 = INVALID_RESPONSE 
     if (!retval == 1) {
         Log.warning(F("Connection failed, Host: %s, Port: %l (Err: %d)" CR),
-            lcburl.getHost().c_str(), lcburl.getHost().c_str(), retval
+            lcburl.getHost().c_str(), lcburl.getPort(), retval
         );
         return false;
     } else {
@@ -114,6 +114,7 @@ bool pushTarget(PushTarget *target) {
 
         // Post Data
         Log.verbose(F("Posting JSON to target." CR));
+        Serial.println(json); // DEBUG
         client.println(json);
         // Check the HTTP status (should be "HTTP/1.1 200 OK")
         char status[32] = {0};
@@ -121,7 +122,7 @@ bool pushTarget(PushTarget *target) {
         client.readBytesUntil('\r', status, sizeof(status));
         client.stop(); 
         Log.verbose(F("Status: %s" CR), status);
-        if ((String(status).endsWith("200 OK"))) {
+        if ((String(status).endsWith("200 (OK)"))) {
             Log.verbose(F("JSON posted." CR));
             return true;
         } else {
