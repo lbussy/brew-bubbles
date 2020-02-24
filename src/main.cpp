@@ -31,16 +31,16 @@ void setup() {
 
     _delay(200); // Let pins settle, else detect is inconsistent
     pinMode(RESETWIFI, INPUT_PULLUP);
-    if (digitalRead(RESETWIFI) == LOW) {
-        Log.notice(F("%s low, presenting portal." CR), RESETWIFI);
-        doWiFi(true);
-    } else if (rst == true) {
-        Log.notice(F("DRD: Double reset boot, presenting portal." CR));
-        doWiFi(true);
-    } else {
+    // if (digitalRead(RESETWIFI) == LOW) {
+    //     Log.notice(F("%s low, presenting portal." CR), RESETWIFI);
+    //     doWiFi(true);
+    // } else if (rst == true) {
+    //     Log.notice(F("DRD: Double reset boot, presenting portal." CR));
+    //     doWiFi(true);
+    // } else {
         Log.verbose(F("DRD: Normal boot." CR));
         doWiFi();
-    }
+    // }
 
     JsonConfig *config = JsonConfig::getInstance();
     if (!MDNS.begin(config->hostname)) {
@@ -66,18 +66,21 @@ void loop() {
     JsonConfig *config = JsonConfig::getInstance();
     WebServer *server = WebServer::getInstance();
     Bubbles *bubble = Bubbles::getInstance();
+    URLTarget *target = URLTarget::getInstance();
+    // BFTarget *bfTarget = BFTarget::getInstance();
 
     // Bubble loop to create 60 second readings
     Ticker bubUpdate;
     bubUpdate.attach(BUBLOOP, [bubble](){ bubble->update(); });
 
     // Target timer
-    Ticker postTimer;
-    postTimer.attach(config->targetfreq * 60, [postTimer](){ doTarget = true; });
+    Ticker urlTarget;
+    // config->targetfreq * 60
+    urlTarget.attach(5, [target](){ target->push(); });
     
     // Brewer's friend timer
-    Ticker bfTimer;
-    bfTimer.attach(config->bffreq * 60, [bfTimer](){ doBF = true; });
+    // Ticker bfTimer;
+    // bfTimer.attach(config->bffreq * 60, [bfTarget](){ bfTarget->push(); });
 
     // mDNS Reset Timer - Helps avoid the host not found issues
     Ticker mDNSTimer;
@@ -91,28 +94,24 @@ void loop() {
     while (true) {
 
         // Handle JSON posts
-        if (doTarget) { // Do Target post
-            doTarget = false;
-            httpPost();
-        }
-        if (doBF) { // Do BF post
-            doBF = false;
-            bfPost();
-        }
+        // if (doBF) { // Do BF post
+        //     doBF = false;
+        //     bfPost();
+        // }
 
         // If timers needs to be updated, update timers
         if (config->updateTargetFreq) {
-            Log.notice(F("Resetting target frequency timer to %l minutes." CR), config->targetfreq);
-            postTimer.detach();
-            postTimer.attach(config->targetfreq * 60, httpPost);
+            Log.notice(F("Resetting URL Target frequency timer to %l minutes." CR), config->targetfreq);
+            urlTarget.detach();
+            urlTarget.attach(config->targetfreq * 60, [target](){ target->push(); });
             config->updateTargetFreq = false;
         }
-        if (config->updateBFFreq) {
-            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config->bffreq);
-            bfTimer.detach();
-            bfTimer.attach(config->bffreq * 60, bfPost);
-            config->updateBFFreq = false;
-        }
+        // if (config->updateBFFreq) {
+        //     Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config->bffreq);
+        //     bfTimer.detach();
+        //     bfTimer.attach(config->bffreq * 60, [bfTarget](){ bfTarget->push(); });
+        //     config->updateBFFreq = false;
+        // }
 
         // Handle the board LED
         if (digitalRead(COUNTPIN) == HIGH) { // Non-interrupt driven LED logic
