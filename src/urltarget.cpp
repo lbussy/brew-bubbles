@@ -31,40 +31,36 @@ URLTarget* URLTarget::getInstance() {
         single->target = new PushTarget;
         single->target->ip = INADDR_NONE;
 
-        // /////////////////////////////////////////////////////////////////////
-        // //  Configure Target
-        // /////////////////////////////////////////////////////////////////////
-
-        String _tempVal;
-        // Check return body for success
-        single->target->checkBody.enabled = false;
-        strlcpy(single->target->checkBody.name, "", sizeof(""));
-        //
-        // Grab correct URL for target type
-        strlcpy(single->target->url, single->config->targeturl, sizeof(single->config->targeturl));
-        //
         // Enable target and target name
-        single->target->target.enabled = true;
-        strlcpy(single->target->target.name, URLTARGET, sizeof(URLTARGET));
+        single->target->target.enabled = (String(TARGETURL).length() > 3);
+        strlcpy(single->target->target.name, TARGET_NAME, sizeof(TARGET_NAME));
+        //
+        // Check return body for success
+        single->target->checkBody.enabled = CHECKBODY_ENABLED;
+        strlcpy(single->target->checkBody.name, CHECKBODY_NAME, sizeof(CHECKBODY_NAME));
         //
         // Change JSON point enabled and name for target type
-        single->target->apiName.enabled = (String(single->target->url).length() > 3);
-        strlcpy(single->target->apiName.name, "api_key", sizeof("api_key"));
+        single->target->apiName.enabled = APINAME_ENABLED;
+        strlcpy(single->target->apiName.name, APINAME_NAME, sizeof(APINAME_NAME));
         //
-        single->target->bubName.enabled = true;
-        strlcpy(single->target->bubName.name, "name", sizeof("name"));
+        single->target->bubName.enabled = BUBNAME_ENABLED;
+        strlcpy(single->target->bubName.name, BUBNAME_NAME, sizeof(BUBNAME_NAME));
         //
-        single->target->bpm.enabled = true;
-        strlcpy(single->target->bpm.name, "bpm", sizeof("bpm"));
+        single->target->bpm.enabled = BPM_ENABLED;
+        strlcpy(single->target->bpm.name, BPM_NAME, sizeof(BPM_NAME));
         //
-        single->target->ambientTemp.enabled = true;
-        strlcpy(single->target->ambientTemp.name, "ambient", sizeof("ambient"));
+        single->target->ambientTemp.enabled = AMBIENTTEMP_ENABLED;
+        strlcpy(single->target->ambientTemp.name, AMBIENTTEMP_NAME, sizeof(AMBIENTTEMP_NAME));
         //
-        single->target->vesselTemp.enabled = true;
-        strlcpy(single->target->vesselTemp.name, "temp", sizeof("temp"));
+        single->target->vesselTemp.enabled = VESSELTEMP_ENABLED;
+        strlcpy(single->target->vesselTemp.name, VESSELTEMP_NAME, sizeof(VESSELTEMP_NAME));
         //
-        single->target->tempFormat.enabled = true;
-        strlcpy(single->target->tempFormat.name, "temp_unit", sizeof("temp_unit"));
+        single->target->tempFormat.enabled = TEMPFORMAT_ENABLED;
+        strlcpy(single->target->tempFormat.name, TEMPFORMAT_NAME, sizeof(TEMPFORMAT_NAME));
+        //
+        // Grab correct URL for target type
+        strlcpy(single->target->url, TARGETURL, sizeof(TARGETURL));
+        //
     }
     return single;
 }
@@ -74,19 +70,18 @@ bool URLTarget::push() {
     if (single->target->apiName.enabled) {
         LCBUrl lcburl;
         if (lcburl.setUrl(String(single->target->url))) {
-            single->target->ip = resolveHost(single->target);
-            if (single->target->ip != INADDR_NONE) {
-                Log.verbose(F("Resolved host %s to IP %s." CR), lcburl.getHost().c_str(), single->target->ip.toString().c_str());
-                if (pushTarget(single->target)) {
-                    Log.notice(F("%s post ok." CR), single->target->target.name);
-                    return true;
-                } else {
-                    Log.error(F("%s post failed." CR), single->target->target.name);
+            IPAddress resolvedIP = resolveHost(single->target);
+            if (resolvedIP == INADDR_NONE) {
+                if (single->target->ip == INADDR_NONE) {
+                    Log.error(F("Unable to resolve host %s to IP address." CR), lcburl.getHost().c_str());
+                    Serial.println(); // DEBUG
                     return false;
+                } else {
+                    Log.verbose(F("Using cached information for host %s at IP %s." CR), lcburl.getHost().c_str(), single->target->ip.toString().c_str());
                 }
             } else {
-                Log.error(F("Unable to resolve host %s to IP address." CR), lcburl.getHost().c_str());
-                return false;
+                Log.verbose(F("Resolved host %s to IP %s." CR), lcburl.getHost().c_str(), resolvedIP.toString().c_str());
+                single->target->ip = resolvedIP;
             }
         } else {
             Log.error(F("Invalid URL in %s configuration: %s" CR), single->target->target.name, single->target->url);
@@ -94,6 +89,16 @@ bool URLTarget::push() {
         }
     } else {
         Log.verbose(F("%s not enabled, skipping." CR), single->target->target.name);
+        return true;
+    }
+
+    if (pushTarget(single->target)) {
+        Log.notice(F("%s post ok." CR), single->target->target.name);
+        Serial.println(); // DEBUG
+        return true;
+    } else {
+        Log.error(F("%s post failed." CR), single->target->target.name);
+        Serial.println(); // DEBUG
         return false;
     }
 }
