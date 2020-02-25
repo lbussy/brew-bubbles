@@ -26,10 +26,10 @@ IPAddress resolveHost(PushTarget *target) {
     LCBUrl lcburl;
     lcburl.setUrl(String(target->url));
     Log.verbose(F("Host lookup: %s." CR), lcburl.getHost().c_str());
-    IPAddress returnIP;
+    IPAddress returnIP = INADDR_NONE;
     if (WiFi.hostByName(lcburl.getHost().c_str(), returnIP, 10000) == 0) {
-        Log.error(F("Host lookup error, using cached IP (if any.)" CR));
-        returnIP = target->ip;
+        Log.error(F("Host lookup error." CR));
+        returnIP = INADDR_NONE;
     }
     return returnIP;
 }
@@ -61,27 +61,25 @@ bool pushTarget(PushTarget *target) {
     String json;
     serializeJson(doc, json);
 
-    // Post JSON to Server
-    //
     // Use the IP address we resolved if we are connecting with mDNS
-    Log.verbose(F("Connecting to: %s, %s" CR), lcburl.getHost().c_str(), target->ip.toString().c_str());
+    Log.verbose(F("Connecting to: %s @ %s on port %l" CR),
+        lcburl.getHost().c_str(),
+        target->ip.toString().c_str(),
+        lcburl.getPort()
+    );
+
     WiFiClient client;
-    client.setTimeout(10000);
-    int retval = client.connect(target->ip, lcburl.getPort());
     //  1 = SUCCESS
     //  0 = FAILED
     // -1 = TIMED_OUT
     // -2 = INVALID_SERVER
     // -3 = TRUNCATED
-    // -4 = INVALID_RESPONSE 
-    if (!retval == 1) {
-        Log.warning(F("Connection failed, Host: %s, Port: %l (Err: %d)" CR),
-            lcburl.getHost().c_str(), lcburl.getPort(), retval
-        );
-        return false;
-    } else {
+    // -4 = INVALID_RESPONSE
+    IPAddress targetIP = target->ip;
+    int port = lcburl.getPort();
+    if (client.connect(targetIP, port)) {
         Log.notice(F("Connected to: %s at %s, %l" CR),
-            target->target.name, lcburl.getHost().c_str(), lcburl.getPort()
+            target->target.name, lcburl.getHost().c_str(), port
         );
 
         // Open POST connection
@@ -112,22 +110,30 @@ bool pushTarget(PushTarget *target) {
         //
         // End Headers
 
-        // Post Data
-        Log.verbose(F("Posting JSON to target." CR));
+        // Post JSON
+        Log.verbose(F("Posting JSON to target:" CR)); // DEBUG
         Serial.println(json); // DEBUG
         client.println(json);
         // Check the HTTP status (should be "HTTP/1.1 200 OK")
-        char status[32] = {0};
-        // TODO: Need to check response body
-        client.readBytesUntil('\r', status, sizeof(status));
-        client.stop(); 
-        Log.verbose(F("Status: %s" CR), status);
-        if ((String(status).endsWith("200 (OK)"))) {
+        String response;
+        while (client.connected() || client.available()) {
+            if (client.available()) {
+                response = client.readStringUntil('\n');
+            }
+        }
+        client.stop();
+        Log.verbose(F("Status: %s" CR), response.c_str());
+        if (response.indexOf("200") >= 0) {
             Log.verbose(F("JSON posted." CR));
             return true;
         } else {
-            Log.error(F("Unexpected status: %s" CR), status);
+            Log.error(F("Unexpected status: %s" CR), response.c_str());
             return false;
         }
+    } else {
+        Log.warning(F("Connection failed, Host: %s, Port: %l (Err: %d)" CR),
+            lcburl.getHost().c_str(), port, client.connected()
+        );
+        return false;
     }
 }
