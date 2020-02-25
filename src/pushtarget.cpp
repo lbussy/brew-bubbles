@@ -61,11 +61,13 @@ bool pushTarget(PushTarget *target) {
     String json;
     serializeJson(doc, json);
 
+    IPAddress targetIP = target->ip;
+    int port = lcburl.getPort();
     // Use the IP address we resolved if we are connecting with mDNS
     Log.verbose(F("Connecting to: %s @ %s on port %l" CR),
         lcburl.getHost().c_str(),
-        target->ip.toString().c_str(),
-        lcburl.getPort()
+        targetIP.toString().c_str(),
+        port
     );
 
     WiFiClient client;
@@ -75,8 +77,6 @@ bool pushTarget(PushTarget *target) {
     // -2 = INVALID_SERVER
     // -3 = TRUNCATED
     // -4 = INVALID_RESPONSE
-    IPAddress targetIP = target->ip;
-    int port = lcburl.getPort();
     if (client.connect(targetIP, port)) {
         Log.notice(F("Connected to: %s at %s, %l" CR),
             target->target.name, lcburl.getHost().c_str(), port
