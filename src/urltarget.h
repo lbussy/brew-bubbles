@@ -25,11 +25,47 @@ SOFTWARE. */
 
 #include "pushtarget.h"
 #include "jsonconfig.h"
-// #include "bubbles.h"
 #include <LCBUrl.h>
-// #include <WiFiClient.h>
-// #include <ArduinoLog.h>
+#include <ArduinoLog.h>
 #include <Arduino.h>
+
+/////////////////////////////////////////////////////////////////////
+//  Configure Target - Below are configuration items per target type
+/////////////////////////////////////////////////////////////////////
+
+// Enable target and target name
+#define TARGET_ENABLED true
+#define TARGET_NAME URLTARGET
+//
+// Check return body for success
+#define CHECKBODY_ENABLED true
+#define CHECKBODY_NAME "200 (Ok)"
+//
+// Turn JSON points on/off and provide JSON field name per target type
+//
+#define APINAME_ENABLED true
+#define APINAME_NAME "api_key"
+//
+#define BUBNAME_ENABLED true
+#define BUBNAME_NAME "name"
+//
+#define BPM_ENABLED true
+#define BPM_NAME "bpm"
+//
+#define AMBIENTTEMP_ENABLED true
+#define AMBIENTTEMP_NAME "ambient"
+//
+#define VESSELTEMP_ENABLED true
+#define VESSELTEMP_NAME "temp"
+//
+#define TEMPFORMAT_ENABLED true
+#define TEMPFORMAT_NAME "temp_unit"
+//
+#define TARGETURL single->config->targeturl
+
+/////////////////////////////////////////////////////////////////////
+//  Configure Target - Above are configuration items per target type
+/////////////////////////////////////////////////////////////////////
 
 class URLTarget {
     private:
