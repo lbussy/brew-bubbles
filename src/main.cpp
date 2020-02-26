@@ -31,6 +31,7 @@ void setup() {
 
     _delay(200); // Let pins settle, else detect is inconsistent
     pinMode(RESETWIFI, INPUT_PULLUP);
+    // DEBUG:  Commented startup lines
     // if (digitalRead(RESETWIFI) == LOW) {
     //     Log.notice(F("%s low, presenting portal." CR), RESETWIFI);
     //     doWiFi(true);
@@ -66,8 +67,6 @@ void loop() {
     JsonConfig *config = JsonConfig::getInstance();
     WebServer *server = WebServer::getInstance();
     Bubbles *bubble = Bubbles::getInstance();
-    URLTarget *target = URLTarget::getInstance();
-    // BFTarget *bfTarget = BFTarget::getInstance();
 
     // Bubble loop to create 60 second readings
     Ticker bubUpdate;
@@ -76,11 +75,11 @@ void loop() {
     // Target timer
     Ticker urlTarget;
     // config->targetfreq * 60
-    urlTarget.attach(5, [target](){ target->push(); });
+    urlTarget.attach(5, [](){doURLTarget = true;});
     
     // Brewer's friend timer
     // Ticker bfTimer;
-    // bfTimer.attach(config->bffreq * 60, [bfTarget](){ bfTarget->push(); });
+    // bfTimer.attach(config->bffreq * 60, [](){doBFTarget = true;});
 
     // mDNS Reset Timer - Helps avoid the host not found issues
     Ticker mDNSTimer;
@@ -92,43 +91,27 @@ void loop() {
     rebootTimer.attach(REBOOTTIMER, reboot);
 
     while (true) {
+        // Handle semaphores - No radio work in a Ticker
+        tickerLoop();
 
-        // Handle JSON posts
-        // if (doBF) { // Do BF post
-        //     doBF = false;
-        //     bfPost();
-        // }
+        // Regular loop handlers
+        server->handleLoop();   // Handle HTML requests
+        MDNS.update();          // Handle mDNS requests
 
-        // If timers needs to be updated, update timers
+        // If target frequencies needs to be updated, update here
         if (config->updateTargetFreq) {
             Log.notice(F("Resetting URL Target frequency timer to %l minutes." CR), config->targetfreq);
             urlTarget.detach();
-            urlTarget.attach(config->targetfreq * 60, [target](){ target->push(); });
+            urlTarget.attach(config->targetfreq * 60, [](){doURLTarget = true;});
             config->updateTargetFreq = false;
         }
         // if (config->updateBFFreq) {
         //     Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config->bffreq);
         //     bfTimer.detach();
-        //     bfTimer.attach(config->bffreq * 60, [bfTarget](){ bfTarget->push(); });
+        //     bfTimer.attach(config->bffreq * 60, [](){doBFTarget = true;});
         //     config->updateBFFreq = false;
         // }
 
-        // Handle the board LED
-        if (digitalRead(COUNTPIN) == HIGH) { // Non-interrupt driven LED logic
-            digitalWrite(LED, LOW); // Turn LED on when not obstructed
-        } else {
-            digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble4
-        }
-
-        if (bubble->doBub) { // Serial log for bubble detect
-#ifdef LOG_LEVEL
-            Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right?
-#endif
-            bubble->doBub = false;
-        }
-
-        // Regular loop handlers
-        server->handleLoop();   // Handle HTML requests
-        MDNS.update();          // Handle mDNS requests
+        yield();
     }
 }

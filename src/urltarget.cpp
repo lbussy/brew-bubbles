@@ -67,10 +67,10 @@ URLTarget* URLTarget::getInstance() {
 
 bool URLTarget::push() {
     Log.verbose(F("Triggered %s push." CR), single->target->target.name);
+    LCBUrl lcburl;
     if (single->target->apiName.enabled) {
-        LCBUrl lcburl;
         if (lcburl.setUrl(String(single->target->url))) {
-            IPAddress resolvedIP = resolveHost(single->target);
+            IPAddress resolvedIP = resolveHost(lcburl.getHost().c_str());
             if (resolvedIP == INADDR_NONE) {
                 if (single->target->ip == INADDR_NONE) {
                     Log.error(F("Unable to resolve host %s to IP address." CR), lcburl.getHost().c_str());
@@ -92,7 +92,7 @@ bool URLTarget::push() {
         return true;
     }
 
-    if (pushTarget(single->target)) {
+    if (pushTarget(single->target, target->ip, lcburl.getPort())) {
         Log.notice(F("%s post ok." CR), single->target->target.name);
         Serial.println(); // DEBUG
         return true;

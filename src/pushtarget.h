@@ -25,6 +25,7 @@ SOFTWARE. */
 
 #include "bubbles.h"
 #include "jsonconfig.h"
+#include "urltarget.h"
 #include <LCBUrl.h>
 #include <ArduinoLog.h>
 #include <ESP8266mDNS.h>
@@ -55,7 +56,13 @@ class PushTarget {
         pushPoint bpm;          // Bubbles per minute
 };
 
-IPAddress resolveHost(PushTarget*);
-bool pushTarget(PushTarget*);
+IPAddress resolveHost(const char hostname[129]);
+bool pushTarget(PushTarget*, IPAddress, int);
+bool testConnect(IPAddress, int);
+void tickerLoop();
+
+static bool __attribute__((unused)) doURLTarget = false;    // Semaphore for Target timer
+static bool __attribute__((unused)) doBFTarget = false;     // Semaphore for BF timer
+static bool __attribute__((unused)) doBRFTarget = false;    // Semaphore for BRF timer
 
 #endif // _PUSHTARGET_H

@@ -22,27 +22,20 @@ SOFTWARE. */
 
 #include "pushtarget.h"
 
-IPAddress resolveHost(PushTarget *target) {
-    LCBUrl lcburl;
-    lcburl.setUrl(String(target->url));
-    Log.verbose(F("Host lookup: %s." CR), lcburl.getHost().c_str());
+IPAddress resolveHost(const char *hostname) {
+    Log.verbose(F("Host lookup: %s." CR), hostname);
     IPAddress returnIP = INADDR_NONE;
-    if (WiFi.hostByName(lcburl.getHost().c_str(), returnIP, 10000) == 0) {
+    if (WiFi.hostByName(hostname, returnIP, 10000) == 0) {
         Log.error(F("Host lookup error." CR));
         returnIP = INADDR_NONE;
     }
     return returnIP;
 }
 
-bool pushTarget(PushTarget *target) {
+bool pushTarget(PushTarget *target, IPAddress targetIP, int port) {
     Log.notice(F("Posting to: %s" CR), target->url);
     LCBUrl lcburl;
     lcburl.setUrl(String(target->url));
-
-    if (target->ip == INADDR_NONE) {
-        Log.error(F("Name resolution failed for %s." CR), lcburl.getHost().c_str());
-        return false;
-    }
 
     Bubbles *bubble = Bubbles::getInstance();
     JsonConfig *config = JsonConfig::getInstance();
@@ -61,8 +54,6 @@ bool pushTarget(PushTarget *target) {
     String json;
     serializeJson(doc, json);
 
-    IPAddress targetIP = target->ip;
-    int port = lcburl.getPort();
     // Use the IP address we resolved if we are connecting with mDNS
     Log.verbose(F("Connecting to: %s @ %s on port %l" CR),
         lcburl.getHost().c_str(),
@@ -136,4 +127,54 @@ bool pushTarget(PushTarget *target) {
         );
         return false;
     }
+}
+
+bool testConnect(IPAddress targetIP, int port) {
+    WiFiClient client;
+    if (client.connect(targetIP, port)) {
+        Log.notice(F("Connected to: %s port %l." CR),
+            targetIP.toString().c_str(), port
+        );
+    } else {
+        Log.warning(F("Connection failed to: %s, Port: %l (Err: %d)" CR),
+            targetIP.toString().c_str(), port, client.connected()
+        );
+        return false;
+    }
+	client.stop();
+}
+
+void tickerLoop() {
+    Bubbles *bubble = Bubbles::getInstance();
+    URLTarget *urlTarget = URLTarget::getInstance();
+
+        // Handle JSON posts
+        //
+        // Do URL Target post
+        if (doURLTarget) {
+            doURLTarget = false;
+            urlTarget->push();
+        }
+        //
+        // Do Brewer's Friend Post
+        if (doBFTarget) { // Do BF post
+            doBFTarget = false;
+            // urlTarget->push(); // TODO - Attach BF Target
+        }
+
+        // Handle the board LED status
+        // Smarter to do it in the loop than in the ISR
+        if (digitalRead(COUNTPIN) == HIGH) { // Non-interrupt driven LED logic
+            digitalWrite(LED, LOW); // Turn LED on when not obstructed
+        } else {
+            digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble4
+        }
+
+        // Some just for fun serial logging
+        if (bubble->doBub) { // Serial log for bubble detect
+#ifdef LOG_LEVEL
+            Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right?
+#endif
+            bubble->doBub = false;
+        }
 }
