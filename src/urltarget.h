@@ -24,6 +24,7 @@ SOFTWARE. */
 #define _URLTARGET_H
 
 #include "pushtarget.h"
+#include "pushhelper.h"
 #include "jsonconfig.h"
 #include <LCBUrl.h>
 #include <ArduinoLog.h>

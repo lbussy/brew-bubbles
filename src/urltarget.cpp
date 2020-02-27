@@ -92,7 +92,7 @@ bool URLTarget::push() {
         return true;
     }
 
-    if (pushTarget(single->target, target->ip, lcburl.getPort())) {
+    if (pushToTarget(single->target, target->ip, lcburl.getPort())) {
         Log.notice(F("%s post ok." CR), single->target->target.name);
         Serial.println(); // DEBUG
         return true;
