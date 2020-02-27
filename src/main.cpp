@@ -25,7 +25,7 @@ SOFTWARE. */
 DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 
 void setup() {
-    bool rst = drd.detect(); // Check for double-reset
+    // bool rst = drd.detect(); // Check for double-reset
     serial();
     pinMode(LED, OUTPUT);
 
@@ -43,19 +43,13 @@ void setup() {
         doWiFi();
     // }
 
-    JsonConfig *config = JsonConfig::getInstance();
-    if (!MDNS.begin(config->hostname)) {
-        Log.error(F("Error setting up MDNS responder."));
-    } else {
-        Log.notice(F("mDNS responder started, hostname: %s.local." CR), WiFi.hostname().c_str());
-        MDNS.addService("http", "tcp", 80);
-    }
+    NtpHandler *ntpTime = NtpHandler::getInstance();
+    ntpTime->start();
 
     WebServer *server = WebServer::getInstance();
     server->initialize(PORT); // Turn on web server
 
-    NtpHandler *ntpTime = NtpHandler::getInstance();
-    ntpTime->start();
+    mdnssetup(); // Set up mDNS responder
     
     execspiffs();   // Check for pending SPIFFS update
     loadBpm() ;     // Get last Bpm reading if it was a controlled reboot
