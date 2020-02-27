@@ -30,7 +30,6 @@ void doWiFi() {
 }
 
 void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current config
-
     WiFiManager wifiManager;
     JsonConfig *config = JsonConfig::getInstance();
 
@@ -178,10 +177,4 @@ void saveParamsCallback() { // Set flag to save config
 
 void webServerCallback() {
     Log.verbose(F("[CALLBACK]: setWebServerCallback fired." CR));
-}
-
-// Misc helpers
-
-bool isNullField(const char *field) {
-    return ((field == NULL) || (field[0] == '\0'));
 }

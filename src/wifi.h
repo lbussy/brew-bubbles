@@ -46,6 +46,4 @@ void saveConfigCallback();
 void saveParamsCallback();
 void webServerCallback();
 
-bool isNullField(const char *);
-
 #endif // _WIFI_H
