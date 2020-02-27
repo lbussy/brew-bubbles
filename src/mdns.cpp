@@ -37,12 +37,6 @@ void mdnssetup() {
 }
 
 void mdnsreset() {
-    JsonConfig *config = JsonConfig::getInstance();
     MDNS.end();
-    if (!MDNS.begin(config->hostname)) {
-        Log.error(F("Error resetting MDNS responder."));
-    } else {
-        Log.notice(F("mDNS responder restarted, hostname: %s.local." CR), WiFi.hostname().c_str());
-        MDNS.addService("http", "tcp", 80);
-    }
+    mdnssetup();
 }

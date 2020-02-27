@@ -34,7 +34,6 @@ SOFTWARE. */
 #include <ESP8266WiFi.h>
 
 void mdnssetup();
-IPAddress mdnsquery(char hostname[65]);
 void mdnsreset();
 
 #endif // _MDNS_H
