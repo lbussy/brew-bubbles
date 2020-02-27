@@ -37,5 +37,6 @@ void _delay(unsigned long);
 void reboot();
 void loadBpm();
 void saveBpm();
+bool isNullField(const char *);
 
 #endif
