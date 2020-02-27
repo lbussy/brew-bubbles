@@ -23,15 +23,7 @@ SOFTWARE. */
 #ifndef _PUSHTARGET_H
 #define _PUSHTARGET_H
 
-#include "bubbles.h"
-#include "jsonconfig.h"
-#include "urltarget.h"
-#include <LCBUrl.h>
-#include <ArduinoLog.h>
-#include <ESP8266mDNS.h>
-#include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
-#include <Arduino.h>
 
 struct pushPoint {
     bool enabled;   // Whether to send or not
@@ -55,14 +47,5 @@ class PushTarget {
         pushPoint vesselTemp;   // Brew temp
         pushPoint bpm;          // Bubbles per minute
 };
-
-IPAddress resolveHost(const char hostname[129]);
-bool pushTarget(PushTarget*, IPAddress, int);
-bool testConnect(IPAddress, int);
-void tickerLoop();
-
-static bool __attribute__((unused)) doURLTarget = false;    // Semaphore for Target timer
-static bool __attribute__((unused)) doBFTarget = false;     // Semaphore for BF timer
-static bool __attribute__((unused)) doBRFTarget = false;    // Semaphore for BRF timer
 
 #endif // _PUSHTARGET_H
