@@ -23,15 +23,15 @@ SOFTWARE. */
 #ifndef _WIFI_H
 #define _WIFI_H
 
+#define WM_ASYNC
+
 #include "config.h"
 #include "jsonconfig.h"
 #include "tools.h"
 #include <ESP8266WiFi.h>
 #include <Ticker.h>
-// #include <DNSServer.h>
-// #include <ESP8266WebServer.h>
 #include <ArduinoLog.h>
-#include <WiFiManager.h>
+#include <AsyncWiFiManager.h>
 
 void wifiBlinker();
 void doWiFi();
@@ -39,7 +39,7 @@ void doWiFi(bool);
 void resetWifi();
 
 // WiFiManager Callbacks
-void apCallback(WiFiManager *myWiFiManager);
+void apCallback(AsyncWiFiManager *myWiFiManager);
 void configResetCallback();
 void preSaveConfigCallback();
 void saveConfigCallback();

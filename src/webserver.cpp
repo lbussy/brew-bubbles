@@ -22,93 +22,121 @@ SOFTWARE. */
 
 #include "webserver.h"
 
-WebServer* WebServer::single = NULL;
+AsyncWebServer server(PORT);
 
-WebServer* WebServer::getInstance() {
-    if (!single) {
-        single = new WebServer();
-    }
-    return single;
-}
-
-void WebServer::initialize (int port) {
-    server = new ESP8266WebServer(port);
-    filesystem = &SPIFFS;
-    filesystem->begin();
-
-    single->aliases();
-
-    single->server->begin();
-    single->running = true;
-    Log.notice(F("HTTP server started on port %l." CR) , port);
+void initWebServer() {
+    setWebAliases();
+    server.begin();
+    Log.notice(F("Async HTTP server started on port %l." CR) , PORT);
     Log.verbose(F("Open: http://%s.local." CR), WiFi.hostname().c_str());
 }
 
-void WebServer::aliases() {
+void setWebAliases() {
 
     // Regular page aliases
 
-    single->server->on(
-        F("/about/"),
-        HTTP_GET,
-        []() {if (!single->handleFileRead(F("/about.htm")))
-             {single->server->send(404, F("text/plain"), F("404: File not found."));}});
 
-    single->server->on(
-        F("/help/"),
+    // Route for root / web page
+    server.on(
+        "/",
         HTTP_GET,
-        []() {if (!single->handleFileRead(F("/help.htm")))
-            {single->server->send(404, F("text/plain"), F("404: File not found."));}});
+        [] (AsyncWebServerRequest *request) {
+            if (!handleWebFileRead(request, F("/index.htm"))) {
+                request->send(404, F("text/plain"), F("404: File not found."));
+            }
+        }
+    );
 
-    single->server->on(
-        F("/ota/"),
+    server.on(
+        "/about/",
         HTTP_GET,
-        []() {if (!single->handleFileRead(F("/ota.htm")))
-            {single->server->send(404, F("text/plain"), F("404: File not found."));}});
+        [] (AsyncWebServerRequest *request) {
+            if (!handleWebFileRead(request, F("/about.htm"))) {
+                request->send(404, F("text/plain"), F("404: File not found."));
+            }
+        }
+    );
 
-    single->server->on(
-        F("/ota2/"),
+    server.on(
+        "/help/",
         HTTP_GET,
-        []() {if (!single->handleFileRead(F("/ota2.htm")))
-            {single->server->send(404, F("text/plain"), F("404: File not found."));}});
+        [] (AsyncWebServerRequest *request) {
+            if (!handleWebFileRead(request, F("/help.htm"))) {
+                request->send(404, F("text/plain"), F("404: File not found."));
+            }
+        }
+    );
 
-    single->server->on(
-        F("/settings/"),
+    server.on(
+        "/ota/",
         HTTP_GET,
-        []() {if (!single->handleFileRead(F("/settings.htm")))
-            {single->server->send(404, F("text/plain"), F("404: File not found."));}});
+        [] (AsyncWebServerRequest *request) {
+            if (!handleWebFileRead(request, F("/ota.htm"))) {
+                request->send(404, F("text/plain"), F("404: File not found."));
+            }
+        }
+    );
 
-    single->server->on(
-        F("/wifi/"),
+    server.on(
+        "/ota2/",
         HTTP_GET,
-        []() {if (!single->handleFileRead(F("/wifi.htm")))
-            {single->server->send(404, F("text/plain"), F("404: File not found."));}});
+        [] (AsyncWebServerRequest *request) {
+            if (!handleWebFileRead(request, F("/ota2.htm"))) {
+                request->send(404, F("text/plain"), F("404: File not found."));
+            }
+        }
+    );
+
+    server.on(
+        "/settings/",
+        HTTP_GET,
+        [] (AsyncWebServerRequest *request) {
+            if (!handleWebFileRead(request, F("/settings.htm"))) {
+                request->send(404, F("text/plain"), F("404: File not found."));
+            }
+        }
+    );
+
+    server.on(
+        "/wifi/",
+        HTTP_GET,
+        [] (AsyncWebServerRequest *request) {
+            if (!handleWebFileRead(request, F("/wifi.htm"))) {
+                request->send(404, F("text/plain"), F("404: File not found."));
+            }
+        }
+    );
 
     // Action Page Handlers
 
-    single->server->on(
-        F("/wifi2/"),
+    server.on(
+        "/wifi2/",
         HTTP_GET,
-        []() {
-            single->handleFileRead(F("/wifi2.htm"));
-            resetWifi();    // Wipe settings, reset controller
-        });
+        [] (AsyncWebServerRequest *request) {
+            if (!handleWebFileRead(request, F("/wifi2.htm"))) {
+                request->send(404, F("text/plain"), F("404: File not found."));
+            } else {
+                resetWifi();    // Wipe settings, reset controller
+            }
+        }
+    );
 
-    single->server->on(
-        F("/otastart/"),
-        []() {
-            Log.notice(F("OTA upgrade started." CR));
-            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            single->server->send(200, F("text/html"), F("OTA started."));
+    server.on(
+        "/otastart/",
+        HTTP_GET,
+        [] (AsyncWebServerRequest *request) {
+            request->send(200, F("text/plain"), F("200: OTA started."));
             execfw(); // Trigger the OTA update
-        });
+        }
+    );
 
     // Settings Update Handler
 
-    single->server->on(
-        F("/settings/update/"),
+    server.on(
+        "/settings/update/",
         HTTP_POST,
-        []() { // Process POST configuration changes
+        [] (AsyncWebServerRequest *request) {
+            // Process POST configuration changes
             Log.verbose(F("Processing post to /settings/update/." CR));
 
             JsonConfig *config = JsonConfig::getInstance();
@@ -116,11 +144,11 @@ void WebServer::aliases() {
             char redirect[66];
             strcpy(redirect, "/settings/");
 
-            if (single->server->hasArg(F("mdnsID"))) { // Change Hostname
-                if ((single->server->arg("mdnsID").length() > 32) || (single->server->arg("mdnsID").length() < 3)) {
+            if (request->hasParam(F("mdnsID"), true)) { // Change Hostname
+                if ((request->arg("mdnsID").length() > 32) || (request->arg("mdnsID").length() < 3)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    strlcpy(config->hostname, single->server->arg("mdnsID").c_str(), sizeof(config->hostname));
+                    strlcpy(config->hostname, request->arg("mdnsID").c_str(), sizeof(config->hostname));
                     config->save();
 
                     // Reset hostname
@@ -140,19 +168,19 @@ void WebServer::aliases() {
                     Log.verbose(F("POSTed mdnsID, redirecting to %s." CR), redirect);
                 }
 
-            } else if (single->server->hasArg(F("bubname"))) { // Change Bubble ID
-                if ((single->server->arg("bubname").length() > 32) || (single->server->arg("bubname").length() < 3)) {
+            } else if (request->hasParam(F("bubname"), true)) { // Change Bubble ID
+                if ((request->arg("bubname").length() > 32) || (request->arg("bubname").length() < 3)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    strlcpy(config->bubname, single->server->arg("bubname").c_str(), sizeof(config->bubname));
+                    strlcpy(config->bubname, request->arg("bubname").c_str(), sizeof(config->bubname));
                     config->save();
                 }
                 strcat(redirect, "#controller"); // Redirect to Controller box
                 Log.notice(F("POSTed bubname, redirecting to %s." CR), redirect);
 
-            } else if (single->server->hasArg(F("tempInF"))) { // Change Temp in F
+            } else if (request->hasParam(F("tempInF"), true)) { // Change Temp in F
                 char option[8];
-                strcpy(option, single->server->arg("tempInF").c_str());
+                strcpy(option, request->arg("tempInF").c_str());
                 if (strcmp(option, "option0") == 0) {
                     config->tempinf = false;
                 } else {
@@ -162,62 +190,62 @@ void WebServer::aliases() {
                 strcat(redirect, "#temp"); // Redirect to Temp Control
                 Log.notice(F("POSTed tempInF, redirecting to %s." CR), redirect);
 
-            } else if (single->server->hasArg(F("calRoom"))) { // Change Room temp calibration
-                if ((single->server->arg("calRoom").toDouble() < -25) || (single->server->arg("calRoom").toDouble() > 25)) {
+            } else if (request->hasParam(F("calRoom"), true)) { // Change Room temp calibration
+                if ((request->arg("calRoom").toDouble() < -25) || (request->arg("calRoom").toDouble() > 25)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    config->calAmbient = single->server->arg("calRoom").toDouble();
+                    config->calAmbient = request->arg("calRoom").toDouble();
                     config->save();
                 }
                 strcat(redirect, "#temp"); // Redirect to Temp Control
                 Log.notice(F("POSTed calRoom, redirecting to %s." CR), redirect);
 
-            } else if (single->server->hasArg(F("calVessel"))) { // Change Vessel temp calibration
-                if ((single->server->arg("calVessel").toDouble() < -25) || (single->server->arg("calVessel").toDouble() > 25)) {
+            } else if (request->hasParam(F("calVessel"), true)) { // Change Vessel temp calibration
+                if ((request->arg("calVessel").toDouble() < -25) || (request->arg("calVessel").toDouble() > 25)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    config->calVessel = single->server->arg("calVessel").toDouble();
+                    config->calVessel = request->arg("calVessel").toDouble();
                     config->save();
                 }
                 strcat(redirect, "#temp"); // Redirect to Temp Control
                 Log.notice(F("POSTed calVessel, redirecting to %s." CR), redirect);
 
-            } else if (single->server->hasArg(F("target"))) { // Change Target URL
-                if (single->server->arg("target").length() > 128) {
+            } else if (request->hasParam(F("target"), true)) { // Change Target URL
+                if (request->arg("target").length() > 128) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    strlcpy(config->targeturl, single->server->arg("target").c_str(), sizeof(config->targeturl));
+                    strlcpy(config->targeturl, request->arg("target").c_str(), sizeof(config->targeturl));
                     config->save();
                 }
                 strcat(redirect, "#target"); // Redirect to Target Control
                 Log.notice(F("POSTed target, redirecting to %s." CR), redirect);
 
-            } else if (single->server->hasArg(F("tfreq"))) { // Change Vessel temp calibration
-                if ((single->server->arg("tfreq").toInt() < 1) || (single->server->arg("tfreq").toInt() > 60)) {
+            } else if (request->hasParam(F("tfreq"), true)) { // Change Vessel temp calibration
+                if ((request->arg("tfreq").toInt() < 1) || (request->arg("tfreq").toInt() > 60)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    config->targetfreq = single->server->arg("tfreq").toInt();
+                    config->targetfreq = request->arg("tfreq").toInt();
                     config->updateTargetFreq = true;
                     config->save();
                 }
                 strcat(redirect, "#target"); // Redirect to Target Control
                 Log.notice(F("POSTed tfreq, redirecting to %s." CR), redirect);
 
-            } else if (single->server->hasArg(F("bfkey"))) { // Change Brewer's Friend key
-                if ((single->server->arg("bfkey").length() > 64) || (single->server->arg("bfkey").length() < 20)) {
+            } else if (request->hasParam(F("bfkey"), true)) { // Change Brewer's Friend key
+                if ((request->arg("bfkey").length() > 64) || (request->arg("bfkey").length() < 20)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    strlcpy(config->bfkey, single->server->arg("bfkey").c_str(), sizeof(config->bfkey));
+                    strlcpy(config->bfkey, request->arg("bfkey").c_str(), sizeof(config->bfkey));
                     config->save();
                 }
                 strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
                 Log.notice(F("POSTed bfkey, redirecting to %s." CR), redirect);
 
-            } else if (single->server->hasArg(F("bfreq"))) { // Change Vessel temp calibration
-                if ((single->server->arg("bfreq").toInt() < 15) || (single->server->arg("bfreq").toInt() > 120)) {
+            } else if (request->hasParam(F("bfreq"))) { // Change Vessel temp calibration
+                if ((request->arg("bfreq").toInt() < 15) || (request->arg("bfreq").toInt() > 120)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    config->bffreq = single->server->arg("bfreq").toInt();
+                    config->bffreq = request->arg("bfreq").toInt();
                     config->updateBFFreq = true;
                     config->save();
                 }
@@ -227,31 +255,30 @@ void WebServer::aliases() {
             }
 
             // Redirect to Settings page
-            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            single->server->sendHeader(F("Location"), redirect);
-            single->server->send(303);
-        });
+            request->redirect(redirect);
+        }
+    );
 
-    single->server->on(
-        F("/clearupdate/"),
+    server.on(
+        "/clearupdate/",
         HTTP_GET,
-        []() {
+        [] (AsyncWebServerRequest *request) {
             JsonConfig *config = JsonConfig::getInstance();
             Log.verbose(F("Clearing any update flags." CR));
             config->dospiffs1 = false;
             config->dospiffs2 = false;
             config->didupdate = false;
             config->save();
-            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            single->server->send(200, F("text/html"), F("Ok."));
-        });
+            request->send(200, F("text/plain"), F("200: OK."));
+        }
+    );
 
     // JSON Handlers
 
-    single->server->on(
-        F("/bubble/"),
+    server.on(
+        "/bubble/",
         HTTP_GET,
-        []() {
+        [] (AsyncWebServerRequest *request) {
             // Used to provide the Bubbles json
             Bubbles *bubble = Bubbles::getInstance();
             JsonConfig *config = JsonConfig::getInstance();
@@ -275,14 +302,14 @@ void WebServer::aliases() {
             String json;
             serializeJsonPretty(doc, json);
 
-            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            single->server->send(200, F("application/json"), json);
-        });
+            request->send(200, F("application/json"), json);
+        }
+    );
 
-    single->server->on(
-        F("/config/"),
+    server.on(
+        "/config/",
         HTTP_GET,
-        []() {
+        [] (AsyncWebServerRequest *request) {
             // Used to provide the Config json
             JsonConfig *config = JsonConfig::getInstance();
 
@@ -327,16 +354,16 @@ void WebServer::aliases() {
             String json;
             serializeJsonPretty(doc, json);
 
-            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            single->server->send(200, F("application/json"), json);
-        });
+            request->send(200, F("application/json"), json);
+        }
+    );
 
-    single->server->on(
-        F("/config/apply/"),
+    server.on(
+        "/config/apply/",
         HTTP_POST,
-        []() {  // Process JSON POST configuration changes
+        [] (AsyncWebServerRequest *request) {  // Process JSON POST configuration changes
             Log.verbose(F("Processing post to /config/apply/." CR));
-            String input = single->server->arg(F("plain"));
+            String input = request->arg(F("plain"));
             const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
             StaticJsonDocument<capacity> doc;
             DeserializationError err = deserializeJson(doc, input);
@@ -457,26 +484,24 @@ void WebServer::aliases() {
                         strcat(hostredirect, ".local");
                         Log.notice(F("Redirecting to new URL: http://%s.local/" CR), hostname);
 
-                        // Send redirect page
+                        // Send redirect information
                         Log.verbose(F("Sending %s for redirect." CR), hostredirect);
-                        single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-                        single->server->send(200, F("text/html"), hostredirect);
+                        request->redirect(hostredirect);
                     } else {
-                        single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-                        single->server->send(200, F("text/html"), F("Ok."));
+                        request->send(200, F("text/html"), F("Ok."));
                     }
                 }
 
             } else {
-                single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-                single->server->send(500, F("text/json"), err.c_str());
+                request->send(500, F("text/json"), err.c_str());
             }
-        });
+        }
+    );
 
-    single->server->on(
-        F("/thisVersion/"),
+    server.on(
+        "/thisVersion/",
         HTTP_GET,
-        []() {
+        [] (AsyncWebServerRequest *request) {
             Log.verbose(F("Serving /thisVersion/." CR));
             const size_t capacity = JSON_OBJECT_SIZE(3);
             StaticJsonDocument<capacity> doc;
@@ -486,14 +511,14 @@ void WebServer::aliases() {
             String json;
             serializeJsonPretty(doc, json);
 
-            single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-            single->server->send(200, F("application/json"), json);
-        });
+            request->send(200, F("application/json"), json);
+        }
+    );
 
-    single->server->on(
-        F("/thatVersion/"),
+    server.on(
+        "/thatVersion/",
         HTTP_GET,
-        []() {
+        [] (AsyncWebServerRequest *request) {
             Log.verbose(F("Serving /thatVersion/." CR));
 
             String json = "";
@@ -506,24 +531,23 @@ void WebServer::aliases() {
             }
             http.end();
 
-            single->server->send(200, F("application/json"), json);
-        });
+            request->send(200, F("application/json"), json);
+        }
+    );
 
     // File not found handler
 
-    single->server->onNotFound(
-        []() {
-            if (!single->handleFileRead(single->server->uri()))
-                {
-                    single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-                    single->server->send(404, F("text/plain"), F("404: File not found."));
-                    }});
+    server.onNotFound(
+        [] (AsyncWebServerRequest *request) {
+            request->send(404, F("text/plain"), F("404: File not found."));
+        }
+    );
 }
 
-String WebServer::getContentType(String filename) {
-    if (single->server->hasArg(F("download"))) 
+String getWebContentType(AsyncWebServerRequest *request, String filename) {
+    if (request->hasParam(F("download"), true))
         return F("application/octet-stream");
-    else if (filename.endsWith(F(".src")))
+    if (filename.endsWith(F(".src")))
         filename = filename.substring(0, filename.lastIndexOf(F(".")));
     else if (filename.endsWith(F(".htm")))
         return F("text/html");
@@ -574,33 +598,35 @@ String WebServer::getContentType(String filename) {
     return F("text/plain"); 
 }
 
-bool WebServer::handleFileRead(String path) {
+bool handleWebFileRead(AsyncWebServerRequest *request, String path) {
+    // Initialize SPIFFS
+    if (!SPIFFS.begin()) {
+        Log.error(F("An Error has occurred while mounting SPIFFS." CR));
+        return false;
+    }
+
     Log.verbose(F("Handle File Read: %s" CR), path.c_str());
     if (path.endsWith(F("/"))) {
         path += F("index.htm");
     }
-    String contentType = getContentType(path);
-    String pathWithGz = path + ".gz";
-    if (filesystem->exists(pathWithGz) || filesystem->exists(path)) {
-        if (filesystem->exists(pathWithGz)) {
+
+    String contentType = getWebContentType(request, path);
+    String pathWithGz = path + F(".gz");
+    File file = SPIFFS.open(path, "r");
+    if (!SPIFFS.exists(path) || !file) {
+        if (!SPIFFS.exists(pathWithGz) || !pathWithGz) {
+            return false;
+        } else {
             path += F(".gz");
         }
-        File file = filesystem->open(path, "r");
-        single->server->sendHeader(F("Access-Control-Allow-Origin"), F("*"));
-        single->server->streamFile(file, contentType);
-        file.close();
         return true;
     }
-    return false;
+    request->send(SPIFFS, path, contentType, false); // Change String() to content type
+    return true;
 }
 
-void::WebServer::stop() {
-    single->server->stop();
-    single->running = false;
+void stopWebServer() {
+    server.reset();
+    server.end();
     Log.notice(F("Web server stopped." CR));
-}
-
-void WebServer::handleLoop() {
-    if (single->running)
-        single->server->handleClient();
 }
