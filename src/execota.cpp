@@ -28,8 +28,7 @@ void execfw() {
     _delay(5000); // Let page finish loading
 
     // Stop web server before OTA update - will restart on reset
-    WebServer *server = WebServer::getInstance();
-    server->stop();
+    stopWebServer();
 
     // Have to set this here because we have no chance after update
     config->dospiffs1 = true;
@@ -86,8 +85,7 @@ void execspiffs() {
         Log.notice(F("Starting the SPIFFS OTA pull." CR));
 
         // Stop web server before OTA update - will restart on reset
-        WebServer *server = WebServer::getInstance();
-        server->stop();
+        stopWebServer();
 
         ESPhttpUpdate.setLedPin(LED, LOW);
         // "http://www.brewbubbles.com/firmware/spiffs.bin"

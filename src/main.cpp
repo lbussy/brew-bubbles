@@ -46,8 +46,7 @@ void setup() {
     NtpHandler *ntpTime = NtpHandler::getInstance();
     ntpTime->start();
 
-    WebServer *server = WebServer::getInstance();
-    server->initialize(PORT); // Turn on web server
+    initWebServer(); // Turn on web server
 
     mdnssetup(); // Set up mDNS responder
     
@@ -59,7 +58,6 @@ void setup() {
 
 void loop() {
     JsonConfig *config = JsonConfig::getInstance();
-    WebServer *server = WebServer::getInstance();
     Bubbles *bubble = Bubbles::getInstance();
 
     // Bubble loop to create 60 second readings
@@ -89,7 +87,6 @@ void loop() {
         tickerLoop();
 
         // Regular loop handlers
-        server->handleLoop();   // Handle HTML requests
         MDNS.update();          // Handle mDNS requests
 
         // If target frequencies needs to be updated, update here

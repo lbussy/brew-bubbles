@@ -26,43 +26,22 @@ SOFTWARE. */
 #include "wifi.h"
 #include "execota.h"
 #include "bubbles.h"
-// #include "tools.h"
 #include "jsonconfig.h"
-// #include "bubserial.h"
 #include "version.h"
 #include "config.h"
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
 #include <FS.h>
 #include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
+#include <ESPAsyncWebServer.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266mDNS.h>
 #include <Arduino.h>
 
-
-class WebServer {
-    private:
-        // Singleton Declarations
-        WebServer() {}
-        static WebServer *single;
-        // External Declarations
-        FS *filesystem;
-        ESP8266WebServer *server;
-        // Private Methods
-        String getContentType(String);
-        bool handleFileRead(String);
-        void aliases();
-        bool running;
-
-    public:
-        // Singleton Declarations
-        static WebServer* getInstance();
-        ~WebServer() {single = NULL;}
-        // Other Declarations
-        void initialize(int port);
-        void handleLoop();
-        void stop();
-};
+void initWebServer();
+void setWebAliases();
+String getWebContentType(AsyncWebServerRequest *, String);
+bool handleWebFileRead(AsyncWebServerRequest *, String);
+void stopWebServer();
 
 #endif // _WEBSERVER_H
