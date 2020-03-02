@@ -30,21 +30,21 @@ void doWiFi() {
 }
 
 void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current config
-    WiFiManager wifiManager;
+    AsyncWiFiManager myAsyncWifiManager;
     JsonConfig *config = JsonConfig::getInstance();
 
-    // WiFiManager Callbacks
-    wifiManager.setAPCallback(apCallback); // Called after AP has started
-    wifiManager.setConfigResetCallback(configResetCallback); // Called after settings are reset
-    wifiManager.setPreSaveConfigCallback(preSaveConfigCallback); // Called before saving wifi creds 
-    wifiManager.setSaveConfigCallback(saveConfigCallback);
-    wifiManager.setSaveParamsCallback(saveParamsCallback); // Called after parameters are saved via params menu or wifi config
-    wifiManager.setWebServerCallback(webServerCallback); // Called after webserver is setup
+    // AsyncWiFiManager Callbacks
+    myAsyncWifiManager.setAPCallback(apCallback); // Called after AP has started
+    myAsyncWifiManager.setConfigResetCallback(configResetCallback); // Called after settings are reset
+    myAsyncWifiManager.setPreSaveConfigCallback(preSaveConfigCallback); // Called before saving wifi creds 
+    myAsyncWifiManager.setSaveConfigCallback(saveConfigCallback);
+    myAsyncWifiManager.setSaveParamsCallback(saveParamsCallback); // Called after parameters are saved via params menu or wifi config
+    myAsyncWifiManager.setWebServerCallback(webServerCallback); // Called after webserver is setup
 
 #ifndef DISABLE_LOGGING
-    wifiManager.setDebugOutput(true); // Verbose debug is enabled by default
+    myAsyncWifiManager.setDebugOutput(true); // Verbose debug is enabled by default
 #else
-    wifiManager.setDebugOutput(false);
+    myAsyncWifiManager.setDebugOutput(false);
 #endif
 
     std::vector<const char *> _wfmPortalMenu = {
@@ -60,19 +60,19 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
         "exit"
     };
 
-    wifiManager.setMenu(_wfmPortalMenu);   // Set menu items
-    wifiManager.setClass(F("invert"));     // Set dark theme
+    myAsyncWifiManager.setMenu(_wfmPortalMenu);   // Set menu items
+    myAsyncWifiManager.setClass(F("invert"));     // Set dark theme
 
-    wifiManager.setCountry(WIFI_COUNTRY); // Setting wifi country seems to improve OSX soft ap connectivity
-    wifiManager.setWiFiAPChannel(WIFI_CHAN); // Set WiFi channel
+    myAsyncWifiManager.setCountry(WIFI_COUNTRY); // Setting wifi country seems to improve OSX soft ap connectivity
+    myAsyncWifiManager.setWiFiAPChannel(WIFI_CHAN); // Set WiFi channel
 
-    wifiManager.setShowStaticFields(true); // force show static ip fields
-    wifiManager.setShowDnsFields(true);    // force show dns field always
+    myAsyncWifiManager.setShowStaticFields(true); // force show static ip fields
+    myAsyncWifiManager.setShowDnsFields(true);    // force show dns field always
 
     if (ignore) { // Voluntary portal
         blinker.attach_ms(APBLINK, wifiBlinker);
-        wifiManager.setConfigPortalTimeout(120);
-        if (wifiManager.startConfigPortal(config->ssid, config->appwd)) {
+        myAsyncWifiManager.setConfigPortalTimeout(120);
+        if (myAsyncWifiManager.startConfigPortal(config->ssid, config->appwd)) {
             // We finished with portal, do we need this?
         } else {
             // Hit timeout on voluntary portal
@@ -84,9 +84,9 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
         }
     } else { // Normal WiFi connection attempt
         blinker.attach_ms(STABLINK, wifiBlinker);
-        wifiManager.setConnectTimeout(30);
-        wifiManager.setConfigPortalTimeout(120);
-        if (!wifiManager.autoConnect(config->ssid, config->appwd)) {
+        myAsyncWifiManager.setConnectTimeout(30);
+        myAsyncWifiManager.setConfigPortalTimeout(120);
+        if (!myAsyncWifiManager.autoConnect(config->ssid, config->appwd)) {
             Log.warning(F("Failed to connect and hit timeout."));
             if (blinker.active()) blinker.detach(); // Turn off blinker
             digitalWrite(LED, LOW);
@@ -132,9 +132,9 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
 }
 
 void resetWifi() { // Wipe wifi settings and reset controller
-    WiFiManager wifiManager;
+    AsyncWiFiManager myAsyncWifiManager;
     _delay(3000); // Allow page to load
-    wifiManager.resetSettings();
+    myAsyncWifiManager.resetSettings();
     if (blinker.active()) blinker.detach(); // Turn off blinker
     digitalWrite(LED, LOW); // Turn on LED
     _delay(3000);
@@ -147,14 +147,14 @@ void wifiBlinker() { // Invert Current State of LED
     digitalWrite(LED, !(digitalRead(LED)));
 }
 
-// WiFiManager Callbacks
+// AsyncWiFiManager Callbacks
 
-void apCallback(WiFiManager *myWiFiManager) { // Entered Access Point mode
+void apCallback(AsyncWiFiManager *asyncWiFiManager) { // Entered Access Point mode
     Log.verbose(F("[CALLBACK]: setAPCallback fired." CR));
     if (blinker.active()) blinker.detach(); // Turn off blinker
     blinker.attach_ms(APBLINK, wifiBlinker);
     Log.notice(F("Entered portal mode; name: %s, IP: %s." CR),
-        myWiFiManager->getConfigPortalSSID().c_str(),
+        asyncWiFiManager->getConfigPortalSSID().c_str(),
         WiFi.localIP().toString().c_str());
 }
 
