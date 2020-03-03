@@ -20,13 +20,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#include "urltarget.h"
+#include "bftarget.h"
 
-URLTarget* URLTarget::single = NULL;
+BFTarget* BFTarget::single = NULL;
 
-URLTarget* URLTarget::getInstance() {
+BFTarget* BFTarget::getInstance() {
     if (!single) {
-        single = new URLTarget();
+        single = new BFTarget();
         single->config = JsonConfig::getInstance();
         single->target = new PushTarget;
         single->target->ip = INADDR_NONE;
@@ -65,7 +65,7 @@ URLTarget* URLTarget::getInstance() {
     return single;
 }
 
-bool URLTarget::push() {
+bool BFTarget::push() {
     Log.verbose(F("Triggered %s push." CR), single->target->target.name);
     LCBUrl lcburl;
     if (single->target->apiName.enabled) {

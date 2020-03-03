@@ -26,11 +26,15 @@ SOFTWARE. */
 #include "bubbles.h"
 #include "pushtarget.h"
 #include "urltarget.h"
+#include "bftarget.h"
 #include <ESP8266WiFi.h>
 
 IPAddress resolveHost(const char hostname[129]);
 bool pushToTarget(PushTarget*, IPAddress, int);
 void tickerLoop();
+void setDoURLTarget();
+void setDoBFTarget();
+void setDoBRFTarget();
 
 static bool __attribute__((unused)) doURLTarget = false;    // Semaphore for Target timer
 static bool __attribute__((unused)) doBFTarget = false;     // Semaphore for BF timer

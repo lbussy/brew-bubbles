@@ -68,6 +68,8 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
     // -2 = INVALID_SERVER
     // -3 = TRUNCATED
     // -4 = INVALID_RESPONSE
+    client.setNoDelay(true);
+    client.setTimeout(10000);
     if (client.connect(targetIP, port)) {
         Log.notice(F("Connected to: %s at %s, %l" CR),
             target->target.name, lcburl.getHost().c_str(), port
@@ -102,25 +104,31 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
         // End Headers
 
         // Post JSON
-        Log.verbose(F("Posting JSON to target:" CR)); // DEBUG
-        Serial.println(json); // DEBUG
         client.println(json);
         // Check the HTTP status (should be "HTTP/1.1 200 OK")
-        String response;
-        while (client.connected() || client.available()) {
-            if (client.available()) {
-                response = client.readStringUntil('\n');
-            }
-        }
+        char status[32] = {0};
+        client.readBytesUntil('\r', status, sizeof(status));
         client.stop();
-        Log.verbose(F("Status: %s" CR), response.c_str());
-        if (response.indexOf("200") >= 0) {
-            Log.verbose(F("JSON posted." CR));
-            return true;
+        Log.verbose(F("Status: %s" CR), status);
+        if (strcmp(status + 9, "200 OK") == 0) {
+            if (target->checkBody.enabled == true) {
+                // Check body
+                String response = String(status);
+                if (response.indexOf(target->checkBody.name) >= 0) {
+                    Log.verbose(F("Response body ok." CR));
+                    return true;
+                } else {
+                    Log.error(F("Unexpected body content: %s" CR), response.c_str());
+                    return false;
+                }
+            } else {
+                return true;
+            }
         } else {
-            Log.error(F("Unexpected status: %s" CR), response.c_str());
+            Log.error(F("Unexpected status: %s" CR), status);
             return false;
         }
+
     } else {
         Log.warning(F("Connection failed, Host: %s, Port: %l (Err: %d)" CR),
             lcburl.getHost().c_str(), port, client.connected()
@@ -129,37 +137,55 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
     }
 }
 
+void setDoURLTarget() {
+    doURLTarget = true; // Semaphore required for Ticker + radio event
+}
+
+void setDoBFTarget() {
+    doBFTarget = true; // Semaphore required for Ticker + radio event
+}
+
+void setDoBRFTarget() {
+    doBRFTarget = true; // Semaphore required for Ticker + radio event
+}
+
 void tickerLoop() {
     Bubbles *bubble = Bubbles::getInstance();
     URLTarget *urlTarget = URLTarget::getInstance();
 
-        // Handle JSON posts
-        //
-        // Do URL Target post
-        if (doURLTarget) {
-            doURLTarget = false;
-            urlTarget->push();
-        }
-        //
-        // Do Brewer's Friend Post
-        if (doBFTarget) { // Do BF post
-            doBFTarget = false;
-            // urlTarget->push(); // TODO - Attach BF Target
-        }
+    // Handle JSON posts
+    //
+    // Do URL Target post
+    if (doURLTarget) {
+        doURLTarget = false;
+        urlTarget->push();
+    }
+    //
+    // Do Brewer's Friend Post
+    if (doBFTarget) { // Do BF post
+        doBFTarget = false;
+        // urlTarget->push(); // TODO - Attach BF Target
+    }
+    //
+    // Do Brewfather Post
+    if (doBRFTarget) { // Do BF post
+        doBRFTarget = false;
+        // urlTarget->push(); // TODO - Attach BF Target
+    }
 
-        // Handle the board LED status
-        // Smarter to do it in the loop than in the ISR
-        if (digitalRead(COUNTPIN) == HIGH) { // Non-interrupt driven LED logic
-            digitalWrite(LED, LOW); // Turn LED on when not obstructed
-        } else {
-            digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble4
-        }
+    // Handle the board LED status
+    // Smarter to do it in the loop than in the ISR
+    if (digitalRead(COUNTPIN) == HIGH) { // Non-interrupt driven LED logic
+        digitalWrite(LED, LOW); // Turn LED on when not obstructed
+    } else {
+        digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble4
+    }
 
-        // Some just for fun serial logging
-        if (bubble->doBub) { // Serial log for bubble detect
+    // Some just for fun serial logging
+    if (bubble->doBub) { // Serial log for bubble detect
 #ifdef LOG_LEVEL
-            Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right?
+        Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right?
 #endif
-            bubble->doBub = false;
-        }
+        bubble->doBub = false;
+    }
 }

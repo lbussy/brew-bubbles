@@ -107,9 +107,3 @@ void saveBpm() {
         }
     }
 }
-
-// Misc helpers
-
-bool isNullField(const char *field) {
-    return ((field == NULL) || (field[0] == '\0'));
-}
