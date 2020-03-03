@@ -25,33 +25,30 @@ SOFTWARE. */
 DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 
 void setup() {
-    // bool rst = drd.detect(); // Check for double-reset
+    bool rst = drd.detect(); // Check for double-reset
     serial();
     pinMode(LED, OUTPUT);
 
     _delay(200); // Let pins settle, else detect is inconsistent
     pinMode(RESETWIFI, INPUT_PULLUP);
-    // DEBUG:  Commented startup lines
-    // if (digitalRead(RESETWIFI) == LOW) {
-    //     Log.notice(F("%s low, presenting portal." CR), RESETWIFI);
-    //     doWiFi(true);
-    // } else if (rst == true) {
-    //     Log.notice(F("DRD: Double reset boot, presenting portal." CR));
-    //     doWiFi(true);
-    // } else {
+    if (digitalRead(RESETWIFI) == LOW) {
+        Log.notice(F("%s low, presenting portal." CR), RESETWIFI);
+        doWiFi(true);
+    } else if (rst == true) {
+        Log.notice(F("DRD: Double reset boot, presenting portal." CR));
+        doWiFi(true);
+    } else {
         Log.verbose(F("DRD: Normal boot." CR));
         doWiFi();
-    // }
+    }
 
     NtpHandler *ntpTime = NtpHandler::getInstance();
     ntpTime->start();
 
     initWebServer(); // Turn on web server
-
-    mdnssetup(); // Set up mDNS responder
-    
-    execspiffs();   // Check for pending SPIFFS update
-    loadBpm() ;     // Get last Bpm reading if it was a controlled reboot
+    mdnssetup();     // Set up mDNS responder
+    execspiffs();    // Check for pending SPIFFS update
+    loadBpm() ;      // Get last BPM reading if it was a controlled reboot
 
     Log.notice(F("Started %s version %s (%s) [%s]." CR), API_KEY, version(), branch(), build());
 }
@@ -66,12 +63,11 @@ void loop() {
 
     // Target timer
     Ticker urlTarget;
-    // config->targetfreq * 60
-    urlTarget.attach(5, setDoURLTarget);
+    urlTarget.attach(config->targetfreq * 60, setDoURLTarget);
     
     // Brewer's friend timer
-    // Ticker bfTimer;
-    // bfTimer.attach(config->bffreq * 60, [](){doBFTarget = true;});
+    Ticker bfTimer;
+    bfTimer.attach(config->bffreq * 60, setDoBFTarget);
 
     // mDNS Reset Timer - Helps avoid the host not found issues
     Ticker mDNSTimer;
@@ -83,7 +79,7 @@ void loop() {
     rebootTimer.attach(REBOOTTIMER, reboot);
 
     while (true) {
-        // Handle semaphores - No radio work in a Ticker
+        // Handle semaphores - No radio work in a Ticker!
         tickerLoop();
 
         // Regular loop handlers
@@ -96,12 +92,12 @@ void loop() {
             urlTarget.attach(config->targetfreq * 60, setDoURLTarget);
             config->updateTargetFreq = false;
         }
-        // if (config->updateBFFreq) {
-        //     Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config->bffreq);
-        //     bfTimer.detach();
-        //     bfTimer.attach(config->bffreq * 60, [](){doBFTarget = true;});
-        //     config->updateBFFreq = false;
-        // }
+        if (config->updateBFFreq) {
+            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config->bffreq);
+            bfTimer.detach();
+            bfTimer.attach(config->bffreq * 60, setDoBFTarget);
+            config->updateBFFreq = false;
+        }
 
         yield();
     }
