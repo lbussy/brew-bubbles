@@ -67,7 +67,7 @@ void loop() {
     // Target timer
     Ticker urlTarget;
     // config->targetfreq * 60
-    urlTarget.attach(5, [](){doURLTarget = true;});
+    urlTarget.attach(5, setDoURLTarget);
     
     // Brewer's friend timer
     // Ticker bfTimer;
@@ -93,7 +93,7 @@ void loop() {
         if (config->updateTargetFreq) {
             Log.notice(F("Resetting URL Target frequency timer to %l minutes." CR), config->targetfreq);
             urlTarget.detach();
-            urlTarget.attach(config->targetfreq * 60, [](){doURLTarget = true;});
+            urlTarget.attach(config->targetfreq * 60, setDoURLTarget);
             config->updateTargetFreq = false;
         }
         // if (config->updateBFFreq) {
