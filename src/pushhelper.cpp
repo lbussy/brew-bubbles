@@ -109,17 +109,21 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
         String response;
         while (client.connected() || client.available()) {
             if (client.available()) {
-                response = client.readStringUntil('\n');
+                response = client.readStringUntil('\r');
             }
         }
         client.stop();
         Log.verbose(F("Status: %s" CR), response.c_str());
-        if (response.indexOf("200") >= 0) {
-            Log.verbose(F("JSON posted." CR));
+        if (target->checkBody.enabled == true) {
+            if (response.indexOf(target->checkBody.name) >= 0) {
+                Log.verbose(F("JSON posted." CR));
+                return true;
+            } else {
+                Log.error(F("Unexpected status: %s" CR), response.c_str());
+                return false;
+            }
+        } else if (true) {
             return true;
-        } else {
-            Log.error(F("Unexpected status: %s" CR), response.c_str());
-            return false;
         }
     } else {
         Log.warning(F("Connection failed, Host: %s, Port: %l (Err: %d)" CR),
@@ -129,37 +133,49 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
     }
 }
 
+void setDoURLTarget() {
+    doURLTarget = true; // Semaphore required for Ticker + radio event
+}
+
+void setDoBFTarget() {
+    doBFTarget = true; // Semaphore required for Ticker + radio event
+}
+
+void setDoBRFTarget() {
+    doBRFTarget = true; // Semaphore required for Ticker + radio event
+}
+
 void tickerLoop() {
     Bubbles *bubble = Bubbles::getInstance();
     URLTarget *urlTarget = URLTarget::getInstance();
 
-        // Handle JSON posts
-        //
-        // Do URL Target post
-        if (doURLTarget) {
-            doURLTarget = false;
-            urlTarget->push();
-        }
-        //
-        // Do Brewer's Friend Post
-        if (doBFTarget) { // Do BF post
-            doBFTarget = false;
-            // urlTarget->push(); // TODO - Attach BF Target
-        }
+    // Handle JSON posts
+    //
+    // Do URL Target post
+    if (doURLTarget) {
+        doURLTarget = false;
+        urlTarget->push();
+    }
+    //
+    // Do Brewer's Friend Post
+    if (doBFTarget) { // Do BF post
+        doBFTarget = false;
+        // urlTarget->push(); // TODO - Attach BF Target
+    }
 
-        // Handle the board LED status
-        // Smarter to do it in the loop than in the ISR
-        if (digitalRead(COUNTPIN) == HIGH) { // Non-interrupt driven LED logic
-            digitalWrite(LED, LOW); // Turn LED on when not obstructed
-        } else {
-            digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble4
-        }
+    // Handle the board LED status
+    // Smarter to do it in the loop than in the ISR
+    if (digitalRead(COUNTPIN) == HIGH) { // Non-interrupt driven LED logic
+        digitalWrite(LED, LOW); // Turn LED on when not obstructed
+    } else {
+        digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble4
+    }
 
-        // Some just for fun serial logging
-        if (bubble->doBub) { // Serial log for bubble detect
+    // Some just for fun serial logging
+    if (bubble->doBub) { // Serial log for bubble detect
 #ifdef LOG_LEVEL
-            Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right?
+        Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right?
 #endif
-            bubble->doBub = false;
-        }
+        bubble->doBub = false;
+    }
 }
