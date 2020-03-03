@@ -20,8 +20,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _URLTARGET_H
-#define _URLTARGET_H
+#ifndef _BFTARGET_H
+#define _BFTARGET_H
 
 #include "pushtarget.h"
 #include "pushhelper.h"
@@ -68,11 +68,11 @@ SOFTWARE. */
 //  Configure Target - Above are configuration items per target type
 /////////////////////////////////////////////////////////////////////
 
-class URLTarget {
+class BFTarget {
     private:
         // Singleton Declarations
-        URLTarget() {}
-        static URLTarget *single;
+        BFTarget() {}
+        static BFTarget *single;
         // External Declarations
         PushTarget *target;
         JsonConfig *config;
@@ -83,8 +83,8 @@ class URLTarget {
 
     public:
         // Singleton Declarations
-        static URLTarget* getInstance();
-        ~URLTarget() {single = NULL;}
+        static BFTarget* getInstance();
+        ~BFTarget() {single = NULL;}
         // External Declarations
 
         // Public Methods
@@ -93,4 +93,4 @@ class URLTarget {
 
 };
 
-#endif // _URLTARGET_H
+#endif // _BFTARGET_H
