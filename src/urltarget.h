@@ -39,8 +39,8 @@ SOFTWARE. */
 #define TARGET_NAME URLTARGET
 //
 // Check return body for success
-#define CHECKBODY_ENABLED true
-#define CHECKBODY_NAME "200 (Ok)"
+#define CHECKBODY_ENABLED false
+#define CHECKBODY_NAME ""
 //
 // Turn JSON points on/off and provide JSON field name per target type
 //
