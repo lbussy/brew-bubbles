@@ -74,7 +74,6 @@ bool URLTarget::push() {
             if (resolvedIP == INADDR_NONE) {
                 if (single->target->ip == INADDR_NONE) {
                     Log.error(F("Unable to resolve host %s to IP address." CR), lcburl.getHost().c_str());
-                    Serial.println(); // DEBUG
                     return false;
                 } else {
                     Log.verbose(F("Using cached information for host %s at IP %s." CR), lcburl.getHost().c_str(), single->target->ip.toString().c_str());
@@ -94,11 +93,9 @@ bool URLTarget::push() {
 
     if (pushToTarget(single->target, target->ip, lcburl.getPort())) {
         Log.notice(F("%s post ok." CR), single->target->target.name);
-        Serial.println(); // DEBUG
         return true;
     } else {
         Log.error(F("%s post failed." CR), single->target->target.name);
-        Serial.println(); // DEBUG
         return false;
     }
 }
