@@ -59,7 +59,7 @@ URLTarget* URLTarget::getInstance() {
         strlcpy(single->target->tempFormat.name, single->tempformat_name, sizeof(single->tempformat_name));
         //
         // Grab correct URL for target type
-        strlcpy(single->target->url, single->targeturl, sizeof(single->targeturl));
+        strlcpy(single->target->url, single->config->targeturl, sizeof(single->config->targeturl)); // Unique to URL Target
         //
     }
     return single;
@@ -67,6 +67,7 @@ URLTarget* URLTarget::getInstance() {
 
 bool URLTarget::push() {
     Log.verbose(F("Triggered %s push." CR), single->target->target.name);
+    strlcpy(single->target->url, single->config->targeturl, sizeof(single->config->targeturl)); // Unique to URL Target
     LCBUrl lcburl;
     if (single->target->apiName.enabled) {
         if (lcburl.setUrl(String(single->target->url))) {

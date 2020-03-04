@@ -75,7 +75,7 @@ class URLTarget {
         const char * tempformat_name = "temp_unit";
         //
         // Connect Class to configuration item
-        const char * targeturl = single->config->targeturl; // <- Change config item
+        const char * targeturl = ""; // Unique to URL Target
 
         /////////////////////////////////////////////////////////////////////
         //  Configure Target - Above are configuration items per target type
