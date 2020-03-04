@@ -31,8 +31,11 @@ URLTarget* URLTarget::getInstance() {
         single->target = new PushTarget;
         single->target->ip = INADDR_NONE;
 
+        // Grab correct URL for target type
+        strlcpy(single->target->url, single->config->targeturl, sizeof(single->config->targeturl)); // Unique to URL Target
+        //
         // Enable target and target name
-        single->target->target.enabled = (String(single->targeturl).length() > 3);
+        single->target->target.enabled = (String(single->target->url).length() > 3);
         strlcpy(single->target->target.name, single->target_name, sizeof(single->target_name));
         //
         // Check return body for success
@@ -58,9 +61,6 @@ URLTarget* URLTarget::getInstance() {
         single->target->tempFormat.enabled = single->tempformat_enabled;
         strlcpy(single->target->tempFormat.name, single->tempformat_name, sizeof(single->tempformat_name));
         //
-        // Grab correct URL for target type
-        strlcpy(single->target->url, single->config->targeturl, sizeof(single->config->targeturl)); // Unique to URL Target
-        //
     }
     return single;
 }
@@ -68,8 +68,9 @@ URLTarget* URLTarget::getInstance() {
 bool URLTarget::push() {
     Log.verbose(F("Triggered %s push." CR), single->target->target.name);
     strlcpy(single->target->url, single->config->targeturl, sizeof(single->config->targeturl)); // Unique to URL Target
+    single->target->target.enabled = (String(single->target->url).length() > 3);                // Unique to URL Target
     LCBUrl lcburl;
-    if (single->target->apiName.enabled) {
+    if (single->target->target.enabled) {
         if (lcburl.setUrl(String(single->target->url))) {
             IPAddress resolvedIP = resolveHost(lcburl.getHost().c_str());
             if (resolvedIP == INADDR_NONE) {
