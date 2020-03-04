@@ -32,34 +32,34 @@ BFTarget* BFTarget::getInstance() {
         single->target->ip = INADDR_NONE;
 
         // Enable target and target name
-        single->target->target.enabled = (String(TARGETURL).length() > 3);
-        strlcpy(single->target->target.name, TARGET_NAME, sizeof(TARGET_NAME));
+        single->target->target.enabled = (String(single->targeturl).length() > 3);
+        strlcpy(single->target->target.name, single->target_name, sizeof(single->target_name));
         //
         // Check return body for success
-        single->target->checkBody.enabled = CHECKBODY_ENABLED;
-        strlcpy(single->target->checkBody.name, CHECKBODY_NAME, sizeof(CHECKBODY_NAME));
+        single->target->checkBody.enabled = single->checkbody_enabled;
+        strlcpy(single->target->checkBody.name, single->checkbody_name, sizeof(single->checkbody_name));
         //
         // Change JSON point enabled and name for target type
-        single->target->apiName.enabled = APINAME_ENABLED;
-        strlcpy(single->target->apiName.name, APINAME_NAME, sizeof(APINAME_NAME));
+        single->target->apiName.enabled = single->apiname_enabled;
+        strlcpy(single->target->apiName.name, single->apiname_name, sizeof(single->apiname_name));
         //
-        single->target->bubName.enabled = BUBNAME_ENABLED;
-        strlcpy(single->target->bubName.name, BUBNAME_NAME, sizeof(BUBNAME_NAME));
+        single->target->bubName.enabled = single->bubname_enabled;
+        strlcpy(single->target->bubName.name, single->bubname_name, sizeof(single->bubname_name));
         //
-        single->target->bpm.enabled = BPM_ENABLED;
-        strlcpy(single->target->bpm.name, BPM_NAME, sizeof(BPM_NAME));
+        single->target->bpm.enabled = single->bpm_enabled;
+        strlcpy(single->target->bpm.name, single->bpm_name, sizeof(single->bpm_name));
         //
-        single->target->ambientTemp.enabled = AMBIENTTEMP_ENABLED;
-        strlcpy(single->target->ambientTemp.name, AMBIENTTEMP_NAME, sizeof(AMBIENTTEMP_NAME));
+        single->target->ambientTemp.enabled = single->ambienttemp_enabled;
+        strlcpy(single->target->ambientTemp.name, single->ambienttemp_name, sizeof(single->ambienttemp_name));
         //
-        single->target->vesselTemp.enabled = VESSELTEMP_ENABLED;
-        strlcpy(single->target->vesselTemp.name, VESSELTEMP_NAME, sizeof(VESSELTEMP_NAME));
+        single->target->vesselTemp.enabled = single->vesseltemp_enabled;
+        strlcpy(single->target->vesselTemp.name, single->vesseltemp_name, sizeof(single->vesseltemp_name));
         //
-        single->target->tempFormat.enabled = TEMPFORMAT_ENABLED;
-        strlcpy(single->target->tempFormat.name, TEMPFORMAT_NAME, sizeof(TEMPFORMAT_NAME));
+        single->target->tempFormat.enabled = single->tempformat_enabled;
+        strlcpy(single->target->tempFormat.name, single->tempformat_name, sizeof(single->tempformat_name));
         //
         // Grab correct URL for target type
-        strlcpy(single->target->url, TARGETURL, sizeof(TARGETURL));
+        strlcpy(single->target->url, single->targeturl, sizeof(single->targeturl));
         //
     }
     return single;
