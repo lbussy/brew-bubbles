@@ -30,44 +30,6 @@ SOFTWARE. */
 #include <ArduinoLog.h>
 #include <Arduino.h>
 
-/////////////////////////////////////////////////////////////////////
-//  Configure Target - Below are configuration items per target type
-/////////////////////////////////////////////////////////////////////
-
-// Enable target and target name
-#define TARGET_ENABLED true
-#define TARGET_NAME URLTARGET
-//
-// Check return body for success
-#define CHECKBODY_ENABLED false
-#define CHECKBODY_NAME ""
-//
-// Turn JSON points on/off and provide JSON field name per target type
-//
-#define APINAME_ENABLED true
-#define APINAME_NAME "api_key"
-//
-#define BUBNAME_ENABLED true
-#define BUBNAME_NAME "name"
-//
-#define BPM_ENABLED true
-#define BPM_NAME "bpm"
-//
-#define AMBIENTTEMP_ENABLED true
-#define AMBIENTTEMP_NAME "ambient"
-//
-#define VESSELTEMP_ENABLED true
-#define VESSELTEMP_NAME "temp"
-//
-#define TEMPFORMAT_ENABLED true
-#define TEMPFORMAT_NAME "temp_unit"
-//
-#define TARGETURL single->config->targeturl
-
-/////////////////////////////////////////////////////////////////////
-//  Configure Target - Above are configuration items per target type
-/////////////////////////////////////////////////////////////////////
-
 class BFTarget {
     private:
         // Singleton Declarations
@@ -80,6 +42,44 @@ class BFTarget {
 
         // Private Properties
 
+        /////////////////////////////////////////////////////////////////////
+        //  Configure Target - Below are configuration items per target type
+        /////////////////////////////////////////////////////////////////////
+
+        // Enable target and target name
+        const bool target_enabled = true;
+        const char * target_name = "Brewer's Friend";
+        //
+        // Check return body for success
+        const bool checkbody_enabled = false;
+        const char * checkbody_name = "";
+        //
+        // Turn JSON points on/off and provide JSON field name per target type
+        //
+        const bool apiname_enabled = true;
+        const char * apiname_name = "device_source";
+        //
+        const bool bubname_enabled = true;
+        const char * bubname_name = "name";
+        //
+        const bool bpm_enabled = true;
+        const char * bpm_name = "bpm";
+        //
+        const bool ambienttemp_enabled = true;
+        const char * ambienttemp_name = "ambient";
+        //
+        const bool vesseltemp_enabled = true;
+        const char * vesseltemp_name = "temp";
+        //
+        const bool tempformat_enabled = true;
+        const char * tempformat_name = "temp_unit";
+        //
+        // Connect Class to configuration item
+        const char * targeturl = "http://log.brewersfriend.com/stream/";
+
+        /////////////////////////////////////////////////////////////////////
+        //  Configure Target - Above are configuration items per target type
+        /////////////////////////////////////////////////////////////////////
 
     public:
         // Singleton Declarations
