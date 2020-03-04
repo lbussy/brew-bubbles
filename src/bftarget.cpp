@@ -67,8 +67,9 @@ BFTarget* BFTarget::getInstance() {
 
 bool BFTarget::push() {
     Log.verbose(F("Triggered %s push." CR), single->target->target.name);
+    single->target->target.enabled = (String(single->config->bfkey).length() > 3); // Unique to BF Target
     LCBUrl lcburl;
-    if (single->target->apiName.enabled) {
+    if (single->target->target.enabled) {
         if (lcburl.setUrl(String(single->target->url))) {
             IPAddress resolvedIP = resolveHost(lcburl.getHost().c_str());
             if (resolvedIP == INADDR_NONE) {
