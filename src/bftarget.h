@@ -48,34 +48,34 @@ class BFTarget {
 
         // Enable target and target name
         const bool target_enabled = true;
-        const char * target_name = "Brewer's Friend";
+        String target_name = "Brewer's Friend";
         //
         // Check return body for success
         const bool checkbody_enabled = false;
-        const char * checkbody_name = "";
+        String checkbody_name = "";
         //
         // Turn JSON points on/off and provide JSON field name per target type
         //
         const bool apiname_enabled = true;
-        const char * apiname_name = "device_source";
+        String apiname_name = "device_source";
         //
         const bool bubname_enabled = true;
-        const char * bubname_name = "name";
+        String bubname_name = "name";
         //
         const bool bpm_enabled = true;
-        const char * bpm_name = "bpm";
+        String bpm_name = "bpm";
         //
         const bool ambienttemp_enabled = true;
-        const char * ambienttemp_name = "ambient";
+        String ambienttemp_name = "ambient";
         //
         const bool vesseltemp_enabled = true;
-        const char * vesseltemp_name = "temp";
+        String vesseltemp_name = "temp";
         //
         const bool tempformat_enabled = true;
-        const char * tempformat_name = "temp_unit";
+        String tempformat_name = "temp_unit";
         //
         // Connect Class to configuration item
-        const char * targeturl = "http://log.brewersfriend.com/stream/";
+        String targeturl = "http://log.brewersfriend.com/stream/";
 
         /////////////////////////////////////////////////////////////////////
         //  Configure Target - Above are configuration items per target type
