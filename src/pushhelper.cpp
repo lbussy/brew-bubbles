@@ -152,6 +152,8 @@ void setDoBRFTarget() {
 void tickerLoop() {
     Bubbles *bubble = Bubbles::getInstance();
     URLTarget *urlTarget = URLTarget::getInstance();
+    BFTarget *bfTarget = BFTarget::getInstance();
+    // BRFTarget *brfTarget = BRFTarget::getInstance();
 
     // Handle JSON posts
     //
@@ -164,13 +166,13 @@ void tickerLoop() {
     // Do Brewer's Friend Post
     if (doBFTarget) { // Do BF post
         doBFTarget = false;
-        // urlTarget->push(); // TODO - Attach BF Target
+        bfTarget->push();
     }
     //
     // Do Brewfather Post
     if (doBRFTarget) { // Do BF post
         doBRFTarget = false;
-        // urlTarget->push(); // TODO - Attach BF Target
+        // brfTarget->push(); // TODO - Attach BF Target
     }
 
     // Handle the board LED status
