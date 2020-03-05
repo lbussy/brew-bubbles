@@ -36,31 +36,30 @@ URLTarget* URLTarget::getInstance() {
         //
         // Enable target and target name
         single->target->target.enabled = (String(single->target->url).length() > 3);
-        strlcpy(single->target->target.name, single->target_name, sizeof(single->target_name));
+        strlcpy(single->target->target.name, single->target_name.c_str(), single->target_name.length() + 1);
         //
         // Check return body for success
         single->target->checkBody.enabled = single->checkbody_enabled;
-        strlcpy(single->target->checkBody.name, single->checkbody_name, sizeof(single->checkbody_name));
+        strlcpy(single->target->checkBody.name, single->checkbody_name.c_str(), single->checkbody_name.length() + 1);
         //
         // Change JSON point enabled and name for target type
         single->target->apiName.enabled = single->apiname_enabled;
-        strlcpy(single->target->apiName.name, single->apiname_name, sizeof(single->apiname_name));
+        strlcpy(single->target->apiName.name, single->apiname_name.c_str(), single->apiname_name.length() + 1);
         //
         single->target->bubName.enabled = single->bubname_enabled;
-        strlcpy(single->target->bubName.name, single->bubname_name, sizeof(single->bubname_name));
+        strlcpy(single->target->bubName.name, single->bubname_name.c_str(), single->bubname_name.length() + 1);
         //
         single->target->bpm.enabled = single->bpm_enabled;
-        strlcpy(single->target->bpm.name, single->bpm_name, sizeof(single->bpm_name));
+        strlcpy(single->target->bpm.name, single->bpm_name.c_str(), single->bpm_name.length() + 1);
         //
         single->target->ambientTemp.enabled = single->ambienttemp_enabled;
-        strlcpy(single->target->ambientTemp.name, single->ambienttemp_name, sizeof(single->ambienttemp_name));
+        strlcpy(single->target->ambientTemp.name, single->ambienttemp_name.c_str(), single->ambienttemp_name.length() + 1);
         //
         single->target->vesselTemp.enabled = single->vesseltemp_enabled;
-        strlcpy(single->target->vesselTemp.name, single->vesseltemp_name, sizeof(single->vesseltemp_name));
+        strlcpy(single->target->vesselTemp.name, single->vesseltemp_name.c_str(), single->vesseltemp_name.length() + 1);
         //
         single->target->tempFormat.enabled = single->tempformat_enabled;
-        strlcpy(single->target->tempFormat.name, single->tempformat_name, sizeof(single->tempformat_name));
-        //
+        strlcpy(single->target->tempFormat.name, single->tempformat_name.c_str(), single->tempformat_name.length() + 1);
     }
     return single;
 }

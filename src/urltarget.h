@@ -48,34 +48,34 @@ class URLTarget {
 
         // Enable target and target name
         const bool target_enabled = true;
-        const char * target_name = "URL Target";
+        String target_name = "URL Target";
         //
         // Check return body for success
         const bool checkbody_enabled = false;
-        const char * checkbody_name = "";
+        String checkbody_name = "";
         //
         // Turn JSON points on/off and provide JSON field name per target type
         //
         const bool apiname_enabled = true;
-        const char * apiname_name = "api_key";
+        String apiname_name = "api_key";
         //
         const bool bubname_enabled = true;
-        const char * bubname_name = "name";
+        String bubname_name = "name";
         //
         const bool bpm_enabled = true;
-        const char * bpm_name = "bpm";
+        String bpm_name = "bpm";
         //
         const bool ambienttemp_enabled = true;
-        const char * ambienttemp_name = "ambient";
+        String ambienttemp_name = "ambient";
         //
         const bool vesseltemp_enabled = true;
-        const char * vesseltemp_name = "temp";
+        String vesseltemp_name = "temp";
         //
         const bool tempformat_enabled = true;
-        const char * tempformat_name = "temp_unit";
+        String tempformat_name = "temp_unit";
         //
         // Connect Class to configuration item
-        const char * targeturl = ""; // Unique to URL Target
+        String targeturl = ""; // Unique to URL Target
 
         /////////////////////////////////////////////////////////////////////
         //  Configure Target - Above are configuration items per target type
