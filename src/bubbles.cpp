@@ -54,16 +54,12 @@ void Bubbles::start() {
     single->lastVes = 0.0;
     
     // Set starting time
-    NtpHandler *ntpTime = NtpHandler::getInstance();
-    ntpTime->update();
-    single->lastTime = ntpTime->Time;
+    strlcpy(single->lastTime, getJsonTime(),sizeof(getJsonTime()));
 }
 
 void Bubbles::update() { // Regular update loop, once per minute
     // Handle NTP Time
-    NtpHandler *ntpTime = NtpHandler::getInstance();
-    ntpTime->update();
-    single->lastTime = ntpTime->Time;
+    strlcpy(single->lastTime, getJsonTime(),sizeof(getJsonTime()));
 
     // Store last values
     single->lastBpm = single->getRawBpm();

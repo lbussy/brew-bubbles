@@ -25,7 +25,7 @@ SOFTWARE. */
 
 #include "config.h"
 #include "tools.h"
-#include "ntphandler.h"
+#include "ntp.h"
 #include <ArduinoLog.h>
 
 void serial();

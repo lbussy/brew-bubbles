@@ -25,7 +25,7 @@ SOFTWARE. */
 
 #include "config.h"
 #include "jsonconfig.h"
-#include "ntphandler.h"
+#include "ntp.h"
 #include "DS18B20.h"
 #include "OneWire.h"
 #include <ArduinoLog.h>
@@ -59,7 +59,7 @@ class Bubbles {
         // Other Declarations
         void handleInterrupts(void);
         void update();                  // Call every 60 seconds
-        char* lastTime;
+        char lastTime[22];
         float getAvgAmbient();
         float getAvgVessel();
         float getAvgBpm();

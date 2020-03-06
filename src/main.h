@@ -36,6 +36,7 @@ SOFTWARE. */
 #include "pushhelper.h"
 #include "bubbles.h"
 #include "mdns.h"
+#include "ntp.h"
 #include <DoubleResetDetect.h>
 #include <ArduinoLog.h>
 #include <Arduino.h>

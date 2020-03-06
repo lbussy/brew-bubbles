@@ -42,13 +42,11 @@ void setup() {
         doWiFi();
     }
 
-    NtpHandler *ntpTime = NtpHandler::getInstance();
-    ntpTime->start();
-
-    initWebServer(); // Turn on web server
-    mdnssetup();     // Set up mDNS responder
-    execspiffs();    // Check for pending SPIFFS update
-    loadBpm() ;      // Get last BPM reading if it was a controlled reboot
+    setClock();         // Set NTP Time
+    initWebServer();    // Turn on web server
+    mdnssetup();        // Set up mDNS responder
+    execspiffs();       // Check for pending SPIFFS update
+    loadBpm() ;         // Get last BPM reading if it was a controlled reboot
 
     Log.notice(F("Started %s version %s (%s) [%s]." CR), API_KEY, version(), branch(), build());
 }
