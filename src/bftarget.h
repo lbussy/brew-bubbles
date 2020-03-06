@@ -74,8 +74,11 @@ class BFTarget {
         const bool tempformat_enabled = true;
         String tempformat_name = "temp_unit";
         //
-        // Connect Class to configuration item
+        // Main URL for endpoint
         String targeturl = "http://log.brewersfriend.com/stream/";
+        //
+        const bool apikey_enabled = true;
+        String apikey_name = ""; // Will pick this up from config
 
         /////////////////////////////////////////////////////////////////////
         //  Configure Target - Above are configuration items per target type

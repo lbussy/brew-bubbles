@@ -35,7 +35,7 @@ IPAddress resolveHost(const char *hostname) {
 bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
     Log.notice(F("Posting to: %s" CR), target->url);
     LCBUrl lcburl;
-    lcburl.setUrl(String(target->url));
+    lcburl.setUrl(String(target->url) + String(target->key.name));
 
     Bubbles *bubble = Bubbles::getInstance();
     JsonConfig *config = JsonConfig::getInstance();
@@ -71,14 +71,25 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
     client.setNoDelay(true);
     client.setTimeout(10000);
     if (client.connect(targetIP, port)) {
-        Log.notice(F("Connected to: %s at %s, %l" CR),
+        Log.notice(F("Connected to: %s at %s on port %l" CR),
             target->target.name, lcburl.getHost().c_str(), port
         );
 
         // Open POST connection
-        Log.verbose(F("POST /%s HTTP/1.1" CR), lcburl.getPath().c_str());
+        if (lcburl.getAfterPath().length() > 0) {
+             Log.verbose(F("POST /%s?%s HTTP/1.1" CR),
+                lcburl.getPath().c_str(),
+                lcburl.getAfterPath().c_str()
+            );
+        } else {
+             Log.verbose(F("POST /%s HTTP/1.1" CR), lcburl.getPath().c_str());
+        }
         client.print(F("POST /"));
         client.print(lcburl.getPath().c_str());
+        if (lcburl.getAfterPath().length() > 0) {
+            client.print(F("?"));
+            client.print(lcburl.getAfterPath().c_str());
+        }
         client.println(F(" HTTP/1.1"));
 
         // Begin headers

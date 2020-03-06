@@ -6,6 +6,7 @@
 - Check shouldSaveConfig behavior in WiFi()
 - Add Brewfather support
 - Add SSL support for upgrade? ([see the issue](https://github.com/esp8266/Arduino/issues/6523))
+- Change so that posting configuration changes is not a complete page reload
 
 ## Complete
 
