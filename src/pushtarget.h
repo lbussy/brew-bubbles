@@ -37,7 +37,8 @@ class PushTarget {
         PushTarget() {};
         pushPoint target;       // Target enabled and name
         pushPoint checkBody;    // Check return body for success
-        char url[129];               // URL of target
+        char url[129];          // URL of target
+        pushPoint key;          // API Key
         IPAddress ip;           // Resolved address of target
         pushPoint apiName;      // i.e. "Brew Bubbles"
         pushPoint bubName;      // mDNS name i.e. "brewbubbles"

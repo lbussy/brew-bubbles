@@ -57,7 +57,7 @@ class URLTarget {
         // Turn JSON points on/off and provide JSON field name per target type
         //
         const bool apiname_enabled = true;
-        String apiname_name = "api_key";
+        String apiname_name = "api_name";
         //
         const bool bubname_enabled = true;
         String bubname_name = "name";
@@ -74,8 +74,11 @@ class URLTarget {
         const bool tempformat_enabled = true;
         String tempformat_name = "temp_unit";
         //
-        // Connect Class to configuration item
-        String targeturl = ""; // Unique to URL Target
+        // Main URL for endpoint
+        String targeturl = "";
+        //
+        const bool apikey_enabled = true;
+        String apikey_name = ""; // Will pick this up from config
 
         /////////////////////////////////////////////////////////////////////
         //  Configure Target - Above are configuration items per target type

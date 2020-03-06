@@ -60,13 +60,23 @@ BFTarget* BFTarget::getInstance() {
         //
         // Grab correct URL for target type
         strlcpy(single->target->url, single->targeturl.c_str(), single->targeturl.length() + 1);
+        //
+        // API Key handling parameters
+        single->target->key.enabled = single->apikey_enabled;
+        strlcpy(single->target->key.name, single->apikey_name.c_str(), single->apikey_name.length());
     }
     return single;
 }
 
 bool BFTarget::push() {
     Log.verbose(F("Triggered %s push." CR), single->target->target.name);
-    single->target->target.enabled = (String(single->config->bfkey).length() > 3); // Unique to BF Target
+    if (single->target->apiName.enabled && sizeof(single->config->bfkey)) { // Key target is unique per target (for now)
+        single->target->target.enabled = true;
+        strlcpy(single->target->key.name, single->config->bfkey, sizeof(single->config->bfkey)); // Key target is unique per target (for now)
+    } else {
+        single->target->target.enabled = false;
+        strlcpy(single->target->key.name, "", sizeof(""));
+    }
     LCBUrl lcburl;
     if (single->target->target.enabled) {
         if (lcburl.setUrl(String(single->target->url))) {
