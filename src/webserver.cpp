@@ -28,7 +28,7 @@ void initWebServer() {
     setWebAliases();
     server.begin();
     Log.notice(F("Async HTTP server started on port %l." CR) , PORT);
-    Log.verbose(F("Open: http://%s.local." CR), WiFi.hostname().c_str());
+    Log.verbose(F("Open: http://%s.local to view controller application." CR), WiFi.hostname().c_str());
 }
 
 void setWebAliases() {

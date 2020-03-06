@@ -20,40 +20,31 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _NTPHANDLER_H
-#define _NTPHANDLER_H
+#ifndef _NTP_H
+#define _NTP_H
+
+#ifdef ESP8266
+#include <ESP8266WiFi.h>
+#elif defined ESP32
+#include <WiFi.h>
+#endif
 
 #include "config.h"
 #include "tools.h"
-// #include <TimeLib.h>
-#include <NtpClientLib.h>
-#include <ArduinoLog.h>
+#include <Ticker.h>
 #include <ArduinoLog.h>
 
-#define NTP_TIMEOUT 1500
-
+void setClock();
+String getDTS();
+char * getJsonTime();
+int getYear();      // tm_year
+int getMonth();     // tm_mon
+int getDate();      // tm_mday
+int getWday();      // tm_wday
+int getHour();      // tm_hour
+int getMinute();    // tm_min
+int getSecond();    // tm_sec
+int getYDay();      // tm_yday
 void ntpBlinker();
 
-class NtpHandler {
-    private:
-        // Singleton Declarations
-        NtpHandler() {}
-        static NtpHandler *single;
-        // Other Declarations
-        bool syncEventTriggered;
-        NTPSyncEvent_t ntpEvent;
-        bool hasBeenSet;
-        void setup();
-        void setJsonTime();
-
-    public:
-        // Singleton Declarations
-        static NtpHandler* getInstance();
-        ~NtpHandler() {single = NULL;}
-        // Other Declarations
-        void start();
-        void update();
-        char Time[21];               // Hold the Time string
-};
-
-#endif // _NTPHANDLER_H
+#endif // _NTP_H

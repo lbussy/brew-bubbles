@@ -35,12 +35,11 @@ void serial() { // Start serial with auto-detected rate (default to BAUD)
 }
 
 void printTimestamp(Print* _logOutput) {
-    NtpHandler *ntpTime = NtpHandler::getInstance();
-    ntpTime->update();
-    char locTime[prefLen] = {'\0'};
-    strlcpy(locTime, ntpTime->Time, sizeof(locTime));
+    char locTime[22] = {'\0'};
+    strlcpy(locTime,  getDTS().c_str(), getDTS().length());
     _logOutput->print(locTime);
 }
+
 
 #else // DISABLE_LOGGING
 
