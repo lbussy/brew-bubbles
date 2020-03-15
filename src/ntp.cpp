@@ -51,20 +51,16 @@ void setClock() {
 
 String getDTS() {
     // Returns JSON-type string = 2019-12-20T13:59:39Z
+    /// Also:
+    // sprintf(dts, "%04u-%02u-%02uT%02u:%02u:%02uZ", getYear(), getMonth(), getDate(), getHour(), getMinute(), getSecond());
     time_t now;
     time_t rawtime = time(&now);
     struct tm ts;
     ts = *localtime(&rawtime);
     char dta[21] = {'\0'};
     strftime(dta, sizeof(dta), "%FT%TZ", &ts);
-    String dts = String(dta);
-    return dts;
-}
-
-char * getJsonTime() {
-    char * dts = "";
-    sprintf(dts, "%04u-%02u-%02uT%02u:%02u:%02uZ", getYear(), getMonth(), getDate(), getHour(), getMinute(), getSecond());
-    return dts;
+    String dateTimeString = String(dta);
+    return dateTimeString;
 }
 
 int getYear() {
