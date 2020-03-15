@@ -36,7 +36,6 @@ SOFTWARE. */
 
 void setClock();
 String getDTS();
-char * getJsonTime();
 int getYear();      // tm_year
 int getMonth();     // tm_mon
 int getDate();      // tm_mday
