@@ -33,45 +33,41 @@ Bubbles* Bubbles::single = NULL; // Holds pointer to class
 Bubbles* Bubbles::getInstance() {
     if (!single) {
         single = new Bubbles();
-        single->start();
+        pinMode(COUNTPIN, INPUT);       // Change pinmode to input
+        attachInterrupt(digitalPinToInterrupt(COUNTPIN), HandleInterruptsStatic, RISING); // FALLING, RISING or CHANGE
+        pBubbles = single;              // Assign current instance to pointer
+        single->ulLastReport = millis();// Store the last report timer
+        single->ulMicroLast = millis(); // Starting point for debouce timer
+        single->pulse = 0;              // Reset pulse counter
+        single->doBub = false;
+        // Set starting values
+        unsigned long ulNow = millis();
+        single->ulStart = ulNow;
+        single->lastBpm = 0.0;
+        single->lastAmb = 0.0;
+        single->lastVes = 0.0;
+
+        // Set starting time
+        single->lastTime = getDTS();
     }
     return single;
 }
 
-void Bubbles::start() {
-    pinMode(COUNTPIN, INPUT);       // Change pinmode to input
-    attachInterrupt(digitalPinToInterrupt(COUNTPIN), HandleInterruptsStatic, RISING); // FALLING, RISING or CHANGE
-    pBubbles = single;              // Assign current instance to pointer 
-    single->ulLastReport = millis();// Store the last report timer
-    single->pulse = 0;              // Reset pulse counter
-    single->doBub = false;
-
-    // Set starting values
-    unsigned long ulNow = millis();
-    single->ulStart = ulNow;
-    single->lastBpm = 0.0;
-    single->lastAmb = 0.0;
-    single->lastVes = 0.0;
-    
-    // Set starting time
-    strlcpy(single->lastTime, getJsonTime(),sizeof(getJsonTime()));
-}
-
 void Bubbles::update() { // Regular update loop, once per minute
-    // Handle NTP Time
-    strlcpy(single->lastTime, getJsonTime(),sizeof(getJsonTime()));
+    // Get NTP Time
+    single->lastTime = getDTS();
 
     // Store last values
     single->lastBpm = single->getRawBpm();
-    single->lastAmb = single->getTemp(AMBSENSOR);
-    single->lastVes = single->getTemp(VESSENSOR);
+    single->lastAmb = getTemp(AMBSENSOR);
+    single->lastVes = getTemp(VESSENSOR);
 
     // Push values to circular buffers
     tempAmbAvg.push(single->lastAmb);
     tempVesAvg.push(single->lastVes);
     bubAvg.push(single->lastBpm);
 
-    Log.verbose(F("Time is %s, BPM is %D." CR), single->lastTime, single->lastBpm);
+    Log.verbose(F("Time is %s, BPM is %D." CR), single->lastTime.c_str(), single->lastBpm);
     Log.verbose(F("Averages: BPM = %D (%l in sample), Ambient = %D (%l in sample), Vessel = %D (%l in sample)." CR),
         single->getAvgBpm(), bubAvg.size(),
         single->getAvgAmbient(), tempAmbAvg.size(),
@@ -82,10 +78,11 @@ void Bubbles::update() { // Regular update loop, once per minute
 void Bubbles::handleInterrupts(void) { // Bubble Interrupt handler
     digitalWrite(LED, LOW);
     unsigned long now = micros();
-    if ((now - ulMicroLast) > RESOLUTION) { // Filter noise/bounce
+    if ((now - single->ulMicroLast) > RESOLUTION) { // Filter noise/bounce
         single->pulse++;    // Increment pulse count
+        single->ulMicroLast = now;
     }
-    doBub = true;
+    single->doBub = true;
 }
 
 float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)
@@ -97,32 +94,6 @@ float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)
     single->pulse = 0; // Zero the pulse counter
     single->ulLastReport = millis(); // Store the last report timer
     return ppm; // Return pulses per minute
-}
-
-float Bubbles::getTemp(uint8_t pin) {
-    OneWire oneWire(pin);
-    DS18B20 sensor(&oneWire);
-    sensor.begin();
-    float retVal = -100.00;
-    sensor.setResolution(12);
-    sensor.requestTemperatures();
-    while (!sensor.isConversionComplete());
-    // Get Temps
-    JsonConfig *config = JsonConfig::getInstance();
-    if (config->tempinf) {
-        retVal = sensor.getTempC();
-        retVal = retVal * 9/5 + 32;
-    } else {
-        retVal = sensor.getTempC();
-    }
-    // Apply calibration
-    if (pin == AMBSENSOR) {
-        retVal = retVal + config->calAmbient;
-    } else if (pin == VESSENSOR) {
-        retVal = retVal + config->calVessel;
-    }
-
-    return retVal;
 }
 
 float Bubbles::getAvgAmbient() {
@@ -160,4 +131,17 @@ float Bubbles::getAvgBpm() {
 
 void Bubbles::setLast(double last) {
     bubAvg.push(last);
+}
+
+void setDoBubUpdate() {
+    doBubUpdate = true; // Semaphore required for Ticker + radio event
+}
+
+void bubLoop() {
+    Bubbles *bubble = Bubbles::getInstance();
+    // Do Bubble update post
+    if (doBubUpdate) {
+        doBubUpdate = false;
+        bubble->update();
+    }
 }
