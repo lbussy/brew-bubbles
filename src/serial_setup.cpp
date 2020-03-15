@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#include "bubserial.h"
+#include "serial_setup.h"
 
 #ifndef DISABLE_LOGGING
 
@@ -35,11 +35,14 @@ void serial() { // Start serial with auto-detected rate (default to BAUD)
 }
 
 void printTimestamp(Print* _logOutput) {
+    time_t now;
+    time_t rawtime = time(&now);
+    struct tm ts;
+    ts = *localtime(&rawtime);
     char locTime[22] = {'\0'};
-    strlcpy(locTime,  getDTS().c_str(), getDTS().length());
+    strftime(locTime, sizeof(locTime), "%FT%TZ ", &ts);
     _logOutput->print(locTime);
 }
-
 
 #else // DISABLE_LOGGING
 
