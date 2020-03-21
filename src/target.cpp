@@ -20,14 +20,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#include "urltarget.h"
+#include "target.h"
 
-URLTarget* URLTarget::single = NULL;
+Target* Target::single = NULL;
 
-URLTarget* URLTarget::getInstance() {
+Target* Target::getInstance() {
     if (!single) {
-        single = new URLTarget();
-        single->config = JsonConfig::getInstance();
+        single = new Target();
         single->target = new PushTarget;
         single->target->ip = INADDR_NONE;
 
@@ -59,7 +58,7 @@ URLTarget* URLTarget::getInstance() {
         strlcpy(single->target->tempFormat.name, single->tempformat_name.c_str(), single->tempformat_name.length() + 1);
         //
         // Grab correct URL for target type
-        strlcpy(single->target->url, single->config->targeturl, sizeof(single->config->targeturl)); // Unique to URL Target
+        strlcpy(single->target->url, config.urltarget.url, sizeof(config.urltarget.url)); // Unique to URL Target
         //
         // API Key handling parameters
         single->target->key.enabled = single->apikey_enabled;
@@ -68,9 +67,9 @@ URLTarget* URLTarget::getInstance() {
     return single;
 }
 
-bool URLTarget::push() {
+bool Target::push() {
     Log.verbose(F("Triggered %s push." CR), single->target->target.name);
-    strlcpy(single->target->url, single->config->targeturl, sizeof(single->config->targeturl)); // Unique to URL Target
+    strlcpy(single->target->url, config.urltarget.url, sizeof(config.urltarget.url)); // Unique to URL Target
     single->target->target.enabled = (String(single->target->url).length() > 3);                // Unique to URL Target
     LCBUrl lcburl;
     if (single->target->target.enabled) {

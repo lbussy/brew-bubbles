@@ -23,11 +23,10 @@ SOFTWARE. */
 #include "mdns.h"
 
 void mdnssetup() {
-    JsonConfig *config = JsonConfig::getInstance();
-    if (!MDNS.begin(config->hostname)) { // Start the mDNS responder
+    if (!MDNS.begin(config.hostname)) { // Start the mDNS responder
         Log.error(F("Error setting up mDNS responder." CR));
     } else {
-        Log.notice(F("mDNS responder started for %s.local." CR), config->hostname);
+        Log.notice(F("mDNS responder started for %s.local." CR), config.hostname);
         if (!MDNS.addService("http", "tcp", PORT)) {
             Log.error(F("Failed to register mDNS service." CR));
         } else {

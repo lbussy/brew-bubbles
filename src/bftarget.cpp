@@ -27,7 +27,6 @@ BFTarget* BFTarget::single = NULL;
 BFTarget* BFTarget::getInstance() {
     if (!single) {
         single = new BFTarget();
-        single->config = JsonConfig::getInstance();
         single->target = new PushTarget;
         single->target->ip = INADDR_NONE;
 
@@ -70,9 +69,9 @@ BFTarget* BFTarget::getInstance() {
 
 bool BFTarget::push() {
     Log.verbose(F("Triggered %s push." CR), single->target->target.name);
-    if (single->target->apiName.enabled && sizeof(single->config->bfkey)) { // Key target is unique per target (for now)
+    if (single->target->apiName.enabled && sizeof(config.brewersfriend.key)) { // Key target is unique per target (for now)
         single->target->target.enabled = true;
-        strlcpy(single->target->key.name, single->config->bfkey, sizeof(single->config->bfkey)); // Key target is unique per target (for now)
+        strlcpy(single->target->key.name, config.brewersfriend.key, sizeof(config.brewersfriend.key)); // Key target is unique per target (for now)
     } else {
         single->target->target.enabled = false;
         strlcpy(single->target->key.name, "", sizeof(""));

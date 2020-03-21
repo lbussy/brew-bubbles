@@ -23,7 +23,7 @@ SOFTWARE. */
 #ifndef _MAIN_H
 #define _MAIN_H
 
-#include "bubserial.h"
+#include "serial_setup.h"
 #include "config.h"
 #include "execota.h"
 #include "jsonconfig.h"
@@ -31,7 +31,7 @@ SOFTWARE. */
 #include "wifi.h"
 #include "version.h"
 #include "pushtarget.h"
-#include "urltarget.h"
+#include "target.h"
 #include "bftarget.h"
 #include "pushhelper.h"
 #include "bubbles.h"
@@ -48,5 +48,9 @@ SOFTWARE. */
 //
 #define DRD_TIMEOUT 3.0
 #define DRD_ADDRESS 0x00
+
+extern struct Config config;
+extern bool loadConfig();
+extern const char *filename;
 
 #endif // _MAIN_H
