@@ -80,6 +80,7 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
             _delay(3000);
             digitalWrite(LED, HIGH);
             Log.notice(F("Hit timeout for on-demand portal, exiting." CR));
+            reboot();
         }
     } else { // Normal WiFi connection attempt
         blinker.attach_ms(STABLINK, wifiBlinker);
