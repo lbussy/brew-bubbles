@@ -35,7 +35,6 @@ void setWebAliases() {
 
     // Regular page aliases
 
-
     // Route for root / web page
     server.on(
         "/",
@@ -139,8 +138,6 @@ void setWebAliases() {
             // Process POST configuration changes
             Log.verbose(F("Processing post to /settings/update/." CR));
 
-            JsonConfig *config = JsonConfig::getInstance();
-
             char redirect[66];
             strcpy(redirect, "/settings/");
 
@@ -148,19 +145,19 @@ void setWebAliases() {
                 if ((request->arg("mdnsID").length() > 32) || (request->arg("mdnsID").length() < 3)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    strlcpy(config->hostname, request->arg("mdnsID").c_str(), sizeof(config->hostname));
-                    config->save();
+                    strlcpy(config.hostname, request->arg("mdnsID").c_str(), sizeof(config.hostname));
+                    saveConfig();
 
                     // Reset hostname
-                    wifi_station_set_hostname(config->hostname);
-                    MDNS.setHostname(config->hostname);
+                    wifi_station_set_hostname(config.hostname);
+                    MDNS.setHostname(config.hostname);
                     MDNS.notifyAPChange();
                     MDNS.announce();
 
                     // Creeate a full URL for redirection
                     char hostname[45];
                     strcpy(hostname, "http://");
-                    strcat(hostname, config->hostname);
+                    strcat(hostname, config.hostname);
                     strcat(hostname, ".local");
                     strcpy(redirect, hostname);
                     strcat(redirect, "/settings/");
@@ -172,8 +169,8 @@ void setWebAliases() {
                 if ((request->arg("bubname").length() > 32) || (request->arg("bubname").length() < 3)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    strlcpy(config->bubname, request->arg("bubname").c_str(), sizeof(config->bubname));
-                    config->save();
+                    strlcpy(config.bubble.name, request->arg("bubname").c_str(), sizeof(config.bubble.name));
+                    saveConfig();
                 }
                 strcat(redirect, "#controller"); // Redirect to Controller box
                 Log.notice(F("POSTed bubname, redirecting to %s." CR), redirect);
@@ -182,10 +179,10 @@ void setWebAliases() {
                 char option[8];
                 strcpy(option, request->arg("tempInF").c_str());
                 if (strcmp(option, "option0") == 0) {
-                    config->tempinf = false;
+                    config.bubble.tempinf = false;
                 } else {
-                    config->tempinf = true;
-                    config->save();
+                    config.bubble.tempinf = true;
+                    saveConfig();
                 }
                 strcat(redirect, "#temp"); // Redirect to Temp Control
                 Log.notice(F("POSTed tempInF, redirecting to %s." CR), redirect);
@@ -194,8 +191,8 @@ void setWebAliases() {
                 if ((request->arg("calRoom").toDouble() < -25) || (request->arg("calRoom").toDouble() > 25)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    config->calAmbient = request->arg("calRoom").toDouble();
-                    config->save();
+                    config.calibrate.room = request->arg("calRoom").toDouble();
+                    saveConfig();
                 }
                 strcat(redirect, "#temp"); // Redirect to Temp Control
                 Log.notice(F("POSTed calRoom, redirecting to %s." CR), redirect);
@@ -204,8 +201,8 @@ void setWebAliases() {
                 if ((request->arg("calVessel").toDouble() < -25) || (request->arg("calVessel").toDouble() > 25)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    config->calVessel = request->arg("calVessel").toDouble();
-                    config->save();
+                    config.calibrate.vessel = request->arg("calVessel").toDouble();
+                    saveConfig();
                 }
                 strcat(redirect, "#temp"); // Redirect to Temp Control
                 Log.notice(F("POSTed calVessel, redirecting to %s." CR), redirect);
@@ -214,8 +211,8 @@ void setWebAliases() {
                 if (request->arg("target").length() > 128) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    strlcpy(config->targeturl, request->arg("target").c_str(), sizeof(config->targeturl));
-                    config->save();
+                    strlcpy(config.urltarget.url, request->arg("target").c_str(), sizeof(config.urltarget.url));
+                    saveConfig();
                 }
                 strcat(redirect, "#target"); // Redirect to Target Control
                 Log.notice(F("POSTed target, redirecting to %s." CR), redirect);
@@ -224,9 +221,9 @@ void setWebAliases() {
                 if ((request->arg("tfreq").toInt() < 1) || (request->arg("tfreq").toInt() > 60)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    config->targetfreq = request->arg("tfreq").toInt();
-                    config->updateTargetFreq = true;
-                    config->save();
+                    config.urltarget.freq = request->arg("tfreq").toInt();
+                    config.urltarget.update = true;
+                    saveConfig();
                 }
                 strcat(redirect, "#target"); // Redirect to Target Control
                 Log.notice(F("POSTed tfreq, redirecting to %s." CR), redirect);
@@ -235,8 +232,8 @@ void setWebAliases() {
                 if ((request->arg("bfkey").length() > 64) || (request->arg("bfkey").length() < 20)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    strlcpy(config->bfkey, request->arg("bfkey").c_str(), sizeof(config->bfkey));
-                    config->save();
+                    strlcpy(config.brewersfriend.key, request->arg("bfkey").c_str(), sizeof(config.brewersfriend.key));
+                    saveConfig();
                 }
                 strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
                 Log.notice(F("POSTed bfkey, redirecting to %s." CR), redirect);
@@ -245,13 +242,12 @@ void setWebAliases() {
                 if ((request->arg("bfreq").toInt() < 15) || (request->arg("bfreq").toInt() > 120)) {
                     Log.warning(F("Settings update error." CR));
                 } else {
-                    config->bffreq = request->arg("bfreq").toInt();
-                    config->updateBFFreq = true;
-                    config->save();
+                    config.brewersfriend.freq = request->arg("bfreq").toInt();
+                    config.brewersfriend.update = true;
+                    saveConfig();
                 }
                 strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
                 Log.notice(F("POSTed bfreq, redirecting to %s." CR), redirect);
-
             }
 
             // Redirect to Settings page
@@ -263,12 +259,11 @@ void setWebAliases() {
         "/clearupdate/",
         HTTP_GET,
         [] (AsyncWebServerRequest *request) {
-            JsonConfig *config = JsonConfig::getInstance();
             Log.verbose(F("Clearing any update flags." CR));
-            config->dospiffs1 = false;
-            config->dospiffs2 = false;
-            config->didupdate = false;
-            config->save();
+            config.dospiffs1 = false;
+            config.dospiffs2 = false;
+            config.didupdate = false;
+            saveConfig();
             request->send(200, F("text/plain"), F("200: OK."));
         }
     );
@@ -281,7 +276,6 @@ void setWebAliases() {
         [] (AsyncWebServerRequest *request) {
             // Used to provide the Bubbles json
             Bubbles *bubble = Bubbles::getInstance();
-            JsonConfig *config = JsonConfig::getInstance();
 
             //const size_t capacity = JSON_OBJECT_SIZE(8);
             const size_t capacity = JSON_OBJECT_SIZE(8) + 210;
@@ -289,11 +283,11 @@ void setWebAliases() {
 
             doc[F("api_key")] = F(API_KEY);
             doc[F("device_source")] = F(SOURCE);
-            doc[F("name")] = config->bubname;
+            doc[F("name")] = config.bubble.name;
             doc[F("bpm")] = bubble->getAvgBpm();
             doc[F("ambient")] = bubble->getAvgAmbient();
             doc[F("temp")] = bubble->getAvgVessel();
-            if (config->tempinf == true)
+            if (config.bubble.tempinf == true)
                 doc[F("temp_unit")] = F("F");
             else
                 doc[F("temp_unit")] = F("C");
@@ -311,45 +305,46 @@ void setWebAliases() {
         HTTP_GET,
         [] (AsyncWebServerRequest *request) {
             // Used to provide the Config json
-            JsonConfig *config = JsonConfig::getInstance();
+
+            // TODO:  Can I use the config class for this?
 
             const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(8) + 481;
             StaticJsonDocument<capacity> doc;
 
             // Serialize Access Point Settings Object
             JsonObject apconfig = doc.createNestedObject("apconfig");
-            apconfig["ssid"] = config->ssid;
-            apconfig["appwd"] = config->appwd;
+            apconfig["ssid"] = config.apconfig.ssid;
+            apconfig["appwd"] = config.apconfig.passphrase;
 
             // Serialize Hostname Settings Object
-            doc["hostname"] = config->hostname;
+            doc["hostname"] = config.hostname;
 
             // Serialize Bubble Settings Object
-            JsonObject bubbleconfig = doc.createNestedObject("bubbleconfig");
-            bubbleconfig["name"] = config->bubname;
-            bubbleconfig["tempinf"] = config->tempinf;
+            JsonObject bubbleconfig = doc.createNestedObject("bubble");
+            bubbleconfig["name"] = config.bubble.name;
+            bubbleconfig["tempinf"] = config.bubble.tempinf;
 
             // Serialize temperature calibration
             JsonObject calibrate = doc.createNestedObject("calibrate");
-            calibrate["room"] = config->calAmbient;
-            calibrate["vessel"] = config->calVessel;
+            calibrate["room"] = config.calibrate.room;
+            calibrate["vessel"] = config.calibrate.vessel;
 
             // Serialize Target Settings Object
-            JsonObject targetconfig = doc.createNestedObject("targetconfig");
-            targetconfig["targeturl"] = config->targeturl;
-            targetconfig["freq"] = config->targetfreq;
+            JsonObject targetconfig = doc.createNestedObject("urltarget");
+            targetconfig["url"] = config.urltarget.url;
+            targetconfig["freq"] = config.urltarget.freq;
 
             // Serialize Brewer's Friend Settings Object
-            JsonObject bfconfig = doc.createNestedObject("bfconfig");
-            bfconfig["bfkey"] = config->bfkey;
-            bfconfig["freq"] = config->bffreq;
+            JsonObject bfconfig = doc.createNestedObject("brewersfriend");
+            bfconfig["key"] = config.brewersfriend.key;
+            bfconfig["freq"] = config.brewersfriend.freq;
 
             // Serialize SPIFFS OTA update choice
-            doc["dospiffs1"] = config->dospiffs1;
-            doc["dospiffs2"] = config->dospiffs2;
+            doc["dospiffs1"] = config.dospiffs1;
+            doc["dospiffs2"] = config.dospiffs2;
 
             // Serialize semaphore for OTA update
-            doc["didupdate"] = config->didupdate;
+            doc["didupdate"] = config.didupdate;
 
             String json;
             serializeJsonPretty(doc, json);
@@ -371,106 +366,108 @@ void setWebAliases() {
                 bool updated = false;
 
                 // Parse JSON
-                JsonConfig *config = JsonConfig::getInstance();
+
+                // TODO:  Use NULL checks from jsonconfig
+                // TODO:  Can I use jsonconfig to handle this?
 
                 // Parse Access Point Settings Object
                 const char* ssid = doc["apconfig"]["ssid"];
-                if ((ssid) && (strcmp (ssid, config->ssid) != 0)) {
+                if ((ssid) && (strcmp (ssid, config.apconfig.ssid) != 0)) {
                     updated = true;
-                    strlcpy(config->ssid, ssid, sizeof(config->ssid));
+                    strlcpy(config.apconfig.ssid, ssid, sizeof(config.apconfig.ssid));
                 }
                 const char* appwd = doc["apconfig"]["appwd"];
-                if ((appwd) && (strcmp (appwd, config->appwd) != 0)) {
+                if ((appwd) && (strcmp (appwd, config.apconfig.passphrase) != 0)) {
                     updated = true;
-                    strlcpy(config->appwd, appwd, sizeof(config->appwd));
+                    strlcpy(config.apconfig.passphrase, appwd, sizeof(config.apconfig.passphrase));
                 }
 
                 // Parse Hostname Settings Object
                 const char* hostname = doc["hostname"];
                 bool hostNameChanged = false;
-                if ((hostname) && (strcmp (hostname, config->hostname) != 0)) {
+                if ((hostname) && (strcmp (hostname, config.hostname) != 0)) {
                     updated = true;
                     hostNameChanged = true;
-                    strlcpy(config->hostname, hostname, sizeof(config->hostname));
+                    strlcpy(config.hostname, hostname, sizeof(config.hostname));
                 }
 
                 // Parse Bubble Settings Object
                 const char* bubname = doc["bubbleconfig"]["name"];
-                if ((bubname) && (strcmp (bubname, config->bubname) != 0)) {
+                if ((bubname) && (strcmp (bubname, config.bubble.name) != 0)) {
                     updated = true;
-                    strlcpy(config->bubname, bubname, sizeof(config->bubname));
+                    strlcpy(config.bubble.name, bubname, sizeof(config.bubble.name));
                 }
             
                 JsonVariant tempinf = doc["bubbleconfig"]["tempinf"];
-                if ((!tempinf.isNull()) && (!config->tempinf == tempinf)) {
+                if ((!tempinf.isNull()) && (!config.bubble.tempinf == tempinf)) {
                     updated = true;
-                    config->tempinf = tempinf;
+                    config.bubble.tempinf = tempinf;
                 }
 
                 // Parse temperature calibration
                 double calAmbient = doc["calibrate"]["room"];
-                if ((calAmbient) && (!calAmbient == config->calAmbient)) {
+                if ((calAmbient) && (!calAmbient == config.calibrate.room)) {
                     updated = true;
-                    config->calAmbient = calAmbient;
+                    config.calibrate.room = calAmbient;
                 }
 
                 double calVessel = doc["calibrate"]["vessel"];
-                if ((calVessel) && (!calVessel == config->calVessel)) {
+                if ((calVessel) && (!calVessel == config.calibrate.vessel)) {
                     updated = true;
-                    config->calVessel =  calVessel;
+                    config.calibrate.vessel =  calVessel;
                 }
 
                 // Parse Target Settings Object
                 const char* targeturl = doc["targetconfig"]["targeturl"];
-                if ((targeturl) && (strcmp (targeturl, config->targeturl) != 0)) {
+                if ((targeturl) && (strcmp (targeturl, config.urltarget.url) != 0)) {
                     updated = true;
-                    strlcpy(config->targeturl, doc["targetconfig"]["targeturl"], sizeof(config->targeturl));
+                    strlcpy(config.urltarget.url, doc["targetconfig"]["targeturl"], sizeof(config.urltarget.url));
                 }
 
                 unsigned long targetfreq = doc["targetconfig"]["targetfreq"];
-                if ((targetfreq) && (!targetfreq == config->targetfreq)) {
+                if ((targetfreq) && (!targetfreq == config.urltarget.freq)) {
                     updated = true;
-                    config->targetfreq = targetfreq;
+                    config.urltarget.freq = targetfreq;
                 }
 
                 // Parse Brewer's Friend Settings Object
                 const char* bfkey = doc["bfconfig"]["bfkey"];
-                if ((bfkey) && (strcmp (bfkey, config->bfkey) != 0)) {
+                if ((bfkey) && (strcmp (bfkey, config.brewersfriend.key) != 0)) {
                     updated = true;
-                    strlcpy(config->bfkey, bfkey, sizeof(config->bfkey));
+                    strlcpy(config.brewersfriend.key, bfkey, sizeof(config.brewersfriend.key));
                 }
 
                 unsigned long bffreq = doc["bfconfig"]["freq"];
-                if ((bffreq) && (!bffreq == config->bffreq)) {
+                if ((bffreq) && (!bffreq == config.brewersfriend.freq)) {
                     updated = true;
-                    config->bffreq = bffreq;
+                    config.brewersfriend.freq = bffreq;
                 }
 
                 // Parse SPIFFS OTA update choice
                 JsonVariant dospiffs1 = doc["dospiffs1"];
-                if ((!dospiffs1.isNull()) && (!dospiffs1 == config->dospiffs1)) {
+                if ((!dospiffs1.isNull()) && (!dospiffs1 == config.dospiffs1)) {
                     updated = true;
-                    config->dospiffs1 = dospiffs1;
+                    config.dospiffs1 = dospiffs1;
                 }
 
                 // Parse SPIFFS OTA update choice
                 JsonVariant dospiffs2 = doc["dospiffs2"];
-                if ((!dospiffs2.isNull()) && (!dospiffs2 == config->dospiffs2)) {
+                if ((!dospiffs2.isNull()) && (!dospiffs2 == config.dospiffs2)) {
                     updated = true;
-                    config->dospiffs2 = dospiffs2;
+                    config.dospiffs2 = dospiffs2;
                 }
 
                 // Parse OTA update semaphore choice
                 JsonVariant didupdate = doc["didupdate"];
-                if ((!didupdate.isNull()) && (!didupdate == config->didupdate)) {
+                if ((!didupdate.isNull()) && (!didupdate == config.didupdate)) {
                     updated = true;
-                    config->didupdate = didupdate;
+                    config.didupdate = didupdate;
                 }
 
                 if (updated) {
 
                     // Save configuration to file
-                    config->save();
+                    saveConfig();
 
                     // Reset hostname
                     if (hostNameChanged) {
@@ -480,7 +477,7 @@ void setWebAliases() {
                         MDNS.announce();
 
                         char hostredirect[39];
-                        strcpy(hostredirect, config->hostname);
+                        strcpy(hostredirect, config.hostname);
                         strcat(hostredirect, ".local");
                         Log.notice(F("Redirecting to new URL: http://%s.local/" CR), hostname);
 

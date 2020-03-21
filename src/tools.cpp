@@ -22,22 +22,6 @@ SOFTWARE. */
 
 #include "tools.h"
 
-bool ipl() { // Determine if this is the first start after loading image
-    char thisver[20] = __DATE__ __TIME__; // Sets at compile-time
-    char savever[20] = "";
-    bool _ipl = false;
-
-    EEPROM.begin(20);
-    EEPROM.get(EEPROM_ADDRESS, savever);
-    if (strcmp (thisver, savever) != 0) {
-        EEPROM.put(EEPROM_ADDRESS, thisver);
-        EEPROM.commit();
-        _ipl = true;
-    }
-    EEPROM.end();
-    return _ipl;
-}
-
 void _delay(unsigned long ulDelay) {
     // Safe blocking delay() replacement with yield()
     unsigned long ulNow = millis();

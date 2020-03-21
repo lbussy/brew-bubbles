@@ -38,17 +38,16 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
     lcburl.setUrl(String(target->url) + String(target->key.name));
 
     Bubbles *bubble = Bubbles::getInstance();
-    JsonConfig *config = JsonConfig::getInstance();
     const size_t capacity = JSON_OBJECT_SIZE(8) + 210;
     StaticJsonDocument<capacity> doc;
 
     if (target->apiName.enabled) doc[target->apiName.name] = F(API_KEY);
-    if (target->bubName.enabled) doc[target->bubName.name] = config->bubname;
+    if (target->bubName.enabled) doc[target->bubName.name] = config.bubble.name;
     if (target->bpm.enabled) doc[target->bpm.name] = bubble->getAvgBpm();
     if (target->ambientTemp.enabled) doc[target->ambientTemp.name] = bubble->getAvgAmbient();
     if (target->vesselTemp.enabled) doc[target->vesselTemp.name] = bubble->getAvgVessel();
     if (target->tempFormat.enabled) {
-        if (config->tempinf == true) doc[target->tempFormat.name] = F("F");
+        if (config.bubble.tempinf == true) doc[target->tempFormat.name] = F("F");
         else doc[target->tempFormat.name] = F("C");
     }
     String json;
@@ -162,7 +161,7 @@ void setDoBRFTarget() {
 
 void tickerLoop() {
     Bubbles *bubble = Bubbles::getInstance();
-    URLTarget *urlTarget = URLTarget::getInstance();
+    Target *target = Target::getInstance();
     BFTarget *bfTarget = BFTarget::getInstance();
     // BRFTarget *brfTarget = BRFTarget::getInstance();
 
@@ -171,7 +170,7 @@ void tickerLoop() {
     // Do URL Target post
     if (doURLTarget) {
         doURLTarget = false;
-        urlTarget->push();
+        target->push();
     }
     //
     // Do Brewer's Friend Post

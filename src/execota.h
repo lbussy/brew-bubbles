@@ -33,4 +33,7 @@ SOFTWARE. */
 void execfw();
 void execspiffs();
 
+extern bool saveConfig();
+extern struct Config config;
+
 #endif //_EXECOTA_H

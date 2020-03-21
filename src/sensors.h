@@ -33,4 +33,6 @@ SOFTWARE. */
 
 double getTemp(uint8_t);
 
+extern struct Config config;
+
 #endif // _SENSORS_H
