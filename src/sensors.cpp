@@ -24,7 +24,6 @@ SOFTWARE. */
 
 double getTemp(uint8_t pin) {
     float retVal;
-    JsonConfig *config = JsonConfig::getInstance();
     OneWire oneWire(pin);
     DS18B20 sensor(&oneWire);
     sensor.begin();
@@ -33,23 +32,23 @@ double getTemp(uint8_t pin) {
     while (!sensor.isConversionComplete());
     retVal = sensor.getTempC();
 
-    if (config->tempinf) {
+    if (config.bubble.tempinf) {
         retVal = sensor.getTempF();
         if (retVal == float(DEVICE_DISCONNECTED_F)) {
             retVal = -100.0;
         } else if (pin == AMBSENSOR) {
-            retVal = retVal + config->calAmbient;
+            retVal = retVal + config.calibrate.room;
         } else if (pin == VESSENSOR) {
-            retVal = retVal + config->calVessel;
+            retVal = retVal + config.calibrate.vessel;
         }
     } else {
         retVal = sensor.getTempC();
         if (retVal == float(DEVICE_DISCONNECTED_C)) {
             retVal = -100.0;
         } else if (pin == AMBSENSOR) {
-            retVal = retVal + config->calAmbient;
+            retVal = retVal + config.calibrate.room;
         } else if (pin == VESSENSOR) {
-            retVal = retVal + config->calVessel;
+            retVal = retVal + config.calibrate.vessel;
         }
     }
 

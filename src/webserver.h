@@ -44,4 +44,6 @@ String getWebContentType(AsyncWebServerRequest *, String);
 bool handleWebFileRead(AsyncWebServerRequest *, String);
 void stopWebServer();
 
+extern struct Config config;
+
 #endif // _WEBSERVER_H

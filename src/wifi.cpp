@@ -31,7 +31,6 @@ void doWiFi() {
 
 void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current config
     AsyncWiFiManager myAsyncWifiManager;
-    JsonConfig *config = JsonConfig::getInstance();
 
     // AsyncWiFiManager Callbacks
     myAsyncWifiManager.setAPCallback(apCallback); // Called after AP has started
@@ -72,7 +71,7 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
     if (ignore) { // Voluntary portal
         blinker.attach_ms(APBLINK, wifiBlinker);
         myAsyncWifiManager.setConfigPortalTimeout(120);
-        if (myAsyncWifiManager.startConfigPortal(config->ssid, config->appwd)) {
+        if (myAsyncWifiManager.startConfigPortal(config.apconfig.ssid, config.apconfig.passphrase)) {
             // We finished with portal, do we need this?
         } else {
             // Hit timeout on voluntary portal
@@ -86,7 +85,7 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
         blinker.attach_ms(STABLINK, wifiBlinker);
         myAsyncWifiManager.setConnectTimeout(30);
         myAsyncWifiManager.setConfigPortalTimeout(120);
-        if (!myAsyncWifiManager.autoConnect(config->ssid, config->appwd)) {
+        if (!myAsyncWifiManager.autoConnect(config.apconfig.ssid, config.apconfig.passphrase)) {
             Log.warning(F("Failed to connect and hit timeout."));
             if (blinker.active()) blinker.detach(); // Turn off blinker
             digitalWrite(LED, LOW);
@@ -113,7 +112,7 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
         // ESP.restart(); // If we don't reset, it hangs connecting to AP
     }
 
-    WiFi.hostname(config->hostname);
+    WiFi.hostname(config.hostname);
 
     Log.notice(F("Connecting to access point: %s."), WiFi.SSID().c_str());
     while (WiFi.status() != WL_CONNECTED) {

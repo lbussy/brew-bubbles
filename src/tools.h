@@ -23,7 +23,6 @@ SOFTWARE. */
 #ifndef _TOOLS_H
 #define _TOOLS_H
 
-// #include "wifi.h"
 #include "bubbles.h"
 #include <FS.h>
 #include <ArduinoLog.h>

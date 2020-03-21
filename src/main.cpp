@@ -27,6 +27,12 @@ DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 void setup() {
     bool rst = drd.detect(); // Check for double-reset
     serial();
+
+    if (loadConfig())
+        Log.notice(F("Configuration loaded." CR));
+    else
+        Log.error(F("Unable to load cofiguration." CR));
+
     pinMode(LED, OUTPUT);
 
     _delay(200); // Let pins settle, else detect is inconsistent
@@ -52,7 +58,6 @@ void setup() {
 }
 
 void loop() {
-    JsonConfig *config = JsonConfig::getInstance();
     Bubbles *bubble = Bubbles::getInstance();
 
     // Bubble loop to create 60 second readings
@@ -61,11 +66,11 @@ void loop() {
 
     // Target timer
     Ticker urlTarget;
-    urlTarget.attach(config->targetfreq * 60, setDoURLTarget);
+    urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
     
     // Brewer's friend timer
     Ticker bfTimer;
-    bfTimer.attach(config->bffreq * 60, setDoBFTarget);
+    bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
 
     // mDNS Reset Timer - Helps avoid the host not found issues
     Ticker mDNSTimer;
@@ -84,17 +89,17 @@ void loop() {
         MDNS.update();          // Handle mDNS requests
 
         // If target frequencies needs to be updated, update here
-        if (config->updateTargetFreq) {
-            Log.notice(F("Resetting URL Target frequency timer to %l minutes." CR), config->targetfreq);
+        if (config.urltarget.update) {
+            Log.notice(F("Resetting URL Target frequency timer to %l minutes." CR), config.urltarget.freq);
             urlTarget.detach();
-            urlTarget.attach(config->targetfreq * 60, setDoURLTarget);
-            config->updateTargetFreq = false;
+            urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
+            config.urltarget.update = false;
         }
-        if (config->updateBFFreq) {
-            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config->bffreq);
+        if (config.brewersfriend.update) {
+            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
             bfTimer.detach();
-            bfTimer.attach(config->bffreq * 60, setDoBFTarget);
-            config->updateBFFreq = false;
+            bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
+            config.brewersfriend.update = false;
         }
 
         yield();

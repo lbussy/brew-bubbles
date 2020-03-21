@@ -25,7 +25,6 @@ SOFTWARE. */
 
 #include "config.h"
 #include "sensors.h"
-#include "jsonconfig.h"
 #include "ntp.h"
 #include <ArduinoLog.h>
 #include <CircularBuffer.h>
