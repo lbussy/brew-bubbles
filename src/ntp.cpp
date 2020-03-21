@@ -22,17 +22,13 @@ SOFTWARE. */
 
 #include "ntp.h"
 
-// Check:
-// https://github.com/dalmatianrex/articles/tree/master/makerpro-esp8266-ntp
-// for additional functionality
-
 void setClock() {
     Ticker blinker;
     Log.notice(F("Entering blocking loop to get NTP time."));
     blinker.attach_ms(NTPBLINK, ntpBlinker);
-    configTime(0, 0, "pool.ntp.org", "time.nist.gov");
-    time_t nowSecs = time(nullptr);
-    while (nowSecs < 8 * 3600 * 2) {
+    configTime(GMT, 0, "pool.ntp.org", "time.nist.gov");
+    time_t nowSecs;
+    while (nowSecs < EPOCH_1_1_2019) {
 #ifdef LOG_LEVEL
         Serial.print(F("."));
 #endif
