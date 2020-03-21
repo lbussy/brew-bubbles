@@ -30,14 +30,13 @@ SOFTWARE. */
 #include <ArduinoLog.h>
 #include <Arduino.h>
 
-class URLTarget {
+class Target {
     private:
         // Singleton Declarations
-        URLTarget() {}
-        static URLTarget *single;
+        Target() {}
+        static Target *single;
         // External Declarations
         PushTarget *target;
-        JsonConfig *config;
         // Private Methods
 
         // Private Properties
@@ -86,8 +85,8 @@ class URLTarget {
 
     public:
         // Singleton Declarations
-        static URLTarget* getInstance();
-        ~URLTarget() {single = NULL;}
+        static Target* getInstance();
+        ~Target() {single = NULL;}
         // External Declarations
 
         // Public Methods
@@ -95,5 +94,7 @@ class URLTarget {
         // Public Properties
 
 };
+
+extern struct Config config;
 
 #endif // _URLTARGET_H

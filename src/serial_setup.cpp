@@ -20,25 +20,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _PUSHHELPER_H
-#define _PUSHHELPER_H
+#include "serial_setup.h"
 
-#include "bubbles.h"
-#include "pushtarget.h"
-#include "target.h"
-#include "bftarget.h"
-//#include "brftarget.h"
-#include <ESP8266WiFi.h>
+#ifndef DISABLE_LOGGING
 
-IPAddress resolveHost(const char hostname[129]);
-bool pushToTarget(PushTarget*, IPAddress, int);
-void tickerLoop();
-void setDoURLTarget();
-void setDoBFTarget();
-void setDoBRFTarget();
+void serial() { // Start serial with auto-detected rate (default to BAUD)
+    _delay(3000); // Delay to allow monitor to start
+    Serial.begin(BAUD);
+    Serial.setDebugOutput(true);
+    Serial.flush();
+    Log.begin(LOG_LEVEL, &Serial, true);
+    Log.setPrefix(printTimestamp);
+    Log.notice(F("Serial logging started at %l." CR), BAUD);
+}
 
-static bool __attribute__((unused)) doURLTarget = false;    // Semaphore for Target timer
-static bool __attribute__((unused)) doBFTarget = false;     // Semaphore for BF timer
-static bool __attribute__((unused)) doBRFTarget = false;    // Semaphore for BRF timer
+void printTimestamp(Print* _logOutput) {
+    time_t now;
+    time_t rawtime = time(&now);
+    struct tm ts;
+    ts = *localtime(&rawtime);
+    char locTime[22] = {'\0'};
+    strftime(locTime, sizeof(locTime), "%FT%TZ ", &ts);
+    _logOutput->print(locTime);
+}
 
-#endif // _PUSHHELPER_H
+#else // DISABLE_LOGGING
+
+void serial(){}
+
+#endif // DISABLE_LOGGING

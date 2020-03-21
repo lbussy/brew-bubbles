@@ -24,10 +24,8 @@ SOFTWARE. */
 #define _BUBBLES_H
 
 #include "config.h"
-#include "jsonconfig.h"
+#include "sensors.h"
 #include "ntp.h"
-#include "DS18B20.h"
-#include "OneWire.h"
 #include <ArduinoLog.h>
 #include <CircularBuffer.h>
 #include <Arduino.h>
@@ -37,8 +35,11 @@ class Bubbles {
         // Singleton Declarations
         Bubbles() {};
         static Bubbles *single;
-        // Other Declarations
-        void start();
+
+        // Private Methods
+        float getRawBpm();
+
+        // Private Properties
         CircularBuffer<float, TEMPAVG> tempAmbAvg;
         CircularBuffer<float, TEMPAVG> tempVesAvg;
         CircularBuffer<float, BUBAVG> bubAvg;
@@ -49,22 +50,28 @@ class Bubbles {
         float lastBpm;                      // Holds most recent count
         float lastAmb;
         float lastVes;
-        float getRawBpm();
-        float getTemp(uint8_t);
 
     public:
         // Singleton Declarations
         static Bubbles* getInstance();
         ~Bubbles() {single = NULL;}
-        // Other Declarations
+
+        // Public Methods
         void handleInterrupts(void);
         void update();                  // Call every 60 seconds
-        char lastTime[22];
         float getAvgAmbient();
         float getAvgVessel();
         float getAvgBpm();
+        void setLast(double);           // Push last reading on reboot
+
+        // Public Properties
+        String lastTime;
         bool doBub;
-        void setLast(double);                // Push last reading on reboot
 };
+
+void setDoBubUpdate();
+void bubLoop();
+
+static bool __attribute__((unused)) doBubUpdate = false;    // Semaphore for Bubble timer
 
 #endif // _BUBBLES_H

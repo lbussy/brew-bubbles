@@ -341,7 +341,7 @@ SOFTWARE. */
 // URL Target Frequency (default 2 minutes)
 //
 #ifndef URLTARGETFREQ
-#define URLTARGETFREQ 2
+#define URLTARGETFREQ 2UL
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
@@ -351,7 +351,7 @@ SOFTWARE. */
 // Default Brewer's Friend Frequency (default 15 mins)
 //
 #ifndef BFFREQ
-#define BFFREQ 15
+#define BFFREQ 15UL
 #endif
 //
 //////////////////////////////////////////////////////////////////////////

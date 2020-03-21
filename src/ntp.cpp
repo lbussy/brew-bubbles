@@ -22,17 +22,13 @@ SOFTWARE. */
 
 #include "ntp.h"
 
-// Check:
-// https://github.com/dalmatianrex/articles/tree/master/makerpro-esp8266-ntp
-// for additional functionality
-
 void setClock() {
     Ticker blinker;
     Log.notice(F("Entering blocking loop to get NTP time."));
     blinker.attach_ms(NTPBLINK, ntpBlinker);
-    configTime(0, 0, "pool.ntp.org", "time.nist.gov");
-    time_t nowSecs = time(nullptr);
-    while (nowSecs < 8 * 3600 * 2) {
+    configTime(GMT, 0, "pool.ntp.org", "time.nist.gov");
+    time_t nowSecs;
+    while (nowSecs < EPOCH_1_1_2019) {
 #ifdef LOG_LEVEL
         Serial.print(F("."));
 #endif
@@ -51,20 +47,16 @@ void setClock() {
 
 String getDTS() {
     // Returns JSON-type string = 2019-12-20T13:59:39Z
+    /// Also:
+    // sprintf(dts, "%04u-%02u-%02uT%02u:%02u:%02uZ", getYear(), getMonth(), getDate(), getHour(), getMinute(), getSecond());
     time_t now;
     time_t rawtime = time(&now);
     struct tm ts;
     ts = *localtime(&rawtime);
     char dta[21] = {'\0'};
     strftime(dta, sizeof(dta), "%FT%TZ", &ts);
-    String dts = String(dta);
-    return dts;
-}
-
-char * getJsonTime() {
-    char * dts = "";
-    sprintf(dts, "%04u-%02u-%02uT%02u:%02u:%02uZ", getYear(), getMonth(), getDate(), getHour(), getMinute(), getSecond());
-    return dts;
+    String dateTimeString = String(dta);
+    return dateTimeString;
 }
 
 int getYear() {

@@ -46,4 +46,6 @@ void saveConfigCallback();
 void saveParamsCallback();
 void webServerCallback();
 
+extern struct Config config;
+
 #endif // _WIFI_H

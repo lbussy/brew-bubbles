@@ -20,25 +20,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _PUSHHELPER_H
-#define _PUSHHELPER_H
+#ifndef _SENSORS_H
+#define _SENSORS_H
 
-#include "bubbles.h"
-#include "pushtarget.h"
-#include "target.h"
-#include "bftarget.h"
-//#include "brftarget.h"
-#include <ESP8266WiFi.h>
+#include "config.h"
+#include "jsonconfig.h"
+#include <OneWire.h>
+#include <DS18B20.h>
 
-IPAddress resolveHost(const char hostname[129]);
-bool pushToTarget(PushTarget*, IPAddress, int);
-void tickerLoop();
-void setDoURLTarget();
-void setDoBFTarget();
-void setDoBRFTarget();
+#define DEVICE_DISCONNECTED_C -127
+#define DEVICE_DISCONNECTED_F -196.6
 
-static bool __attribute__((unused)) doURLTarget = false;    // Semaphore for Target timer
-static bool __attribute__((unused)) doBFTarget = false;     // Semaphore for BF timer
-static bool __attribute__((unused)) doBRFTarget = false;    // Semaphore for BRF timer
+double getTemp(uint8_t);
 
-#endif // _PUSHHELPER_H
+extern struct Config config;
+
+#endif // _SENSORS_H

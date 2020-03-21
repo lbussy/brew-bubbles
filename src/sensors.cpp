@@ -20,29 +20,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#include "bubserial.h"
+#include "sensors.h"
 
-#ifndef DISABLE_LOGGING
+double getTemp(uint8_t pin) {
+    float retVal;
+    OneWire oneWire(pin);
+    DS18B20 sensor(&oneWire);
+    sensor.begin();
+    sensor.setResolution(TEMP_12_BIT);
+    sensor.requestTemperatures();
+    while (!sensor.isConversionComplete());
+    retVal = sensor.getTempC();
 
-void serial() { // Start serial with auto-detected rate (default to BAUD)
-    _delay(3000); // Delay to allow monitor to start
-    Serial.begin(BAUD);
-    Serial.setDebugOutput(true);
-    Serial.flush();
-    Log.begin(LOG_LEVEL, &Serial, true);
-    Log.setPrefix(printTimestamp);
-    Log.notice(F("Serial logging started at %l." CR), BAUD);
+    if (config.bubble.tempinf) {
+        retVal = sensor.getTempF();
+        if (retVal == float(DEVICE_DISCONNECTED_F)) {
+            retVal = -100.0;
+        } else if (pin == AMBSENSOR) {
+            retVal = retVal + config.calibrate.room;
+        } else if (pin == VESSENSOR) {
+            retVal = retVal + config.calibrate.vessel;
+        }
+    } else {
+        retVal = sensor.getTempC();
+        if (retVal == float(DEVICE_DISCONNECTED_C)) {
+            retVal = -100.0;
+        } else if (pin == AMBSENSOR) {
+            retVal = retVal + config.calibrate.room;
+        } else if (pin == VESSENSOR) {
+            retVal = retVal + config.calibrate.vessel;
+        }
+    }
+
+    return retVal;
 }
-
-void printTimestamp(Print* _logOutput) {
-    char locTime[22] = {'\0'};
-    strlcpy(locTime,  getDTS().c_str(), getDTS().length());
-    _logOutput->print(locTime);
-}
-
-
-#else // DISABLE_LOGGING
-
-void serial(){}
-
-#endif // DISABLE_LOGGING

@@ -37,7 +37,6 @@ class BFTarget {
         static BFTarget *single;
         // External Declarations
         PushTarget *target;
-        JsonConfig *config;
         // Private Methods
 
         // Private Properties
@@ -95,5 +94,7 @@ class BFTarget {
         // Public Properties
 
 };
+
+extern struct Config config;
 
 #endif // _BFTARGET_H
