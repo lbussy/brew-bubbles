@@ -1,10 +1,3 @@
-#ifndef _JSONCONFIG_H
-#define _JSONCONFIG_H
-
-#define JC_DEBUG // Control debug printing for JsonConfig
-
-#include "config.h"
-#include <ArduinoJson.h>
 /* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
@@ -27,6 +20,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
+#ifndef _JSONCONFIG_H
+#define _JSONCONFIG_H
+
+#define JC_DEBUG // Control debug printing for JsonConfig
+
+#include "config.h"
+#include <ArduinoJson.h>
 #include <FS.h>
 
 struct ApConfig
