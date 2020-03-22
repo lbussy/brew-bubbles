@@ -29,54 +29,6 @@ void initWebServer() {
     setActionPageHandlers();
     setJsonHandlers();
     setSettingsAliases();
-    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
-    server.begin();
-    Log.notice(F("Async HTTP server started on port %l." CR) , PORT);
-    Log.verbose(F("Open: http://%s.local to view controller application." CR), WiFi.hostname().c_str());
-}
-
-void setRegPageAliases() {
-    // Regular page aliases
-
-    server.on("/", HTTP_ANY, [] (AsyncWebServerRequest *request) {
-        Log.verbose(F("Serving request for '/'." CR));
-        request->send(SPIFFS, "/index.htm");
-    });
-
-    server.on("/index.htm", HTTP_ANY, [] (AsyncWebServerRequest *request) {
-        Log.verbose(F("Serving request for '/index.htm'." CR));
-        request->send(SPIFFS, "/index.htm");
-    });
-
-    server.on("/about/", HTTP_ANY, [] (AsyncWebServerRequest *request) {
-        Log.verbose(F("Serving request for '/about.htm'." CR));
-        request->send(SPIFFS, "/about.htm");
-    });
-
-    server.on("/help/", HTTP_ANY, [] (AsyncWebServerRequest *request) {
-        Log.verbose(F("Serving request for '/help.htm'." CR));
-        request->send(SPIFFS, "/help.htm");
-    });
-
-    server.on("/ota/", HTTP_ANY, [] (AsyncWebServerRequest *request) {
-        Log.verbose(F("Serving request for '/ota.htm'." CR));
-        request->send(SPIFFS, "/ota.htm");
-    });
-
-    server.on("/ota2/", HTTP_ANY, [] (AsyncWebServerRequest *request) {
-        Log.verbose(F("Serving request for '/ota2.htm'." CR));
-        request->send(SPIFFS, "/ota2.htm");
-    });
-
-    server.on("/settings/", HTTP_ANY, [] (AsyncWebServerRequest *request) {
-        Log.verbose(F("Serving request for '/settings.htm'." CR));
-        request->send(SPIFFS, "/settings.htm");
-    });
-
-    server.on("/wifi/", HTTP_ANY, [] (AsyncWebServerRequest *request) {
-        Log.verbose(F("Serving request for '/wifi.htm'." CR));
-        request->send(SPIFFS, "/wifi.htm");
-    });
 
     // File not found handler
 
@@ -84,6 +36,25 @@ void setRegPageAliases() {
         Log.verbose(F("Serving 404." CR));
         request->send(404, F("text/plain"), F("404: File not found."));
     });
+
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+
+    server.begin();
+
+    Log.notice(F("Async HTTP server started on port %l." CR) , PORT);
+    Log.verbose(F("Open: http://%s.local to view controller application." CR), WiFi.hostname().c_str());
+}
+
+void setRegPageAliases() {
+    // Regular page aliases
+    server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.htm");
+    server.serveStatic("/index.htm", SPIFFS, "/");
+    server.serveStatic("/about/", SPIFFS, "/").setDefaultFile("about.htm");
+    server.serveStatic("/help/", SPIFFS, "/").setDefaultFile("help.htm");
+    server.serveStatic("/ota/", SPIFFS, "/").setDefaultFile("ota.htm");
+    server.serveStatic("/ota2/", SPIFFS, "/").setDefaultFile("ota2.htm");
+    server.serveStatic("/settings/", SPIFFS, "/").setDefaultFile("settings.htm");
+    server.serveStatic("/wifi/", SPIFFS, "/").setDefaultFile("wifi.htm");
 }
 
 void setActionPageHandlers() {
