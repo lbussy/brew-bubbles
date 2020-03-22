@@ -29,21 +29,24 @@ SOFTWARE. */
 #include "jsonconfig.h"
 #include "version.h"
 #include "config.h"
+#include "thatVersion.h"
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
+#include <AsyncJson.h>
 #include <FS.h>
-#include <ESP8266WiFi.h>
 #include <ESPAsyncWebServer.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266mDNS.h>
 #include <Arduino.h>
 
 void initWebServer();
-void setWebAliases();
-String getWebContentType(AsyncWebServerRequest *, String);
-bool handleWebFileRead(AsyncWebServerRequest *, String);
+void setRegPageAliases();
+void setActionPageHandlers();
+void setJsonHandlers();
+void setSettingsAliases();
 void stopWebServer();
 
 extern struct Config config;
+extern struct ThatVersion thatVersion;
 
 #endif // _WEBSERVER_H

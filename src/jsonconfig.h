@@ -113,6 +113,6 @@ bool deserializeConfig(Stream &src, Config &config);
 #else
     #define DNOT(...)
     #define DERR(...)
-#endif              // End control debug printing
+#endif // End control debug printing
 
 #endif // _JSONCONFIG_H
