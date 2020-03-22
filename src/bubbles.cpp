@@ -67,8 +67,8 @@ void Bubbles::update() { // Regular update loop, once per minute
     tempVesAvg.push(single->lastVes);
     bubAvg.push(single->lastBpm);
 
-    Log.verbose(F("Current BPM is %D." CR), single->lastBpm);
-    Log.verbose(F("Averages (%l in sample): BPM = %D, Ambient = %D, Vessel = %D." CR),
+    Log.verbose(F("Current BPM is %D. Averages (%l in sample): BPM = %D, Ambient = %D, Vessel = %D." CR),
+        single->lastBpm,
         tempVesAvg.size(),
         single->getAvgBpm(),
         single->getAvgAmbient(),
