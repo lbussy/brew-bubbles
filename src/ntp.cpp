@@ -30,7 +30,7 @@ void setClock() {
     time_t nowSecs = time(nullptr);
     time_t startSecs = time(nullptr);
     while (nowSecs < EPOCH_1_1_2019) {
-        if (nowSecs - startSecs > 10) {
+        if (nowSecs - startSecs > 9) {
 #ifdef LOG_LEVEL
             Serial.println();
 #endif
@@ -41,7 +41,7 @@ void setClock() {
 #ifdef LOG_LEVEL
         Serial.print(F("."));
 #endif
-        _delay(500);
+        _delay(1000);
         yield();
         nowSecs = time(nullptr);
     }
