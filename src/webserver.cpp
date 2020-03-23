@@ -47,6 +47,7 @@ void initWebServer() {
 
 void setRegPageAliases() {
     // Regular page aliases
+
     server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.htm");
     server.serveStatic("/index.htm", SPIFFS, "/");
     server.serveStatic("/about/", SPIFFS, "/").setDefaultFile("about.htm");
@@ -61,7 +62,9 @@ void setActionPageHandlers() {
     // Action Page Handlers
 
     server.on("/heap/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        request->send(200, "text/plain", String(ESP.getFreeHeap()));
+        uint32_t _heap = ESP.getFreeHeap();
+        String heap = "Current heap: " + String(_heap);
+        request->send(200, F("text/plain"), heap);
     });
 
     server.on("/wifi2/", HTTP_GET, [] (AsyncWebServerRequest *request) {
