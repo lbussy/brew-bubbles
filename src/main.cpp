@@ -106,7 +106,7 @@ void loop() {
             config.brewersfriend.update = false;
         }
 
-        _delay(50);
+        _delay(50); // Required to "loosen up" the loop so mDNS and webpages are responsive
 
         yield();
     }
