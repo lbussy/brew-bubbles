@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -23,45 +23,96 @@ SOFTWARE. */
 #ifndef _JSONCONFIG_H
 #define _JSONCONFIG_H
 
+#define JC_DEBUG // Control debug printing for JsonConfig
+
 #include "config.h"
-#include <ArduinoLog.h>
-#include <FS.h>
 #include <ArduinoJson.h>
+#include <FS.h>
 
-class JsonConfig {
-    private:
-        // Singleton Declarations
-        JsonConfig() {} 
-        static JsonConfig *single;
-        // Other Declarations
-        const char * filename = "/config.json";
+struct ApConfig
+{
+    // Stores Access Point configuration
+    char ssid[32];
+    char passphrase[64];
 
-    public:
-        // Singleton Declarations
-        ~JsonConfig() {single = NULL;}
-        static JsonConfig* getInstance();
-
-        // Methods
-        bool parse();
-        bool save();
-
-        // Other Declarations
-        char ssid[33];              // AP SSID
-        char appwd[65];             // AP Pwd
-        char hostname[33];          // Hostname
-        char bubname[33];           // This device
-        char targeturl[129];        // Target host
-        char bfkey[65];             // Brewer's Friend key
-        bool tempinf;               // Is temp in F
-        bool dospiffs1;             // Reboot one time before SPIFFS OTA
-        bool dospiffs2;             // Update SPIFFS on reboot
-        bool updateBFFreq;          // Need to update BF Loop timer
-        bool updateTargetFreq;      // Need to update Target Loop timer
-        bool didupdate;             // Semaphore to indicate OTA complete
-        float calAmbient;           // Calibration for Ambient sensor
-        float calVessel;            // Calibration for Vessel sensor
-        unsigned long targetfreq;   // Target freqency
-        unsigned long bffreq;       // Brewer's Friend frequency
+    void load(JsonObjectConst);
+    void save(JsonObject) const;
 };
+
+struct Bubble
+{
+    // Stores Bubble configuration
+    char name[32];
+    bool tempinf;
+
+    void load(JsonObjectConst);
+    void save(JsonObject) const;
+};
+
+struct Calibrate
+{
+    // Stores Temp Probe configuration
+    float room;
+    float vessel;
+
+    void load(JsonObjectConst);
+    void save(JsonObject) const;
+};
+
+struct URLTarget
+{
+    // Stores URL Target configuration
+    char url[128];
+    int freq;
+    bool update;
+
+    void load(JsonObjectConst);
+    void save(JsonObject) const;
+};
+
+struct KeyTarget
+{
+    // Stored Brewer's Friend configuration
+    char key[64];
+    int freq;
+    bool update;
+
+    void load(JsonObjectConst);
+    void save(JsonObject) const;
+};
+
+struct Config
+{
+    // Stores the complete configuration
+    ApConfig apconfig;
+    char hostname[32];
+    Bubble bubble;
+    Calibrate calibrate;
+    URLTarget urltarget;
+    KeyTarget brewersfriend;
+    bool dospiffs1;
+    bool dospiffs2;
+    bool didupdate;
+
+    void load(JsonObjectConst);
+    void save(JsonObject) const;
+};
+
+bool loadConfig();
+bool saveConfig();
+bool loadFile(const char *filename, Config &config);
+bool saveFile(const char *filename, const Config &config);
+bool printFile(const char *filename);
+bool serializeConfig(const Config &config, Print &dst);
+bool deserializeConfig(Stream &src, Config &config);
+
+#ifdef JC_DEBUG
+    #include <ArduinoLog.h>
+    #define DNOT(...)   Log.notice(F("[JsonConfig Debug] in %s(): %s." CR), __func__, __VA_ARGS__);
+    #define DERR(...)   Log.error(F("[JsonConfig Debug] in %s(): %s." CR), __func__, __VA_ARGS__);
+#else
+    #define DNOT(...)
+    #define DERR(...)
+#endif // End control debug printing
 
 #endif // _JSONCONFIG_H

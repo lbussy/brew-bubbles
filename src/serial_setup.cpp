@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -20,39 +20,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _NTPHANDLER_H
-#define _NTPHANDLER_H
+#include "serial_setup.h"
 
-#include "config.h"
-#include "tools.h"
-#include <TimeLib.h>
-#include <NtpClientLib.h>
-#include <ArduinoLog.h>
+#ifndef DISABLE_LOGGING
 
-#define NTP_TIMEOUT 1500
+void serial() { // Start serial with auto-detected rate (default to BAUD)
+    _delay(3000); // Delay to allow monitor to start
+    Serial.begin(BAUD);
+    // Serial.setDebugOutput(true);
+    Serial.flush();
+    Log.begin(LOG_LEVEL, &Serial, true);
+    Log.setPrefix(printTimestamp);
+    Log.notice(F("Serial logging started at %l." CR), BAUD);
+}
 
-void ntpBlinker();
+void printTimestamp(Print* _logOutput) {
+    time_t now;
+    time_t rawtime = time(&now);
+    struct tm ts;
+    ts = *localtime(&rawtime);
+    char locTime[22] = {'\0'};
+    strftime(locTime, sizeof(locTime), "%FT%TZ ", &ts);
+    _logOutput->print(locTime);
+}
 
-class NtpHandler {
-    private:
-        // Singleton Declarations
-        NtpHandler() {}
-        static NtpHandler *single;
-        // Other Declarations
-        boolean syncEventTriggered;
-        NTPSyncEvent_t ntpEvent;
-        bool hasBeenSet;
-        void setup();
-        void setJsonTime();
+#else // DISABLE_LOGGING
 
-    public:
-        // Singleton Declarations
-        static NtpHandler* getInstance();
-        ~NtpHandler() {single = NULL;}
-        // Other Declarations
-        void start();
-        void update();
-        char Time[21];               // Hold the Time string
-};
+void serial(){}
 
-#endif // _NTPHANDLER_H
+#endif // DISABLE_LOGGING

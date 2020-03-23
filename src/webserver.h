@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -26,36 +26,27 @@ SOFTWARE. */
 #include "wifi.h"
 #include "execota.h"
 #include "bubbles.h"
-#include "tools.h"
 #include "jsonconfig.h"
-#include "bubserial.h"
 #include "version.h"
+#include "config.h"
+#include "thatVersion.h"
+#include <ArduinoLog.h>
+#include <ArduinoJson.h>
+#include <AsyncJson.h>
 #include <FS.h>
-#include <ESP8266WebServer.h>
+#include <ESPAsyncWebServer.h>
 #include <ESP8266HTTPClient.h>
+#include <ESP8266mDNS.h>
+#include <Arduino.h>
 
-class WebServer {
-    private:
-        // Singleton Declarations
-        WebServer() {}
-        static WebServer *single;
-        // External Declarations
-        FS *filesystem;
-        ESP8266WebServer *server;
-        // Private Methods
-        String getContentType(String);
-        bool handleFileRead(String);
-        void aliases();
-        bool running;
+void initWebServer();
+void setRegPageAliases();
+void setActionPageHandlers();
+void setJsonHandlers();
+void setSettingsAliases();
+void stopWebServer();
 
-    public:
-        // Singleton Declarations
-        static WebServer* getInstance();
-        ~WebServer() {single = NULL;}
-        // Other Declarations
-        void initialize(int port);
-        void handleLoop();
-        void stop();
-};
+extern struct Config config;
+extern struct ThatVersion thatVersion;
 
 #endif // _WEBSERVER_H

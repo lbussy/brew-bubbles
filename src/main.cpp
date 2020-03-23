@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -27,6 +27,12 @@ DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 void setup() {
     bool rst = drd.detect(); // Check for double-reset
     serial();
+
+    if (loadConfig())
+        Log.notice(F("Configuration loaded." CR));
+    else
+        Log.error(F("Unable to load cofiguration." CR));
+
     pinMode(LED, OUTPUT);
 
     _delay(200); // Let pins settle, else detect is inconsistent
@@ -42,29 +48,20 @@ void setup() {
         doWiFi();
     }
 
-    JsonConfig *config = JsonConfig::getInstance();
-    if (!MDNS.begin(config->hostname)) {
-        Log.error(F("Error setting up MDNS responder."));
-    } else {
-        Log.notice(F("mDNS responder started, hostname: %s.local." CR), WiFi.hostname().c_str());
-        MDNS.addService("http", "tcp", 80);
-    }
-
-    WebServer *server = WebServer::getInstance();
-    server->initialize(PORT); // Turn on web server
-
-    NtpHandler *ntpTime = NtpHandler::getInstance();
-    ntpTime->start();
-    
-    execspiffs();   // Check for pending SPIFFS update
-    loadBpm() ;     // Get last Bpm reading if it was a controlled reboot
+    execspiffs();       // Check for pending SPIFFS update
+    setClock();         // Set NTP Time
+    loadBpm() ;         // Get last BPM reading if it was a controlled reboot
+    mdnssetup();        // Set up mDNS responder
+    initWebServer();    // Turn on web server
 
     Log.notice(F("Started %s version %s (%s) [%s]." CR), API_KEY, version(), branch(), build());
 }
 
 void loop() {
-    JsonConfig *config = JsonConfig::getInstance();
-    WebServer *server = WebServer::getInstance();
+    // Poll for server version
+    Ticker getThatVersion;
+    doPoll();
+    getThatVersion.attach(60, doPoll);
     Bubbles *bubble = Bubbles::getInstance();
 
     // Bubble loop to create 60 second readings
@@ -72,12 +69,12 @@ void loop() {
     bubUpdate.attach(BUBLOOP, [bubble](){ bubble->update(); });
 
     // Target timer
-    Ticker postTimer;
-    postTimer.attach(config->targetfreq * 60, [postTimer](){ doTarget = true; });
+    Ticker urlTarget;
+    urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
     
     // Brewer's friend timer
     Ticker bfTimer;
-    bfTimer.attach(config->bffreq * 60, [bfTimer](){ doBF = true; });
+    bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
 
     // mDNS Reset Timer - Helps avoid the host not found issues
     Ticker mDNSTimer;
@@ -89,47 +86,28 @@ void loop() {
     rebootTimer.attach(REBOOTTIMER, reboot);
 
     while (true) {
-
-        // Handle JSON posts
-        if (doTarget) { // Do Target post
-            doTarget = false;
-            httpPost();
-        }
-        if (doBF) { // Do BF post
-            doBF = false;
-            bfPost();
-        }
-
-        // If timers needs to be updated, update timers
-        if (config->updateTargetFreq) {
-            Log.notice(F("Resetting target frequency timer to %l minutes." CR), config->targetfreq);
-            postTimer.detach();
-            postTimer.attach(config->targetfreq * 60, httpPost);
-            config->updateTargetFreq = false;
-        }
-        if (config->updateBFFreq) {
-            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config->bffreq);
-            bfTimer.detach();
-            bfTimer.attach(config->bffreq * 60, bfPost);
-            config->updateBFFreq = false;
-        }
-
-        // Handle the board LED
-        if (digitalRead(COUNTPIN) == HIGH) { // Non-interrupt driven LED logic
-            digitalWrite(LED, LOW); // Turn LED on when not obstructed
-        } else {
-            digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble4
-        }
-
-        if (bubble->doBub) { // Serial log for bubble detect
-#ifdef LOG_LEVEL
-            Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right?
-#endif
-            bubble->doBub = false;
-        }
+        // Handle semaphores - No radio work in a Ticker!
+        tickerLoop();
 
         // Regular loop handlers
-        server->handleLoop();   // Handle HTML requests
         MDNS.update();          // Handle mDNS requests
+
+        // If target frequencies needs to be updated, update here
+        if (config.urltarget.update) {
+            Log.notice(F("Resetting URL Target frequency timer to %l minutes." CR), config.urltarget.freq);
+            urlTarget.detach();
+            urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
+            config.urltarget.update = false;
+        }
+        if (config.brewersfriend.update) {
+            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
+            bfTimer.detach();
+            bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
+            config.brewersfriend.update = false;
+        }
+
+        _delay(50); // Required to "loosen up" the loop so mDNS and webpages are responsive
+
+        yield();
     }
 }

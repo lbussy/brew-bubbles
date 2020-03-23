@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -23,12 +23,15 @@ SOFTWARE. */
 #ifndef _WIFI_H
 #define _WIFI_H
 
-#include "main.h"
+#define WM_ASYNC
+
 #include "config.h"
-#include <ESP8266WiFi.h>        //ESP8266 Core WiFi Library
-#include <DNSServer.h>          //Local DNS Server used for redirecting all requests to the configuration portal
-#include <ESP8266WebServer.h>   //Local WebServer used to serve the configuration portal
-#include <WiFiManager.h>        //https://github.com/tzapu/WiFiManager WiFi Configuration Magic
+#include "jsonconfig.h"
+#include "tools.h"
+#include <ESP8266WiFi.h>
+#include <Ticker.h>
+#include <ArduinoLog.h>
+#include <AsyncWiFiManager.h>
 
 void wifiBlinker();
 void doWiFi();
@@ -36,13 +39,13 @@ void doWiFi(bool);
 void resetWifi();
 
 // WiFiManager Callbacks
-void apCallback(WiFiManager *myWiFiManager);
+void apCallback(AsyncWiFiManager *myWiFiManager);
 void configResetCallback();
 void preSaveConfigCallback();
 void saveConfigCallback();
 void saveParamsCallback();
 void webServerCallback();
 
-bool isNullField(const char *);
+extern struct Config config;
 
 #endif // _WIFI_H

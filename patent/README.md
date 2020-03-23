@@ -1,4 +1,5 @@
-[![Brew Bubbles Logo](hhttps://www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")](http://www.brewbubbles.com/)
+[![Brew Bubbles Logo](https://www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")](http://www.brewbubbles.com/)
+=======
 
 # Patent and Prior Art
 

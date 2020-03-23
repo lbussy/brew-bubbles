@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -20,30 +20,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#include "bubserial.h"
+#ifndef _BUB_SERIAL_H
+#define _BUB_SERIAL_H
 
-#ifndef DISABLE_LOGGING
+#include "config.h"
+#include "tools.h"
+#include "ntp.h"
+#include <ArduinoLog.h>
 
-void serial() { // Start serial with auto-detected rate (default to BAUD)
-    _delay(3000); // Delay to allow monitor to start
-    Serial.begin(BAUD);
-    Serial.setDebugOutput(true);
-    Serial.flush();
-    Log.begin(LOG_LEVEL, &Serial, true);
-    Log.setPrefix(printTimestamp);
-    Log.notice(F("Serial logging started at %l." CR), BAUD);
-}
+void serial();
+void printTimestamp(Print* _logOutput);
 
-void printTimestamp(Print* _logOutput) {
-    NtpHandler *ntpTime = NtpHandler::getInstance();
-    ntpTime->update();
-    char locTime[prefLen] = {'\0'};
-    strlcpy(locTime, ntpTime->Time, sizeof(locTime));
-    _logOutput->print(locTime);
-}
+#define prefLen 22
 
-#else // DISABLE_LOGGING
-
-void serial(){}
-
-#endif // DISABLE_LOGGING
+#endif //_BUB_SERIAL_H

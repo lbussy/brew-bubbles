@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -23,12 +23,10 @@ SOFTWARE. */
 #ifndef _BUBBLES_H
 #define _BUBBLES_H
 
-#include "main.h"
 #include "config.h"
-#include "jsonconfig.h"
-#include "ntphandler.h"
-#include "DallasTemperature.h"
-#include "OneWire.h"
+#include "sensors.h"
+#include "ntp.h"
+#include <ArduinoLog.h>
 #include <CircularBuffer.h>
 #include <Arduino.h>
 
@@ -37,8 +35,11 @@ class Bubbles {
         // Singleton Declarations
         Bubbles() {};
         static Bubbles *single;
-        // Other Declarations
-        void start();
+
+        // Private Methods
+        float getRawBpm();
+
+        // Private Properties
         CircularBuffer<float, TEMPAVG> tempAmbAvg;
         CircularBuffer<float, TEMPAVG> tempVesAvg;
         CircularBuffer<float, BUBAVG> bubAvg;
@@ -49,23 +50,28 @@ class Bubbles {
         float lastBpm;                      // Holds most recent count
         float lastAmb;
         float lastVes;
-        float getRawBpm();
-        float getAmbientTemp();
-        float getVesselTemp();
 
     public:
         // Singleton Declarations
         static Bubbles* getInstance();
         ~Bubbles() {single = NULL;}
-        // Other Declarations
+
+        // Public Methods
         void handleInterrupts(void);
         void update();                  // Call every 60 seconds
-        char* lastTime;
         float getAvgAmbient();
         float getAvgVessel();
         float getAvgBpm();
+        void setLast(double);           // Push last reading on reboot
+
+        // Public Properties
+        String lastTime;
         bool doBub;
-        void setLast(double);                // Push last reading on reboot
 };
+
+void setDoBubUpdate();
+void bubLoop();
+
+static bool __attribute__((unused)) doBubUpdate = false;    // Semaphore for Bubble timer
 
 #endif // _BUBBLES_H
