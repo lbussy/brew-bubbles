@@ -48,16 +48,20 @@ void setup() {
         doWiFi();
     }
 
-    setClock();         // Set NTP Time
-    initWebServer();    // Turn on web server
-    mdnssetup();        // Set up mDNS responder
     execspiffs();       // Check for pending SPIFFS update
+    setClock();         // Set NTP Time
     loadBpm() ;         // Get last BPM reading if it was a controlled reboot
+    mdnssetup();        // Set up mDNS responder
+    initWebServer();    // Turn on web server
 
     Log.notice(F("Started %s version %s (%s) [%s]." CR), API_KEY, version(), branch(), build());
 }
 
 void loop() {
+    // Poll for server version
+    Ticker getThatVersion;
+    doPoll();
+    getThatVersion.attach(60, doPoll);
     Bubbles *bubble = Bubbles::getInstance();
 
     // Bubble loop to create 60 second readings
@@ -101,6 +105,8 @@ void loop() {
             bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
             config.brewersfriend.update = false;
         }
+
+        _delay(50); // Required to "loosen up" the loop so mDNS and webpages are responsive
 
         yield();
     }
