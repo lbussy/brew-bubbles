@@ -106,6 +106,8 @@ void loop() {
             config.brewersfriend.update = false;
         }
 
+        _delay(50);
+
         yield();
     }
 }
