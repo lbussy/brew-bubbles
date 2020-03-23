@@ -1,4 +1,4 @@
-[![Brew Bubbles Logo](https://i1.wp.com/www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")](http://www.brewbubbles.com/)
+[![Brew Bubbles Logo](https://www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")](http://www.brewbubbles.com/)
 
 # Brew Bubbles Tools
 
