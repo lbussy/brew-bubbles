@@ -27,7 +27,7 @@ SOFTWARE. */
 void serial() { // Start serial with auto-detected rate (default to BAUD)
     _delay(3000); // Delay to allow monitor to start
     Serial.begin(BAUD);
-    Serial.setDebugOutput(true);
+    // Serial.setDebugOutput(true);
     Serial.flush();
     Log.begin(LOG_LEVEL, &Serial, true);
     Log.setPrefix(printTimestamp);
