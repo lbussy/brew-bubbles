@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -22,182 +22,317 @@ SOFTWARE. */
 
 #include "jsonconfig.h"
 
-JsonConfig* JsonConfig::single = NULL;
+const char __attribute__((unused)) *filename = "/config.json";
+Config __attribute__((unused)) config;
 
-JsonConfig* JsonConfig::getInstance() {
-    if (!single) {
-        single = new JsonConfig();
-        single->parse(); // True to wipe config.json for testing
+bool loadConfig()
+{
+    // Manage loading the configuration
+    if (!loadFile(filename, config)) {
+        DERR(F("failed to load configuration"));
+        return false;
+    } else {
+        saveFile(filename, config);
+        DNOT(F("configuration loaded"));
+        Log.verbose(F("Hostname = %s." CR), config.hostname);
+        return true;
     }
-    return single;
 }
 
-bool JsonConfig::parse() {
-    single->updateBFFreq = false;
-    single->updateTargetFreq = false;
-    const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7) + 481;
-    StaticJsonDocument<capacity> doc;
+bool saveConfig() {
+    return saveFile(filename, config);
+}
 
-    // Mount SPIFFS
+bool loadFile(const char *filename, Config &config)
+{
     if (!SPIFFS.begin()) {
-        Log.error(F("Failed to mount SPIFFS." CR));
+        DERR(F("unable to start SPIFFS"));
+        return false;
+    }
+    // Loads the configuration from a file on SPIFFS
+    File file = SPIFFS.open(filename, "r");
+    if (!SPIFFS.exists(filename) || !file) {
+        DNOT(F("configuration does not exist, creating blank file"));
+    } else {
+        DNOT(F("existing configuration present"));
+    }
+
+    if (!deserializeConfig(file, config)) {
+        DERR(F("failed to deserialize configuration"));
+        file.close();
+        return false;
+    } else {
+        DNOT(F("configuration deserialized"));
+        file.close();
+        return true;
+    }
+}
+
+bool saveFile(const char *filename, const Config &config)
+{
+    // Saves the configuration to a file on SPIFFS
+    File file = SPIFFS.open(filename, "w");
+    if (!file) {
+        DERR(F("unable to open SPIFFS"));
+        file.close();
         return false;
     }
 
-    // Open file for reading
-    bool loaded;
-    File file = SPIFFS.open(filename, "r");
-    // This may fail if the file is missing
-    if (!file) {
-        Log.error(F("Failed to open configuration file." CR));
-        loaded = false;
-    } else {
-        // Parse the JSON object in the file
-        //bool success = deserializeJson(doc, file);
-        DeserializationError err = deserializeJson(doc, file);
-        if (err) {
-            Log.error(F("Failed to deserialize configuration." CR));
-            Log.error(err.c_str());         
-            loaded = false;
-        } else {
-            loaded = true;
-        }
+    // Serialize JSON to file
+    if (!serializeConfig(config, file)) {
+        DERR(F("unable to serialize JSON"));
+        file.close();
+        return false;
     }
-
-    if(loaded == false) { // Load defaults
-
-        Log.notice(F("Using default configuration." CR));
-
-        // Set defaults for Access Point Settings Object
-        strlcpy(single->ssid, APNAME, sizeof(single->ssid));
-        strlcpy(single->appwd, AP_PASSWD, sizeof(single->appwd));
-        
-        // Set defaults for Hostname Settings Object
-        strlcpy(single->hostname, HOSTNAME, sizeof(single->hostname));
-        
-        // Set defaults for Bubble Settings Object
-        strlcpy(single->bubname, BUBNAME, sizeof(single->bubname));
-        single->tempinf = TEMPFORMAT;
-
-        // Set defaults for temperature calibration
-        single->calAmbient = 0.0;
-        single->calVessel = 0.0;
-        
-        // Set defaults for Target Settings Object
-        strlcpy(single->targeturl, "", sizeof(single->targeturl));
-        single->targetfreq = TARGETFREQ;
-
-        // Set defaults for Brewer's Friend Settings Object
-        strlcpy(single->bfkey, "", sizeof(single->bfkey));
-        single->bffreq = BFFREQ;
-
-        // Set defaults for SPIFFS OTA update
-        single->dospiffs1 = false;
-        single->dospiffs2 = false;
-
-        // Set semaphore for OTA update
-        single->didupdate = false;
-
-        // We created default configuration, save it
-        single->save();
-
-    } else { // Parse from file
-
-        Log.notice(F("Parsing configuration data." CR));
-
-        // Parse Access Point Settings Object
-        strlcpy(single->ssid, doc["apconfig"]["ssid"] | APNAME, sizeof(single->ssid));
-        strlcpy(single->appwd, doc["apconfig"]["appwd"] | AP_PASSWD, sizeof(single->appwd));
-
-        // Parse Hostname Settings Object
-        strlcpy(single->hostname, doc["hostname"] | HOSTNAME, sizeof(single->hostname));
-
-        // Parse Bubble Settings Object
-        strlcpy(single->bubname, doc["bubbleconfig"]["name"] | BUBNAME, sizeof(single->bubname));
-        single->tempinf = doc["bubbleconfig"]["tempinf"] | TEMPFORMAT;
-
-        // Parse temperature calibration
-        single->calAmbient = doc["calibrate"]["room"] | 0.0;
-        single->calVessel = doc["calibrate"]["vessel"] | 0.0;
-
-        // Parse Target Settings Object
-        strlcpy(single->targeturl, doc["targetconfig"]["targeturl"] | "", sizeof(single->targeturl));
-        single->targetfreq = doc["targetconfig"]["freq"] | TARGETFREQ;
-
-        // Parse Brewer's Friend Settings Object
-        strlcpy(single->bfkey, doc["bfconfig"]["bfkey"] | "", sizeof(single->bfkey));
-        single->bffreq = doc["bfconfig"]["freq"] | BFFREQ;
-
-        // Parse SPIFFS OTA update choice
-        single->dospiffs1 = doc["dospiffs1"] | false;
-        single->dospiffs2 = doc["dospiffs2"] | false;
-
-        // Parse semaphore for OTA update choice
-        single->didupdate = doc["didupdate"] | false;
-    }
+    DNOT(F("saved configuration to file"));
+    file.close();
     return true;
 }
 
-bool JsonConfig::save() {
-    const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7) + 481;
-    StaticJsonDocument<capacity> doc;
-
-    // Serialize Access Point Settings Object
-    JsonObject apconfig = doc.createNestedObject("apconfig");
-    apconfig["ssid"] = single->ssid;
-    apconfig["appwd"] = single->appwd;
-
-    // Serialize Hostname Settings Object
-    doc["hostname"] = single->hostname;
-
-    // Serialize Bubble Settings Object
-    JsonObject bubbleconfig = doc.createNestedObject("bubbleconfig");
-    bubbleconfig["name"] = single->bubname;
-    bubbleconfig["tempinf"] = single->tempinf;
-
-    // Serialize temperature calibration
-    JsonObject calibrate = doc.createNestedObject("calibrate");
-    calibrate["room"] = single->calAmbient;
-    calibrate["vessel"] = single->calVessel;
-
-    // Serialize Target Settings Object
-    JsonObject targetconfig = doc.createNestedObject("targetconfig");
-    targetconfig["targeturl"] = single->targeturl;
-    targetconfig["freq"] = single->targetfreq;
-
-    // Serialize Brewer's Friend Settings Object
-    JsonObject bfconfig = doc.createNestedObject("bfconfig");
-    bfconfig["bfkey"] = single->bfkey;
-    bfconfig["freq"] = single->bffreq;
-
-    // Serialize SPIFFS OTA update choice
-    doc["dospiffs1"] = single->dospiffs1;
-    doc["dospiffs2"] = single->dospiffs2;
-
-    // Parse semaphore for OTA update choice
-    doc["didupdate"] = single->didupdate;
-
-    // Mount SPIFFS
-    if (!SPIFFS.begin()) {
-        Log.error(F("Failed to mount SPIFFS." CR));
+bool printFile(const char *filename)
+{
+    // Prints the content of a file to the Serial
+    File file = SPIFFS.open(filename, "r");
+    if (!file)
         return false;
-    }
 
-    // Open file for writing
-    File file = SPIFFS.open(filename, "w");
-    if (!file) {
-        Log.error(F("Failed to open configuration file." CR));
-        return false;
+    while (file.available())
+        Serial.print((char)file.read());
+
+    Serial.println();
+    file.close();
+    return true;
+}
+
+bool serializeConfig(const Config &config, Print &dst)
+{
+    // Serialize configuration
+    const size_t capacity = 5 * JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(9);
+    DynamicJsonDocument doc(capacity);
+
+    // Create an object at the root
+    JsonObject root = doc.to<JsonObject>();
+
+    // Fill the object
+    config.save(root);
+
+    // Serialize JSON to file
+    return serializeJsonPretty(doc, dst) > 0;
+}
+
+bool deserializeConfig(Stream &src, Config &config)
+{
+    // Deserialize configuration
+    const size_t capacity = 5 * JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(9) + 210;
+    DynamicJsonDocument doc(capacity);
+
+    // Parse the JSON object in the file
+    DeserializationError err = deserializeJson(doc, src);
+    if (err) {
+        DNOT(F("no existing configuration"));
+        config.load(doc.as<JsonObject>());
+        DNOT(F("loaded default configuration"));
+        return true;
     } else {
-        // Serialize the JSON object to the file
-        bool success = serializeJson(doc, file);
-        // This may fail if the JSON is invalid
-        if (!success) {
-            Log.error(F("Failed to serialize configuration." CR));
-            return false;
-        } else {
-            Log.verbose(F("Saved configuration as %s." CR), filename);
-            return true;
-        }
+        config.load(doc.as<JsonObject>());
+        DNOT(F("loaded existing configuration"));
+        return true;        
     }
+    // TODO:  Can I return false here somehow?
+}
+
+void ApConfig::save(JsonObject obj) const
+{
+    obj["ssid"] = ssid;
+    obj["passphrase"] = passphrase;
+}
+
+void ApConfig::load(JsonObjectConst obj)
+{
+    // Load Access Point configuration
+    //
+    // Load SSID config, check for null
+    const char* sd = obj["ssid"];
+    if (sd)
+        strlcpy(ssid, sd, sizeof(ssid));
+    else
+        strlcpy(ssid, APNAME, sizeof(ssid)); // Default
+    // Load SSID config, check for null
+    const char* ps = obj["passphrase"];
+    if (ps)
+        strlcpy(passphrase, ps, sizeof(passphrase));
+    else
+        strlcpy(passphrase, AP_PASSWD, sizeof(passphrase)); // Default
+}
+
+void Bubble::save(JsonObject obj) const
+{
+    obj["name"] = name;
+    obj["tempinf"] = tempinf;
+}
+
+void Bubble::load(JsonObjectConst obj)
+{
+    // Load Bubble configuration
+    //
+    // Load SSID config, check for null
+    const char* nm = obj["name"];
+    if (nm)
+        strlcpy(name, nm, sizeof(name));
+    else
+        strlcpy(name, BUBNAME, sizeof(name)); // Default
+    // Load Temp Format config, check for null
+    JsonVariantConst tf = obj["tempinf"];
+    if (!tf.isNull())
+        tempinf = tf;
+    else
+        tempinf = TEMPFORMAT; // Default
+}
+
+void Calibrate::save(JsonObject obj) const
+{
+    obj["room"] = room;
+    obj["vessel"] = vessel;
+}
+
+void Calibrate::load(JsonObjectConst obj)
+{
+    // Load Temp Sensor Calibration configuration
+    //
+    // Load Room Sensor Calibration configuration
+    JsonVariantConst rc = obj["room"];
+    if (rc.isNull())
+        room = 0.0;
+    else
+        room = obj["room"];;
+    // Load Room Sensor Calibration configuration
+    JsonVariantConst vc = obj["vessel"];
+    if (vc.isNull())
+        vessel = 0.0;
+    else
+        vessel = obj["vessel"];
+}
+
+void URLTarget::save(JsonObject obj) const
+{
+    obj["url"] = url;
+    obj["freq"] = freq;
+    obj["update"] = update;
+}
+
+void URLTarget::load(JsonObjectConst obj)
+{
+    // Load URL Target configuration
+    //
+    // Load Target URL config, check for null
+    const char* tu = obj["url"];
+    if (tu)
+        strlcpy(url, tu, sizeof(url));
+    else
+        strlcpy(url, "", sizeof(url)); // Default
+    // Load Target URL Frequency configuration
+    JsonVariantConst f = obj["freq"];
+    if (f.isNull())
+        freq = 2;
+    else
+        freq = obj["freq"];;
+    // Load Update semaphore configuration
+    JsonVariantConst u = obj["update"];
+    if (u.isNull())
+        update = false;
+    else
+        update = obj["update"];;
+}
+
+void KeyTarget::save(JsonObject obj) const
+{
+    obj["key"] = key;
+    obj["freq"] = freq;
+    obj["update"] = update;
+}
+
+void KeyTarget::load(JsonObjectConst obj)
+{
+    // Load Key-type configuration
+    //
+    // Load Key configuration
+    const char* k = obj["key"];
+    if (k)
+        strlcpy(key, k, sizeof(key));
+    else
+        strlcpy(key, "", sizeof(key)); // Default
+    // Load Key-type Frequency configuration
+    JsonVariantConst f = obj["freq"];
+    if (f.isNull())
+        freq = 15;
+    else
+        freq = obj["freq"];;
+    // Load Update semaphore configuration
+    JsonVariantConst u = obj["update"];
+    if (u.isNull())
+        update = false;
+    else
+        update = obj["update"];;
+}
+
+void Config::load(JsonObjectConst obj)
+{
+    // Load all config objects
+    //
+    // Load Access Point config object
+    apconfig.load(obj["apconfig"]);
+    // Load Hostname config, check for null
+    const char* hn = obj["hostname"];
+    if (hn)
+        strlcpy(hostname, hn, sizeof(hostname));
+    else
+        strlcpy(hostname, HOSTNAME, sizeof(hostname)); // Default
+    // Load Bubble config object
+    bubble.load(obj["bubble"]);
+    // Load Calibration config object
+    calibrate.load(obj["calibrate"]);
+    // Load Target config object
+    urltarget.load(obj["urltarget"]);
+    // Load Brewer's Friend config object
+    brewersfriend.load(obj["brewersfriend"]);
+    // Load dospiffs1, check for null
+    JsonVariantConst ds1 = obj["dospiffs1"];
+    if (!ds1.isNull())
+        dospiffs1= ds1;
+    else
+        dospiffs1= false; // Default
+    // Load dospiffs2, check for null
+    JsonVariantConst ds2 = obj["dospiffs2"];
+    if (!ds2.isNull())
+        dospiffs2= ds2;
+    else
+        dospiffs2= false; // Default
+    // Load didupdate, check for null
+    JsonVariantConst du = obj["didupdate"];
+    if (!du.isNull())
+        didupdate= du;
+    else
+        didupdate= false; // Default
+}
+
+void Config::save(JsonObject obj) const
+{
+    // Add Access Point object
+    apconfig.save(obj.createNestedObject("apconfig"));
+    // Add Hostname object
+    obj["hostname"] = hostname;
+    // Add Bubble object
+    bubble.save(obj.createNestedObject("bubble"));
+    // Add Calibration object
+    calibrate.save(obj.createNestedObject("calibrate"));
+    // Add Target object
+    urltarget.save(obj.createNestedObject("urltarget"));
+    // Add Brewer's Friend object
+    brewersfriend.save(obj.createNestedObject("brewersfriend"));
+    // Add dospiffs1 object
+    obj["dospiffs1"] = dospiffs1;
+    // Add dospiffs2 object
+    obj["dospiffs2"] = dospiffs2;
+    // Add dospiffs1 object
+    obj["didupdate"] = didupdate;
 }

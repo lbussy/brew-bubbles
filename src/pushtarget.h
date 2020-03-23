@@ -19,18 +19,34 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
-#ifndef _VERSION_H
-#define _VERSION_H
 
-#include <Arduino.h>
+#ifndef _PUSHTARGET_H
+#define _PUSHTARGET_H
 
-#define stringify(s) _stringifyDo(s)
-#define _stringifyDo(s) #s
+#include <ESP8266WiFi.h>
 
-const char* build();
-const char* branch();
-const char* version();
+struct pushPoint {
+    bool enabled;   // Whether to send or not
+    char name[129]; // What to call the data point
+};
 
-int versionCompare(String, String);
+class PushTarget {
+    private:
 
-#endif // _VERSION_H
+    public:
+        PushTarget() {};
+        pushPoint target;       // Target enabled and name
+        pushPoint checkBody;    // Check return body for success
+        char url[129];          // URL of target
+        pushPoint key;          // API Key
+        IPAddress ip;           // Resolved address of target
+        pushPoint apiName;      // i.e. "Brew Bubbles"
+        pushPoint bubName;      // mDNS name i.e. "brewbubbles"
+        pushPoint lastTime;     // Time of last send
+        pushPoint tempFormat;   // F or C
+        pushPoint ambientTemp;  // Room or chamber temp
+        pushPoint vesselTemp;   // Brew temp
+        pushPoint bpm;          // Bubbles per minute
+};
+
+#endif // _PUSHTARGET_H

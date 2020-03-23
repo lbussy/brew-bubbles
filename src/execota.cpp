@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -23,19 +23,17 @@ SOFTWARE. */
 #include "execota.h"
 
 void execfw() {
-    JsonConfig *config = JsonConfig::getInstance();
     Log.notice(F("Starting the Firmware OTA pull, will reboot without notice." CR));
     _delay(5000); // Let page finish loading
 
     // Stop web server before OTA update - will restart on reset
-    WebServer *server = WebServer::getInstance();
-    server->stop();
+    stopWebServer();
 
     // Have to set this here because we have no chance after update
-    config->dospiffs1 = true;
-    config->dospiffs2 = false;
-    config->didupdate = false;
-    config->save();
+    config.dospiffs1 = true;
+    config.dospiffs2 = false;
+    config.didupdate = false;
+    saveConfig();
 
     ESPhttpUpdate.setLedPin(LED, LOW);
     // "http://www.brewbubbles.com/firmware/firmware.bin"
@@ -46,19 +44,19 @@ void execfw() {
         case HTTP_UPDATE_FAILED:
             Log.error(F("HTTP Firmware OTA Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
             // Don't allow anything to proceed
-            config->dospiffs1 = false;
-            config->dospiffs2 = false;
-            config->didupdate = false;
-            config->save();
+            config.dospiffs1 = false;
+            config.dospiffs2 = false;
+            config.didupdate = false;
+            saveConfig();
             break;
 
         case HTTP_UPDATE_NO_UPDATES:
             Log.notice(F("HTTP Firmware OTA Update: No updates." CR));
             // Don't allow anything to proceed
-            config->dospiffs1 = false;
-            config->dospiffs2 = false;
-            config->didupdate = false;
-            config->save();
+            config.dospiffs1 = false;
+            config.dospiffs2 = false;
+            config.didupdate = false;
+            saveConfig();
             break;
         
         case HTTP_UPDATE_OK:
@@ -72,22 +70,20 @@ void execfw() {
 }
 
 void execspiffs() {
-    JsonConfig *config = JsonConfig::getInstance(); // Must instantiate the config to save later
-    if (config->dospiffs1) {
+    if (config.dospiffs1) {
         Log.notice(F("Rebooting a second time before SPIFFS OTA pull." CR));
-        config->dospiffs1 = false;
-        config->dospiffs2 = true;
-        config->didupdate = false;
-        config->save();
+        config.dospiffs1 = false;
+        config.dospiffs2 = true;
+        config.didupdate = false;
+        saveConfig();
         _delay(3000);
         ESP.restart();
         _delay(1000);
-    } else if (config->dospiffs2) {
+    } else if (config.dospiffs2) {
         Log.notice(F("Starting the SPIFFS OTA pull." CR));
 
         // Stop web server before OTA update - will restart on reset
-        WebServer *server = WebServer::getInstance();
-        server->stop();
+        stopWebServer();
 
         ESPhttpUpdate.setLedPin(LED, LOW);
         // "http://www.brewbubbles.com/firmware/spiffs.bin"
@@ -105,10 +101,10 @@ void execspiffs() {
 
             case HTTP_UPDATE_OK:
                 // Reset SPIFFS update flag
-                config->dospiffs1 = false;
-                config->dospiffs2 = false;
-                config->didupdate = true;
-                config->save(); // This not only saves the flags, it (re)saves the whole config after SPIFFS wipes it
+                config.dospiffs1 = false;
+                config.dospiffs2 = false;
+                config.didupdate = true;
+                saveConfig(); // This not only saves the flags, it (re)saves the whole config after SPIFFS wipes it
                 _delay(1000);
                 Log.notice(F("HTTP SPIFFS OTA Update complete, restarting." CR));
                 ESP.restart();

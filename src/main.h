@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -23,20 +23,24 @@ SOFTWARE. */
 #ifndef _MAIN_H
 #define _MAIN_H
 
-#include "bubserial.h"
+#include "serial_setup.h"
 #include "config.h"
+#include "execota.h"
 #include "jsonconfig.h"
-#include "ntphandler.h"
 #include "webserver.h"
 #include "wifi.h"
 #include "version.h"
-#include "targethandler.h"
+#include "pushtarget.h"
+#include "target.h"
+#include "bftarget.h"
+#include "pushhelper.h"
 #include "bubbles.h"
 #include "mdns.h"
-#include <WiFiManager.h>
+#include "ntp.h"
+#include "thatVersion.h"
 #include <DoubleResetDetect.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
+#include <ArduinoLog.h>
+#include <Arduino.h>
 
 // DRD_TIMEOUT =    Maximum number of seconds between resets that counts
 //                  as a double reset
@@ -46,7 +50,9 @@ SOFTWARE. */
 #define DRD_TIMEOUT 3.0
 #define DRD_ADDRESS 0x00
 
-static bool __attribute__((unused)) doTarget = false;  // Semaphore for Target timer
-static bool __attribute__((unused)) doBF = false;      // Semaphore for BF timer
+extern struct Config config;
+extern bool loadConfig();
+extern const char *filename;
+extern struct ThatVersion thatVersion;
 
 #endif // _MAIN_H

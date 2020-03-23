@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -20,16 +20,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _BUB_SERIAL_H
-#define _BUB_SERIAL_H
+#ifndef _PUSHHELPER_H
+#define _PUSHHELPER_H
 
-#include "config.h"
-#include "tools.h"
-#include <ArduinoLog.h>
+#include "bubbles.h"
+#include "pushtarget.h"
+#include "target.h"
+#include "bftarget.h"
+//#include "brftarget.h"
+#include <ESP8266WiFi.h>
 
-void serial();
-void printTimestamp(Print* _logOutput);
+IPAddress resolveHost(const char hostname[129]);
+bool pushToTarget(PushTarget*, IPAddress, int);
+void tickerLoop();
+void setDoURLTarget();
+void setDoBFTarget();
+void setDoBRFTarget();
 
-#define prefLen 22
+static bool __attribute__((unused)) doURLTarget = false;    // Semaphore for Target timer
+static bool __attribute__((unused)) doBFTarget = false;     // Semaphore for BF timer
+static bool __attribute__((unused)) doBRFTarget = false;    // Semaphore for BRF timer
 
-#endif //_BUB_SERIAL_H
+#endif // _PUSHHELPER_H

@@ -1,6 +1,6 @@
-MIT License
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
-Brew Bubbles is Copyright (c) 2019-2020 Lee C. Bussy
+This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -18,4 +18,21 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+SOFTWARE. */
+
+#ifndef _SENSORS_H
+#define _SENSORS_H
+
+#include "config.h"
+#include "jsonconfig.h"
+#include <OneWire.h>
+#include <DS18B20.h>
+
+#define DEVICE_DISCONNECTED_C -127
+#define DEVICE_DISCONNECTED_F -196.6
+
+double getTemp(uint8_t);
+
+extern struct Config config;
+
+#endif // _SENSORS_H

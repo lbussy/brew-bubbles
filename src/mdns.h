@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -27,12 +27,15 @@ SOFTWARE. */
 #ifndef _MDNS_H
 #define _MDNS_H
 
-#include "main.h"
+#include "config.h"
+#include "jsonconfig.h"
 #include <ArduinoLog.h>
 #include <ESP8266mDNS.h>
+#include <ESP8266WiFi.h>
 
 void mdnssetup();
-IPAddress mdnsquery(char hostname[65]);
 void mdnsreset();
+
+extern struct Config config;
 
 #endif // _MDNS_H

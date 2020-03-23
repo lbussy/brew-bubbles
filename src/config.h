@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -338,10 +338,10 @@ SOFTWARE. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Default Target Frequency (default 2 minutes)
+// URL Target Frequency (default 2 minutes)
 //
-#ifndef TARGETFREQ
-#define TARGETFREQ 2
+#ifndef URLTARGETFREQ
+#define URLTARGETFREQ 2UL
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
@@ -351,17 +351,7 @@ SOFTWARE. */
 // Default Brewer's Friend Frequency (default 15 mins)
 //
 #ifndef BFFREQ
-#define BFFREQ 15
-#endif
-//
-//////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
-//
-// Brewer's Friend URL
-//
-#ifndef BFURL
-#define BFURL "http://log.brewersfriend.com/stream/"
+#define BFFREQ 15UL
 #endif
 //
 //////////////////////////////////////////////////////////////////////////

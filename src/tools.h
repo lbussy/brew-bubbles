@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -23,8 +23,12 @@ SOFTWARE. */
 #ifndef _TOOLS_H
 #define _TOOLS_H
 
-#include "wifi.h"
+#include "bubbles.h"
+#include <FS.h>
+#include <ArduinoLog.h>
+#include <ArduinoJson.h>
 #include <EEPROM.h>
+#include <Arduino.h>
 
 #define EEPROM_ADDRESS 0x00
 

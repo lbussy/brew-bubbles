@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -25,11 +25,15 @@ SOFTWARE. */
 
 #include "tools.h"
 #include "jsonconfig.h"
-#include "config.h"
+#include "webserver.h"
+#include <ESP8266WiFi.h>
 #include <ESP8266httpUpdate.h>
 #include <ArduinoLog.h>
 
 void execfw();
 void execspiffs();
+
+extern bool saveConfig();
+extern struct Config config;
 
 #endif //_EXECOTA_H

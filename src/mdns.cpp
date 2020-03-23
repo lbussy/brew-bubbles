@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -23,11 +23,10 @@ SOFTWARE. */
 #include "mdns.h"
 
 void mdnssetup() {
-    JsonConfig *config = JsonConfig::getInstance();
-    if (!MDNS.begin(config->hostname)) { // Start the mDNS responder
+    if (!MDNS.begin(config.hostname)) { // Start the mDNS responder
         Log.error(F("Error setting up mDNS responder." CR));
     } else {
-        Log.notice(F("mDNS responder started for %s.local." CR), config->hostname);
+        Log.notice(F("mDNS responder started for %s.local." CR), config.hostname);
         if (!MDNS.addService("http", "tcp", PORT)) {
             Log.error(F("Failed to register mDNS service." CR));
         } else {
@@ -37,12 +36,6 @@ void mdnssetup() {
 }
 
 void mdnsreset() {
-    JsonConfig *config = JsonConfig::getInstance();
     MDNS.end();
-    if (!MDNS.begin(config->hostname)) {
-        Log.error(F("Error resetting MDNS responder."));
-    } else {
-        Log.notice(F("mDNS responder restarted, hostname: %s.local." CR), WiFi.hostname().c_str());
-        MDNS.addService("http", "tcp", 80);
-    }
+    mdnssetup();
 }

@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -33,63 +33,57 @@ Bubbles* Bubbles::single = NULL; // Holds pointer to class
 Bubbles* Bubbles::getInstance() {
     if (!single) {
         single = new Bubbles();
-        single->start();
+        pinMode(COUNTPIN, INPUT);       // Change pinmode to input
+        attachInterrupt(digitalPinToInterrupt(COUNTPIN), HandleInterruptsStatic, RISING); // FALLING, RISING or CHANGE
+        pBubbles = single;              // Assign current instance to pointer
+        single->ulLastReport = millis();// Store the last report timer
+        single->ulMicroLast = millis(); // Starting point for debouce timer
+        single->pulse = 0;              // Reset pulse counter
+        single->doBub = false;
+        // Set starting values
+        unsigned long ulNow = millis();
+        single->ulStart = ulNow;
+        single->lastBpm = 0.0;
+        single->lastAmb = 0.0;
+        single->lastVes = 0.0;
+
+        // Set starting time
+        single->lastTime = getDTS();
     }
     return single;
 }
 
-void Bubbles::start() {
-    pinMode(COUNTPIN, INPUT);       // Change pinmode to input
-    attachInterrupt(digitalPinToInterrupt(COUNTPIN), HandleInterruptsStatic, RISING); // FALLING, RISING or CHANGE
-    pBubbles = single;              // Assign current instance to pointer 
-    single->ulLastReport = millis();// Store the last report timer
-    single->pulse = 0;              // Reset pulse counter
-    single->doBub = false;
-
-    // Set starting values
-    unsigned long ulNow = millis();
-    single->ulStart = ulNow;
-    single->lastBpm = 0.0;
-    single->lastAmb = 0.0;
-    single->lastVes = 0.0;
-    
-    // Set starting time
-    NtpHandler *ntpTime = NtpHandler::getInstance();
-    ntpTime->update();
-    single->lastTime = ntpTime->Time;
-}
-
 void Bubbles::update() { // Regular update loop, once per minute
-    // Handle NTP Time
-    NtpHandler *ntpTime = NtpHandler::getInstance();
-    ntpTime->update();
-    single->lastTime = ntpTime->Time;
+    // Get NTP Time
+    single->lastTime = getDTS();
 
     // Store last values
     single->lastBpm = single->getRawBpm();
-    single->lastAmb = single->getAmbientTemp();
-    single->lastVes = single->getVesselTemp();
+    single->lastAmb = getTemp(AMBSENSOR);
+    single->lastVes = getTemp(VESSENSOR);
 
     // Push values to circular buffers
     tempAmbAvg.push(single->lastAmb);
     tempVesAvg.push(single->lastVes);
     bubAvg.push(single->lastBpm);
 
-    Log.verbose(F("Time is %s, BPM is %D." CR), single->lastTime, single->lastBpm);
-    Log.verbose(F("Averages: BPM = %D (%l in sample), Ambient = %D (%l in sample), Vessel = %D (%l in sample)." CR),
-        single->getAvgBpm(), bubAvg.size(),
-        single->getAvgAmbient(), tempAmbAvg.size(),
-        single->getAvgVessel(), tempVesAvg.size()
+    Log.verbose(F("Current BPM is %D. Averages (%l in sample): BPM = %D, Ambient = %D, Vessel = %D." CR),
+        single->lastBpm,
+        tempVesAvg.size(),
+        single->getAvgBpm(),
+        single->getAvgAmbient(),
+        single->getAvgVessel()
     );
 }
 
 void Bubbles::handleInterrupts(void) { // Bubble Interrupt handler
     digitalWrite(LED, LOW);
     unsigned long now = micros();
-    if ((now - ulMicroLast) > RESOLUTION) { // Filter noise/bounce
+    if ((now - single->ulMicroLast) > RESOLUTION) { // Filter noise/bounce
         single->pulse++;    // Increment pulse count
+        single->ulMicroLast = now;
     }
-    doBub = true;
+    single->doBub = true;
 }
 
 float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)
@@ -101,42 +95,6 @@ float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)
     single->pulse = 0; // Zero the pulse counter
     single->ulLastReport = millis(); // Store the last report timer
     return ppm; // Return pulses per minute
-}
-
-float Bubbles::getAmbientTemp() {
-    OneWire ambient(AMBSENSOR);
-    byte addrAmb[8];
-    float fAmbTemp = -100.0;
-    while (ambient.search(addrAmb)) { // Make sure we have a sensor
-        DallasTemperature sensorAmbient(&ambient);
-        sensorAmbient.begin();
-        sensorAmbient.requestTemperatures();
-
-        JsonConfig *config = JsonConfig::getInstance();
-        if (config->tempinf == true)
-            fAmbTemp = sensorAmbient.getTempFByIndex(0) + config->calAmbient;
-        else
-            fAmbTemp = sensorAmbient.getTempCByIndex(0) + config->calAmbient;
-    }
-    return fAmbTemp;
-}
-
-float Bubbles::getVesselTemp() {
-    OneWire vessel(VESSENSOR);
-    byte addrVes[8];
-    float fVesTemp = -100.0;
-    while (vessel.search(addrVes)) { // Make sure we have a sensor
-        DallasTemperature sensorVessel(&vessel);
-        sensorVessel.begin();
-        sensorVessel.requestTemperatures();
-        
-        JsonConfig *config = JsonConfig::getInstance();
-        if (config->tempinf == true)
-            fVesTemp = sensorVessel.getTempFByIndex(0) + config->calVessel;
-        else
-            fVesTemp = sensorVessel.getTempCByIndex(0) + config->calVessel;
-    }
-    return fVesTemp;
 }
 
 float Bubbles::getAvgAmbient() {
@@ -174,4 +132,17 @@ float Bubbles::getAvgBpm() {
 
 void Bubbles::setLast(double last) {
     bubAvg.push(last);
+}
+
+void setDoBubUpdate() {
+    doBubUpdate = true; // Semaphore required for Ticker + radio event
+}
+
+void bubLoop() {
+    Bubbles *bubble = Bubbles::getInstance();
+    // Do Bubble update post
+    if (doBubUpdate) {
+        doBubUpdate = false;
+        bubble->update();
+    }
 }

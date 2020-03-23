@@ -1,4 +1,4 @@
-/* Copyright (C) 2019 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
@@ -20,21 +20,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _TARGETHANDLER_H
-#define _TARGETHANDLER_H
+#include "sensors.h"
 
-#include "config.h"
-#include "jsonconfig.h"
-#include "bubbles.h"
-#include <LCBUrl.h>
-#include <ArduinoLog.h>
-#include <ArduinoJson.h>
-#include <WiFiClient.h>
-#include <ESP8266HTTPClient.h>
+double getTemp(uint8_t pin) {
+    float retVal;
+    OneWire oneWire(pin);
+    DS18B20 sensor(&oneWire);
+    sensor.begin();
+    sensor.setResolution(TEMP_12_BIT);
+    sensor.requestTemperatures();
+    while (!sensor.isConversionComplete());
+    retVal = sensor.getTempC();
 
-void httpPost();
-void bfPost();
-bool postJson(String);
-bool postJson(String, const char*);
+    if (config.bubble.tempinf) {
+        retVal = sensor.getTempF();
+        if (retVal == float(DEVICE_DISCONNECTED_F)) {
+            retVal = -100.0;
+        } else if (pin == AMBSENSOR) {
+            retVal = retVal + config.calibrate.room;
+        } else if (pin == VESSENSOR) {
+            retVal = retVal + config.calibrate.vessel;
+        }
+    } else {
+        retVal = sensor.getTempC();
+        if (retVal == float(DEVICE_DISCONNECTED_C)) {
+            retVal = -100.0;
+        } else if (pin == AMBSENSOR) {
+            retVal = retVal + config.calibrate.room;
+        } else if (pin == VESSENSOR) {
+            retVal = retVal + config.calibrate.vessel;
+        }
+    }
 
-#endif // _TARGETHANDLER_H
+    return retVal;
+}
