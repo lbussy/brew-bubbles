@@ -69,7 +69,7 @@ BFTarget* BFTarget::getInstance() {
 
 bool BFTarget::push() {
     Log.verbose(F("Triggered %s push." CR), single->target->target.name);
-    if (single->target->apiName.enabled && sizeof(config.brewersfriend.key)) { // Key target is unique per target (for now)
+    if (single->target->apiName.enabled && strlen(config.brewersfriend.key)) { // Key target is unique per target (for now)
         single->target->target.enabled = true;
         strlcpy(single->target->key.name, config.brewersfriend.key, sizeof(config.brewersfriend.key)); // Key target is unique per target (for now)
     } else {
