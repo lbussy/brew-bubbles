@@ -37,6 +37,7 @@ SOFTWARE. */
 #include "bubbles.h"
 #include "mdns.h"
 #include "ntp.h"
+#include "thatVersion.h"
 #include <DoubleResetDetect.h>
 #include <ArduinoLog.h>
 #include <Arduino.h>
@@ -52,5 +53,6 @@ SOFTWARE. */
 extern struct Config config;
 extern bool loadConfig();
 extern const char *filename;
+extern struct ThatVersion thatVersion;
 
 #endif // _MAIN_H

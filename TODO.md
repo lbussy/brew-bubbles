@@ -5,6 +5,8 @@
 - Add Thingspeak support
 - Check shouldSaveConfig behavior in WiFi()
 - Add Brewfather support
+- Fix Brewer's Friend post
+- Maybe optimize settings update with the ArduinoJson-based struct?
 - Change so that posting configuration changes is not a complete page reload
 
 ## Complete
