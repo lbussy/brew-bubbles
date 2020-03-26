@@ -90,6 +90,7 @@ struct Config
     Calibrate calibrate;
     URLTarget urltarget;
     KeyTarget brewersfriend;
+    KeyTarget brewfather;
     bool dospiffs1;
     bool dospiffs2;
     bool didupdate;
