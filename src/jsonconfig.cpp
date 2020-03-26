@@ -107,7 +107,7 @@ bool printFile(const char *filename)
 bool serializeConfig(const Config &config, Print &dst)
 {
     // Serialize configuration
-    const size_t capacity = 5 * JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(9);
+    const size_t capacity = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8);
     DynamicJsonDocument doc(capacity);
 
     // Create an object at the root
@@ -123,7 +123,7 @@ bool serializeConfig(const Config &config, Print &dst)
 bool deserializeConfig(Stream &src, Config &config)
 {
     // Deserialize configuration
-    const size_t capacity = 5 * JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(9) + 210;
+    const size_t capacity = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8) + 690;
     DynamicJsonDocument doc(capacity);
 
     // Parse the JSON object in the file
@@ -295,6 +295,8 @@ void Config::load(JsonObjectConst obj)
     urltarget.load(obj["urltarget"]);
     // Load Brewer's Friend config object
     brewersfriend.load(obj["brewersfriend"]);
+    // Load Brewfather config object
+    brewfather.load(obj["brewfather"]);
     // Load dospiffs1, check for null
     JsonVariantConst ds1 = obj["dospiffs1"];
     if (!ds1.isNull())
@@ -329,6 +331,8 @@ void Config::save(JsonObject obj) const
     urltarget.save(obj.createNestedObject("urltarget"));
     // Add Brewer's Friend object
     brewersfriend.save(obj.createNestedObject("brewersfriend"));
+    // Add Brewfather object
+    brewfather.save(obj.createNestedObject("brewfather"));
     // Add dospiffs1 object
     obj["dospiffs1"] = dospiffs1;
     // Add dospiffs2 object

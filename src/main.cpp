@@ -76,6 +76,10 @@ void loop() {
     Ticker bfTimer;
     bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
 
+    // Brewer's friend timer
+    Ticker brewfTimer;
+    brewfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
+
     // mDNS Reset Timer - Helps avoid the host not found issues
     Ticker mDNSTimer;
     mDNSTimer.attach(MDNSTIMER, mdnsreset);
@@ -104,6 +108,12 @@ void loop() {
             bfTimer.detach();
             bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
             config.brewersfriend.update = false;
+        }
+        if (config.brewfather.update) {
+            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
+            bfTimer.detach();
+            bfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
+            config.brewfather.update = false;
         }
 
         _delay(50); // Required to "loosen up" the loop so mDNS and webpages are responsive
