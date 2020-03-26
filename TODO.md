@@ -4,8 +4,9 @@
 
 - Add Thingspeak support
 - Check shouldSaveConfig behavior in WiFi()
-- Add Brewfather support
+- Move posting targets to async
 - Maybe optimize settings update with the ArduinoJson-based struct?
+- Optimize /bubble with JSON struct
 - Change so that posting configuration changes is not a complete page reload
 
 ## Complete
@@ -142,3 +143,4 @@
 - ~~Figure out why /ota/ is not working on some setups~~
 - ~~Add SSL support for upgrade? ([see the issue](https://github.com/esp8266/Arduino/issues/6523))~~
 - ~~Fix Brewer's Friend post~~
+- ~~Add Brewfather support~~

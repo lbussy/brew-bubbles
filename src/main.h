@@ -33,6 +33,7 @@ SOFTWARE. */
 #include "pushtarget.h"
 #include "target.h"
 #include "bftarget.h"
+#include "brewftarget.h"
 #include "pushhelper.h"
 #include "bubbles.h"
 #include "mdns.h"

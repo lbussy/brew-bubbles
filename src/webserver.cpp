@@ -48,14 +48,19 @@ void initWebServer() {
 void setRegPageAliases() {
     // Regular page aliases
 
-    server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.htm");
-    server.serveStatic("/index.htm", SPIFFS, "/");
-    server.serveStatic("/about/", SPIFFS, "/").setDefaultFile("about.htm");
-    server.serveStatic("/help/", SPIFFS, "/").setDefaultFile("help.htm");
-    server.serveStatic("/ota/", SPIFFS, "/").setDefaultFile("ota.htm");
-    server.serveStatic("/ota2/", SPIFFS, "/").setDefaultFile("ota2.htm");
-    server.serveStatic("/settings/", SPIFFS, "/").setDefaultFile("settings.htm");
-    server.serveStatic("/wifi/", SPIFFS, "/").setDefaultFile("wifi.htm");
+    // DEBUG
+    server.serveStatic("/test.htm", SPIFFS, "/").setDefaultFile("test.htm").setCacheControl("max-age=600");
+    server.serveStatic("/clean.htm", SPIFFS, "/").setDefaultFile("clean.htm").setCacheControl("max-age=600");
+    // DEBUG
+
+    server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.htm").setCacheControl("max-age=600");
+    server.serveStatic("/index.htm", SPIFFS, "/").setDefaultFile("index.htm").setCacheControl("max-age=600");
+    server.serveStatic("/about/", SPIFFS, "/").setDefaultFile("about.htm").setCacheControl("max-age=600");
+    server.serveStatic("/help/", SPIFFS, "/").setDefaultFile("help.htm").setCacheControl("max-age=600");
+    server.serveStatic("/ota/", SPIFFS, "/").setDefaultFile("ota.htm").setCacheControl("max-age=600");
+    server.serveStatic("/ota2/", SPIFFS, "/").setDefaultFile("ota2.htm").setCacheControl("max-age=600");
+    server.serveStatic("/settings/", SPIFFS, "/").setDefaultFile("settings.htm").setCacheControl("max-age=600");
+    server.serveStatic("/wifi/", SPIFFS, "/").setDefaultFile("wifi.htm").setCacheControl("max-age=600");
 }
 
 void setActionPageHandlers() {
@@ -99,7 +104,6 @@ void setJsonHandlers() {
 
         Bubbles *bubble = Bubbles::getInstance();
 
-        //const size_t capacity = JSON_OBJECT_SIZE(8);
         const size_t capacity = JSON_OBJECT_SIZE(8) + 210;
         StaticJsonDocument<capacity> doc;
 
@@ -151,7 +155,7 @@ void setJsonHandlers() {
         Log.verbose(F("Serving /config/." CR));
 
         // Serialize configuration
-        const size_t capacity = 5 * JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(9);
+        const size_t capacity = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8);
         DynamicJsonDocument doc(capacity);
 
         // Create an object at the root
@@ -164,6 +168,7 @@ void setJsonHandlers() {
         String json;
         serializeJsonPretty(doc, json);
 
+        request->header("Cache-Control: no-store");
         request->send(200, F("application/json"), json);
     });
 }
@@ -275,16 +280,37 @@ void setSettingsAliases() {
             strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
             Log.notice(F("POSTed bfkey, redirecting to %s." CR), redirect);
 
-        } else if (request->hasParam(F("bfreq"))) { // Change Vessel temp calibration
-            if ((request->arg("bfreq").toInt() < 15) || (request->arg("bfreq").toInt() > 120)) {
+        } else if (request->hasParam(F("bffreq"))) { // Change Vessel temp calibration
+            if ((request->arg("bffreq").toInt() < 15) || (request->arg("bffreq").toInt() > 120)) {
                 Log.warning(F("Settings update error." CR));
             } else {
-                config.brewersfriend.freq = request->arg("bfreq").toInt();
+                config.brewersfriend.freq = request->arg("bffreq").toInt();
                 config.brewersfriend.update = true;
                 saveConfig();
             }
             strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
-            Log.notice(F("POSTed bfreq, redirecting to %s." CR), redirect);
+            Log.notice(F("POSTed bffreq, redirecting to %s." CR), redirect);
+
+        } else if (request->hasParam(F("brewfkey"), true)) { // Change Brewfather key
+            if ((request->arg("brewfkey").length() > 64) || (request->arg("brewfkey").length() < 10)) {
+                Log.warning(F("Settings update error." CR));
+            } else {
+                strlcpy(config.brewfather.key, request->arg("brewfkey").c_str(), sizeof(config.brewfather.key));
+                saveConfig();
+            }
+            strcat(redirect, "#brewf"); // Redirect to Brewfather Control
+            Log.notice(F("POSTed brewfkey, redirecting to %s." CR), redirect);
+
+        } else if (request->hasParam(F("brewffreq"))) { // Change Vessel temp calibration
+            if ((request->arg("brewffreq").toInt() < 15) || (request->arg("brewffreq").toInt() > 120)) {
+                Log.warning(F("Settings update error." CR));
+            } else {
+                config.brewfather.freq = request->arg("brewffreq").toInt();
+                config.brewfather.update = true;
+                saveConfig();
+            }
+            strcat(redirect, "#bf"); // Redirect to Brewfather Control
+            Log.notice(F("POSTed brewffreq, redirecting to %s." CR), redirect);
         }
 
         // Redirect to Settings page
@@ -294,8 +320,8 @@ void setSettingsAliases() {
     server.on("/config/apply/", HTTP_POST, [] (AsyncWebServerRequest *request) {  // Process JSON POST configuration changes
         Log.verbose(F("Processing post to /config/apply/." CR));
         String input = request->arg(F("plain"));
-        const size_t capacity = 5*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(7);
-        StaticJsonDocument<capacity> doc;
+        const size_t capacity = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8) + 690;
+        DynamicJsonDocument doc(capacity);
         DeserializationError err = deserializeJson(doc, input);
         if (!err) {
             bool updated = false;
