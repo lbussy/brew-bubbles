@@ -48,6 +48,11 @@ void initWebServer() {
 void setRegPageAliases() {
     // Regular page aliases
 
+    // DEBUG
+    server.serveStatic("/test.htm", SPIFFS, "/").setDefaultFile("test.htm").setCacheControl("max-age=600");
+    server.serveStatic("/clean.htm", SPIFFS, "/").setDefaultFile("clean.htm").setCacheControl("max-age=600");
+    // DEBUG
+
     server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.htm").setCacheControl("max-age=600");
     server.serveStatic("/index.htm", SPIFFS, "/").setDefaultFile("index.htm").setCacheControl("max-age=600");
     server.serveStatic("/about/", SPIFFS, "/").setDefaultFile("about.htm").setCacheControl("max-age=600");

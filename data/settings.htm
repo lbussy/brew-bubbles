@@ -35,7 +35,7 @@
         }
 
         .footer {
-            background-color: #f5f5f5;
+            background-color: #f5f5f5f5;
         }
 
         .footer>.container {
@@ -43,6 +43,7 @@
             padding-left: 15px;
         }
     </style>
+
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -259,12 +260,13 @@
                 </div>
                 <div class="card-body">
                     <p class="card-text">
-                        These settings control how Brew Bubbles talks to <a
-                            href="http://www.brewersfriend.com/">Brewer's
-                            Friend.</a> With a premium account, Brewer's Friend supports logging brew-related data.
-                        To find your API key; log into your Brewer's Friend account and go to Profile > Account.
-                        Your API key will be a 40-character string of letters and numbers (not a URL).
+                        These settings control how Brew Bubbles talks to
+                        <a href="http://www.brewersfriend.com/">Brewer's Friend.</a> With a premium account,
+                        Brewer's Friend supports logging brew-related data. To find your API key; log into
+                        your Brewer's Friend account and go to Profile > Account. Your API key will be a
+                        20 to 64-character string of letters and numbers (not a URL).
                     </p>
+
                     <form id="bfkey" action="/settings/update/" method="POST">
                         <div class="form-group row">
                             <label for="brewersFriendKey" class="col-sm-2 col-form-label" data-toggle="tooltip" title="Enter the API key from your Brewer's Friend premium account.
@@ -284,7 +286,7 @@
                             <label for="bfPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                 title="How often (in minutes) to push data to Brewer's Friend">Push Frequency</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" id="bfreq" name="bfreq" placeholder="15"
+                                <input type="number" class="form-control" id="bffreq" name="bffreq" placeholder="15"
                                     min="15" max="120">
                             </div>
                             <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
@@ -293,6 +295,52 @@
                     </form>
                 </div>
             </div> <!-- Brewer's Friend Settings -->
+
+            <div class="card border-dark mb-3" id="brewf">
+                <!-- Brewfather Settings -->
+                <div class="card-header">
+                    <h4 class="card-title">Brewfather Settings</h4>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        These settings control how Brew Bubbles talks to
+						<a href="https://brewfather.app/">Brewfather.</a>
+						With a premium account, Brewfather supports logging brew-related data.
+                        To find your API key; log into your Brewfather account and go to Custom Stream.
+                        Your API key will be a 10 to 64-character string of letters and numbers on the 
+                        line following &quot;<b>URL</b> http://log.brewfather.net/stream?id=&quot;
+                        (do not include the the URL.)
+                    </p>
+
+                    <form id="brewfkey" action="/settings/update/" method="POST">
+                        <div class="form-group row">
+                            <label for="brewersFriendKey" class="col-sm-2 col-form-label" data-toggle="tooltip"
+								title="Enter the API key from your Brewfather premium account.
+                                To disable pushing to Brewfather, delete the key.">Brewfather Key
+                            </label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="brewfkey" name="brewfkey"
+                                    minlength="10" maxlength="64" placeholder="000fa2ac454c1abf14ffa3">
+                            </div>
+                            <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form id="brewffreq" action="/settings/update/" method="POST">
+                        <div class="form-group row">
+                            <label for="bfPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                title="How often (in minutes) to push data to Brewfather">Push Frequency</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" id="brewffreq" name="brewffreq" placeholder="15"
+                                    min="15" max="120">
+                            </div>
+                            <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div> <!-- Brewfather Settings -->
 
             <div class="card border-dark mb-3">
                 <!-- Update Firmware -->
@@ -331,62 +379,65 @@
 
     </main>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous">
-    </script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous">
-    </script>
-
-    <script>
-        $(document).ready(function () { // Wait till page is loaded
-            loadPage(); // Populate form with controller settings
-        });
-
-        function loadPage() { // Get current parameters
-            var url = "/config/";
-            var config = $.getJSON(url, function () {
-            })
-                .done(function (config) {
-                    try {
-                        $('input[name="mdnsID"]').val(config.hostname);
-                        $('input[name="bubname"]').val(config.bubble.name);
-                        if (config.bubble.tempinf) {
-                            $('input[name="tempInF"]')[1].checked = true; // Farenheit
-                        } else {
-                            $('input[name="tempInF"]')[0].checked = true; // Celcius
-                        }
-                        $('input[name="calRoom"]').val(config.calibrate.room);
-                        $('input[name="calVessel"]').val(config.calibrate.vessel);
-                        $('input[name="target"]').val(config.urltarget.url);
-                        $('input[name="tfreq"]').val(config.urltarget.freq);
-                        $('input[name="bfkey"]').val(config.brewersfriend.key);
-                        $('input[name="bfreq"]').val(config.brewersfriend.freq);
-                    }
-                    catch {
-                        alert("Unable to parse configuration data from SPIFFS.");
-                    }
-                })
-                .fail(function () {
-                    alert("Unable to parse configuration data from SPIFFS.");
-                })
-                .always(function () {
-                    // Can post-process here
-                });
-        }
-    </script>
-
     <footer class="footer mt-auto py-3">
         <div class="container">
             <span class="text-muted">Copyright &copy; 2019-2020, Lee C. Bussy</span>
         </div>
     </footer>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+
+<script type="text/javascript">
+    // Attach the event after the page loads
+    if (window.addEventListener)
+        window.addEventListener("load", loadPage, false);
+    else if (window.attachEvent)
+        window.attachEvent("onload", loadPage);
+    else window.onload = loadPage;
+
+    function loadPage() { // Get current parameters
+        var url = "/config/";
+        var config = $.getJSON(url, function () {
+        })
+            .done(function (config) {
+                try {
+                    $('input[name="mdnsID"]').val(config.hostname);
+                    $('input[name="bubname"]').val(config.bubble.name);
+                    if (config.bubble.tempinf) {
+                        $('input[name="tempInF"]')[1].checked = true; // Farenheit
+                    } else {
+                        $('input[name="tempInF"]')[0].checked = true; // Celcius
+                    }
+                    $('input[name="calRoom"]').val(config.calibrate.room);
+                    $('input[name="calVessel"]').val(config.calibrate.vessel);
+                    $('input[name="target"]').val(config.urltarget.url);
+                    $('input[name="tfreq"]').val(config.urltarget.freq);
+                    $('input[name="bfkey"]').val(config.brewersfriend.key);
+                    $('input[name="bfreq"]').val(config.brewersfriend.freq);
+                    $('input[name="brewfkey"]').val(config.brewfather.key);
+                    $('input[name="brewffreq"]').val(config.brewfather.freq);
+                }
+                catch {
+                    alert("Unable to parse configuration data from SPIFFS.");
+                }
+            })
+            .fail(function () {
+                alert("Unable to parse configuration data from SPIFFS.");
+            })
+            .always(function () {
+                // Can post-process here
+            }
+        );
+    }
+</script>
 
 </body>
 
