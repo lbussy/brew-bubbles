@@ -155,15 +155,15 @@ void setDoBFTarget() {
     doBFTarget = true; // Semaphore required for Ticker + radio event
 }
 
-void setDoBRFTarget() {
-    doBRFTarget = true; // Semaphore required for Ticker + radio event
+void setDoBrewfTarget() {
+    doBrewfTarget = true; // Semaphore required for Ticker + radio event
 }
 
 void tickerLoop() {
     Bubbles *bubble = Bubbles::getInstance();
     Target *target = Target::getInstance();
     BFTarget *bfTarget = BFTarget::getInstance();
-    // BRFTarget *brfTarget = BRFTarget::getInstance();
+    BrewfTarget *brewfTarget = BrewfTarget::getInstance();
 
     // Handle JSON posts
     //
@@ -180,9 +180,9 @@ void tickerLoop() {
     }
     //
     // Do Brewfather Post
-    if (doBRFTarget) { // Do BF post
-        doBRFTarget = false;
-        // brfTarget->push(); // TODO - Attach BF Target
+    if (doBrewfTarget) { // Do BF post
+        doBrewfTarget = false;
+        brewfTarget->push();
     }
 
     // Handle the board LED status
