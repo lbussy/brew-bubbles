@@ -37,4 +37,6 @@ void reboot();
 void loadBpm();
 void saveBpm();
 
+extern struct Bubbles bubbles;
+
 #endif
