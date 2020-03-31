@@ -38,7 +38,6 @@ void reboot() {
 }
 
 void loadBpm() {
-    Bubbles *bubble = Bubbles::getInstance();
     const size_t capacity = JSON_OBJECT_SIZE(1) + 10;
     DynamicJsonDocument doc(capacity);
     const char * bpmFileName = "lastBpm.json";
@@ -60,7 +59,7 @@ void loadBpm() {
             Log.error(F("Failed to deserialize lastBpm." CR));
             Log.error(err.c_str());         
         } else {
-            bubble->setLast(doc["lastBpm"]);
+            bubbles.setLast(doc["lastBpm"]);
             Log.notice(F("Loaded lastBpm." CR));
         }
         // Delete file
@@ -69,12 +68,11 @@ void loadBpm() {
 }
 
 void saveBpm() {
-    Bubbles *bubble = Bubbles::getInstance();
     const size_t capacity = JSON_OBJECT_SIZE(1) + 10;
     DynamicJsonDocument doc(capacity);
     const char * bpmFileName = "lastBpm.json";
 
-    doc["lastBpm"] = bubble->getAvgBpm();
+    doc["lastBpm"] = bubbles.getAvgBpm();
 
     // Open file for writing
     File file = SPIFFS.open(bpmFileName, "w");

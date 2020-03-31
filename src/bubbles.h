@@ -23,6 +23,8 @@ SOFTWARE. */
 #ifndef _BUBBLES_H
 #define _BUBBLES_H
 
+// #define BUB_DEBUG // Enable Debug for module
+
 #include "config.h"
 #include "sensors.h"
 #include "ntp.h"
@@ -30,12 +32,8 @@ SOFTWARE. */
 #include <CircularBuffer.h>
 #include <Arduino.h>
 
-class Bubbles {
+struct Bubbles {
     private:
-        // Singleton Declarations
-        Bubbles() {};
-        static Bubbles *single;
-
         // Private Methods
         float getRawBpm();
 
@@ -52,11 +50,8 @@ class Bubbles {
         float lastVes;
 
     public:
-        // Singleton Declarations
-        static Bubbles* getInstance();
-        ~Bubbles() {single = NULL;}
-
         // Public Methods
+        void start();
         void handleInterrupts(void);
         void update();                  // Call every 60 seconds
         float getAvgAmbient();
@@ -70,8 +65,16 @@ class Bubbles {
 };
 
 void setDoBubUpdate();
-void bubLoop();
 
-static bool __attribute__((unused)) doBubUpdate = false;    // Semaphore for Bubble timer
+static bool __attribute__((unused)) doBubUpdate = false;    // Semaphore for Bubbles timer
+
+#ifdef BUB_DEBUG
+    #include <ArduinoLog.h>
+    #define BUB_NOT(...)   Log.notice(F("[Bub Debug] in %s(): %s." CR), __func__, __VA_ARGS__);
+    #define BUB_ERR(...)   Log.error(F("[Bub Debug] in %s(): %s." CR), __func__, __VA_ARGS__);
+#else
+    #define BUB_NOT(...)
+    #define BUB_ERR(...)
+#endif // End control debug printing
 
 #endif // _BUBBLES_H

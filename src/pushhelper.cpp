@@ -37,15 +37,14 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
     LCBUrl lcburl;
     lcburl.setUrl(String(target->url) + String(target->key.name));
 
-    Bubbles *bubble = Bubbles::getInstance();
     const size_t capacity = JSON_OBJECT_SIZE(8) + 210;
     StaticJsonDocument<capacity> doc;
 
     if (target->apiName.enabled) doc[target->apiName.name] = F(API_KEY);
     if (target->bubName.enabled) doc[target->bubName.name] = config.bubble.name;
-    if (target->bpm.enabled) doc[target->bpm.name] = bubble->getAvgBpm();
-    if (target->ambientTemp.enabled) doc[target->ambientTemp.name] = bubble->getAvgAmbient();
-    if (target->vesselTemp.enabled) doc[target->vesselTemp.name] = bubble->getAvgVessel();
+    if (target->bpm.enabled) doc[target->bpm.name] = bubbles.getAvgBpm();
+    if (target->ambientTemp.enabled) doc[target->ambientTemp.name] = bubbles.getAvgAmbient();
+    if (target->vesselTemp.enabled) doc[target->vesselTemp.name] = bubbles.getAvgVessel();
     if (target->tempFormat.enabled) {
         if (config.bubble.tempinf == true) doc[target->tempFormat.name] = F("F");
         else doc[target->tempFormat.name] = F("C");
@@ -160,11 +159,18 @@ void setDoBrewfTarget() {
 }
 
 void tickerLoop() {
-    Bubbles *bubble = Bubbles::getInstance();
     Target *target = Target::getInstance();
     BFTarget *bfTarget = BFTarget::getInstance();
     BrewfTarget *brewfTarget = BrewfTarget::getInstance();
 
+    // Handle Bubble update
+    //
+    // Do URL Target post
+    if (doBubUpdate) {
+        doBubUpdate = false;
+        bubbles.update();
+    }
+    //
     // Handle JSON posts
     //
     // Do URL Target post
@@ -194,10 +200,10 @@ void tickerLoop() {
     }
 
     // Some just for fun serial logging
-    if (bubble->doBub) { // Serial log for bubble detect
+    if (bubbles.doBub) { // Serial log for bubble detect
 #ifdef LOG_LEVEL
         Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right?
 #endif
-        bubble->doBub = false;
+        bubbles.doBub = false;
     }
 }
