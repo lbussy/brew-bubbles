@@ -48,5 +48,6 @@ void stopWebServer();
 
 extern struct Config config;
 extern struct ThatVersion thatVersion;
+extern struct Bubbles bubbles;
 
 #endif // _WEBSERVER_H

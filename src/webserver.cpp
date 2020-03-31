@@ -102,22 +102,20 @@ void setJsonHandlers() {
         // Used to provide the Bubbles json
         Log.verbose(F("Sending /bubble/." CR));
 
-        Bubbles *bubble = Bubbles::getInstance();
-
         const size_t capacity = JSON_OBJECT_SIZE(8) + 210;
         StaticJsonDocument<capacity> doc;
 
         doc[F("api_key")] = F(API_KEY);
         doc[F("device_source")] = F(SOURCE);
         doc[F("name")] = config.bubble.name;
-        doc[F("bpm")] = bubble->getAvgBpm();
-        doc[F("ambient")] = bubble->getAvgAmbient();
-        doc[F("temp")] = bubble->getAvgVessel();
+        doc[F("bpm")] = bubbles.getAvgBpm();
+        doc[F("ambient")] = bubbles.getAvgAmbient();
+        doc[F("temp")] = bubbles.getAvgVessel();
         if (config.bubble.tempinf == true)
             doc[F("temp_unit")] = F("F");
         else
             doc[F("temp_unit")] = F("C");
-        doc[F("datetime")] = bubble->lastTime;
+        doc[F("datetime")] = bubbles.lastTime;
 
         String json;
         serializeJsonPretty(doc, json);
@@ -454,6 +452,33 @@ void setSettingsAliases() {
             request->send(500, F("text/json"), err.c_str());
         }
     });
+
+    server.on("/apply/", HTTP_POST, [](AsyncWebServerRequest *request) {
+        // Leave blank
+        }, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){
+            request->addInterestingHeader("Accept: application/json");
+            Log.verbose(F("Processing /apply/." CR));
+            const size_t capacity = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8) + 690;
+            DynamicJsonDocument doc(capacity);
+
+            DeserializationError error = deserializeJson(doc, (const char*)data);
+            if (error) {
+                request->send(500, "text/plain", error.c_str());
+            } else {
+                //config.load(doc.as<JsonObject>());
+                //saveConfig();
+                request->send(200, "text/plain", "Ok"); // DEBUG
+                // if (doc.containsKey("bubname")) {  // TODO:  Handle individual things like hostname change
+                //     serializeJsonPretty(doc, Serial);   // DEBUG
+                //     Serial.println();                   // DEBUG
+                //     Log.verbose(F("DEBUG: Bubble Name = %s" CR), doc["bubname"]);
+                //     request->send(200, "text/plain", "Ok");
+                // } else {
+                //     request->send(500, "text/plain", "No known data received.");
+                // }
+            }
+        }
+    );
 }
 
 void stopWebServer() {
