@@ -33,9 +33,12 @@ SOFTWARE. */
 IPAddress resolveHost(const char hostname[129]);
 bool pushToTarget(PushTarget*, IPAddress, int);
 void tickerLoop();
+void updateLoop();
 void setDoURLTarget();
 void setDoBFTarget();
 void setDoBrewfTarget();
+
+extern struct Bubbles bubbles;
 
 static bool __attribute__((unused)) doURLTarget = false;    // Semaphore for Target timer
 static bool __attribute__((unused)) doBFTarget = false;     // Semaphore for BF timer

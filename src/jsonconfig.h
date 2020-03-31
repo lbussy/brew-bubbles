@@ -23,7 +23,7 @@ SOFTWARE. */
 #ifndef _JSONCONFIG_H
 #define _JSONCONFIG_H
 
-#define JC_DEBUG // Control debug printing for JsonConfig
+#define JC_DEBUG // Control debug printing for JsonConfig (uses ArduinoLog)
 
 #include "config.h"
 #include <ArduinoJson.h>
@@ -96,22 +96,28 @@ struct Config
     bool didupdate;
 
     void load(JsonObjectConst);
+    void load(JsonObjectConst, bool);
     void save(JsonObject) const;
 };
 
+bool deleteConfig();
 bool loadConfig();
 bool saveConfig();
-bool loadFile(const char *filename, Config &config);
-bool saveFile(const char *filename, const Config &config);
-bool printFile(const char *filename);
-bool serializeConfig(const Config &config, Print &dst);
-bool deserializeConfig(Stream &src, Config &config);
+bool loadFile();
+bool saveFile();
+bool printFile();
+bool serializeConfig(Print &dst);
+bool deserializeConfig(Stream &src);
+bool merge(JsonVariant, JsonVariantConst);
 
 #ifdef JC_DEBUG
     #include <ArduinoLog.h>
-    #define DNOT(...)   Log.notice(F("[JsonConfig Debug] in %s(): %s." CR), __func__, __VA_ARGS__);
-    #define DERR(...)   Log.error(F("[JsonConfig Debug] in %s(): %s." CR), __func__, __VA_ARGS__);
+    #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+    #define DVER(...)   Log.verbose(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
+    #define DNOT(...)   Log.notice(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
+    #define DERR(...)   Log.error(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
 #else
+    #define DVER(...)
     #define DNOT(...)
     #define DERR(...)
 #endif // End control debug printing
