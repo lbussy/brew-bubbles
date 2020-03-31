@@ -62,11 +62,11 @@ void loop() {
     Ticker getThatVersion;
     doPoll();
     getThatVersion.attach(60, doPoll);
-    Bubbles *bubble = Bubbles::getInstance();
 
     // Bubble loop to create 60 second readings
     Ticker bubUpdate;
-    bubUpdate.attach(BUBLOOP, [bubble](){ bubble->update(); });
+    bubbles.update();
+    bubUpdate.attach(BUBLOOP, setDoBubUpdate);
 
     // Target timer
     Ticker urlTarget;
@@ -76,18 +76,9 @@ void loop() {
     Ticker bfTimer;
     bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
 
-    // Brewer's friend timer
+    // Brewfather timer
     Ticker brewfTimer;
     brewfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
-
-    // mDNS Reset Timer - Helps avoid the host not found issues
-    Ticker mDNSTimer;
-    mDNSTimer.attach(MDNSTIMER, mdnsreset);
-
-    // Reboot timer - I wish controllers could be counted on to be more
-    // stable but at least it only takes a few seconds.
-    Ticker rebootTimer;
-    rebootTimer.attach(REBOOTTIMER, reboot);
 
     while (true) {
         // Handle semaphores - No radio work in a Ticker!
