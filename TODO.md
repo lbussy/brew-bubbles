@@ -8,6 +8,7 @@
 - Maybe optimize settings update with the ArduinoJson-based struct?
 - Optimize /bubble with JSON struct
 - Change so that posting configuration changes is not a complete page reload
+- See if we can do something about entering a bad password on portal
 
 ## Complete
 
