@@ -34,8 +34,3 @@ void mdnssetup() {
         }
     }
 }
-
-void mdnsreset() {
-    MDNS.end();
-    mdnssetup();
-}
