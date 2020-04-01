@@ -96,7 +96,6 @@ struct Config
     bool didupdate;
 
     void load(JsonObjectConst);
-    void load(JsonObjectConst, bool);
     void save(JsonObject) const;
 };
 
@@ -106,9 +105,10 @@ bool saveConfig();
 bool loadFile();
 bool saveFile();
 bool printFile();
-bool serializeConfig(Print &dst);
-bool deserializeConfig(Stream &src);
+bool serializeConfig(Print &);
+bool deserializeConfig(Stream &);
 bool merge(JsonVariant, JsonVariantConst);
+bool mergeConfig(JsonVariantConst);
 
 #ifdef JC_DEBUG
     #include <ArduinoLog.h>
