@@ -24,8 +24,8 @@ SOFTWARE. */
 
 const char *filename = "/config.json";
 Config config;
-const size_t capacityDeserial = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8) + 690;
-const size_t capacitySerial = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8);
+extern const size_t capacityDeserial = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8) + 690;
+extern const size_t capacitySerial = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8);
 
 bool deleteConfig() {
     if (!SPIFFS.begin()) {

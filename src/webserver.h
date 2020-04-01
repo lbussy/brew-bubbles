@@ -49,5 +49,7 @@ void stopWebServer();
 extern struct Config config;
 extern struct ThatVersion thatVersion;
 extern struct Bubbles bubbles;
+extern const size_t capacityDeserial;
+extern const size_t capacitySerial;
 
 #endif // _WEBSERVER_H
