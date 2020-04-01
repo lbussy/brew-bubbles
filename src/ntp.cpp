@@ -29,8 +29,14 @@ void setClock() {
     configTime(GMT, 0, "pool.ntp.org", "time.nist.gov");
     time_t nowSecs = time(nullptr);
     time_t startSecs = time(nullptr);
+    int cycle = 0;
     while (nowSecs < EPOCH_1_1_2019) {
+        cycle++;
         if (nowSecs - startSecs > 9) {
+            if (cycle > 10) {
+                Log.warning(F("Unable to get time hack from %s, rebooting." CR), TIMESERVER);
+                ESP.restart();
+            }
 #ifdef LOG_LEVEL
             Serial.println();
 #endif
