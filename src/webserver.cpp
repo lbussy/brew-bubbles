@@ -153,8 +153,7 @@ void setJsonHandlers() {
         Log.verbose(F("Serving /config/." CR));
 
         // Serialize configuration
-        const size_t capacity = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8);
-        DynamicJsonDocument doc(capacity);
+        DynamicJsonDocument doc(capacitySerial);
 
         // Create an object at the root
         JsonObject root = doc.to<JsonObject>();
@@ -318,8 +317,7 @@ void setSettingsAliases() {
     server.on("/config/apply/", HTTP_POST, [] (AsyncWebServerRequest *request) {  // Process JSON POST configuration changes
         Log.verbose(F("Processing post to /config/apply/." CR));
         String input = request->arg(F("plain"));
-        const size_t capacity = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8) + 690;
-        DynamicJsonDocument doc(capacity);
+        DynamicJsonDocument doc(capacityDeserial);
         DeserializationError err = deserializeJson(doc, input);
         if (!err) {
             bool updated = false;
@@ -458,8 +456,7 @@ void setSettingsAliases() {
         }, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){
             request->addInterestingHeader("Accept: application/json");
             Log.verbose(F("Processing /apply/." CR));
-            const size_t capacity = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8) + 690;
-            DynamicJsonDocument doc(capacity);
+            DynamicJsonDocument doc(capacityDeserial);
 
             DeserializationError error = deserializeJson(doc, (const char*)data);
             if (error) {
