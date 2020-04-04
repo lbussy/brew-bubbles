@@ -96,22 +96,19 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
             ESP.restart();
             _delay(1000); // Just a hack to give it time to reset
         } else {
-            // We finished with portal (configured), do we need this?
+            // We finished with portal (configured)
+            WiFi.mode(WIFI_STA); // Explicitly set mode, esp defaults to STA+AP
+            WiFi.setSleepMode(WIFI_NONE_SLEEP); // Make sure sleep is disabled
+            if (blinker.active()) blinker.detach(); // Turn off blinker
+                digitalWrite(LED, HIGH); // Turn off LED
+            WiFi.hostname(config.hostname);
         }
     }
-
-    WiFi.mode(WIFI_STA); // Explicitly set mode, esp defaults to STA+AP
-    WiFi.setSleepMode(WIFI_NONE_SLEEP); // Make sure sleep is disabled
-
-    if (blinker.active()) blinker.detach(); // Turn off blinker
-        digitalWrite(LED, HIGH); // Turn off LED
 
     // if (shouldSaveConfig) { // Save configuration
         // Log.notice(F("Saving configuration." CR));
         // 
     // }
-
-    WiFi.hostname(config.hostname);
 
     Log.notice(F("Connected. IP address: %s." CR), WiFi.localIP().toString().c_str());
     if (blinker.active()) blinker.detach(); // Turn off blinker
