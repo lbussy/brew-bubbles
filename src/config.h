@@ -268,10 +268,10 @@ SOFTWARE. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Resolution time in microseconds (de-bouncer) - Must be declared as an UL
+// Poll Brew Bubbles server for available version (time in seconds)
 //
-#ifndef RESOLUTION
-#define RESOLUTION 500UL
+#ifndef POLLSERVERVERSION
+#define POLLSERVERVERSION 60
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
