@@ -52,9 +52,9 @@ void Bubbles::update() { // Regular update loop, once per minute
     // Store last values
     lastBpm = getRawBpm();
     DVER("got Raw BPM");
-    //lastAmb = getTemp(AMBSENSOR);
+    lastAmb = getTemp(AMBSENSOR);
     DVER("got Ambient");
-    //lastVes = getTemp(VESSENSOR);
+    lastVes = getTemp(VESSENSOR);
     DVER("got Vessel");
 
     // Push values to circular buffers

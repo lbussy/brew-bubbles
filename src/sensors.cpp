@@ -22,33 +22,55 @@ SOFTWARE. */
 
 #include "sensors.h"
 
-double getTemp(uint8_t pin) {
+double getTemp(uint8_t pin)
+{
     float retVal;
     OneWire oneWire(pin);
     DS18B20 sensor(&oneWire);
-    sensor.begin();
-    sensor.setResolution(TEMP_12_BIT);
-    sensor.requestTemperatures();
-    while (!sensor.isConversionComplete());
-    retVal = sensor.getTempC();
-
-    if (config.bubble.tempinf) {
-        retVal = sensor.getTempF();
-        if (retVal == float(DEVICE_DISCONNECTED_F)) {
-            retVal = -100.0;
-        } else if (pin == AMBSENSOR) {
-            retVal = retVal + config.calibrate.room;
-        } else if (pin == VESSENSOR) {
-            retVal = retVal + config.calibrate.vessel;
-        }
-    } else {
+    if (!sensor.begin())
+    {
+        // No sensor found
+        retVal = -100.0;
+    }
+    else
+    {
+        sensor.setResolution(TEMP_12_BIT);
+        sensor.requestTemperatures();
+        while (!sensor.isConversionComplete())
+            ;
         retVal = sensor.getTempC();
-        if (retVal == float(DEVICE_DISCONNECTED_C)) {
-            retVal = -100.0;
-        } else if (pin == AMBSENSOR) {
-            retVal = retVal + config.calibrate.room;
-        } else if (pin == VESSENSOR) {
-            retVal = retVal + config.calibrate.vessel;
+
+        if (config.bubble.tempinf)
+        {
+            retVal = sensor.getTempF();
+            if (retVal == float(DEVICE_DISCONNECTED_F))
+            {
+                retVal = -100.0;
+            }
+            else if (pin == AMBSENSOR)
+            {
+                retVal = retVal + config.calibrate.room;
+            }
+            else if (pin == VESSENSOR)
+            {
+                retVal = retVal + config.calibrate.vessel;
+            }
+        }
+        else
+        {
+            retVal = sensor.getTempC();
+            if (retVal == float(DEVICE_DISCONNECTED_C))
+            {
+                retVal = -100.0;
+            }
+            else if (pin == AMBSENSOR)
+            {
+                retVal = retVal + config.calibrate.room;
+            }
+            else if (pin == VESSENSOR)
+            {
+                retVal = retVal + config.calibrate.vessel;
+            }
         }
     }
 
