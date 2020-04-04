@@ -23,11 +23,12 @@ SOFTWARE. */
 #ifndef _BUBBLES_H
 #define _BUBBLES_H
 
-// #define BUB_DEBUG // Enable Debug for module
+#define BUB_DEBUG // Enable Debug for module
 
 #include "config.h"
 #include "sensors.h"
 #include "ntp.h"
+#include "pincount.h"
 #include <ArduinoLog.h>
 #include <CircularBuffer.h>
 #include <Arduino.h>
@@ -42,7 +43,6 @@ struct Bubbles {
         CircularBuffer<float, TEMPAVG> tempVesAvg;
         CircularBuffer<float, BUBAVG> bubAvg;
         volatile unsigned long ulStart;     // Start time
-        volatile unsigned int pulse;        // Store pulse count
         volatile unsigned long ulLastReport;// Store time of last report (millis())
         volatile unsigned long ulMicroLast; // Last pulse time for resolution (micros())
         float lastBpm;                      // Holds most recent count
@@ -52,7 +52,6 @@ struct Bubbles {
     public:
         // Public Methods
         void start();
-        void handleInterrupts(void);
         void update();                  // Call every 60 seconds
         float getAvgAmbient();
         float getAvgVessel();
@@ -61,20 +60,21 @@ struct Bubbles {
 
         // Public Properties
         String lastTime;
-        bool doBub;
 };
 
-void setDoBubUpdate();
-
-static bool __attribute__((unused)) doBubUpdate = false;    // Semaphore for Bubbles timer
+extern volatile int pulse;
+void doBub();
 
 #ifdef BUB_DEBUG
     #include <ArduinoLog.h>
-    #define BUB_NOT(...)   Log.notice(F("[Bub Debug] in %s(): %s." CR), __func__, __VA_ARGS__);
-    #define BUB_ERR(...)   Log.error(F("[Bub Debug] in %s(): %s." CR), __func__, __VA_ARGS__);
+    #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+    #define DVER(...)   Log.verbose(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
+    #define DNOT(...)   Log.notice(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
+    #define DERR(...)   Log.error(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
 #else
-    #define BUB_NOT(...)
-    #define BUB_ERR(...)
+    #define DVER(...)
+    #define DNOT(...)
+    #define DERR(...)
 #endif // End control debug printing
 
 #endif // _BUBBLES_H
