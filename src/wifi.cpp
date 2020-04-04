@@ -62,7 +62,7 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
     myAsyncWifiManager.setMenu(_wfmPortalMenu);   // Set menu items
     myAsyncWifiManager.setClass(F("invert"));     // Set dark theme
 
-    myAsyncWifiManager.setCountry(WIFI_COUNTRY); // Setting wifi country seems to improve OSX soft ap connectivity
+    myAsyncWifiManager.setCountry(WIFI_COUNTRY);    // Setting wifi country seems to improve OSX soft ap connectivity
     myAsyncWifiManager.setWiFiAPChannel(WIFI_CHAN); // Set WiFi channel
 
     myAsyncWifiManager.setShowStaticFields(true); // force show static ip fields
