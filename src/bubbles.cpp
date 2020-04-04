@@ -22,73 +22,63 @@ SOFTWARE. */
 
 #include "bubbles.h"
 
-Bubbles __attribute__((unused)) bubbles;
-
-static ICACHE_RAM_ATTR void HandleInterruptsStatic(void) { // External interrupt handler
-    bubbles.handleInterrupts(); // Calls class member handler
-}
+Bubbles bubbles;
+volatile bool doBubble;
 
 void Bubbles::start() {
-        pinMode(COUNTPIN, INPUT);       // Change pinmode to input
-        attachInterrupt(digitalPinToInterrupt(COUNTPIN), HandleInterruptsStatic, RISING); // FALLING, RISING or CHANGE
-        bubbles.ulLastReport = millis();// Store the last report timer
-        bubbles.ulMicroLast = millis(); // Starting point for debouce timer
-        bubbles.pulse = 0;              // Reset pulse counter
-        bubbles.doBub = false;
+        interruptSetup();
+
         // Set starting values
+        ulLastReport = millis();
         unsigned long ulNow = millis();
-        bubbles.ulStart = ulNow;
-        bubbles.lastBpm = 0.0;
-        bubbles.lastAmb = 0.0;
-        bubbles.lastVes = 0.0;
+        ulStart = ulNow;
+        lastBpm = 0.0;
+        lastAmb = 0.0;
+        lastVes = 0.0;
+        doBubble = false;
 
         // Set starting time
-        bubbles.lastTime = getDTS();
+        lastTime = getDTS();
+        update();
+        Log.notice(F("Bubble counter initialized." CR));
 }
 
 void Bubbles::update() { // Regular update loop, once per minute
     // Get NTP Time
-    BUB_NOT("started");
-    bubbles.lastTime = getDTS();
-    return;
+    DNOT("triggered");
+    lastTime = getDTS();
+    DVER("got DTS");
 
     // Store last values
-    bubbles.lastBpm = bubbles.getRawBpm();
-    bubbles.lastAmb = getTemp(AMBSENSOR);
-    bubbles.lastVes = getTemp(VESSENSOR);
+    lastBpm = getRawBpm();
+    DVER("got Raw BPM");
+    lastAmb = getTemp(AMBSENSOR);
+    DVER("got Ambient");
+    lastVes = getTemp(VESSENSOR);
+    DVER("got Vessel");
 
     // Push values to circular buffers
-    tempAmbAvg.push(bubbles.lastAmb);
-    tempVesAvg.push(bubbles.lastVes);
-    bubAvg.push(bubbles.lastBpm);
+    tempAmbAvg.push(lastAmb);
+    tempVesAvg.push(lastVes);
+    bubAvg.push(lastBpm);
 
     Log.verbose(F("Current BPM is %D. Averages (%l in sample): BPM = %D, Ambient = %D, Vessel = %D." CR),
-        bubbles.lastBpm,
+        lastBpm,
         tempVesAvg.size(),
-        bubbles.getAvgBpm(),
-        bubbles.getAvgAmbient(),
-        bubbles.getAvgVessel()
+        getAvgBpm(),
+        getAvgAmbient(),
+        getAvgVessel()
     );
-}
-
-void Bubbles::handleInterrupts(void) { // Bubbles Interrupt handler
-    digitalWrite(LED, LOW);
-    unsigned long now = micros();
-    if ((now - bubbles.ulMicroLast) > RESOLUTION) { // Filter noise/bounce
-        bubbles.pulse++;    // Increment pulse count
-        bubbles.ulMicroLast = now;
-    }
-    bubbles.doBub = true;
 }
 
 float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)
     unsigned long thisTime = millis(); // Get timer value now
-    unsigned long ulLapsed = thisTime - bubbles.ulLastReport; // Millis since last run
+    unsigned long ulLapsed = thisTime - ulLastReport; // Millis since last run
     float fLapsed = (float) ulLapsed; // Cast to float
     float secs = fLapsed / 60000.0; // Minutes since last request
     float ppm = (pulse / secs); // Calculate PPM
-    bubbles.pulse = 0; // Zero the pulse counter
-    bubbles.ulLastReport = millis(); // Store the last report timer
+    pulse = 0; // Zero the pulse counter
+    ulLastReport = millis(); // Store the last report timer
     return ppm; // Return pulses per minute
 }
 
@@ -119,7 +109,6 @@ float Bubbles::getAvgBpm() {
     float avg = 0.0;
     uint8_t size = bubAvg.size();
     for (int i = 0; i < bubAvg.size(); i++) {
-        // float thisTemp = bubAvg[i];
         avg += bubAvg[i] / size;
     }
     return(avg);
@@ -129,7 +118,7 @@ void Bubbles::setLast(double last) {
     bubAvg.push(last);
 }
 
-void setDoBubUpdate() {
-    BUB_NOT("running" CR);
-    doBubUpdate = true;
+void setDoBub() {
+    // Allow a Bubble count to fire
+    doBubble = true;
 }

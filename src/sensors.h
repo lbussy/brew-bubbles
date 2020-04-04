@@ -32,7 +32,6 @@ SOFTWARE. */
 #define DEVICE_DISCONNECTED_F -196.6
 
 double getTemp(uint8_t);
-
 extern struct Config config;
 
 #endif // _SENSORS_H

@@ -20,36 +20,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _WEBSERVER_H
-#define _WEBSERVER_H
+#ifndef _PINCOUNT_H
+#define _PINCOUNT_H
 
-#include "wifi.h"
-#include "execota.h"
-#include "bubbles.h"
-#include "jsonconfig.h"
-#include "version.h"
 #include "config.h"
-#include "thatVersion.h"
-#include <ArduinoLog.h>
-#include <ArduinoJson.h>
-#include <AsyncJson.h>
-#include <FS.h>
-#include <ESPAsyncWebServer.h>
-#include <ESP8266HTTPClient.h>
-#include <ESP8266mDNS.h>
 #include <Arduino.h>
 
-void initWebServer();
-void setRegPageAliases();
-void setActionPageHandlers();
-void setJsonHandlers();
-void setSettingsAliases();
-void stopWebServer();
+void interruptSetup();
+void ICACHE_RAM_ATTR handleInterrupt();
 
-extern struct Config config;
-extern struct ThatVersion thatVersion;
-extern struct Bubbles bubbles;
-extern const size_t capacityDeserial;
-extern const size_t capacitySerial;
-
-#endif // _WEBSERVER_H
+#endif // _PINCOUNT_H
