@@ -3,12 +3,12 @@
 ## Open
 
 - Add Thingspeak support
-- Check shouldSaveConfig behavior in WiFi()
+- Test Brefather return value
 - Move posting targets to async
-- Maybe optimize settings update with the ArduinoJson-based struct?
-- Optimize /bubble with JSON struct
+- Optimize settings update with the JSON merge
 - Change so that posting configuration changes is not a complete page reload
 - See if we can do something about entering a bad password on portal
+- Address long time hack after initial wifi connect (after portal)
 
 ## Complete
 
@@ -145,3 +145,5 @@
 - ~~Add SSL support for upgrade? ([see the issue](https://github.com/esp8266/Arduino/issues/6523))~~
 - ~~Fix Brewer's Friend post~~
 - ~~Add Brewfather support~~
+- ~~Optimize /bubble with JSON struct~~
+- ~~Check shouldSaveConfig behavior in WiFi()~~

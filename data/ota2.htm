@@ -140,7 +140,14 @@
     </script>
 
     <script type="text/javascript">
-        function doUpdate() { // Load the page's JS elements
+        // Attach the event after the page loads
+        if (window.addEventListener)
+            window.addEventListener("load", loadPage, false);
+        else if (window.attachEvent)
+            window.attachEvent("onload", loadPage);
+        else window.onload = loadPage;
+
+        function loadPage() { // Load the page's JS elements
             $.get("/clearupdate/", function(data){}); // Clear any previous update flags
             $.get("/otastart/", function(data){}); // Semaphore the controller that it's safe to proceed
 
@@ -161,13 +168,6 @@
                 });
             }, 5000);
         }
-
-        // Attach the event after the page loads
-        if (window.addEventListener)
-            window.addEventListener("load", doUpdate, false);
-        else if (window.attachEvent)
-            window.attachEvent("onload", doUpdate);
-        else window.onload = doUpdate;
 
         function checkSemaphore(callback) { // Check to see if the update is complete
             var jqxhr = $.getJSON("/config/")

@@ -24,8 +24,8 @@ SOFTWARE. */
 
 const char *filename = "/config.json";
 Config config;
-const size_t capacityDeserial = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8) + 690;
-const size_t capacitySerial = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8);
+extern const size_t capacityDeserial = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8) + 690;
+extern const size_t capacitySerial = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8);
 
 bool deleteConfig() {
     if (!SPIFFS.begin()) {
@@ -164,6 +164,28 @@ bool printConfig(const Config &config)
 
     // Serialize JSON to file
     return serializeJsonPretty(doc, Serial) > 0;
+}
+
+bool mergeConfig(JsonVariantConst src) {
+    // Serialize configuration
+    DynamicJsonDocument doc(capacitySerial);
+
+    // Create an object at the root
+    JsonObject root = doc.to<JsonObject>();
+
+    // Fill the object
+    config.save(root);
+
+    // Merge in the configuration
+    if (merge(root, src)) {
+        // Move new configuration to Config object and save
+        config.load(root);
+        if (saveConfig()) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool merge(JsonVariant dst, JsonVariantConst src)
@@ -348,11 +370,7 @@ void KeyTarget::load(JsonObjectConst obj)
     }
 }
 
-void Config::load(JsonObjectConst obj) {
-    load(obj, false);
-}
-
-void Config::load(JsonObjectConst obj, bool fromweb)
+void Config::load(JsonObjectConst obj)
 {
     // Load all config objects
     //
