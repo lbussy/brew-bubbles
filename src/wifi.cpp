@@ -113,18 +113,6 @@ void doWiFi(bool ignore = false) { // Handle WiFi and optionally ignore current 
 
     WiFi.hostname(config.hostname);
 
-//     Log.notice(F("Connecting to access point: %s."), WiFi.SSID().c_str());
-//     while (WiFi.status() != WL_CONNECTED) {
-//         blinker.attach_ms(STABLINK, wifiBlinker);
-//         _delay(500);
-// #ifdef LOG_LEVEL
-//         Serial.print(F("."));
-// #endif
-//     }
-// #ifdef LOG_LEVEL
-//     Serial.println();
-// #endif
-
     Log.notice(F("Connected. IP address: %s." CR), WiFi.localIP().toString().c_str());
     if (blinker.active()) blinker.detach(); // Turn off blinker
     digitalWrite(LED, HIGH); // Turn off LED
@@ -162,7 +150,7 @@ void configResetCallback() {
 }
 
 void preSaveConfigCallback() {
-    Log.verbose(F("[CALLBACK]:  preSaveConfigCallback fired." CR));
+    Log.verbose(F("[CALLBACK]: preSaveConfigCallback fired." CR));
 }
 
 void saveConfigCallback() {
