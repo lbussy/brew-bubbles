@@ -28,7 +28,7 @@ SOFTWARE. */
 #include "ntp.h"
 #include <ArduinoLog.h>
 
-void serial();
+void setSerial();
 void printTimestamp(Print* _logOutput);
 
 #define prefLen 22
