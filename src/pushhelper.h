@@ -39,7 +39,7 @@ void updateLoop();
 void setDoURLTarget();
 void setDoBFTarget();
 void setDoBrewfTarget();
-extern volatile bool dobubble;
+extern volatile bool doBubble;
 extern struct Bubbles bubbles;
 
 #ifdef PH_DEBUG
