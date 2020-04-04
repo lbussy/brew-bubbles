@@ -23,7 +23,7 @@ SOFTWARE. */
 #ifndef _BUBBLES_H
 #define _BUBBLES_H
 
-#define BUB_DEBUG // Enable Debug for module
+// #define BUB_DEBUG // Enable Debug for module
 
 #include "config.h"
 #include "sensors.h"
