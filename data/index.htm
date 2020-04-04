@@ -142,27 +142,32 @@
     </script>
 
     <script>
-        function doAfterPageLoad() {
-            console.log("DEBUG: Entering: " + arguments.callee.name);
+        // Attach the event after the page loads
+        if (window.addEventListener)
+            window.addEventListener("load", loadPage, false);
+        else if (window.attachEvent)
+            window.attachEvent("onload", loadPage);
+        else window.onload = loadPage;
 
-            loadPage(); // Load once on page load
+        function loadPage() {
+            // console.log("DEBUG: Entering: " + arguments.callee.name);
+
+            loadData(); // Load data the first time
 
             reloadPeriod = 60;
             (function countdown(remaining) { // Refresh data every 60 secs
                 if (remaining === 0) {
-                    loadPage()
+                    loadData()
                     remaining = reloadPeriod
                 }
                 document.getElementById('countdown').innerHTML = remaining
                 setTimeout(function () { countdown(remaining - 1) }, 1000)
             })(reloadPeriod)
-            console.log("DEBUG: Exiting: " + arguments.callee.name);
+            // console.log("DEBUG: Exiting: " + arguments.callee.name);
         }
 
-        window.addEventListener("load", doAfterPageLoad, false);
-
-        function loadPage() {
-            console.log("DEBUG: Entering: " + arguments.callee.name);
+        function loadData() {
+            // console.log("DEBUG: Entering: " + arguments.callee.name);
             var url = "/bubble/";
             var bubble = $.getJSON(url, function () {
             })
@@ -209,7 +214,7 @@
                     // Post load processing here
                 }
             );
-            console.log("DEBUG: Exiting: " + arguments.callee.name);
+            // console.log("DEBUG: Exiting: " + arguments.callee.name);
         }
     </script>
 
