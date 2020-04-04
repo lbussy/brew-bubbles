@@ -31,7 +31,6 @@ void setClock() {
     time_t startSecs = time(nullptr);
     int cycle = 0;
     while (nowSecs < EPOCH_1_1_2019) {
-        cycle++;
         if (nowSecs - startSecs > 9) {
             if (cycle > 10) {
                 Log.warning(F("Unable to get time hack from %s, rebooting." CR), TIMESERVER);
@@ -43,6 +42,7 @@ void setClock() {
             Log.verbose(F("Re-requesting time hack." CR));
             configTime(GMT, 0, "pool.ntp.org", "time.nist.gov");
             startSecs = time(nullptr);
+            cycle++;
         }
 #ifdef LOG_LEVEL
         Serial.print(F("."));
