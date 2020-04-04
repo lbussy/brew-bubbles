@@ -163,14 +163,13 @@ void tickerLoop() {
     BFTarget *bfTarget = BFTarget::getInstance();
     BrewfTarget *brewfTarget = BrewfTarget::getInstance();
 
-    // Handle Bubble update
+    // Trigger Bubble check
     //
-    // Do URL Target post
-    if (doBubUpdate) {
-        doBubUpdate = false;
+    if (dobubble) {
+        dobubble = false;
         bubbles.update();
     }
-    //
+
     // Handle JSON posts
     //
     // Do URL Target post
@@ -189,21 +188,5 @@ void tickerLoop() {
     if (doBrewfTarget) { // Do BF post
         doBrewfTarget = false;
         brewfTarget->push();
-    }
-
-    // Handle the board LED status
-    // Smarter to do it in the loop than in the ISR
-    if (digitalRead(COUNTPIN) == HIGH) { // Non-interrupt driven LED logic
-        digitalWrite(LED, LOW); // Turn LED on when not obstructed
-    } else {
-        digitalWrite(LED, HIGH); // Make sure LED turns off after a bubble4
-    }
-
-    // Some just for fun serial logging
-    if (bubbles.doBub) { // Serial log for bubble detect
-#ifdef LOG_LEVEL
-        Log.verbose(F("॰ₒ๐°৹" CR)); // Looks like a bubble, right?
-#endif
-        bubbles.doBub = false;
     }
 }
