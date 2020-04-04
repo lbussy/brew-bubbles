@@ -56,6 +56,6 @@ extern bool loadConfig();
 extern const char *filename;
 extern struct ThatVersion thatVersion;
 extern struct Bubbles bubbles;
-extern volatile bool dobubble;
+extern volatile bool doBubble;
 
 #endif // _MAIN_H
