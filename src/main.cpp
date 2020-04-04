@@ -34,14 +34,15 @@ void setup() {
         Log.error(F("Unable to load cofiguration." CR));
 
     pinMode(LED, OUTPUT);
+    pinMode(RESETWIFI, INPUT_PULLUP);
 
     _delay(200); // Let pins settle, else detect is inconsistent
-    pinMode(RESETWIFI, INPUT_PULLUP);
+
     if (digitalRead(RESETWIFI) == LOW) {
         Log.notice(F("%s low, presenting portal." CR), RESETWIFI);
         doWiFi(true);
     } else if (rst == true) {
-        Log.notice(F("DRD: Double reset boot, presenting portal." CR));
+        Log.notice(F("DRD: Triggered, presenting portal." CR));
         doWiFi(true);
     } else {
         Log.verbose(F("DRD: Normal boot." CR));
@@ -53,6 +54,8 @@ void setup() {
     loadBpm() ;         // Get last BPM reading if it was a controlled reboot
     mdnssetup();        // Set up mDNS responder
     initWebServer();    // Turn on web server
+    doPoll();           // Get server version at startup
+    bubbles.start();    // Initialize bubble counter
 
     Log.notice(F("Started %s version %s (%s) [%s]." CR), API_KEY, version(), branch(), build());
 }
@@ -60,13 +63,11 @@ void setup() {
 void loop() {
     // Poll for server version
     Ticker getThatVersion;
-    doPoll();
-    getThatVersion.attach(60, doPoll);
+    getThatVersion.attach(POLLSERVERVERSION, doPoll);
 
-    // Bubble loop to create 60 second readings
+    // Bubble loop to get periodic readings
     Ticker bubUpdate;
-    bubbles.update();
-    bubUpdate.attach(BUBLOOP, setDoBubUpdate);
+    bubUpdate.attach(BUBLOOP, [](){dobubble = true;});
 
     // Target timer
     Ticker urlTarget;
@@ -84,8 +85,11 @@ void loop() {
         // Handle semaphores - No radio work in a Ticker!
         tickerLoop();
 
-        // Regular loop handlers
-        MDNS.update();          // Handle mDNS requests
+        // Toggle LED according to sensor
+        digitalWrite(LED, !digitalRead(COUNTPIN));
+
+        // Handle mDNS requests
+        MDNS.update();
 
         // If target frequencies needs to be updated, update here
         if (config.urltarget.update) {
