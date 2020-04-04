@@ -23,8 +23,7 @@ SOFTWARE. */
 #include "bubbles.h"
 
 Bubbles bubbles;
-
-volatile bool dobubble;
+volatile bool doBubble;
 
 void Bubbles::start() {
         interruptSetup();
@@ -36,7 +35,7 @@ void Bubbles::start() {
         lastBpm = 0.0;
         lastAmb = 0.0;
         lastVes = 0.0;
-        dobubble = false;
+        doBubble = false;
 
         // Set starting time
         lastTime = getDTS();
@@ -119,7 +118,7 @@ void Bubbles::setLast(double last) {
     bubAvg.push(last);
 }
 
-void doBub() {
+void setDoBub() {
     // Allow a Bubble count to fire
-    dobubble = true;
+    doBubble = true;
 }

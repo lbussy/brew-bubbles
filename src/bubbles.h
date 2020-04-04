@@ -63,7 +63,7 @@ struct Bubbles {
 };
 
 extern volatile int pulse;
-void doBub();
+void setDoBub();
 
 #ifdef BUB_DEBUG
     #include <ArduinoLog.h>
