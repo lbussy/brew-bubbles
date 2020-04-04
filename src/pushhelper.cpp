@@ -165,8 +165,8 @@ void tickerLoop() {
 
     // Trigger Bubble check
     //
-    if (dobubble) {
-        dobubble = false;
+    if (doBubble) {
+        doBubble = false;
         bubbles.update();
     }
 
