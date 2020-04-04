@@ -67,7 +67,7 @@ void loop() {
 
     // Bubble loop to get periodic readings
     Ticker bubUpdate;
-    bubUpdate.attach(BUBLOOP, [](){dobubble = true;});
+    bubUpdate.attach(BUBLOOP, setDoBub);
 
     // Target timer
     Ticker urlTarget;
