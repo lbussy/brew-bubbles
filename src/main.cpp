@@ -26,7 +26,7 @@ DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 
 void setup() {
     bool rst = drd.detect(); // Check for double-reset
-    serial();
+    setSerial();
 
     if (loadConfig())
         Log.notice(F("Configuration loaded." CR));
