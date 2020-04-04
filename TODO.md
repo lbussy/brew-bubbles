@@ -3,6 +3,7 @@
 ## Open
 
 - Add Thingspeak support
+- Test Brefather return value
 - Move posting targets to async
 - Optimize settings update with the JSON merge
 - Change so that posting configuration changes is not a complete page reload
