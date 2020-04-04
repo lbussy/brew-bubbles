@@ -147,17 +147,17 @@
     </script>
 
     <script type="text/javascript">
-        function pageLoad() { // Load the page's JS elements
+        // Attach the event after the page loads
+        if (window.addEventListener)
+            window.addEventListener("load", loadPage, false);
+        else if (window.attachEvent)
+            window.attachEvent("onload", loadPage);
+        else window.onload = loadPage;
+
+        function loadPage() { // Load the page's JS elements
             loadThisVersion(); // Populate form with controller settings
             loadThatVersion(); // Populate form with controller settings
         }
-
-        // Attach the event after the page loads
-        if (window.addEventListener)
-            window.addEventListener("load", downloadJSAtOnload, false);
-        else if (window.attachEvent)
-            window.attachEvent("onload", downloadJSAtOnload);
-        else window.onload = downloadJSAtOnload;
 
         function loadThisVersion() { // Get current parameters
             var thisVersionJson = "/thisVersion/";
@@ -203,8 +203,7 @@
                     // Can post-process here
                 });
         }
-
-        </script>
+    </script>
 
 </body>
 
