@@ -167,7 +167,14 @@ void tickerLoop() {
     //
     if (doBubble) {
         doBubble = false;
-        bubbles.update();
+        if (bubbles.update())
+            Log.verbose(F("Current BPM is %D. Averages (%l in sample): BPM = %D, Ambient = %D, Vessel = %D." CR),
+                bubbles.lastBpm,
+                bubbles.sampleSize,
+                bubbles.getAvgBpm(),
+                bubbles.getAvgAmbient(),
+                bubbles.getAvgVessel()
+    );
     }
 
     // Handle JSON posts

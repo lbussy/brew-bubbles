@@ -23,8 +23,6 @@ SOFTWARE. */
 #ifndef _PUSHHELPER_H
 #define _PUSHHELPER_H
 
-#define PH_DEBUG // Control debug printing for Puch Helper (uses ArduinoLog)
-
 #include "bubbles.h"
 #include "pushtarget.h"
 #include "target.h"
@@ -41,18 +39,6 @@ void setDoBFTarget();
 void setDoBrewfTarget();
 extern volatile bool doBubble;
 extern struct Bubbles bubbles;
-
-#ifdef PH_DEBUG
-    #include <ArduinoLog.h>
-    #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
-    #define DVER(...)   Log.verbose(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
-    #define DNOT(...)   Log.notice(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
-    #define DERR(...)   Log.error(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
-#else
-    #define DVER(...)
-    #define DNOT(...)
-    #define DERR(...)
-#endif // End control debug printing
 
 static bool __attribute__((unused)) doURLTarget = false;    // Semaphore for Target timer
 static bool __attribute__((unused)) doBFTarget = false;     // Semaphore for BF timer
