@@ -278,7 +278,7 @@ void Calibrate::load(JsonObjectConst obj)
         room = 0.0;
     } else {
         DNOT("Room Cal JSON object loaded");
-        bool rc = obj["room"];
+        float rc = obj["room"];
         room = rc;
     }
 
