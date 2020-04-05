@@ -29,7 +29,6 @@ extern const size_t capacitySerial = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(
 
 bool deleteConfig() {
     if (!SPIFFS.begin()) {
-        DERR("An error has occurred while mounting SPIFFS");
         return false;
     }
     return SPIFFS.remove(filename);
@@ -39,11 +38,9 @@ bool loadConfig()
 {
     // Manage loading the configuration
     if (!loadFile()) {
-        DERR(F("Failed to load configuration"));
         return false;
     } else {
         saveFile();
-        DNOT(F("Configuration loaded"));
         return true;
     }
 }
@@ -51,23 +48,21 @@ bool loadConfig()
 bool loadFile()
 {
     if (!SPIFFS.begin()) {
-        DERR(F("Unable to start SPIFFS"));
         return false;
     }
     // Loads the configuration from a file on SPIFFS
     File file = SPIFFS.open(filename, "r");
     if (!SPIFFS.exists(filename) || !file) {
-        DNOT(F("Configuration does not exist, creating blank file"));
+        // File does not exist or unable to create file
+        // TODO:  Differentiate this
     } else {
-        DNOT(F("Existing configuration present"));
+        // Existing configuration present
     }
 
     if (!deserializeConfig(file)) {
-        DERR(F("Failed to deserialize configuration"));
         file.close();
         return false;
     } else {
-        DNOT(F("Configuration deserialized"));
         file.close();
         return true;
     }
@@ -83,18 +78,15 @@ bool saveFile()
     // Saves the configuration to a file on SPIFFS
     File file = SPIFFS.open(filename, "w");
     if (!file) {
-        DERR(F("Unable to open SPIFFS"));
         file.close();
         return false;
     }
 
     // Serialize JSON to file
     if (!serializeConfig(file)) {
-        DERR(F("Unable to serialize JSON"));
         file.close();
         return false;
     }
-    DNOT(F("Saved configuration to file"));
     file.close();
     return true;
 }
@@ -108,14 +100,10 @@ bool deserializeConfig(Stream &src)
     DeserializationError err = deserializeJson(doc, src);
 
     if (err) {
-        DNOT(F("No existing configuration"));
         config.load(doc.as<JsonObject>());
-        DNOT(F("Loaded default configuration"));
         return true;
     } else {
-        DNOT("Configuration exists");
         config.load(doc.as<JsonObject>());
-        DNOT(F("Loaded existing configuration"));
         return true;
     }
     // TODO:  Can I return false here somehow?
@@ -215,19 +203,15 @@ void ApConfig::load(JsonObjectConst obj)
     // Load Access Point configuration
     //
     if (obj["ssid"].isNull()) {
-        DNOT("Added default config for SSID");
         strlcpy(ssid, APNAME, sizeof(ssid));
     } else {
-        DNOT("SSID JSON object loaded");
         const char* sd = obj["ssid"];
         strlcpy(ssid, sd, sizeof(ssid));
     }
 
     if (obj["passphrase"].isNull()) {
-        DNOT("Added default config for Passphrase");
         strlcpy(passphrase, AP_PASSWD, sizeof(passphrase));
     } else {
-        DNOT("Passphrase loaded");
         const char* ps = obj["passphrase"];
         strlcpy(passphrase, ps, sizeof(passphrase));
     }
@@ -245,19 +229,15 @@ void Bubble::load(JsonObjectConst obj)
     // Load Bubble configuration
     //
     if (obj["name"].isNull()) {
-        DNOT("Added default config for Bubname");
         strlcpy(name, BUBNAME, sizeof(name));
     } else {
-        DNOT("Bubname JSONloaded");
         const char* nm = obj["name"];
         strlcpy(name, nm, sizeof(name));
     }
 
     if (obj["tempinf"].isNull()) {
-        DNOT("Added default config for Temp in F");
         tempinf = TEMPFORMAT;
     } else {
-        DNOT("Temp in F JSON object loaded");
         bool tf = obj["tempinf"];
         tempinf = tf;
     }
@@ -274,19 +254,15 @@ void Calibrate::load(JsonObjectConst obj)
     // Load Temp Sensor Calibration configuration
     //
     if (obj["room"].isNull()) {
-        DNOT("Added default config for Room Cal");
         room = 0.0;
     } else {
-        DNOT("Room Cal JSON object loaded");
         float rc = obj["room"];
         room = rc;
     }
 
     if (obj["vessel"].isNull()) {
-        DNOT("Added default config for Vessel Cal");
         vessel = 0.0;
     } else {
-        DNOT("Vessel Cal JSON object loaded");
         float vc = obj["vessel"];
         vessel = vc;
     }
@@ -304,28 +280,22 @@ void URLTarget::load(JsonObjectConst obj)
     // Load URL Target configuration
     //
     if (obj["url"].isNull()) {
-        DNOT("Added default config for URL");
         strlcpy(url, "", sizeof(url));
     } else {
-        DNOT("URL JSON object loaded");
         const char* tu = obj["url"];
         strlcpy(url, tu, sizeof(url));
     }
 
     if (obj["freq"].isNull()) {
-        DNOT("Added default config for Frequency");
         freq = 2;
     } else {
-        DNOT("Frequency JSON object loaded");
         int f = obj["freq"];
         freq = f;
     }
 
     if (obj["update"].isNull()) {
-        DNOT("Added default config for Update");
         update = false;
     } else {
-        DNOT("Update JSON object loaded");
         bool u = obj["update"];
         update = u;
     }
@@ -343,28 +313,22 @@ void KeyTarget::load(JsonObjectConst obj)
     // Load Key-type configuration
     //
     if (obj["key"].isNull()) {
-        DNOT("Added default config for Key");
         strlcpy(key, "", sizeof(key));
     } else {
-        DNOT("Key JSON object loaded");
         const char* k = obj["key"];
         strlcpy(key, k, sizeof(key));
     }
 
     if (obj["freq"].isNull()) {
-        DNOT("Added default config for Frequency");
         freq = 15;
     } else {
-        DNOT("Frequency JSON object loaded");
         int f = obj["freq"];
         freq = f;
     }
 
     if (obj["update"].isNull()) {
-        DNOT("Added default config for Update");
         update = false;
     } else {
-        DNOT("Update JSON object loaded");
         bool u = obj["update"];
         update = u;
     }
@@ -378,10 +342,8 @@ void Config::load(JsonObjectConst obj)
     apconfig.load(obj["apconfig"]);
 
     if (obj["hostname"].isNull()) {
-        DNOT("Added default config for Hostname");
         strlcpy(hostname, APNAME, sizeof(hostname));
     } else {
-        DNOT("Hostname JSON object loaded");
         const char* hn = obj["hostname"];
         strlcpy(hostname, hn, sizeof(hostname));
     }
@@ -393,27 +355,21 @@ void Config::load(JsonObjectConst obj)
     brewfather.load(obj["brewfather"]);
 
     if (obj["dospiffs1"].isNull()) {
-        DNOT("Added default config for DoSpiffs1");
         dospiffs1 = false;
     } else {
-        DNOT("DoSpiffs1 JSON object loaded");
         dospiffs1 = obj["dospiffs1"];
     }
 
     if (obj["dospiffs2"].isNull()) {
-        DNOT("Added default config for DoSpiffs2");
         dospiffs2 = false;
     } else {
-        DNOT("DoSpiffs2 JSON object loaded");
         dospiffs2 = obj["dospiffs2"];
     }
 
     bool firstrun = obj["didupdate"].isNull();
     if (firstrun) {
-        DNOT("Added default config for DidUpdate");
         didupdate = false;
     } else {
-        DNOT("DidUpdate JSON object loaded");
         didupdate = obj["didupdate"];
     }
 }

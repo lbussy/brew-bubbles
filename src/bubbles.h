@@ -23,13 +23,10 @@ SOFTWARE. */
 #ifndef _BUBBLES_H
 #define _BUBBLES_H
 
-// #define BUB_DEBUG // Enable Debug for module
-
 #include "config.h"
 #include "sensors.h"
 #include "ntp.h"
 #include "pincount.h"
-#include <ArduinoLog.h>
 #include <CircularBuffer.h>
 #include <Arduino.h>
 
@@ -45,36 +42,25 @@ struct Bubbles {
         volatile unsigned long ulStart;     // Start time
         volatile unsigned long ulLastReport;// Store time of last report (millis())
         volatile unsigned long ulMicroLast; // Last pulse time for resolution (micros())
-        float lastBpm;                      // Holds most recent count
         float lastAmb;
         float lastVes;
 
     public:
         // Public Methods
-        void start();
-        void update();                  // Call every 60 seconds
+        bool start();
+        bool update();                  // Call every 60 seconds
         float getAvgAmbient();
         float getAvgVessel();
         float getAvgBpm();
         void setLast(double);           // Push last reading on reboot
 
         // Public Properties
+        float lastBpm;                  // Holds most recent count
         String lastTime;
+        int sampleSize;
 };
 
 extern volatile int pulse;
 void setDoBub();
-
-#ifdef BUB_DEBUG
-    #include <ArduinoLog.h>
-    #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
-    #define DVER(...)   Log.verbose(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
-    #define DNOT(...)   Log.notice(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
-    #define DERR(...)   Log.error(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
-#else
-    #define DVER(...)
-    #define DNOT(...)
-    #define DERR(...)
-#endif // End control debug printing
 
 #endif // _BUBBLES_H
