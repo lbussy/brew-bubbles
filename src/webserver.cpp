@@ -521,14 +521,14 @@ void setSettingsAliases()
         size_t index, size_t total) {
             request->addInterestingHeader("Accept: application/json");
             Log.verbose(F("Processing /apply/." CR));
-            DynamicJsonDocument doc(capacityDeserial);
+            DynamicJsonDocument doc(capacitySerial);
 
             DeserializationError error = deserializeJson(doc, (const char*)data);
             if (error) {
                 Log.verbose(F("Error while processing /apply/: %s" CR), error.c_str());
                 request->send(500, "text/plain", error.c_str());
             } else {
-                if (mergeConfig(doc)) {
+                if (mergeJsonObject(doc)) {
                     printFile();
                     request->send(200, "text/plain", "Ok");
                     // TODO:  Check for doc.containsKey("foo") and do follow-up processing
