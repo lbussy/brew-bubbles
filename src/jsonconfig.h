@@ -97,15 +97,17 @@ struct Config
     void save(JsonObject) const;
 };
 
-bool deleteConfig();
+bool deleteConfigFile();
 bool loadConfig();
 bool saveConfig();
 bool loadFile();
 bool saveFile();
+bool printConfig();
 bool printFile();
 bool serializeConfig(Print &);
 bool deserializeConfig(Stream &);
 bool merge(JsonVariant, JsonVariantConst);
-bool mergeConfig(JsonVariantConst);
+bool mergeJsonObject(JsonVariantConst);
+bool mergeJsonString(String);
 
 #endif // _JSONCONFIG_H
