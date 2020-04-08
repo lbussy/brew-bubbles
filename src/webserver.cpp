@@ -521,15 +521,25 @@ void setSettingsAliases()
         size_t index, size_t total) {
             request->addInterestingHeader("Accept: application/json");
             Log.verbose(F("Processing /apply/." CR));
-            DynamicJsonDocument doc(capacitySerial);
 
+            // Serialize configuration
+            DynamicJsonDocument doc(capacityDeserial);
             DeserializationError error = deserializeJson(doc, (const char*)data);
+
+            // TODO:  Can't receive a fill JSON file (yet)
+            Log.verbose(F("DEBUG:  Received JSON:" CR));
+            serializeJsonPretty(doc, Serial);
+            Serial.println();
+
             if (error) {
                 Log.verbose(F("Error while processing /apply/: %s" CR), error.c_str());
                 request->send(500, "text/plain", error.c_str());
             } else {
                 if (mergeJsonObject(doc)) {
+
+                    Log.verbose(F("DEBUG:  Merged JSON file:" CR));
                     printFile();
+
                     request->send(200, "text/plain", "Ok");
                     // TODO:  Check for doc.containsKey("foo") and do follow-up processing
                 } else {
