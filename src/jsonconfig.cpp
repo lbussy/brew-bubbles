@@ -24,10 +24,10 @@ SOFTWARE. */
 
 const char *filename = "/config.json";
 Config config;
-extern const size_t capacityDeserial = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8) + 690;
-extern const size_t capacitySerial = 3*JSON_OBJECT_SIZE(2) + 4*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(8);
+extern const size_t capacityDeserial = 3*JSON_OBJECT_SIZE(2) + 3*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(10) + 680;
+extern const size_t capacitySerial = 3*JSON_OBJECT_SIZE(2) + 3*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(10);
 
-bool deleteConfig() {
+bool deleteConfigFile() {
     if (!SPIFFS.begin()) {
         return false;
     }
@@ -53,8 +53,7 @@ bool loadFile()
     // Loads the configuration from a file on SPIFFS
     File file = SPIFFS.open(filename, "r");
     if (!SPIFFS.exists(filename) || !file) {
-        // File does not exist or unable to create file
-        // TODO:  Differentiate this
+        // File does not exist or unable to read file
     } else {
         // Existing configuration present
     }
@@ -118,7 +117,7 @@ bool serializeConfig(Print &dst)
     JsonObject root = doc.to<JsonObject>();
 
     // Fill the object
-    config.save(root);
+    config.save(root); // TODO:  I think this is why it's not working right, it's reloading the config
 
     // Serialize JSON to file
     return serializeJsonPretty(doc, dst) > 0;
@@ -139,7 +138,7 @@ bool printFile()
     return true;
 }
 
-bool printConfig(const Config &config)
+bool printConfig()
 {
     // Serialize configuration
     DynamicJsonDocument doc(capacitySerial);
@@ -151,12 +150,28 @@ bool printConfig(const Config &config)
     config.save(root);
 
     // Serialize JSON to file
-    return serializeJsonPretty(doc, Serial) > 0;
+    bool retval = serializeJsonPretty(doc, Serial) > 0;
+    Serial.println();
+    return retval;
 }
 
-bool mergeConfig(JsonVariantConst src) {
+bool mergeJsonString(String newJson)
+{
     // Serialize configuration
-    DynamicJsonDocument doc(capacitySerial);
+    DynamicJsonDocument doc(capacityDeserial);
+
+    // Parse directly from file
+    DeserializationError err = deserializeJson(doc, newJson);
+    if (err)
+        Serial.println(err.c_str());
+
+    return mergeJsonObject(doc);
+}
+
+bool mergeJsonObject(JsonVariantConst src)
+{
+    // Serialize configuration
+    DynamicJsonDocument doc(capacityDeserial);
 
     // Create an object at the root
     JsonObject root = doc.to<JsonObject>();
@@ -165,12 +180,12 @@ bool mergeConfig(JsonVariantConst src) {
     config.save(root);
 
     // Merge in the configuration
-    if (merge(root, src)) {
-        // Move new configuration to Config object and save
+    if (merge(root, src))
+    {
+        // Move new object to config
         config.load(root);
-        if (saveConfig()) {
-            return true;
-        }
+        saveFile();
+        return true;
     }
 
     return false;
