@@ -57,6 +57,8 @@ bool Bubbles::update() { // Regular update loop, once per minute
     tempVesAvg.push(lastVes);
     bubAvg.push(lastBpm);
     sampleSize = tempVesAvg.size();
+
+    return true;
 }
 
 float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)
