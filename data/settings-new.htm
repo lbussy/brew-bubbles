@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta name="description" content="Brew Bubbles, a Home Brewing application">
+    <meta name="author" content="Lee Bussy">
+
+    <title>Brew Bubbles</title>
+
+    <link rel="canonical" href="https://www.brewbubbles.com/">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <meta name="apple-mobile-web-app-title" content="Brew Bubbles">
+    <meta name="application-name" content="Brew Bubbles">
+    <meta name="msapplication-TileColor" content="#00aba9">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/united/bootstrap.min.css"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
+
+    <style>
+        main>.container {
+            padding: 60px 15px 0;
+        }
+
+        .footer {
+            background-color: #f5f5f5f5;
+        }
+
+        .footer>.container {
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+    </style>
+
+</head>
+
+<body class="d-flex flex-column h-100">
+
+    <iframe name="hidden" style="display:none;"></iframe>
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="/">
+                <img src="/mstile-144x144.png" style="width:25px;height:25px;">
+                &nbsp;Brew Bubbles
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+                aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/settings/">Settings <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/help/">Help</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about/">About</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="flex-shrink-0">
+        <div class="container" id="settingsapp">
+            <!-- Container -->
+
+            <div class="page-header" id="banner">
+                <h1>Settings</h1>
+            </div>
+
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#controller">Controller</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#temperature">Temperature</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                        aria-haspopup="true" aria-expanded="false">Targets</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" data-toggle="tab" href="#urltarget">URL Target</a>
+                        <a class="dropdown-item" data-toggle="tab" href="#brewersfriend">Brewer's Friend</a>
+                        <a class="dropdown-item" data-toggle="tab" href="#brewfather">Brewfather</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#update">Update</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#wifi">Wifi</a>
+                </li>
+            </ul> <!-- End Tab Navigation -->
+
+            <!-- Tab Content -->
+            <div id="myTabContent" class="tab-content">
+
+                <!-- Controller Tab -->
+                <div class="tab-pane fade active show" id="controller">
+                    <div class="card border-dark mb-3" id="controller">
+                        <div class="card-header">
+                            <!-- Controller Settings -->
+                            <h4 class="card-title">Controller Settings</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <form id="mDNS" action="/apply/" method="POST" target="hidden">
+                                        <div class="form-group row">
+                                            <label for="mdnsID" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                                title="Change mDNS name (the hostname part in http://hostname.local/) Do not add the &ldquo;.local&rdquo; to the name">
+                                                mDNS ID
+                                            </label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" name="mdnsID" id="mdnsID"
+                                                    minlength="3" maxlength="24" placeholder="Hostname">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <input type="submit" value="Update" class="btn btn-primary">
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <form id="bubbleID" action="/apply/" method="POST" target="hidden">
+                                        <div class="form-group row">
+                                            <label for="bubname" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                                title="Change the name of this fermenter">
+                                                Bubble ID
+                                            </label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" name="bubname" id="bubname"
+                                                    minlength="3" maxlength="32" placeholder="Fermenter 1">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <input type="submit" value="Update" class="btn btn-primary">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div> <!-- Controller Settings -->
+                </div> <!-- End Controller Tab -->
+
+                <!-- Temperatures Tab -->
+                <div class="tab-pane fade" id="temperature">
+                    <div class="card border-dark mb-3" id="temp">
+                        <!-- Temperature Settings -->
+                        <div class="card-header">
+                            <h4 class="card-title">Temperature Settings</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <div class="container">
+
+                                        <form id="tempFormat" action="/apply/" method="POST" target="hidden">
+                                            <fieldset class="form-group">
+                                                <h5 class="legend">Temperature Format</h5>
+                                                <div class="row justify-content-center">
+                                                    <div class="col">
+                                                        <p>&nbsp;</p>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-check">
+                                                            <label class="form-check-label"
+                                                                title="Change the application display in Celsius">
+                                                                <input type="radio" class="form-check-input"
+                                                                    name="tempInF" id="celsius" value="option0">
+                                                                Celsius
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <label class="form-check-label"
+                                                                title="Change the application display in Fahrenheit">
+                                                                <input type="radio" class="form-check-input"
+                                                                    name="tempInF" id="fahrenheit" value="option1"
+                                                                    checked="">
+                                                                Fahrenheit
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <p>&nbsp;</p>
+                                                    </div>
+                                                    <div class="col">
+                                                        <input type="submit" value="Update" class="btn btn-primary">
+                                                    </div>
+                                                    <div class="col">
+                                                        <p>&nbsp;</p>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+
+                                        <hr class="my-4">
+
+                                        <fieldset class="form-group">
+                                            <h5 class="legend">Temperature Calibration</h5>
+                                            <form id="roomCal" action="/apply/" method="POST" target="hidden">
+                                                <div class="form-group row">
+                                                    <label for="calRoom" class="col-sm-2 col-form-label"
+                                                        data-toggle="tooltip"
+                                                        title="Value by which the Room temperature display will be offset">Room</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" class="form-control" id="calRoom"
+                                                            name="calRoom" min="-25" max="25" step=".01"
+                                                            placeholder="0.0">
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <input type="submit" value="Update" class="btn btn-primary">
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                            <form id="vesCal" action="/apply/" method="POST" target="hidden">
+                                                <div class="form-group row">
+                                                    <label for="calVessel" class="col-sm-2 col-form-label"
+                                                        data-toggle="tooltip"
+                                                        title="Value by which the Vessel temperature display will be offset">Vessel</label>
+                                                    <div class="col-sm-8">
+                                                        <input type="number" class="form-control" id="calVessel"
+                                                            name="calVessel" min=-25 max=25 step=".01"
+                                                            placeholder="0.0">
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <input type="submit" value="Update" class="btn btn-primary">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </fieldset>
+                                    </div>
+                                </li>
+                        </div>
+                    </div> <!-- Temperature Settings -->
+                </div> <!-- End Controller Tab -->
+
+                <!-- URL Target Tab -->
+                <div class="tab-pane fade" id="urltarget">
+                    <div class="card border-dark mb-3" id="target">
+                        <!-- Target Settings -->
+                        <div class="card-header">
+                            <h4 class="card-title">Target Settings</h4>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">These settings control how Brew Bubbles talks to an HTML endpoint such
+                                as
+                                <a href="https://www.brewpiremix.com/">BrewPi Remix</a> or
+                                <a href="https://www.fermentrack.com/">Fermentrack</a>. To disable pushing to the
+                                endpoint,
+                                delete the URL.
+                            </p>
+
+                            <form id="target" action="/apply/" method="POST" target="hidden">
+                                <div class="form-group row">
+                                    <label for="endpointURL" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                        title="HTML Endpoint URL. Delete to disable pushing to an HTML Endpoint. Ports other than 80 need to be in the format of: http://foo.com:8080/page.php">Target</label>
+                                    <div class="col-sm-8">
+                                        <input type="url" class="form-control" id="target" name="target" minlength="3"
+                                            maxlength="128" placeholder="http://brewpi.local/brewpi-api.php">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="submit" value="Update" class="btn btn-primary">
+                                    </div>
+                                </div>
+                            </form>
+
+                            <form id="targetFreq" action="/apply/" method="POST" target="hidden">
+                                <div class="form-group row">
+                                    <label for="endpointPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                        title="How often (in minutes) to push data to HTML Endpoint">Push
+                                        Frequency</label>
+                                    <div class="col-sm-8">
+                                        <input type="number" class="form-control" id="tfreq" name="tfreq"
+                                            placeholder="2" min="1" max="60">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="submit" value="Update" class="btn btn-primary">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div> <!-- Target Settings -->
+                </div> <!-- End URL Target Tab -->
+
+                <!-- Brewer's Friend Target Tab -->
+                <div class="tab-pane fade" id="brewersfriend">
+                    <div class="card border-dark mb-3" id="bf">
+                        <!-- Brewer's Friend Settings -->
+                        <div class="card-header">
+                            <h4 class="card-title">Brewer's Friend Settings</h4>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                These settings control how Brew Bubbles talks to
+                                <a href="http://www.brewersfriend.com/">Brewer's Friend.</a> With a premium account,
+                                Brewer's Friend supports logging brew-related data. To find your API key; log into
+                                your Brewer's Friend account and go to Profile > Account. Your API key will be a
+                                20 to 64-character string of letters and numbers (not a URL).
+                            </p>
+
+                            <form id="bfkey" action="/apply/" method="POST" target="hidden">
+                                <div class="form-group row">
+                                    <label for="brewersFriendKey" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                        title="Enter the API key from your Brewer's Friend premium account.
+                                        To disable pushing to Brewer's Friend, delete the key.">Brewer's Friend Key
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="bfkey" name="bfkey" minlength="20"
+                                            maxlength="64" placeholder="000fa2ac454c1abf14ffa3">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="submit" value="Update" class="btn btn-primary">
+                                    </div>
+                                </div>
+                            </form>
+
+                            <form id="bffreq" action="/apply/" method="POST" target="hidden">
+                                <div class="form-group row">
+                                    <label for="bfPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                        title="How often (in minutes) to push data to Brewer's Friend">Push
+                                        Frequency</label>
+                                    <div class="col-sm-8">
+                                        <input type="number" class="form-control" id="bffreq" name="bffreq"
+                                            placeholder="15" min="15" max="120">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="submit" value="Update" class="btn btn-primary">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div> <!-- Brewer's Friend Settings -->
+                </div> <!-- End Brewer's Friend Target Tab -->
+
+                <!-- Brewfather Target Tab -->
+                <div class="tab-pane fade" id="brewfather">
+                    <div class="card border-dark mb-3" id="brewf">
+                        <!-- Brewfather Settings -->
+                        <div class="card-header">
+                            <h4 class="card-title">Brewfather Settings</h4>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                These settings control how Brew Bubbles talks to
+                                <a href="https://brewfather.app/">Brewfather.</a>
+                                With a premium account, Brewfather supports logging brew-related data.
+                                To find your API key; log into your Brewfather account and go to Custom Stream.
+                                Your API key will be a 10 to 64-character string of letters and numbers on the
+                                line following &quot;<b>URL</b> http://log.brewfather.net/stream?id=&quot;
+                                (do not include the the URL.)
+                            </p>
+
+                            <form id="brewfkey" action="/apply/" method="POST" target="hidden">
+                                <div class="form-group row">
+                                    <label for="brewersFriendKey" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                        title="Enter the API key from your Brewfather premium account.
+                                        To disable pushing to Brewfather, delete the key.">Brewfather Key
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" id="brewfkey" name="brewfkey"
+                                            minlength="10" maxlength="64" placeholder="000fa2ac454c1abf14ffa3">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="submit" value="Update" class="btn btn-primary">
+                                    </div>
+                                </div>
+                            </form>
+
+                            <form id="brewffreq" action="/apply/" method="POST" target="hidden">
+                                <div class="form-group row">
+                                    <label for="bfPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                        title="How often (in minutes) to push data to Brewfather">Push Frequency</label>
+                                    <div class="col-sm-8">
+                                        <input type="number" class="form-control" id="brewffreq" name="brewffreq"
+                                            placeholder="15" min="15" max="120">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <input type="submit" value="Update" class="btn btn-primary">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div> <!-- Brewfather Settings -->
+                </div> <!-- End Brewfather Target Tab -->
+
+                <!-- Update Tab -->
+                <div class="tab-pane fade" id="update">
+                    <div class="card border-dark mb-3">
+                        <!-- Update Firmware -->
+                        <div class="card-header">
+                            <h4 class="card-title">Update Firmware</h4>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                Your Brew Bubbles can be updated over the internet to the latest version of the Brew
+                                Bubbles
+                                firmware by clicking the "Update Firmware" button below.
+                            </p>
+                            <p class="card-text">
+                                <a href="/ota/" class="btn btn-danger">Update Firmware</a>
+                            </p>
+                        </div>
+                    </div> <!-- Update Firmware -->
+                </div> <!-- End Update Tab -->
+
+                <!-- Wifi Tab -->
+                <div class="tab-pane fade" id="wifi">
+                    <div class="card border-dark mb-3">
+                        <!-- Reset WiFi -->
+                        <div class="card-header">
+                            <h4 class="card-title">Reset WiFi</h4>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                If you plan on relocating your Brew Bubbles to a new network, you can reset the WiFi
+                                connection
+                                settings by clicking "Reset WiFi". You will need to perform the the original network
+                                setup again
+                                by connecting to this device as an access point.
+                            </p>
+                            <p class="card-text">
+                                <a href="/wifi/" class="btn btn-danger">Reset WiFi</a>
+                            </p>
+                        </div>
+                    </div> <!-- Reset WiFi -->
+                </div> <!-- End Wifi Tab -->
+
+            </div> <!-- Tab Content -->
+
+        </div> <!-- Container -->
+
+    </main>
+
+    <footer class="footer mt-auto py-3">
+        <div class="container">
+            <span class="text-muted">Copyright &copy; 2019-2020, Lee C. Bussy</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous">
+        </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+        </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+        </script>
+
+    <script type="text/javascript">
+        // Attach the event after the page loads
+        if (window.addEventListener)
+            window.addEventListener("load", loadPage, false);
+        else if (window.attachEvent)
+            window.attachEvent("onload", loadPage);
+        else window.onload = loadPage;
+
+        function loadPage() { // Get current parameters
+            var url = "/config/";
+            var config = $.getJSON(url, function () {
+            })
+                .done(function (config) {
+                    try {
+                        $('input[name="mdnsID"]').val(config.hostname);
+                        $('input[name="bubname"]').val(config.bubble.name);
+                        if (config.bubble.tempinf) {
+                            $('input[name="tempInF"]')[1].checked = true; // Farenheit
+                        } else {
+                            $('input[name="tempInF"]')[0].checked = true; // Celcius
+                        }
+                        $('input[name="calRoom"]').val(config.calibrate.room);
+                        $('input[name="calVessel"]').val(config.calibrate.vessel);
+                        $('input[name="target"]').val(config.urltarget.url);
+                        $('input[name="tfreq"]').val(config.urltarget.freq);
+                        $('input[name="bfkey"]').val(config.brewersfriend.key);
+                        $('input[name="bfreq"]').val(config.brewersfriend.freq);
+                        $('input[name="brewfkey"]').val(config.brewfather.key);
+                        $('input[name="brewffreq"]').val(config.brewfather.freq);
+                    }
+                    catch {
+                        alert("Unable to parse configuration data from SPIFFS.");
+                    }
+                })
+                .fail(function () {
+                    alert("Unable to parse configuration data from SPIFFS.");
+                })
+                .always(function () {
+                    // Can post-process here
+                }
+                );
+        }
+    </script>
+
+</body>
+
+</html>
