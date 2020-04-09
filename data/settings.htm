@@ -49,6 +49,8 @@
 
 <body class="d-flex flex-column h-100">
 
+    <iframe name="hidden" style="display:none;"></iframe>
+
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
             <a class="navbar-brand" href="/">
@@ -124,7 +126,7 @@
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">
-                                    <form id="mDNS" action="/settings/update/" method="POST">
+                                    <form id="mDNS" action="/apply/" method="POST" target="hidden">
                                         <div class="form-group row">
                                             <label for="mdnsID" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                                 title="Change mDNS name (the hostname part in http://hostname.local/) Do not add the &ldquo;.local&rdquo; to the name">
@@ -134,12 +136,12 @@
                                                 <input type="text" class="form-control" name="mdnsID" id="mdnsID"
                                                     minlength="3" maxlength="24" placeholder="Hostname">
                                             </div>
-                                            <div class="col-sm-2"><button class="btn btn-primary"
-                                                    id="submitSettings">Update</button>
+                                            <div class="col-sm-2">
+                                                <input type="submit" value="Update" class="btn btn-primary">
                                             </div>
                                         </div>
                                     </form>
-                                    <form id="bubbleID" action="/settings/update/" method="POST">
+                                    <form id="bubbleID" action="/apply/" method="POST" target="hidden">
                                         <div class="form-group row">
                                             <label for="bubname" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                                 title="Change the name of this fermenter">
@@ -149,8 +151,8 @@
                                                 <input type="text" class="form-control" name="bubname" id="bubname"
                                                     minlength="3" maxlength="32" placeholder="Fermenter 1">
                                             </div>
-                                            <div class="col-sm-2"><button class="btn btn-primary"
-                                                    id="submitSettings">Update</button>
+                                            <div class="col-sm-2">
+                                                <input type="submit" value="Update" class="btn btn-primary">
                                             </div>
                                         </div>
                                     </form>
@@ -172,7 +174,7 @@
                                 <li class="list-group-item">
                                     <div class="container">
 
-                                        <form id="tempFormat" action="/settings/update/" method="POST">
+                                        <form id="tempFormat" action="/apply/" method="POST" target="hidden">
                                             <fieldset class="form-group">
                                                 <h5 class="legend">Temperature Format</h5>
                                                 <div class="row justify-content-center">
@@ -202,8 +204,7 @@
                                                         <p>&nbsp;</p>
                                                     </div>
                                                     <div class="col">
-                                                        <button class="btn btn-primary"
-                                                            id="submitSettings">Update</button>
+                                                        <input type="submit" value="Update" class="btn btn-primary">
                                                     </div>
                                                     <div class="col">
                                                         <p>&nbsp;</p>
@@ -216,7 +217,7 @@
 
                                         <fieldset class="form-group">
                                             <h5 class="legend">Temperature Calibration</h5>
-                                            <form id="roomCal" action="/settings/update/" method="POST">
+                                            <form id="roomCal" action="/apply/" method="POST" target="hidden">
                                                 <div class="form-group row">
                                                     <label for="calRoom" class="col-sm-2 col-form-label"
                                                         data-toggle="tooltip"
@@ -227,13 +228,12 @@
                                                             placeholder="0.0">
                                                     </div>
                                                     <div class="col-sm-2">
-                                                        <button class="btn btn-primary"
-                                                            id="submitSettings">Update</button>
+                                                        <input type="submit" value="Update" class="btn btn-primary">
                                                     </div>
                                                 </div>
                                             </form>
 
-                                            <form id="vesCal" action="/settings/update/" method="POST">
+                                            <form id="vesCal" action="/apply/" method="POST" target="hidden">
                                                 <div class="form-group row">
                                                     <label for="calVessel" class="col-sm-2 col-form-label"
                                                         data-toggle="tooltip"
@@ -244,8 +244,7 @@
                                                             placeholder="0.0">
                                                     </div>
                                                     <div class="col-sm-2">
-                                                        <button class="btn btn-primary"
-                                                            id="submitSettings">Update</button>
+                                                        <input type="submit" value="Update" class="btn btn-primary">
                                                     </div>
                                                 </div>
                                             </form>
@@ -272,7 +271,7 @@
                                 delete the URL.
                             </p>
 
-                            <form id="target" action="/settings/update/" method="POST">
+                            <form id="target" action="/apply/" method="POST" target="hidden">
                                 <div class="form-group row">
                                     <label for="endpointURL" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                         title="HTML Endpoint URL. Delete to disable pushing to an HTML Endpoint. Ports other than 80 need to be in the format of: http://foo.com:8080/page.php">Target</label>
@@ -280,13 +279,13 @@
                                         <input type="url" class="form-control" id="target" name="target" minlength="3"
                                             maxlength="128" placeholder="http://brewpi.local/brewpi-api.php">
                                     </div>
-                                    <div class="col-sm-2"><button class="btn btn-primary"
-                                            id="submitSettings">Update</button>
+                                    <div class="col-sm-2">
+                                        <input type="submit" value="Update" class="btn btn-primary">
                                     </div>
                                 </div>
                             </form>
 
-                            <form id="targetFreq" action="/settings/update/" method="POST">
+                            <form id="targetFreq" action="/apply/" method="POST" target="hidden">
                                 <div class="form-group row">
                                     <label for="endpointPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                         title="How often (in minutes) to push data to HTML Endpoint">Push
@@ -295,8 +294,8 @@
                                         <input type="number" class="form-control" id="tfreq" name="tfreq"
                                             placeholder="2" min="1" max="60">
                                     </div>
-                                    <div class="col-sm-2"><button class="btn btn-primary"
-                                            id="submitSettings">Update</button>
+                                    <div class="col-sm-2">
+                                        <input type="submit" value="Update" class="btn btn-primary">
                                     </div>
                                 </div>
                             </form>
@@ -320,7 +319,7 @@
                                 20 to 64-character string of letters and numbers (not a URL).
                             </p>
 
-                            <form id="bfkey" action="/settings/update/" method="POST">
+                            <form id="bfkey" action="/apply/" method="POST" target="hidden">
                                 <div class="form-group row">
                                     <label for="brewersFriendKey" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                         title="Enter the API key from your Brewer's Friend premium account.
@@ -330,13 +329,13 @@
                                         <input type="text" class="form-control" id="bfkey" name="bfkey" minlength="20"
                                             maxlength="64" placeholder="000fa2ac454c1abf14ffa3">
                                     </div>
-                                    <div class="col-sm-2"><button class="btn btn-primary"
-                                            id="submitSettings">Update</button>
+                                    <div class="col-sm-2">
+                                        <input type="submit" value="Update" class="btn btn-primary">
                                     </div>
                                 </div>
                             </form>
 
-                            <form id="bffreq" action="/settings/update/" method="POST">
+                            <form id="bffreq" action="/apply/" method="POST" target="hidden">
                                 <div class="form-group row">
                                     <label for="bfPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                         title="How often (in minutes) to push data to Brewer's Friend">Push
@@ -345,8 +344,8 @@
                                         <input type="number" class="form-control" id="bffreq" name="bffreq"
                                             placeholder="15" min="15" max="120">
                                     </div>
-                                    <div class="col-sm-2"><button class="btn btn-primary"
-                                            id="submitSettings">Update</button>
+                                    <div class="col-sm-2">
+                                        <input type="submit" value="Update" class="btn btn-primary">
                                     </div>
                                 </div>
                             </form>
@@ -372,7 +371,7 @@
                                 (do not include the the URL.)
                             </p>
 
-                            <form id="brewfkey" action="/settings/update/" method="POST">
+                            <form id="brewfkey" action="/apply/" method="POST" target="hidden">
                                 <div class="form-group row">
                                     <label for="brewersFriendKey" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                         title="Enter the API key from your Brewfather premium account.
@@ -382,13 +381,13 @@
                                         <input type="text" class="form-control" id="brewfkey" name="brewfkey"
                                             minlength="10" maxlength="64" placeholder="000fa2ac454c1abf14ffa3">
                                     </div>
-                                    <div class="col-sm-2"><button class="btn btn-primary"
-                                            id="submitSettings">Update</button>
+                                    <div class="col-sm-2">
+                                        <input type="submit" value="Update" class="btn btn-primary">
                                     </div>
                                 </div>
                             </form>
 
-                            <form id="brewffreq" action="/settings/update/" method="POST">
+                            <form id="brewffreq" action="/apply/" method="POST" target="hidden">
                                 <div class="form-group row">
                                     <label for="bfPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
                                         title="How often (in minutes) to push data to Brewfather">Push Frequency</label>
@@ -396,8 +395,8 @@
                                         <input type="number" class="form-control" id="brewffreq" name="brewffreq"
                                             placeholder="15" min="15" max="120">
                                     </div>
-                                    <div class="col-sm-2"><button class="btn btn-primary"
-                                            id="submitSettings">Update</button>
+                                    <div class="col-sm-2">
+                                        <input type="submit" value="Update" class="btn btn-primary">
                                     </div>
                                 </div>
                             </form>
