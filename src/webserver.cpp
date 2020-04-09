@@ -58,6 +58,7 @@ void setRegPageAliases()
     server.serveStatic("/ota2/", SPIFFS, "/").setDefaultFile("ota2.htm").setCacheControl("max-age=600");
     server.serveStatic("/settings/", SPIFFS, "/").setDefaultFile("settings.htm").setCacheControl("max-age=600");
     server.serveStatic("/wifi/", SPIFFS, "/").setDefaultFile("wifi.htm").setCacheControl("max-age=600");
+    server.serveStatic("/test/", SPIFFS, "/").setDefaultFile("test.htm").setCacheControl("max-age=600"); // DEBUG
 }
 
 void setActionPageHandlers()
@@ -526,7 +527,7 @@ void setSettingsAliases()
             DynamicJsonDocument doc(capacityDeserial);
             DeserializationError error = deserializeJson(doc, (const char*)data);
 
-            // TODO:  Can't receive a fill JSON file (yet)
+            // TODO:  Can't receive a full JSON file (yet)
             Log.verbose(F("DEBUG:  Received JSON:" CR));
             serializeJsonPretty(doc, Serial);
             Serial.println();
