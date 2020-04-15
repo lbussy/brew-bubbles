@@ -192,7 +192,7 @@ void setSettingsAliases()
                 // Process any p->name().c_str() / p->value().c_str() pairs
                 const char * name = p->name().c_str();
                 const char * value = p->value().c_str();
-                Log.verbose(F("Processing [%s]: (%s) pair." CR), name, value);
+                Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
 
                 if (strcmp(name, "mdnsid") == 0) // Change Hostname
                 {
@@ -200,11 +200,11 @@ void setSettingsAliases()
                     Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((strlen(value) < 3) || (strlen(value) > 32))
                     {
-                        Log.warning(F("Settings update error, [%s]: (%s) not applied." CR), name, value);
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
                     else
                     {
-                        Log.notice(F("Settings update, [%s]: (%s) applied." CR), name, value);
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
                         strlcpy(config.hostname, value, sizeof(config.hostname));
                         saveConfig();
 
@@ -231,11 +231,11 @@ void setSettingsAliases()
                     Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((strlen(value) < 3) || (strlen(value) > 32))
                     {
-                        Log.warning(F("Settings update error, [%s]: (%s) not applied." CR), name, value);
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
                     else
                     {
-                        Log.notice(F("Settings update, [%s]: (%s) applied." CR), name, value);
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
                         strlcpy(config.bubble.name, value, sizeof(config.bubble.name));
                         saveConfig();
                     }
@@ -255,7 +255,7 @@ void setSettingsAliases()
                     {
                         config.bubble.tempinf = false;
                     }
-                    Log.notice(F("Settings update, [%s]: (%s) applied." CR), name, value);
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
                     saveConfig();
                     strcat(redirect, hashloc); // Redirect to Temp Control
                     Log.notice(F("POSTed tempInF, redirecting to %s." CR), redirect);
@@ -266,11 +266,11 @@ void setSettingsAliases()
                     Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((atof(value) < -25) || (atof(value) > 25))
                     {
-                        Log.warning(F("Settings update error, [%s]: (%s) not applied." CR), name, value);
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
                     else
                     {
-                        Log.notice(F("Settings update, [%s]: (%s) applied." CR), name, value);
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
                         config.calibrate.room = atof(value);
                         saveConfig();
                     }
@@ -283,11 +283,11 @@ void setSettingsAliases()
                     Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((atof(value) < -25) || (atof(value) > 25))
                     {
-                        Log.warning(F("Settings update error, [%s]: (%s) not applied." CR), name, value);
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
                     else
                     {
-                        Log.notice(F("Settings update, [%s]: (%s) applied." CR), name, value);
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
                         config.calibrate.vessel = atof(value);
                         saveConfig();
                     }
@@ -300,11 +300,11 @@ void setSettingsAliases()
                     Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((strlen(value) < 3) || (strlen(value) > 128))
                     {
-                        Log.warning(F("Settings update error, [%s]: (%s) not applied." CR), name, value);
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
                     else
                     {
-                        Log.notice(F("Settings update, [%s]: (%s) applied." CR), name, value);
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
                         strlcpy(config.urltarget.url, value, sizeof(config.urltarget.url));
                         saveConfig();
                     }
@@ -317,11 +317,11 @@ void setSettingsAliases()
                     Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((atoi(value) < 1) || (atoi(value) > 60))
                     {
-                        Log.warning(F("Settings update error, [%s]: (%s) not applied." CR), name, value);
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
                     else
                     {
-                        Log.notice(F("Settings update, [%s]: (%s) applied." CR), name, value);
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
                         config.urltarget.freq = atoi(value);
                         config.urltarget.update = true;
                         saveConfig();
@@ -335,11 +335,11 @@ void setSettingsAliases()
                     Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((strlen(value) < 20) || (strlen(value) > 64))
                     {
-                        Log.warning(F("Settings update error, [%s]: (%s) not applied." CR), name, value);
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
                     else
                     {
-                        Log.notice(F("Settings update, [%s]: (%s) applied." CR), name, value);
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
                         strlcpy(config.brewersfriend.key, value, sizeof(config.brewersfriend.key));
                         saveConfig();
                     }
@@ -352,11 +352,11 @@ void setSettingsAliases()
                     Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((atoi(value) < 15) || (atoi(value) > 120))
                     {
-                        Log.warning(F("Settings update error, [%s]: (%s) not applied." CR), name, value);
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
                     else
                     {
-                        Log.notice(F("Settings update, [%s]: (%s) applied." CR), name, value);
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
                         config.brewersfriend.freq = atoi(value);
                         config.brewersfriend.update = true;
                         saveConfig();
@@ -370,11 +370,11 @@ void setSettingsAliases()
                     Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((strlen(value) < 10) || (strlen(value) > 64))
                     {
-                        Log.warning(F("Settings update error, [%s]: (%s) not applied." CR), name, value);
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
                     else
                     {
-                        Log.notice(F("Settings update, [%s]: (%s) applied." CR), name, value);
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
                         strlcpy(config.brewfather.key, value, sizeof(config.brewfather.key));
                         saveConfig();
                     }
@@ -387,11 +387,11 @@ void setSettingsAliases()
                     Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((atoi(value) < 15) || (atoi(value) > 120))
                     {
-                        Log.warning(F("Settings update error, [%s]: (%s) not applied." CR), name, value);
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
                     else
                     {
-                        Log.notice(F("Settings update, [%s]: (%s) applied." CR), name, value);
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
                         config.brewfather.freq = atoi(value);
                         config.brewfather.update = true;
                         saveConfig();
@@ -401,7 +401,7 @@ void setSettingsAliases()
                 }
                 else // Settings pair not found
                 {
-                    Log.warning(F("Settings update error, [%s]: (%s) not applied." CR), name, value);
+                    Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                 }
             }
         }
