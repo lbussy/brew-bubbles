@@ -9,6 +9,7 @@
 - Change so that posting configuration changes is not a complete page reload
 - See if we can do something about entering a bad password on portal
 - Address long time hack after initial wifi connect (after portal)
+- Wipe out temp array contents when temp format changes
 
 ## Complete
 
