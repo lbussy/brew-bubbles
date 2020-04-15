@@ -32,7 +32,7 @@ void _delay(unsigned long ulDelay) {
 }
 
 void reboot() {
-    Log.notice(F("Reboot timer - rebooting system." CR));
+    Log.notice(F("Reboot request - rebooting system." CR));
     saveBpm();
     ESP.restart();
 }
