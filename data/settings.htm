@@ -143,7 +143,7 @@
                                                 mDNS ID
                                             </label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" id="mdnsid" minlength="3"
+                                                <input type="text" class="form-control" id="mdnsid" name="mdnsid" minlength="3"
                                                     maxlength="32" placeholder="Hostname">
                                             </div>
                                             <div class="col-sm-2">
@@ -161,7 +161,7 @@
                                                 Bubble ID
                                             </label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" id="bubname" minlength="3"
+                                                <input type="text" class="form-control" id="bubname" name="bubname" minlength="3"
                                                     maxlength="32" placeholder="Fermenter 1">
                                             </div>
                                             <div class="col-sm-2">
@@ -178,7 +178,7 @@
 
                     </div> <!-- Controller Settings Tab -->
 
-                    <div class="tab-pane fade" id="temperature"> <!-- Temerature Settings tab -->
+                    <div class="tab-pane fade" id="temperature"> <!-- Temperature Settings tab -->
                         <div class="card-header">
                             <h4 class="card-title">Temperature Settings</h4>
                         </div>
@@ -198,13 +198,13 @@
                                                 <div class="col">
                                                     <div class="form-check">
                                                         <label class="form-check-label">
-                                                          <input type="radio" class="form-check-input" name="tempformat" id="celcius">
+                                                          <input type="radio" class="form-check-input" name="tempformat" id="celcius" value="option0">
                                                             Celsius 
                                                         </label>
                                                       </div>
                                                       <div class="form-check">
                                                       <label class="form-check-label">
-                                                          <input type="radio" class="form-check-input" name="tempformat" id="fahrenheit">
+                                                          <input type="radio" class="form-check-input" name="tempformat" id="fahrenheit" value="option1">
                                                             Fahrenheit 
                                                         </label>
                                                       </div>
@@ -235,7 +235,7 @@
                                                     data-toggle="tooltip"
                                                     title="Value by which the Room temperature display will be offset">Room</label>
                                                 <div class="col-sm-8">
-                                                    <input type="number" class="form-control" id="calroom"
+                                                    <input type="number" class="form-control" name="calroom" id="calroom"
                                                         min="-25" max="25" step=".01" placeholder="0.0">
                                                 </div>
                                                 <div class="col-sm-2">
@@ -250,7 +250,7 @@
                                                     data-toggle="tooltip"
                                                     title="Value by which the Vessel temperature display will be offset">Vessel</label>
                                                 <div class="col-sm-8">
-                                                    <input type="number" class="form-control" id="calvessel"
+                                                    <input type="number" class="form-control" name="calvessel" id="calvessel"
                                                         min=-25 max=25 step=".01" placeholder="0.0">
                                                 </div>
                                                 <div class="col-sm-2">
@@ -264,7 +264,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </div> <!-- Temerature Settings tab -->
+                    </div> <!-- Temperature Settings tab -->
 
                     <div class="tab-pane fade" id="urltarget"> <!-- URL Target Settings tab -->
                         <div class="card-header">
@@ -289,7 +289,7 @@
                                                 Target
                                             </label>
                                             <div class="col-sm-8">
-                                                <input type="url" class="form-control" id="urltarget"
+                                                <input type="url" class="form-control" id="urltargeturl" name="urltargeturl"
                                                     minlength="3" maxlength="128"
                                                     placeholder="http://brewpi.local/brewpi-api.php">
                                             </div>
@@ -306,7 +306,7 @@
                                                 title="How often (in minutes) to push data to HTML Endpoint">Push
                                                 Frequency</label>
                                             <div class="col-sm-8">
-                                                <input type="number" class="form-control" id="urlfreq"
+                                                <input type="number" class="form-control" id="urlfreq" name="urlfreq"
                                                     placeholder="2" min="1" max="60">
                                             </div>
                                             <div class="col-sm-2"><button class="btn btn-primary"
@@ -344,7 +344,7 @@
                                                 Brewer's Friend Key
                                             </label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" id="brewersfriendkey"
+                                                <input type="text" class="form-control" id="brewersfriendkey" name="brewersfriendkey"
                                                     minlength="20" maxlength="64" placeholder="000fa2ac454c1abf14ffa3">
                                             </div>
                                             <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
@@ -358,7 +358,7 @@
                                                 title="How often (in minutes) to push data to Brewer's Friend">Push Frequency</label>
                                             <div class="col-sm-8">
                                                 <input type="number" class="form-control" id="brewersfriendfreq" placeholder="15"
-                                                    min="15" max="120">
+                                                    name="brewersfriendfreq" min="15" max="120">
                                             </div>
                                             <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
                                             </div>
@@ -396,8 +396,8 @@
                                                 Brewfather Key
                                             </label>
                                             <div class="col-sm-8">
-                                                <input type="text" class="form-control" id="brewfatherkey"
-                                                    minlength="10" maxlength="64" placeholder="000fa2ac454c1abf14ffa3">
+                                                <input type="text" class="form-control" id="brewfatherkey" name="brewfatherkey"
+                                                    minlength="10" maxlength="64" placeholder="q4F3wPfooBa3X3">
                                             </div>
                                             <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
                                             </div>
@@ -410,7 +410,7 @@
                                                 title="How often (in minutes) to push data to Brewfather">Push Frequency</label>
                                             <div class="col-sm-8">
                                                 <input type="number" class="form-control" id="brewfatherfreq" placeholder="15"
-                                                    min="15" max="120">
+                                                    name="brewfatherfreq" min="15" max="120">
                                             </div>
                                             <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
                                             </div>
@@ -504,12 +504,9 @@
         function loadPage() {
             populateForm();
             loadTab();
-            console.log("Page loaded.");
         }
 
         function loadTab() {
-            if (document.location.hash)
-                console.log("Reloaded page with target: " + document.location.hash);
             // Javascript to enable linking to tab
             var url = document.location.toString();
             if (url.match('#')) {
@@ -537,7 +534,7 @@
                         }
                         $('#calroom').val(config.calibrate.room);
                         $('#calvessel').val(config.calibrate.vessel);
-                        $('#urltarget').val(config.urltarget.url);
+                        $('#urltargeturl').val(config.urltarget.url);
                         $('#urlfreq').val(config.urltarget.freq);
                         $('#brewersfriendkey').val(config.brewersfriend.key);
                         $('#brewersfriendfreq').val(config.brewersfriend.freq);
