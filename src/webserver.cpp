@@ -292,7 +292,12 @@ void setSettingsAliases()
                 else if (strcmp(name, "urltargeturl") == 0) // Change Target URL
                 {
                     const char * hashloc = "#urltarget";
-                    if ((strlen(value) < 3) || (strlen(value) > 128))
+                    if (strlen(value) == 0)
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling Url Target." CR), name, value);
+                        strlcpy(config.urltarget.url, value, sizeof(config.urltarget.url));
+                    }
+                    else if ((strlen(value) < 3) || (strlen(value) > 128))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
@@ -325,7 +330,12 @@ void setSettingsAliases()
                 else if (strcmp(name, "brewersfriendkey") == 0) // Change Brewer's Friend key
                 {
                     const char * hashloc = "#brewersfriend";
-                    if ((strlen(value) < 20) || (strlen(value) > 64))
+                    if (strlen(value) == 0)
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling Brewer's Friend target." CR), name, value);
+                        strlcpy(config.brewersfriend.key, value, sizeof(config.brewersfriend.key));
+                    }
+                    else if ((strlen(value) < 20) || (strlen(value) > 64))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
@@ -358,7 +368,12 @@ void setSettingsAliases()
                 else if (strcmp(name, "brewfatherkey") == 0) // Change Brewfather key
                 {
                     const char * hashloc = "#brewfather";
-                    if ((strlen(value) < 10) || (strlen(value) > 64))
+                    if (strlen(value) == 0)
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling Brewfather Target." CR), name, value);
+                        strlcpy(config.brewfather.key, value, sizeof(config.brewfather.key));
+                    }
+                    else if ((strlen(value) < 10) || (strlen(value) > 64))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
                     }
