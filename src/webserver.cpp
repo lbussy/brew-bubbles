@@ -50,11 +50,6 @@ void setRegPageAliases()
 {
     // Regular page aliases
 
-    // DEBUG
-    server.serveStatic("/test.htm", SPIFFS, "/").setDefaultFile("test.htm").setCacheControl("max-age=600");
-    server.serveStatic("/clean.htm", SPIFFS, "/").setDefaultFile("clean.htm").setCacheControl("max-age=600");
-    // DEBUG
-
     server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.htm").setCacheControl("max-age=600");
     server.serveStatic("/index.htm", SPIFFS, "/").setDefaultFile("index.htm").setCacheControl("max-age=600");
     server.serveStatic("/about/", SPIFFS, "/").setDefaultFile("about.htm").setCacheControl("max-age=600");
@@ -79,6 +74,15 @@ void setActionPageHandlers()
         Log.verbose(F("Processing /wifi2/." CR));
         request->send(SPIFFS, "/wifi2.htm");
         resetWifi(); // Wipe settings, reset controller
+    });
+
+    server.on("/restart/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Processing /reset/." CR));
+        request->send(200, F("text/plain"), F("Ok"));
+        // Redirect to Settings page
+        request->redirect("/settings/#restart");
+        _delay(1000);
+        reboot();
     });
 
     server.on("/otastart/", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -157,17 +161,11 @@ void setJsonHandlers()
         Log.verbose(F("Serving /config/." CR));
 
         // Serialize configuration
-        DynamicJsonDocument doc(capacitySerial);
-
-        // Create an object at the root
-        JsonObject root = doc.to<JsonObject>();
-
-        // Fill the object
-        config.save(root);
-
-        // Serialize JSON to String
+        DynamicJsonDocument doc(capacitySerial); // Create doc
+        JsonObject root = doc.to<JsonObject>(); // Create JSON object
+        config.save(root); // Fill the object with current config
         String json;
-        serializeJsonPretty(doc, json);
+        serializeJsonPretty(doc, json); // Serialize JSON to String
 
         request->header("Cache-Control: no-store");
         request->send(200, F("application/json"), json);
@@ -176,194 +174,232 @@ void setJsonHandlers()
 
 void setSettingsAliases()
 {
-    // Settings Update Handler
-
-    server.on("/settings/update/", HTTP_POST, [](AsyncWebServerRequest *request) {
+    server.on("/settings/update/", HTTP_POST, [](AsyncWebServerRequest *request) { // Settings Update Handler
         // Process POST configuration changes
         Log.verbose(F("Processing post to /settings/update/." CR));
-
+        // Start to concatenate redurect URL
         char redirect[66];
         strcpy(redirect, "/settings/");
 
-        if (request->hasParam(F("mdnsID"), true))
-        { // Change Hostname
-            if ((request->arg("mdnsID").length() > 32) || (request->arg("mdnsID").length() < 3))
+        //Scroll through all POSTed parameters
+        int params = request->params();
+        for (int i = 0; i < params; i++)
+        {
+            AsyncWebParameter *p = request->getParam(i);
+            if (p->isPost())
             {
-                Log.warning(F("Settings update error." CR));
-            }
-            else
-            {
-                strlcpy(config.hostname, request->arg("mdnsID").c_str(), sizeof(config.hostname));
-                saveConfig();
+                // Process any p->name().c_str() / p->value().c_str() pairs
+                const char * name = p->name().c_str();
+                const char * value = p->value().c_str();
+                Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
 
-                // Reset hostname
-                wifi_station_set_hostname(config.hostname);
-                MDNS.setHostname(config.hostname);
-                MDNS.notifyAPChange();
-                MDNS.announce();
+                if (strcmp(name, "mdnsid") == 0) // Change Hostname
+                {
+                    const char * hashloc = "#controller";
+                    if ((strlen(value) < 3) || (strlen(value) > 32))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        strlcpy(config.hostname, value, sizeof(config.hostname));
+                        saveConfig();
 
-                // Creeate a full URL for redirection
-                char hostname[45];
-                strcpy(hostname, "http://");
-                strcat(hostname, config.hostname);
-                strcat(hostname, ".local");
-                strcpy(redirect, hostname);
-                strcat(redirect, "/settings/");
-                strcat(redirect, "#controller"); // Redirect to Controller box
-                Log.verbose(F("POSTed mdnsID, redirecting to %s." CR), redirect);
+                        // Reset hostname
+                        wifi_station_set_hostname(config.hostname);
+                        MDNS.setHostname(config.hostname);
+                        MDNS.notifyAPChange();
+                        MDNS.announce();
+
+                        // Creeate a full URL for redirection
+                        char hostname[45];
+                        strcpy(hostname, "http://");
+                        strcat(hostname, config.hostname);
+                        strcat(hostname, ".local");
+                        strcpy(redirect, hostname);
+                        strcat(redirect, "/settings/");
+                        strcat(redirect, hashloc); // Redirect to Controller box
+                        Log.verbose(F("POSTed mdnsid, redirecting to %s." CR), redirect);
+                    }
+                }
+                else if (strcmp(name, "bubname") == 0) // Change Bubble ID
+                {
+                    const char * hashloc = "#controller";
+                    if ((strlen(value) < 3) || (strlen(value) > 32))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        strlcpy(config.bubble.name, value, sizeof(config.bubble.name));
+                        saveConfig();
+                    }
+                    strcat(redirect, hashloc); // Redirect to Controller box
+                    Log.notice(F("POSTed bubname, redirecting to %s." CR), redirect);
+                }
+                else if (strcmp(name, "tempformat") == 0) // Change Temperature format
+                {
+                    const char * hashloc = "#temperature";
+                    char option[8];
+                    strcpy(option, value);
+                    if (strcmp(value, "option0") == 0)
+                    {
+                        config.bubble.tempinf = false;
+                    }
+                    else
+                    {
+                        config.bubble.tempinf = true;
+                    }
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    saveConfig();
+                    strcat(redirect, hashloc); // Redirect to Temp Control
+                    Log.notice(F("POSTed tempformat, redirecting to %s." CR), redirect);
+                }
+                else if (strcmp(name, "calroom") == 0) // Change Room temp calibration
+                {
+                    const char * hashloc = "#temperature";
+                    if ((atof(value) < -25) || (atof(value) > 25))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        config.calibrate.room = atof(value);
+                        saveConfig();
+                    }
+                    strcat(redirect, hashloc); // Redirect to Temp Control
+                    Log.notice(F("POSTed calroom, redirecting to %s." CR), redirect);
+                }
+                else if (strcmp(name, "calvessel") == 0) // Change Vessel temp calibration
+                {
+                    const char * hashloc = "#temperature";
+                    if ((atof(value) < -25) || (atof(value) > 25))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        config.calibrate.vessel = atof(value);
+                        saveConfig();
+                    }
+                    strcat(redirect, hashloc); // Redirect to Temp Control
+                    Log.notice(F("POSTed calvessel, redirecting to %s." CR), redirect);
+                }
+                else if (strcmp(name, "urltargeturl") == 0) // Change Target URL
+                {
+                    const char * hashloc = "#urltarget";
+                    if ((strlen(value) < 3) || (strlen(value) > 128))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        strlcpy(config.urltarget.url, value, sizeof(config.urltarget.url));
+                        saveConfig();
+                    }
+                    strcat(redirect, hashloc); // Redirect to Target Control
+                    Log.notice(F("POSTed urltarget, redirecting to %s." CR), redirect);
+                }
+                else if (strcmp(name, "urlfreq") == 0) // Change Vessel temp calibration
+                {
+                    const char * hashloc = "#urltarget";
+                    if ((atoi(value) < 1) || (atoi(value) > 60))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        config.urltarget.freq = atoi(value);
+                        config.urltarget.update = true;
+                        saveConfig();
+                    }
+                    strcat(redirect, hashloc); // Redirect to Target Control
+                    Log.notice(F("POSTed urlfreq, redirecting to %s." CR), redirect);
+                }
+                else if (strcmp(name, "brewersfriendkey") == 0) // Change Brewer's Friend key
+                {
+                    const char * hashloc = "#brewersfriend";
+                    if ((strlen(value) < 20) || (strlen(value) > 64))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        strlcpy(config.brewersfriend.key, value, sizeof(config.brewersfriend.key));
+                        saveConfig();
+                    }
+                    strcat(redirect, hashloc); // Redirect to Brewer's Friend Control
+                    Log.notice(F("POSTed brewersfriendkey, redirecting to %s." CR), redirect);
+                }
+                else if (strcmp(name, "brewersfriendfreq") == 0) // Change Vessel temp calibration
+                {
+                    const char * hashloc = "#brewersfriend";
+                    if ((atoi(value) < 15) || (atoi(value) > 120))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        config.brewersfriend.freq = atoi(value);
+                        config.brewersfriend.update = true;
+                        saveConfig();
+                    }
+                    strcat(redirect, hashloc); // Redirect to Brewer's Friend Control
+                    Log.notice(F("POSTed brewersfriendfreq, redirecting to %s." CR), redirect);
+                }
+                else if (strcmp(name, "brewfatherkey") == 0) // Change Brewfather key
+                {
+                    const char * hashloc = "#brewfather";
+                    if ((strlen(value) < 10) || (strlen(value) > 64))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        strlcpy(config.brewfather.key, value, sizeof(config.brewfather.key));
+                        saveConfig();
+                    }
+                    strcat(redirect, hashloc); // Redirect to Brewer's Friend Control
+                    Log.notice(F("POSTed brewfatherkey, redirecting to %s." CR), redirect);
+                }
+                else if (strcmp(name, "brewfatherfreq") == 0) // Change Vessel temp calibration
+                {
+                    const char * hashloc = "#brewfather";
+                    if ((atoi(value) < 15) || (atoi(value) > 120))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        config.brewfather.freq = atoi(value);
+                        config.brewfather.update = true;
+                        saveConfig();
+                    }
+                    strcat(redirect, hashloc); // Redirect to Brewfather Control
+                    Log.notice(F("POSTed brewfatherfreq, redirecting to %s." CR), redirect);
+                }
+                else // Settings pair not found
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                }
             }
-        }
-        else if (request->hasParam(F("bubname"), true))
-        { // Change Bubble ID
-            if ((request->arg("bubname").length() > 32) || (request->arg("bubname").length() < 3))
-            {
-                Log.warning(F("Settings update error." CR));
-            }
-            else
-            {
-                strlcpy(config.bubble.name, request->arg("bubname").c_str(), sizeof(config.bubble.name));
-                saveConfig();
-            }
-            strcat(redirect, "#controller"); // Redirect to Controller box
-            Log.notice(F("POSTed bubname, redirecting to %s." CR), redirect);
-        }
-        else if (request->hasParam(F("tempInF"), true))
-        { // Change Temp in F
-            char option[8];
-            strcpy(option, request->arg("tempInF").c_str());
-            if (strcmp(option, "option0") == 0)
-            {
-                config.bubble.tempinf = false;
-            }
-            else
-            {
-                config.bubble.tempinf = true;
-                saveConfig();
-            }
-            strcat(redirect, "#temp"); // Redirect to Temp Control
-            Log.notice(F("POSTed tempInF, redirecting to %s." CR), redirect);
-        }
-        else if (request->hasParam(F("calRoom"), true))
-        { // Change Room temp calibration
-            if ((request->arg("calRoom").toDouble() < -25) || (request->arg("calRoom").toDouble() > 25))
-            {
-                Log.warning(F("Settings update error." CR));
-            }
-            else
-            {
-                config.calibrate.room = request->arg("calRoom").toDouble();
-                saveConfig();
-            }
-            strcat(redirect, "#temp"); // Redirect to Temp Control
-            Log.notice(F("POSTed calRoom, redirecting to %s." CR), redirect);
-        }
-        else if (request->hasParam(F("calVessel"), true))
-        { // Change Vessel temp calibration
-            if ((request->arg("calVessel").toDouble() < -25) || (request->arg("calVessel").toDouble() > 25))
-            {
-                Log.warning(F("Settings update error." CR));
-            }
-            else
-            {
-                config.calibrate.vessel = request->arg("calVessel").toDouble();
-                saveConfig();
-            }
-            strcat(redirect, "#temp"); // Redirect to Temp Control
-            Log.notice(F("POSTed calVessel, redirecting to %s." CR), redirect);
-        }
-        else if (request->hasParam(F("target"), true))
-        { // Change Target URL
-            if (request->arg("target").length() > 128)
-            {
-                Log.warning(F("Settings update error." CR));
-            }
-            else
-            {
-                strlcpy(config.urltarget.url, request->arg("target").c_str(), sizeof(config.urltarget.url));
-                saveConfig();
-            }
-            strcat(redirect, "#target"); // Redirect to Target Control
-            Log.notice(F("POSTed target, redirecting to %s." CR), redirect);
-        }
-        else if (request->hasParam(F("tfreq"), true))
-        { // Change Vessel temp calibration
-            if ((request->arg("tfreq").toInt() < 1) || (request->arg("tfreq").toInt() > 60))
-            {
-                Log.warning(F("Settings update error." CR));
-            }
-            else
-            {
-                config.urltarget.freq = request->arg("tfreq").toInt();
-                config.urltarget.update = true;
-                saveConfig();
-            }
-            strcat(redirect, "#target"); // Redirect to Target Control
-            Log.notice(F("POSTed tfreq, redirecting to %s." CR), redirect);
-        }
-        else if (request->hasParam(F("bfkey"), true))
-        { // Change Brewer's Friend key
-            if ((request->arg("bfkey").length() > 64) || (request->arg("bfkey").length() < 20))
-            {
-                Log.warning(F("Settings update error." CR));
-            }
-            else
-            {
-                strlcpy(config.brewersfriend.key, request->arg("bfkey").c_str(), sizeof(config.brewersfriend.key));
-                saveConfig();
-            }
-            strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
-            Log.notice(F("POSTed bfkey, redirecting to %s." CR), redirect);
-        }
-        else if (request->hasParam(F("bffreq")))
-        { // Change Vessel temp calibration
-            if ((request->arg("bffreq").toInt() < 15) || (request->arg("bffreq").toInt() > 120))
-            {
-                Log.warning(F("Settings update error." CR));
-            }
-            else
-            {
-                config.brewersfriend.freq = request->arg("bffreq").toInt();
-                config.brewersfriend.update = true;
-                saveConfig();
-            }
-            strcat(redirect, "#bf"); // Redirect to Brewer's Friend Control
-            Log.notice(F("POSTed bffreq, redirecting to %s." CR), redirect);
-        }
-        else if (request->hasParam(F("brewfkey"), true))
-        { // Change Brewfather key
-            if ((request->arg("brewfkey").length() > 64) || (request->arg("brewfkey").length() < 10))
-            {
-                Log.warning(F("Settings update error." CR));
-            }
-            else
-            {
-                strlcpy(config.brewfather.key, request->arg("brewfkey").c_str(), sizeof(config.brewfather.key));
-                saveConfig();
-            }
-            strcat(redirect, "#brewf"); // Redirect to Brewfather Control
-            Log.notice(F("POSTed brewfkey, redirecting to %s." CR), redirect);
-        }
-        else if (request->hasParam(F("brewffreq")))
-        { // Change Vessel temp calibration
-            if ((request->arg("brewffreq").toInt() < 15) || (request->arg("brewffreq").toInt() > 120))
-            {
-                Log.warning(F("Settings update error." CR));
-            }
-            else
-            {
-                config.brewfather.freq = request->arg("brewffreq").toInt();
-                config.brewfather.update = true;
-                saveConfig();
-            }
-            strcat(redirect, "#bf"); // Redirect to Brewfather Control
-            Log.notice(F("POSTed brewffreq, redirecting to %s." CR), redirect);
         }
 
         // Redirect to Settings page
         request->redirect(redirect);
     });
 
-    server.on("/config/apply/", HTTP_POST, [](AsyncWebServerRequest *request) { // Process JSON POST configuration changes
+    server.on("/config/apply/", HTTP_POST, [](AsyncWebServerRequest *request) { // Process JSON POST configuration changes (bulk)
         Log.verbose(F("Processing post to /config/apply/." CR));
         String input = request->arg(F("plain"));
         DynamicJsonDocument doc(capacityDeserial);
@@ -487,7 +523,6 @@ void setSettingsAliases()
 
             if (updated)
             {
-
                 // Save configuration to file
                 saveConfig();
 
@@ -520,27 +555,35 @@ void setSettingsAliases()
         }
     });
 
-    server.on(
-        "/apply/", HTTP_POST, [](AsyncWebServerRequest *request) {},
-        NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len,
-        size_t index, size_t total) {
-            request->addInterestingHeader("Accept: application/json");
-            Log.verbose(F("Processing /apply/." CR));
-            DynamicJsonDocument doc(capacityDeserial);
+    // server.on("/json/", HTTP_POST, [](AsyncWebServerRequest *request) { // New bulk JSON handler
+    //     Log.verbose(F("Processing /json/ POST." CR));
 
-            DeserializationError error = deserializeJson(doc, (const char*)data);
-            if (error) {
-                Log.verbose(F("Error while processing /apply/: %s" CR), error.c_str());
-                request->send(500, "text/plain", error.c_str());
-            } else {
-                if (mergeConfig(doc)) {
-                    printFile();
-                    request->send(200, "text/plain", "Ok");
-                    // TODO:  Check for doc.containsKey("foo") and do follow-up processing
-                } else {
-                    request->send(500, "text/plain", "Unable to merge JSON.");
-                }
-            } });
+    //     String input = request->arg(F("plain"));
+    //     DynamicJsonDocument doc(capacityDeserial);
+    //     DeserializationError error = deserializeJson(doc, input);
+
+    //     // TODO:  Can't receive a full JSON file (yet) - crashes
+    //     Log.verbose(F("DEBUG:  Received JSON:" CR));
+    //     serializeJsonPretty(doc, Serial);
+    //     Serial.println();
+
+    //     if (error) {
+    //         Log.verbose(F("Error while processing /apply/: %s" CR), error.c_str());
+    //         request->send(500, "text/plain", error.c_str());
+    //     } else {
+    //         if (mergeJsonObject(doc)) {
+
+    //             Log.verbose(F("DEBUG:  Merged JSON file:" CR));
+    //             printFile();
+
+    //             request->send(200, "text/plain", "Ok");
+    //             // TODO:  Check for doc.containsKey("foo") and do follow-up processing
+    //             // Hostname as well as URL, Brewer's Friend and Brewfather Frequencies
+    //         } else {
+    //             request->send(500, "text/plain", "Unable to merge JSON.");
+    //         }
+    //     }
+    // });
 }
 
 void stopWebServer()

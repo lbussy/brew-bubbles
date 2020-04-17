@@ -25,7 +25,7 @@ SOFTWARE. */
 Bubbles bubbles;
 volatile bool doBubble;
 
-void Bubbles::start() {
+bool Bubbles::start() {
         interruptSetup();
 
         // Set starting values
@@ -40,35 +40,25 @@ void Bubbles::start() {
         // Set starting time
         lastTime = getDTS();
         update();
-        Log.notice(F("Bubble counter initialized." CR));
+        return true;
 }
 
-void Bubbles::update() { // Regular update loop, once per minute
+bool Bubbles::update() { // Regular update loop, once per minute
     // Get NTP Time
-    DNOT("triggered");
     lastTime = getDTS();
-    DVER("got DTS");
 
     // Store last values
     lastBpm = getRawBpm();
-    DVER("got Raw BPM");
     lastAmb = getTemp(AMBSENSOR);
-    DVER("got Ambient");
     lastVes = getTemp(VESSENSOR);
-    DVER("got Vessel");
 
     // Push values to circular buffers
     tempAmbAvg.push(lastAmb);
     tempVesAvg.push(lastVes);
     bubAvg.push(lastBpm);
+    sampleSize = tempVesAvg.size();
 
-    Log.verbose(F("Current BPM is %D. Averages (%l in sample): BPM = %D, Ambient = %D, Vessel = %D." CR),
-        lastBpm,
-        tempVesAvg.size(),
-        getAvgBpm(),
-        getAvgAmbient(),
-        getAvgVessel()
-    );
+    return true;
 }
 
 float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)

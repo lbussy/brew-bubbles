@@ -49,13 +49,14 @@ void setup() {
         doWiFi();
     }
 
-    execspiffs();       // Check for pending SPIFFS update
-    setClock();         // Set NTP Time
-    loadBpm() ;         // Get last BPM reading if it was a controlled reboot
-    mdnssetup();        // Set up mDNS responder
-    initWebServer();    // Turn on web server
-    doPoll();           // Get server version at startup
-    bubbles.start();    // Initialize bubble counter
+    execspiffs();           // Check for pending SPIFFS update
+    setClock();             // Set NTP Time
+    loadBpm() ;             // Get last BPM reading if it was a controlled reboot
+    mdnssetup();            // Set up mDNS responder
+    initWebServer();        // Turn on web server
+    doPoll();               // Get server version at startup
+    if (bubbles.start())    // Initialize bubble counter
+        Log.notice(F("Bubble counter initialized." CR));
 
     Log.notice(F("Started %s version %s (%s) [%s]." CR), API_KEY, version(), branch(), build());
 }
