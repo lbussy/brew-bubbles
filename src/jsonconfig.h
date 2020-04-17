@@ -23,8 +23,6 @@ SOFTWARE. */
 #ifndef _JSONCONFIG_H
 #define _JSONCONFIG_H
 
-#define JC_DEBUG // Control debug printing for JsonConfig (uses ArduinoLog)
-
 #include "config.h"
 #include <ArduinoJson.h>
 #include <FS.h>
@@ -99,27 +97,17 @@ struct Config
     void save(JsonObject) const;
 };
 
-bool deleteConfig();
+bool deleteConfigFile();
 bool loadConfig();
 bool saveConfig();
 bool loadFile();
 bool saveFile();
+bool printConfig();
 bool printFile();
 bool serializeConfig(Print &);
 bool deserializeConfig(Stream &);
 bool merge(JsonVariant, JsonVariantConst);
-bool mergeConfig(JsonVariantConst);
-
-#ifdef JC_DEBUG
-    #include <ArduinoLog.h>
-    #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
-    #define DVER(...)   Log.verbose(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
-    #define DNOT(...)   Log.notice(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
-    #define DERR(...)   Log.error(F("[%s] in %s(): %s." CR), __FILENAME__, __func__, __VA_ARGS__);
-#else
-    #define DVER(...)
-    #define DNOT(...)
-    #define DERR(...)
-#endif // End control debug printing
+bool mergeJsonObject(JsonVariantConst);
+bool mergeJsonString(String);
 
 #endif // _JSONCONFIG_H
