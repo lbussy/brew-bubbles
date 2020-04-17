@@ -3,14 +3,13 @@
 ## Open
 
 - Add Thingspeak support
-- Test Brefather return value
 - Move posting targets to async
-- Optimize settings update with the JSON merge
 - Change so that posting configuration changes is not a complete page reload
 - See if we can do something about entering a bad password on portal
-- Address long time hack after initial wifi connect (after portal)
 - Wipe out temp array contents when temp format changes
 - Fix 'nan' error in Bubbles after SPIFFS upload
+- Review reboot to see if it's still needed
+- Review mDNS restart to see if it's still needed
 
 ## Complete
 
@@ -149,3 +148,6 @@
 - ~~Add Brewfather support~~
 - ~~Optimize /bubble with JSON struct~~
 - ~~Check shouldSaveConfig behavior in WiFi()~~
+- ~~Optimize settings update with the JSON merge~~
+- ~~Test Brefather return value~~
+- ~~Address long time hack after initial wifi connect (after portal)~~
