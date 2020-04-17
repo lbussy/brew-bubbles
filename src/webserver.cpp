@@ -58,7 +58,6 @@ void setRegPageAliases()
     server.serveStatic("/ota2/", SPIFFS, "/").setDefaultFile("ota2.htm").setCacheControl("max-age=600");
     server.serveStatic("/settings/", SPIFFS, "/").setDefaultFile("settings.htm").setCacheControl("max-age=600");
     server.serveStatic("/wifi/", SPIFFS, "/").setDefaultFile("wifi.htm").setCacheControl("max-age=600");
-    server.serveStatic("/test/", SPIFFS, "/").setDefaultFile("test.htm").setCacheControl("max-age=600"); // DEBUG
 }
 
 void setActionPageHandlers()
@@ -197,7 +196,6 @@ void setSettingsAliases()
                 if (strcmp(name, "mdnsid") == 0) // Change Hostname
                 {
                     const char * hashloc = "#controller";
-                    Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((strlen(value) < 3) || (strlen(value) > 32))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -222,13 +220,12 @@ void setSettingsAliases()
                         strcpy(redirect, hostname);
                         strcat(redirect, "/settings/");
                         strcat(redirect, hashloc); // Redirect to Controller box
-                        Log.verbose(F("POSTed mdnsID, redirecting to %s." CR), redirect);
+                        Log.verbose(F("POSTed mdnsid, redirecting to %s." CR), redirect);
                     }
                 }
                 else if (strcmp(name, "bubname") == 0) // Change Bubble ID
                 {
                     const char * hashloc = "#controller";
-                    Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((strlen(value) < 3) || (strlen(value) > 32))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -247,23 +244,22 @@ void setSettingsAliases()
                     const char * hashloc = "#temperature";
                     char option[8];
                     strcpy(option, value);
-                    if (strcmp(value, "fahrenheit") == 0)
+                    if (strcmp(value, "option0") == 0)
                     {
-                        config.bubble.tempinf = true;
+                        config.bubble.tempinf = false;
                     }
                     else
                     {
-                        config.bubble.tempinf = false;
+                        config.bubble.tempinf = true;
                     }
                     Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
                     saveConfig();
                     strcat(redirect, hashloc); // Redirect to Temp Control
-                    Log.notice(F("POSTed tempInF, redirecting to %s." CR), redirect);
+                    Log.notice(F("POSTed tempformat, redirecting to %s." CR), redirect);
                 }
                 else if (strcmp(name, "calroom") == 0) // Change Room temp calibration
                 {
                     const char * hashloc = "#temperature";
-                    Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((atof(value) < -25) || (atof(value) > 25))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -275,12 +271,11 @@ void setSettingsAliases()
                         saveConfig();
                     }
                     strcat(redirect, hashloc); // Redirect to Temp Control
-                    Log.notice(F("POSTed calRoom, redirecting to %s." CR), redirect);
+                    Log.notice(F("POSTed calroom, redirecting to %s." CR), redirect);
                 }
                 else if (strcmp(name, "calvessel") == 0) // Change Vessel temp calibration
                 {
                     const char * hashloc = "#temperature";
-                    Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((atof(value) < -25) || (atof(value) > 25))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -292,12 +287,11 @@ void setSettingsAliases()
                         saveConfig();
                     }
                     strcat(redirect, hashloc); // Redirect to Temp Control
-                    Log.notice(F("POSTed calVessel, redirecting to %s." CR), redirect);
+                    Log.notice(F("POSTed calvessel, redirecting to %s." CR), redirect);
                 }
-                else if (strcmp(name, "urltarget") == 0) // Change Target URL
+                else if (strcmp(name, "urltargeturl") == 0) // Change Target URL
                 {
                     const char * hashloc = "#urltarget";
-                    Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((strlen(value) < 3) || (strlen(value) > 128))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -308,13 +302,12 @@ void setSettingsAliases()
                         strlcpy(config.urltarget.url, value, sizeof(config.urltarget.url));
                         saveConfig();
                     }
-                    strcat(redirect, "#urltarget"); // Redirect to Target Control
+                    strcat(redirect, hashloc); // Redirect to Target Control
                     Log.notice(F("POSTed urltarget, redirecting to %s." CR), redirect);
                 }
                 else if (strcmp(name, "urlfreq") == 0) // Change Vessel temp calibration
                 {
                     const char * hashloc = "#urltarget";
-                    Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((atoi(value) < 1) || (atoi(value) > 60))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -326,13 +319,12 @@ void setSettingsAliases()
                         config.urltarget.update = true;
                         saveConfig();
                     }
-                    strcat(redirect, "#target"); // Redirect to Target Control
-                    Log.notice(F("POSTed tfreq, redirecting to %s." CR), redirect);
+                    strcat(redirect, hashloc); // Redirect to Target Control
+                    Log.notice(F("POSTed urlfreq, redirecting to %s." CR), redirect);
                 }
                 else if (strcmp(name, "brewersfriendkey") == 0) // Change Brewer's Friend key
                 {
                     const char * hashloc = "#brewersfriend";
-                    Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((strlen(value) < 20) || (strlen(value) > 64))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -344,12 +336,11 @@ void setSettingsAliases()
                         saveConfig();
                     }
                     strcat(redirect, hashloc); // Redirect to Brewer's Friend Control
-                    Log.notice(F("POSTed bfkey, redirecting to %s." CR), redirect);
+                    Log.notice(F("POSTed brewersfriendkey, redirecting to %s." CR), redirect);
                 }
                 else if (strcmp(name, "brewersfriendfreq") == 0) // Change Vessel temp calibration
                 {
                     const char * hashloc = "#brewersfriend";
-                    Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((atoi(value) < 15) || (atoi(value) > 120))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -362,12 +353,11 @@ void setSettingsAliases()
                         saveConfig();
                     }
                     strcat(redirect, hashloc); // Redirect to Brewer's Friend Control
-                    Log.notice(F("POSTed bffreq, redirecting to %s." CR), redirect);
+                    Log.notice(F("POSTed brewersfriendfreq, redirecting to %s." CR), redirect);
                 }
                 else if (strcmp(name, "brewfatherkey") == 0) // Change Brewfather key
                 {
                     const char * hashloc = "#brewfather";
-                    Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((strlen(value) < 10) || (strlen(value) > 64))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -379,12 +369,11 @@ void setSettingsAliases()
                         saveConfig();
                     }
                     strcat(redirect, hashloc); // Redirect to Brewer's Friend Control
-                    Log.notice(F("POSTed brewfkey, redirecting to %s." CR), redirect);
+                    Log.notice(F("POSTed brewfatherkey, redirecting to %s." CR), redirect);
                 }
                 else if (strcmp(name, "brewfatherfreq") == 0) // Change Vessel temp calibration
                 {
                     const char * hashloc = "#brewfather";
-                    Log.verbose(F("DEBUG: In '%s' setting." CR), hashloc);
                     if ((atoi(value) < 15) || (atoi(value) > 120))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -396,8 +385,8 @@ void setSettingsAliases()
                         config.brewfather.update = true;
                         saveConfig();
                     }
-                    strcat(redirect, "#bf"); // Redirect to Brewfather Control
-                    Log.notice(F("POSTed brewffreq, redirecting to %s." CR), redirect);
+                    strcat(redirect, hashloc); // Redirect to Brewfather Control
+                    Log.notice(F("POSTed brewfatherfreq, redirecting to %s." CR), redirect);
                 }
                 else // Settings pair not found
                 {
@@ -413,7 +402,6 @@ void setSettingsAliases()
     server.on("/config/apply/", HTTP_POST, [](AsyncWebServerRequest *request) { // Process JSON POST configuration changes (bulk)
         Log.verbose(F("Processing post to /config/apply/." CR));
         String input = request->arg(F("plain"));
-        Log.verbose(F("DEBUG: Configuration follows: " CR "%s" CR), input.c_str());
         DynamicJsonDocument doc(capacityDeserial);
         DeserializationError err = deserializeJson(doc, input);
         if (!err)
