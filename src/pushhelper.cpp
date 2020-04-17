@@ -75,7 +75,7 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
 
         // Open POST connection
         if (lcburl.getAfterPath().length() > 0) {
-             Log.verbose(F("POST /%s?%s HTTP/1.1" CR),
+            Log.verbose(F("POST /%s%s HTTP/1.1" CR),
                 lcburl.getPath().c_str(),
                 lcburl.getAfterPath().c_str()
             );
@@ -85,7 +85,6 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
         client.print(F("POST /"));
         client.print(lcburl.getPath().c_str());
         if (lcburl.getAfterPath().length() > 0) {
-            client.print(F("?"));
             client.print(lcburl.getAfterPath().c_str());
         }
         client.println(F(" HTTP/1.1"));
