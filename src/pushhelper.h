@@ -26,8 +26,8 @@ SOFTWARE. */
 #include "bubbles.h"
 #include "pushtarget.h"
 #include "target.h"
-#include "bftarget.h"
-#include "brewftarget.h"
+#include "brewfather.h"
+#include "brewersfriend.h"
 #include <ESP8266WiFi.h>
 
 IPAddress resolveHost(const char hostname[129]);
