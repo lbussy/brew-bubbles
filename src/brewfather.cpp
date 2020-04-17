@@ -69,8 +69,7 @@ BrewfTarget* BrewfTarget::getInstance() {
 
 bool BrewfTarget::push() {
     Log.verbose(F("Triggered %s push." CR), single->target->target.name);
-    if (single->target->apiName.enabled && strlen(config.brewfather.key)) { // Key target is unique per target (for now)
-        single->target->target.enabled = true;
+    if (single->target->target.enabled && strlen(config.brewfather.key)) { // Key target is unique per target (for now)
         strlcpy(single->target->key.name, config.brewfather.key, sizeof(config.brewfather.key)); // Key target is unique per target (for now)
     } else {
         single->target->target.enabled = false;
