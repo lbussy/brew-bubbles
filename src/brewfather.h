@@ -47,7 +47,7 @@ class BrewfTarget {
 
         // Enable target and target name
         const bool target_enabled = true;
-        String target_name = "Brewerfather";
+        String target_name = "Brewfather";
         //
         // Check return body for success
         const bool checkbody_enabled = true;
