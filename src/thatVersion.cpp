@@ -35,11 +35,10 @@ void sendRequest() {
 void requestHandler(void* optParm, asyncHTTPrequest* request, int readyState) {
     String body = request->responseText();
     const char * src = body.c_str();
-    TV_NOT(src);
     if (!deserializeVersion(src, thatVersion)) {
-        TV_ERR(F("failed to deserialize version"));
+        Log.error(F("Failed to deserialize version information." CR));
     } else {
-        TV_NOT(F("version deserialized"));
+        Log.verbose(F("Deserialized version information." CR));
     }
 }
 
@@ -66,22 +65,16 @@ bool deserializeVersion(const char * &src, ThatVersion &thatVersion) {
     // Parse the JSON object in the file
     DeserializationError err = deserializeJson(doc, src);
     if (err) {
-        TV_NOT(F("no existing version"));
         thatVersion.load(doc.as<JsonObject>());
-        TV_NOT(F("loaded default version"));
         return true;
     } else {
         thatVersion.load(doc.as<JsonObject>());
-        TV_NOT(F("loaded existing version"));
         return true;        
     }
     // TODO:  Can/should I return false here somehow?
 }
 
 void doPoll() {
-#ifdef TV_DEBUG
-    request.setDebug(true);
-#endif
     request.onData(requestHandler);
     sendRequest();
 }

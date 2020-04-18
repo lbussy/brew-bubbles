@@ -23,8 +23,6 @@ SOFTWARE. */
 #ifndef _THATVERSION_H
 #define _THATVERSION_H
 
-// #define TV_DEBUG // Enable Debug for module
-
 #include "config.h"
 #include <ArduinoLog.h>
 #include <ESPAsyncTCP.h>
@@ -44,14 +42,5 @@ void sendRequest();
 void requestHandler(void*, asyncHTTPrequest*, int);
 bool serializeVersion(const ThatVersion &, Print &);
 bool deserializeVersion(const char * &, ThatVersion &);
-
-#ifdef TV_DEBUG
-    #include <ArduinoLog.h>
-    #define TV_NOT(...)   Log.notice(F("[TV Debug] in %s(): %s." CR), __func__, __VA_ARGS__);
-    #define TV_ERR(...)   Log.error(F("[TV Debug] in %s(): %s." CR), __func__, __VA_ARGS__);
-#else
-    #define TV_NOT(...)
-    #define TV_ERR(...)
-#endif // End control debug printing
 
 #endif // _THATVERSION_H
