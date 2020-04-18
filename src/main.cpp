@@ -39,7 +39,7 @@ void setup() {
     _delay(200); // Let pins settle, else detect is inconsistent
 
     if (digitalRead(RESETWIFI) == LOW) {
-        Log.notice(F("%s low, presenting portal." CR), RESETWIFI);
+        Log.notice(F("%s low, presenting portal." CR), stringify(RESETWIFI));
         doWiFi(true);
     } else if (rst == true) {
         Log.notice(F("DRD: Triggered, presenting portal." CR));

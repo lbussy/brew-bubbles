@@ -23,18 +23,22 @@ SOFTWARE. */
 #include "tools.h"
 
 void _delay(unsigned long ulDelay) {
-    // Safe blocking delay() replacement with yield()
+    // Safe semi-blocking delay
+#ifdef ESP32
+    vTaskDelay(ulDelay); // Builtin to ESP32
+#elif defined ESP8266
     unsigned long ulNow = millis();
     unsigned long ulThen = ulNow + ulDelay;
     while (ulThen > millis()) {
-        yield();
+        yield(); // ESP8266 needs to yield()
     }
+#endif
 }
 
-void reboot() {
+void resetController() {
     Log.notice(F("Reboot request - rebooting system." CR));
+    _delay(5000);
     saveBpm();
-    _delay(1000);
     ESP.restart();
 }
 

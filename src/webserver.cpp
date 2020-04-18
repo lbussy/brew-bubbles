@@ -80,8 +80,7 @@ void setActionPageHandlers()
         Log.verbose(F("Processing /reset/." CR));
         // Redirect to Reset page
         request->send(SPIFFS, "/reset.htm");
-        _delay(5000);
-        reboot();
+        setDoReset();
     });
 
     server.on("/otastart/", HTTP_GET, [](AsyncWebServerRequest *request) {
