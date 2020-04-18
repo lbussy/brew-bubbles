@@ -58,6 +58,7 @@ void setRegPageAliases()
     server.serveStatic("/ota2/", SPIFFS, "/").setDefaultFile("ota2.htm").setCacheControl("max-age=600");
     server.serveStatic("/settings/", SPIFFS, "/").setDefaultFile("settings.htm").setCacheControl("max-age=600");
     server.serveStatic("/wifi/", SPIFFS, "/").setDefaultFile("wifi.htm").setCacheControl("max-age=600");
+    server.serveStatic("/reset/", SPIFFS, "/").setDefaultFile("reset.htm").setCacheControl("max-age=600");
 }
 
 void setActionPageHandlers()
@@ -80,7 +81,7 @@ void setActionPageHandlers()
         Log.verbose(F("Processing /reset/." CR));
         request->send(200, F("text/plain"), F("Ok"));
         // Redirect to Settings page
-        request->redirect("/settings/#restart");
+        request->redirect("/reset/");
         _delay(1000);
         reboot();
     });
