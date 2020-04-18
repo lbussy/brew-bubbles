@@ -2,14 +2,15 @@
 
 ## Open
 
+- Reboot not working - probably related to saveBpm() and/or loadBpm() [Issue #19](https://github.com/lbussy/brew-bubbles/issues/19)
 - Add Thingspeak support
 - Move posting targets to async
 - Change so that posting configuration changes is not a complete page reload
 - See if we can do something about entering a bad password on portal
 - Wipe out temp array contents when temp format changes
 - Fix 'nan' error in Bubbles after SPIFFS upload
-- Review reboot to see if it's still needed
-- Review mDNS restart to see if it's still needed
+- Review reboot schedule to see if it's still needed
+- Review mDNS restart schedule to see if it's still needed
 
 ## Complete
 
@@ -149,5 +150,7 @@
 - ~~Optimize /bubble with JSON struct~~
 - ~~Check shouldSaveConfig behavior in WiFi()~~
 - ~~Optimize settings update with the JSON merge~~
-- ~~Test Brefather return value~~
 - ~~Address long time hack after initial wifi connect (after portal)~~
+- ~~Test Brefather return value~~
+- ~~Brewfather post not working~~
+- ~~Test web page controller reset button~~
