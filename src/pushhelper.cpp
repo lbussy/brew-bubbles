@@ -33,9 +33,10 @@ IPAddress resolveHost(const char *hostname) {
 }
 
 bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
-    Log.notice(F("Posting to: %s" CR), target->url);
     LCBUrl lcburl;
     lcburl.setUrl(String(target->url) + String(target->key.name));
+
+    Log.notice(F("Posting to: %s" CR), lcburl.getHost().c_str());
 
     const size_t capacity = JSON_OBJECT_SIZE(8) + 210;
     StaticJsonDocument<capacity> doc;
@@ -52,8 +53,8 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
     String json;
     serializeJson(doc, json);
 
-    // Use the IP address we resolved if we are connecting with mDNS
-    Log.verbose(F("Connecting to: %s @ %s on port %l" CR),
+    // Use the IP address we resolved (necessary for mDNS)
+    Log.verbose(F("Connecting to: %s at %s on port %l" CR),
         lcburl.getHost().c_str(),
         targetIP.toString().c_str(),
         port
@@ -69,9 +70,7 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
     client.setNoDelay(true);
     client.setTimeout(10000);
     if (client.connect(targetIP, port)) {
-        Log.notice(F("Connected to: %s at %s on port %l" CR),
-            target->target.name, lcburl.getHost().c_str(), port
-        );
+        Log.notice(F("Connected to: %s." CR), target->target.name);
 
         // Open POST connection
         if (lcburl.getAfterPath().length() > 0) {
