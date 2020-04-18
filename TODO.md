@@ -2,7 +2,6 @@
 
 ## Open
 
-- Add BrewFlasher to docs
 - Add Thingspeak support
 - Move posting targets to async
 - Change so that posting configuration changes is not a complete page reload
@@ -155,3 +154,4 @@
 - ~~Brewfather post not working~~
 - ~~Test web page controller reset button~~
 - ~~Reboot not working - probably related to saveBpm() and/or loadBpm() [Issue #19](https://github.com/lbussy/brew-bubbles/issues/19)~~
+- ~~Add BrewFlasher to docs~~
