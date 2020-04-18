@@ -28,6 +28,7 @@ SOFTWARE. */
 #include "config.h"
 #include "jsonconfig.h"
 #include "tools.h"
+#include "pushhelper.h"
 #include <ESP8266WiFi.h>
 #include <Ticker.h>
 #include <ArduinoLog.h>

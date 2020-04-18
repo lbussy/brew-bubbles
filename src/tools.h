@@ -33,7 +33,7 @@ SOFTWARE. */
 #define EEPROM_ADDRESS 0x00
 
 void _delay(unsigned long);
-void reboot();
+void resetController();
 void loadBpm();
 void saveBpm();
 

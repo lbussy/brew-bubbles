@@ -30,6 +30,7 @@ SOFTWARE. */
 #include "version.h"
 #include "config.h"
 #include "thatVersion.h"
+#include "pushhelper.h"
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
 #include <AsyncJson.h>

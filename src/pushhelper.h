@@ -37,11 +37,13 @@ void updateLoop();
 void setDoURLTarget();
 void setDoBFTarget();
 void setDoBrewfTarget();
+void setDoReset();
 extern volatile bool doBubble;
 extern struct Bubbles bubbles;
 
 static bool __attribute__((unused)) doURLTarget = false;    // Semaphore for Target timer
 static bool __attribute__((unused)) doBFTarget = false;     // Semaphore for BF timer
-static bool __attribute__((unused)) doBrewfTarget = false;    // Semaphore for BRF timer
+static bool __attribute__((unused)) doBrewfTarget = false;  // Semaphore for BRF timer
+static bool __attribute__((unused)) doReset = false;        // Semahore for reset
 
 #endif // _PUSHHELPER_H

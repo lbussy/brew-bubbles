@@ -156,6 +156,10 @@ void setDoBrewfTarget() {
     doBrewfTarget = true; // Semaphore required for Ticker + radio event
 }
 
+void setDoReset() {
+    doReset = true; // Semaphore required for reset in callback
+}
+
 void tickerLoop() {
     Target *target = Target::getInstance();
     BFTarget *bfTarget = BFTarget::getInstance();
@@ -193,5 +197,12 @@ void tickerLoop() {
     if (doBrewfTarget) { // Do BF post
         doBrewfTarget = false;
         brewfTarget->push();
+    }
+
+    // Check for Reset Pending
+    // Necessary because we cannot delay in a callback
+    if (doReset) {
+        doReset = false;
+        resetController();
     }
 }
