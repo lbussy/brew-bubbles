@@ -22,6 +22,34 @@ Important Note:
 
 **Before proceeding, connect your controller via the USB port to your workstation.**
 
+Preferred Method for Windows and Macs
+`````````````````````````````````````
+
+BrewFlasher_ is a stand-alone desktop application for Windows and macOS designed to simplify flashing Brew Bubbles (And other brewing-related firmware) to your controller.
+
+It handles everything - locating the correct firmware, downloading it, setting the correct flash options/offsets, and flashing the firmware. There is no fumbling with the command line or worrying about esptool options. Select the project you want to flash, click a button, and you have finished.
+
+You may download BrewFlasher_ from its GitHub release page or BrewFlasher.com_.
+
+.. figure:: bf_gui.png
+   :scale: 60%
+   :align: center
+   :alt: BrewFlasher for Windows and MacOS
+
+You will use the following settings:
+
+- Serial port: Auto-select
+- Project: Brew Bubbles
+- Device Family: ESP8266
+- Firmware: Brew Bubbles (latest version)
+- Baud rate: 921600 (any should work, this is faster)
+- Flash mode: Dual I/O (DIO)
+- Erase flash: yes, wipes all data (this avoids problems later on - it will wipe wifi settings if any)
+
+Now click the button that says "Download Firmware and Flash Controller."
+
+Here_ is a short video produced by the author of BrewFlasher.
+
 Unix-Based Platforms (or Windows with Python)
 `````````````````````````````````````````````
 
@@ -55,19 +83,7 @@ I do not have access to a Mac. However, anecdotally, I believe Mac users may fol
 
 Windows-Based Platforms
 ```````````````````````
-There are two methods for uploading the firmware files to your controller.  A packaged installer and an external program.
-
-Windows Installer
-:::::::::::::::::
-
-I have provided a single-file installer in the `firmware/` directory named `flashFirmware.exe`_.  The installer automatically detects a controller plugged into the USB port of your computer.  Ensure the controller is plugged in before executing the installer.  If you have issues with the installer finding the controller, make sure the controller is the only device plugged into the USB ports.  Download the file and execute it to prepare the controller automatically.
-
-.. figure:: installer.jpg
-   :scale: 60%
-   :align: center
-   :alt: Automatic installer for Windows
-
-If you should have an issue with that installer, it may be that your system lacks a set of Microsoft tools that ships with many applications. Download and install `Windows 10 Universal C Runtime`_, and you may be successful.
+There are two methods for uploading the firmware files to your controller.  The preferrred method is BrewFlasher, another available method is supplied by the controller vendor:
 
 Espressif Tools
 :::::::::::::::
@@ -124,10 +140,11 @@ Firmware Updates
 
 The web application provides Over The Air (OTA) update functionality for upgrades.  Navigate to the *Settings* page and scroll down to the *Update Firmware* section.
 
+.. _BrewFlasher: https://github.com/thorrak/brewflasher
+.. _BrewFlasher.com: https://www.brewflasher.com/
 .. _firmware.bin: https://github.com/lbussy/brew-bubbles/raw/master/firmware/firmware.bin
 .. _spiffs.bin: https://github.com/lbussy/brew-bubbles/raw/master/firmware/spiffs.bin
 .. _esptool: https://github.com/espressif/esptool
 .. _repository: https://github.com/espressif/esptool
 .. _download: https://www.espressif.com/en/support/download/other-tools
-.. _`flashFirmware_win.exe`: https://github.com/lbussy/brew-bubbles/raw/master/firmware/flashFirmware_win.exe
-.. _`Windows 10 Universal C Runtime`: https://www.microsoft.com/en-us/download/details.aspx?id=48234
+.. _Here: https://youtu.be/7KZiRoxn-z8
