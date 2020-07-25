@@ -47,15 +47,15 @@ void loadBpm() {
     DynamicJsonDocument doc(capacity);
     const char * bpmFileName = "lastBpm.json";
 
-    // Mount SPIFFS
-    if (!SPIFFS.begin()) {
-        Log.error(F("CONFIG: Failed to mount SPIFFS." CR));
+    // Mount File System
+    if (!LittleFS.begin()) {
+        Log.error(F("CONFIG: Failed to mount File System." CR));
         return;
     }
 
     // Open file for reading
-    File file = SPIFFS.open(bpmFileName, "r");
-    if (!SPIFFS.exists(bpmFileName) || !file) {
+    File file = LittleFS.open(bpmFileName, "r");
+    if (!LittleFS.exists(bpmFileName) || !file) {
         Log.notice(F("No lastBpm available." CR));
     } else {
         // Parse the JSON object in the file
@@ -68,7 +68,7 @@ void loadBpm() {
             Log.notice(F("Loaded lastBpm." CR));
         }
         // Delete file
-        SPIFFS.remove(bpmFileName);
+        LittleFS.remove(bpmFileName);
     }
 }
 
@@ -80,7 +80,7 @@ void saveBpm() {
     doc["lastBpm"] = bubbles.getAvgBpm();
 
     // Open file for writing
-    File file = SPIFFS.open(bpmFileName, "w");
+    File file = LittleFS.open(bpmFileName, "w");
     if (!file) {
         Log.error(F("Failed to open lastBpm file." CR));
     } else {

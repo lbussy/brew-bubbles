@@ -158,7 +158,7 @@ SOFTWARE. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// SPIFFS URL
+// File System URL
 //
 #ifndef SPIFFSURL
 #define SPIFFSURL "http://www.brewbubbles.com/firmware/spiffs.bin"

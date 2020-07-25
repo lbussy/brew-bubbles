@@ -49,7 +49,7 @@ void setup() {
         doWiFi();
     }
 
-    execspiffs();           // Check for pending SPIFFS update
+    execspiffs();           // Check for pending File System update
     setClock();             // Set NTP Time
     loadBpm() ;             // Get last BPM reading if it was a controlled reboot
     mdnssetup();            // Set up mDNS responder
