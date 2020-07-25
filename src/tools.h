@@ -24,7 +24,7 @@ SOFTWARE. */
 #define _TOOLS_H
 
 #include "bubbles.h"
-#include <FS.h>
+#include <LittleFS.h>
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
 #include <EEPROM.h>

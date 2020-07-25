@@ -50,14 +50,14 @@ void setRegPageAliases()
 {
     // Regular page aliases
 
-    server.serveStatic("/", SPIFFS, "/").setDefaultFile("index.htm").setCacheControl("max-age=600");
-    server.serveStatic("/index.htm", SPIFFS, "/").setDefaultFile("index.htm").setCacheControl("max-age=600");
-    server.serveStatic("/about/", SPIFFS, "/").setDefaultFile("about.htm").setCacheControl("max-age=600");
-    server.serveStatic("/help/", SPIFFS, "/").setDefaultFile("help.htm").setCacheControl("max-age=600");
-    server.serveStatic("/ota/", SPIFFS, "/").setDefaultFile("ota.htm").setCacheControl("max-age=600");
-    server.serveStatic("/ota2/", SPIFFS, "/").setDefaultFile("ota2.htm").setCacheControl("max-age=600");
-    server.serveStatic("/settings/", SPIFFS, "/").setDefaultFile("settings.htm").setCacheControl("max-age=600");
-    server.serveStatic("/wifi/", SPIFFS, "/").setDefaultFile("wifi.htm").setCacheControl("max-age=600");
+    server.serveStatic("/", LittleFS, "/").setDefaultFile("index.htm").setCacheControl("max-age=600");
+    server.serveStatic("/index.htm", LittleFS, "/").setDefaultFile("index.htm").setCacheControl("max-age=600");
+    server.serveStatic("/about/", LittleFS, "/").setDefaultFile("about.htm").setCacheControl("max-age=600");
+    server.serveStatic("/help/", LittleFS, "/").setDefaultFile("help.htm").setCacheControl("max-age=600");
+    server.serveStatic("/ota/", LittleFS, "/").setDefaultFile("ota.htm").setCacheControl("max-age=600");
+    server.serveStatic("/ota2/", LittleFS, "/").setDefaultFile("ota2.htm").setCacheControl("max-age=600");
+    server.serveStatic("/settings/", LittleFS, "/").setDefaultFile("settings.htm").setCacheControl("max-age=600");
+    server.serveStatic("/wifi/", LittleFS, "/").setDefaultFile("wifi.htm").setCacheControl("max-age=600");
 }
 
 void setActionPageHandlers()
@@ -72,14 +72,14 @@ void setActionPageHandlers()
 
     server.on("/wifi2/", HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing /wifi2/." CR));
-        request->send(SPIFFS, "/wifi2.htm");
+        request->send(LittleFS, "/wifi2.htm");
         resetWifi(); // Wipe settings, reset controller
     });
 
     server.on("/reset/", HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing /reset/." CR));
         // Redirect to Reset page
-        request->send(SPIFFS, "/reset.htm");
+        request->send(LittleFS, "/reset.htm");
         setDoReset();
     });
 
@@ -510,7 +510,7 @@ void setSettingsAliases()
                 config.brewersfriend.freq = bffreq;
             }
 
-            // Parse SPIFFS OTA update choice
+            // Parse File System OTA update choice
             JsonVariant dospiffs1 = doc["dospiffs1"];
             if ((!dospiffs1.isNull()) && (!dospiffs1 == config.dospiffs1))
             {
@@ -518,7 +518,7 @@ void setSettingsAliases()
                 config.dospiffs1 = dospiffs1;
             }
 
-            // Parse SPIFFS OTA update choice
+            // Parse File System OTA update choice
             JsonVariant dospiffs2 = doc["dospiffs2"];
             if ((!dospiffs2.isNull()) && (!dospiffs2 == config.dospiffs2))
             {

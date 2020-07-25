@@ -28,10 +28,10 @@ extern const size_t capacityDeserial = 3*JSON_OBJECT_SIZE(2) + 3*JSON_OBJECT_SIZ
 extern const size_t capacitySerial = 3*JSON_OBJECT_SIZE(2) + 3*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(10);
 
 bool deleteConfigFile() {
-    if (!SPIFFS.begin()) {
+    if (!LittleFS.begin()) {
         return false;
     }
-    return SPIFFS.remove(filename);
+    return LittleFS.remove(filename);
 }
 
 bool loadConfig()
@@ -47,12 +47,12 @@ bool loadConfig()
 
 bool loadFile()
 {
-    if (!SPIFFS.begin()) {
+    if (!LittleFS.begin()) {
         return false;
     }
-    // Loads the configuration from a file on SPIFFS
-    File file = SPIFFS.open(filename, "r");
-    if (!SPIFFS.exists(filename) || !file) {
+    // Loads the configuration from a file on File System
+    File file = LittleFS.open(filename, "r");
+    if (!LittleFS.exists(filename) || !file) {
         // File does not exist or unable to read file
     } else {
         // Existing configuration present
@@ -74,8 +74,8 @@ bool saveConfig()
 
 bool saveFile()
 {
-    // Saves the configuration to a file on SPIFFS
-    File file = SPIFFS.open(filename, "w");
+    // Saves the configuration to a file on File System
+    File file = LittleFS.open(filename, "w");
     if (!file) {
         file.close();
         return false;
@@ -126,7 +126,7 @@ bool serializeConfig(Print &dst)
 bool printFile()
 {
     // Prints the content of a file to the Serial
-    File file = SPIFFS.open(filename, "r");
+    File file = LittleFS.open(filename, "r");
     if (!file)
         return false;
 
