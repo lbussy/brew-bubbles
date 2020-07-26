@@ -88,7 +88,7 @@ void execspiffs() {
         ESPhttpUpdate.setLedPin(LED, LOW);
         // "http://www.brewbubbles.com/firmware/spiffs.bin"
         WiFiClient client;
-        t_httpUpdate_return ret = ESPhttpUpdate.updateFS(client, F(SPIFFSURL), "");
+        t_httpUpdate_return ret = ESPhttpUpdate.updateFS(client, F(LITTLEFSURL), "");
 
         switch(ret) {
             case HTTP_UPDATE_FAILED:
