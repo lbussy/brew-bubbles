@@ -7,10 +7,10 @@ There are two critical files in this project:
 File           Description                             Address
 =============  ======================================  ==========
 firmware.bin_  The Brew Bubbles application layer      0x00000
-spiffs.bin_    The Brew Bubbles web file system        0x300000
+littlefs.bin_    The Brew Bubbles web file system        0x300000
 =============  ======================================  ==========
 
-These files represent the program that you upload to your controller.  The `firmware.bin` file is the C-based program that handles serving web pages, processing configurations, detecting pulses (bubbles), scheduling, and monitoring the temperature.  The Serial Peripheral Interface Flash File System (SPIFFS) is within the `spiffs.bin` file.  SPIFFS is analogous to a directory on your computer.  It contains web pages and images to be served via the web interface.
+These files represent the program that you upload to your controller.  The `firmware.bin` file is the C-based program that handles serving web pages, processing configurations, detecting pulses (bubbles), scheduling, and monitoring the temperature.  The LittleFS file system is delivered within the `littlefs.bin` file.  LittleFS is analogous to a directory on your computer.  It contains web pages and images served via the web interface.
 
 Flashing Firmware - Initial
 ---------------------------
@@ -18,7 +18,7 @@ Flashing Firmware - Initial
 Flashing the firmware may be done from many platforms with a variety of tools.  The following are some methods that have I have tested. Other methods may work; however, I have no experience with them.
 
 Important Note:
-    The ESP8266 has a memory section which is not erased or written over by flashing firmware. If you have previously used your controller for any other tasks, I recommend that you erase the flash memory before you begin. The method to do that differs by the tool used, and more information follows in the sections below.
+    The ESP8266 has a memory section which is not erased or written over by flashing firmware. If you have previously used your controller for any other tasks, I recommend that you wipe the flash memory before you begin. The method to do that differs by the tool used, and more information follows in the sections below.
 
 **Before proceeding, connect your controller via the USB port to your workstation.**
 
@@ -46,7 +46,7 @@ You will use the following settings:
 - Flash mode: Dual I/O (DIO)
 - Erase flash: yes, wipes all data (this avoids problems later on - it will wipe wifi settings if any)
 
-Now click the button that says "Download Firmware and Flash Controller."
+Now click the button that says, "Download Firmware and Flash Controller."
 
 Here_ is a short video produced by the author of BrewFlasher.
 
@@ -69,9 +69,9 @@ Once *esptool* is installed, you may use the following command line to flash the
 
     esptool write_flash 0x00000 firmware.bin 0x300000 spiffs.bin
 
-Please note that this takes advantage of *esptool*'s capability to auto-detect the controller attached via USB.  If you have other devices directly attached to your system, this may fail and you will need to specify the port manually. For example: `-p /dev/ttyUSB0` (or `-p COM3` on Windows.)
+Please note that this takes advantage of *esptool*'s capability to auto-detect the controller attached via USB.  If you have other devices directly attached to your system, this may fail, and you will need to specify the port manually. For example: `-p /dev/ttyUSB0` (or `-p COM3` on Windows.)
 
-If you desire to erase your controller completely, you may also use `esptool`'s erase flash option:
+If you desire to erase your controller, you may also use `esptool`'s erase flash option:
 ::
 
     esptool erase_flash
@@ -83,7 +83,7 @@ I do not have access to a Mac. However, anecdotally, I believe Mac users may fol
 
 Windows-Based Platforms
 ```````````````````````
-There are two methods for uploading the firmware files to your controller.  The preferrred method is BrewFlasher, another available method is supplied by the controller vendor:
+There are two methods for uploading the firmware files to your controller.  The preferred method is BrewFlasher; the controller vendor supplies another available way:
 
 Espressif Tools
 :::::::::::::::
@@ -128,12 +128,12 @@ When setup is complete, click on the "*START*" button underneath the green box. 
    :align: center
    :alt: Completion screen for the Flash Download tool
 
-At this point, you may close the tool as well as the selection screen, and proceed with setup.
+At this point, you may close the tool and the selection screen, and proceed with setup.
 
 Erase Flash
 -----------
 
-If you desire to erase your controller completely, you may leverage the "*ERASE*" button within the Flash Download tool.
+If you desire to erase your controller, you may leverage the "*ERASE*" button within the Flash Download tool.
 
 Firmware Updates
 ----------------

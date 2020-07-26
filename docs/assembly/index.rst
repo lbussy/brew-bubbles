@@ -23,7 +23,7 @@ The developer board used in this project is the **Wemos D1 Mini**.  Wherever you
 
 #.  **The "Legitimate" Way**:  The Wemos D1 Mini has been knocked off mercilessly.  This situation is ironic since Espressif makes the ESP8266 controller, and they are a Chinese company.  In the past, wemos.cc_ was the way to buy the "original" Wemos D1 Mini. However, they no longer appear to sell them, and instead, the website is a wiki-type information source.
 
-#.  **The Quick Way**:  Why Amazon, of course.  You can search for "Wemos D1 Mini" (it has to be "mini" and not "pro") and find a large number of different ways to buy.  My preference is to get a handful at a time since they are cheaper that way.  This_ link give you five for $17.99 in a couple of days with free Prime shipping ($3.60/ea.)
+#.  **The Quick Way**:  Why Amazon, of course.  You can search for "Wemos D1 Mini" (it has to be "mini" and not "pro") and find a large number of different ways to buy.  My preference is to get a handful at a time since they are cheaper that way.  This_ link gives you five for $17.99 in a couple of days with free Prime shipping ($3.60/ea.)
 
 #.  **The Cheap Way**:  AliExpress_ has everything anyone would ever need, so long as that person can wait a month or more for delivery.  For $1.99 each this way is as cheap as it gets.  Be aware that there are different sellers on there, and each ship independently.  Sometimes you save by paying less on shipping if you are buying multiple things from one seller.
 
@@ -68,12 +68,12 @@ Quan   Description                             Placement
 
 This BOM is available on Mouser_.  You can find these parts just about any of the usual places.  Make sure they are the proper rating and form factor.
 
-If you choose to use the temperature sensors, you need to obtain two (2) Waterproof DS18B20_ Temperature Sensor with leads.  These are the same as used with the various fermenter temperature control projects such as BrewPi Remix.  You also need to crimp on a three-terminal female plug.  You can get a kit_ on Amazon with more terminals than you ever need including the crimping tool for about $25, or save by doing some careful AliExpress shopping.
+If you choose to use the temperature sensors, you need to obtain two (2) Waterproof DS18B20_ Temperature Sensor with leads.  These are the same as used with the various fermenter temperature control projects such as BrewPi Remix.  You also need to crimp on a three-terminal female plug.  You can get a kit_ on Amazon with more terminals than you ever need including the crimping tool for about $25 or save by doing some careful AliExpress shopping.
 
 Component Installation
 ----------------------
 
-You are going to have to solder.  If you have legitimately never soldered anything before, I recommend you spend a few minutes on YouTube and watch a few videos.  It is not hard at all once you get the hang of it.  And, while the shield is comparatively small, the components chosen are simple through-hole parts, which may be easily soldered by a beginner with a little patience.
+You are going to have to solder.  If you have legitimately never soldered anything before, I recommend you spend a few minutes on YouTube and watch a few videos.  Sparkfun_ also has a very nice tutorial_. It is not hard at all once you get the hang of it.  And, while the shield is comparatively small, the components chosen are simple through-hole parts, which may be easily soldered by a beginner with a little patience.
 
 I do not intend to provide a step-by-step on how to solder here. Still, I recommend the following part installation order for ease of assembly:
 
@@ -83,7 +83,7 @@ I do not intend to provide a step-by-step on how to solder here. Still, I recomm
 
 3.  Capacitors - These are mounted next. Be sure to get them as close to the board as possible since having them stick up changes their intended impact on the circuit.
 
-4.  8-pin female headers - These are the tallest items on the front side of the board and are the last pieces to go on this side. Lightly tack on one pin and make sure the header is straight. When you have it positioned correctly, start from the other end, and solder the pins correctly. If you have a D1 laying around with the pin headers soldered on it already, using that to steady the parts helps. This process is a chicken or the egg choice with the next item. The first part to be soldered, either the controller or shield is the most difficult. After that, you can use the other to steady the headers of the first. If you have a breadboard, you may also employ that to steady the parts.
+4.  8-pin female headers - These are the tallest items on the front side of the board and are the last pieces to go on this side. Lightly tack on one pin and make sure the header is straight. When you have it positioned correctly, start from the other end, and solder the pins correctly. If you have a D1 laying around with the pin headers soldered on it already, using that to steady the parts helps. This process is a chicken or the egg choice with the next item. The first part to be soldered, either the controller or shield, is the most difficult. After that, you can use the other to steady the headers of the first. If you have a breadboard, you may also employ that to steady the parts.
 
 5.  8-pin male headers - These need to be soldered on the controller board. See note on #4 above.
 
@@ -140,4 +140,5 @@ Power the device via its USB port with a standard 5V cell phone type charger or 
 .. _kit: https://www.amazon.com/MG-SN-28B-Ratchet-Wire-Crimper/dp/B07FCX1M6Q/
 .. _bracket: https://github.com/lbussy/brew-bubbles/tree/master/bracket
 .. _clamp: https://www.amazon.com/InstallerParts-Pack-R-Type-Cable-Clamp/dp/B01DEX6J4U
-
+.. _tutorial: https://learn.sparkfun.com/tutorials/how-to-solder-through-hole-soldering
+.. _Sparkfun: https://learn.sparkfun.com/
