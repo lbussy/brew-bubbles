@@ -6,7 +6,7 @@ Brew Bubbles stores and communicates with external agents via JSON and POST meth
 - `System Configuration`_
     - `/configuration/`_
 - `Outbound API`_
-    - `/bubbles/`_
+    - `/bubble/`_
     - `/thisVersion/`_
     - `/thatVersion/`_
 - `Inbound API`_
