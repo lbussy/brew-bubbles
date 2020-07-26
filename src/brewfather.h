@@ -65,7 +65,7 @@ class BrewfTarget {
         String bpm_name = "bpm";
         //
         const bool ambienttemp_enabled = true;
-        String ambienttemp_name = "ext_temp";
+        String ambienttemp_name = "aux_temp";
         //
         const bool vesseltemp_enabled = true;
         String vesseltemp_name = "temp";
