@@ -423,9 +423,6 @@ void setSettingsAliases()
 
             // Parse JSON
 
-            // TODO:  Use NULL checks from jsonconfig
-            // TODO:  Can I use jsonconfig to handle this?
-
             // Parse Access Point Settings Object
             const char *ssid = doc["apconfig"]["ssid"];
             if ((ssid) && (strcmp(ssid, config.apconfig.ssid) != 0))
