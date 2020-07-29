@@ -16,8 +16,6 @@ esptool.py --chip esp8266 --before default_reset --after hard_reset write_flash 
 
 **File Name**|**Description**
 -----|-----
-`createInstaller.py` | Freezes the Python environment and packages a cross-platform installer.
-`flashFirmware.py`| Uses `esptool.py` to flash firmware files to ESP-8266.
 `firmware.bin`| Main firmware file containing the Brew Bubbles application.
 `littlefs.bin`| Controller filesystem image containing the web pages used by Brew Bubbles.
 `version.json` | File used for version control.
