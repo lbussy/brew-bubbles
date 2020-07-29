@@ -23,6 +23,10 @@ SOFTWARE. */
 #ifndef _WEBSERVER_H
 #define _WEBSERVER_H
 
+#ifndef USE_LITTLEFS
+#define USE_LITTLEFS
+#endif
+
 #include "wifi.h"
 #include "execota.h"
 #include "bubbles.h"
@@ -34,7 +38,7 @@ SOFTWARE. */
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
-#include <FS.h>
+#include <LittleFS.h>
 #include <ESPAsyncWebServer.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266mDNS.h>

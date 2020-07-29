@@ -71,7 +71,7 @@ void execfw() {
 
 void execspiffs() {
     if (config.dospiffs1) {
-        Log.notice(F("Rebooting a second time before SPIFFS OTA pull." CR));
+        Log.notice(F("Rebooting a second time before File System OTA pull." CR));
         config.dospiffs1 = false;
         config.dospiffs2 = true;
         config.didupdate = false;
@@ -80,7 +80,7 @@ void execspiffs() {
         ESP.restart();
         _delay(1000);
     } else if (config.dospiffs2) {
-        Log.notice(F("Starting the SPIFFS OTA pull." CR));
+        Log.notice(F("Starting the File System OTA pull." CR));
 
         // Stop web server before OTA update - will restart on reset
         stopWebServer();
@@ -88,25 +88,25 @@ void execspiffs() {
         ESPhttpUpdate.setLedPin(LED, LOW);
         // "http://www.brewbubbles.com/firmware/spiffs.bin"
         WiFiClient client;
-        t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(client, F(SPIFFSURL), "");
+        t_httpUpdate_return ret = ESPhttpUpdate.updateFS(client, F(LITTLEFSURL), "");
 
         switch(ret) {
             case HTTP_UPDATE_FAILED:
-                Log.error(F("HTTP SPIFFS OTA Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+                Log.error(F("HTTP File System OTA Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
                 break;
 
             case HTTP_UPDATE_NO_UPDATES:
-                Log.notice(F("HTTP SPIFFS OTA Update: No updates." CR));
+                Log.notice(F("HTTP File System OTA Update: No updates." CR));
                 break;
 
             case HTTP_UPDATE_OK:
-                // Reset SPIFFS update flag
+                // Reset File System update flag
                 config.dospiffs1 = false;
                 config.dospiffs2 = false;
                 config.didupdate = true;
-                saveConfig(); // This not only saves the flags, it (re)saves the whole config after SPIFFS wipes it
+                saveConfig(); // This not only saves the flags, it (re)saves the whole config after File System wipes it
                 _delay(1000);
-                Log.notice(F("HTTP SPIFFS OTA Update complete, restarting." CR));
+                Log.notice(F("HTTP File System OTA Update complete, restarting." CR));
                 ESP.restart();
                 _delay(1000);
                 break;
