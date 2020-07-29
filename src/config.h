@@ -158,10 +158,10 @@ SOFTWARE. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// SPIFFS URL
+// LittleFS URL
 //
-#ifndef SPIFFSURL
-#define SPIFFSURL "http://www.brewbubbles.com/firmware/spiffs.bin"
+#ifndef LITTLEFSURL
+#define LITTLEFSURL "http://www.brewbubbles.com/firmware/littlefs.bin"
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
