@@ -39,7 +39,7 @@ void setClock() {
 #ifdef LOG_LEVEL
             Serial.println();
 #endif
-            Log.verbose(F("Re-requesting time hack." CR));
+            Log.verbose(F("Re-requesting time hack."));
             configTime(GMT, 0, "pool.ntp.org", "time.nist.gov");
             startSecs = time(nullptr);
             cycle++;
@@ -47,7 +47,7 @@ void setClock() {
 #ifdef LOG_LEVEL
         Serial.print(F("."));
 #endif
-        _delay(1000);
+        delay(1000);
         yield();
         nowSecs = time(nullptr);
     }
