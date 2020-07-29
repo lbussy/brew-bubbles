@@ -24,6 +24,9 @@ SOFTWARE. */
 #define _TOOLS_H
 
 #include "bubbles.h"
+#include "brewersfriend.h"
+#include "brewfather.h"
+#include "target.h"
 #include <LittleFS.h>
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
@@ -36,6 +39,18 @@ void _delay(unsigned long);
 void resetController();
 void loadBpm();
 void saveBpm();
+void tickerLoop();
+void setDoURLTarget();
+void setDoBFTarget();
+void setDoBrewfTarget();
+void setDoReset();
+void setDoOTA();
+
+static bool __attribute__((unused)) doURLTarget = false;    // Semaphore for Target timer
+static bool __attribute__((unused)) doBFTarget = false;     // Semaphore for BF timer
+static bool __attribute__((unused)) doBrewfTarget = false;  // Semaphore for BRF timer
+static bool __attribute__((unused)) doReset = false;        // Semahore for reset
+static bool __attribute__((unused)) doOTA = false;          // Semahore for reset
 
 extern struct Bubbles bubbles;
 
