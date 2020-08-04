@@ -67,7 +67,7 @@ Once *esptool* is installed, you may use the following command line to flash the
 
 ::
 
-    esptool write_flash 0x00000 firmware.bin 0x300000 spiffs.bin
+    esptool write_flash 0x00000 firmware.bin 0x300000 littlefs.bin
 
 Please note that this takes advantage of *esptool*'s capability to auto-detect the controller attached via USB.  If you have other devices directly attached to your system, this may fail, and you will need to specify the port manually. For example: `-p /dev/ttyUSB0` (or `-p COM3` on Windows.)
 
@@ -107,7 +107,7 @@ Select "ESP8266 DownloadTool."  Setup as follows:
 - Add the SPIFFS file
   - Check the second checkbox
   - Click the ellipsis (...) next to the text field
-  - Navigate to the firmware directory, select `spiffs.bin` and click "*Open*"
+  - Navigate to the firmware directory, select `littlefs.bin` and click "*Open*"
   - In the right-most text field after the "*@*"* symbol, enter the address `0x300000` (zero, the lower-case letter "X", followed by the number "3" and five zeros)
 - Set the CrystalFreq to `26M`
 - Set the SPI Speed to `40MHz`
@@ -143,7 +143,7 @@ The web application provides Over The Air (OTA) update functionality for upgrade
 .. _BrewFlasher: https://github.com/thorrak/brewflasher
 .. _BrewFlasher.com: https://www.brewflasher.com/
 .. _firmware.bin: https://github.com/lbussy/brew-bubbles/raw/master/firmware/firmware.bin
-.. _spiffs.bin: https://github.com/lbussy/brew-bubbles/raw/master/firmware/spiffs.bin
+.. _littlefs.bin: https://github.com/lbussy/brew-bubbles/raw/master/firmware/littlefs.bin
 .. _esptool: https://github.com/espressif/esptool
 .. _repository: https://github.com/espressif/esptool
 .. _download: https://www.espressif.com/en/support/download/other-tools
