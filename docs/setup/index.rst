@@ -1,7 +1,7 @@
 Set Up Networking
 ==========================
 
-Once you have flashed the firmware and spiffs files to your controller, it starts in Access Point mode with a captive portal.   A captive portal is similar to what you get when you connect to free WiFi with a login web page.  Any network communication will be redirected to the portal page, allowing you to log in.  This captive portal is how you initially configure Brew Bubbles, allowing it to connect to your local WiFi.
+Once you have flashed the firmware and littlefs files to your controller, it starts in Access Point mode with a captive portal.   A captive portal is similar to what you get when you connect to free WiFi with a login web page.  Any network communication will be redirected to the portal page, allowing you to log in.  This captive portal is how you initially configure Brew Bubbles, allowing it to connect to your local WiFi.
 
 This process works best through a phone in most cases.  There are some peculiarities in the ESP8266 libraries, which sometimes cause the process to act a little flakey.  It may not open the portal page, or not issue an IP address to your client.  In testing, these problems did not come up using a phone.  If you don't have a phone handy, it is possible to do this work with your computer. However, I point out some caveats below.
 
