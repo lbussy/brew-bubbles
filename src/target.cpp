@@ -74,7 +74,7 @@ bool Target::push() {
     LCBUrl lcburl;
     if (single->target->target.enabled) {
         if (lcburl.setUrl(String(single->target->url))) {
-            IPAddress resolvedIP = resolveHost(lcburl.getHost().c_str());
+            IPAddress resolvedIP = lcburl.getIP();
             if (resolvedIP == INADDR_NONE) {
                 if (single->target->ip == INADDR_NONE) {
                     Log.error(F("Unable to resolve host %s to IP address." CR), lcburl.getHost().c_str());
