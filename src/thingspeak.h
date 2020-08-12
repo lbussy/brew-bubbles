@@ -30,69 +30,69 @@ SOFTWARE. */
 #include <ArduinoLog.h>
 #include <Arduino.h>
 
-class TSTarget {
-    private:
-        // Singleton Declarations
-        TSTarget() {}
-        static TSTarget *single;
-        // External Declarations
-        PushTarget *target;
-        // Private Methods
+class TSTarget
+{
+private:
+    // Singleton Declarations
+    TSTarget() {}
+    static TSTarget *single;
+    // External Declarations
+    PushTarget *target;
+    // Private Methods
 
-        // Private Properties
+    // Private Properties
 
-        /////////////////////////////////////////////////////////////////////
-        //  Configure Target - Below are configuration items per target type
-        /////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////
+    //  Configure Target - Below are configuration items per target type
+    /////////////////////////////////////////////////////////////////////
 
-        // Enable target and target name
-        const bool target_enabled = true;
-        String target_name = "Thinkspeak";
-        //
-        // Check return body for success
-        const bool checkbody_enabled = false;
-        String checkbody_name = "";
-        //
-        // Turn JSON points on/off and provide JSON field name per target type
-        //
-        const bool apiname_enabled = true;
-        String apiname_name = "api_key";
-        //
-        const bool bubname_enabled = true;
-        String bubname_name = "name";
-        //
-        const bool bpm_enabled = true;
-        String bpm_name = "bpm";
-        //
-        const bool ambienttemp_enabled = true;
-        String ambienttemp_name = "ambient";
-        //
-        const bool vesseltemp_enabled = true;
-        String vesseltemp_name = "temp";
-        //
-        const bool tempformat_enabled = true;
-        String tempformat_name = "temp_unit";
-        //
-        // Main URL for endpoint
-        String targeturl = "https://api.thingspeak.com/update?api_key=";
-        //
-        const bool apikey_enabled = true;
-        String apikey_name = ""; // Will pick this up from config
+    // Enable target and target name
+    const bool target_enabled = true;
+    String target_name = "Thinkspeak";
+    //
+    // Check return body for success
+    const bool checkbody_enabled = false;
+    String checkbody_name = "";
+    //
+    // Turn JSON points on/off and provide JSON field name per target type
+    //
+    const bool apiname_enabled = true;
+    String apiname_name = "api_key";
+    //
+    const bool bubname_enabled = true;
+    String bubname_name = "name";
+    //
+    const bool bpm_enabled = true;
+    String bpm_name = "bpm";
+    //
+    const bool ambienttemp_enabled = true;
+    String ambienttemp_name = "ambient";
+    //
+    const bool vesseltemp_enabled = true;
+    String vesseltemp_name = "temp";
+    //
+    const bool tempformat_enabled = true;
+    String tempformat_name = "temp_unit";
+    //
+    // Main URL for endpoint
+    String targeturl = "https://api.thingspeak.com/update?api_key=";
+    //
+    const bool apikey_enabled = true;
+    String apikey_name = ""; // Will pick this up from config
 
-        /////////////////////////////////////////////////////////////////////
-        //  Configure Target - Above are configuration items per target type
-        /////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////
+    //  Configure Target - Above are configuration items per target type
+    /////////////////////////////////////////////////////////////////////
 
-    public:
-        // Singleton Declarations
-        static TSTarget* getInstance();
-        ~TSTarget() {single = NULL;}
-        // External Declarations
+public:
+    // Singleton Declarations
+    static TSTarget *getInstance();
+    ~TSTarget() { single = NULL; }
+    // External Declarations
 
-        // Public Methods
-        bool push();
-        // Public Properties
-
+    // Public Methods
+    bool push();
+    // Public Properties
 };
 
 extern struct Config config;
