@@ -25,29 +25,30 @@ SOFTWARE. */
 
 #include <ESP8266WiFi.h>
 
-struct pushPoint {
+struct pushPoint
+{
     bool enabled;   // Whether to send or not
     char name[129]; // What to call the data point
 };
 
-class PushTarget {
-    private:
-
-    public:
-        PushTarget() {};
-        pushPoint target;       // Target enabled and name
-        pushPoint checkBody;    // Check return body for success
-        char url[129];          // URL of target
-        pushPoint key;          // API Key
-        IPAddress ip;           // Resolved address of target
-        pushPoint apiName;      // i.e. "Brew Bubbles"
-        pushPoint bubName;      // mDNS name i.e. "brewbubbles"
-        pushPoint lastTime;     // Time of last send
-        pushPoint tempFormat;   // F or C
-        pushPoint ambientTemp;  // Room or chamber temp
-        pushPoint vesselTemp;   // Brew temp
-        pushPoint bpm;          // Bubbles per minute
-        pushPoint type;         // POST or GET
+class PushTarget
+{
+private:
+public:
+    PushTarget(){};
+    pushPoint target;      // Target enabled and name
+    pushPoint checkBody;   // Check return body for success
+    char url[129];         // URL of target
+    pushPoint key;         // API Key
+    IPAddress ip;          // Resolved address of target
+    pushPoint apiName;     // i.e. "Brew Bubbles"
+    pushPoint bubName;     // mDNS name i.e. "brewbubbles"
+    pushPoint lastTime;    // Time of last send
+    pushPoint tempFormat;  // F or C
+    pushPoint ambientTemp; // Room or chamber temp
+    pushPoint vesselTemp;  // Brew temp
+    pushPoint bpm;         // Bubbles per minute
+    pushPoint type;        // POST or GET
 };
 
 #endif // _PUSHTARGET_H

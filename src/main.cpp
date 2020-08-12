@@ -24,7 +24,8 @@ SOFTWARE. */
 
 DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
 
-void setup() {
+void setup()
+{
     bool rst = drd.detect(); // Check for double-reset
     setSerial();
 
@@ -38,30 +39,36 @@ void setup() {
 
     _delay(200); // Let pins settle, else detect is inconsistent
 
-    if (digitalRead(RESETWIFI) == LOW) {
+    if (digitalRead(RESETWIFI) == LOW)
+    {
         Log.notice(F("%s low, presenting portal." CR), stringify(RESETWIFI));
         doWiFi(true);
-    } else if (rst == true) {
+    }
+    else if (rst == true)
+    {
         Log.notice(F("DRD: Triggered, presenting portal." CR));
         doWiFi(true);
-    } else {
+    }
+    else
+    {
         Log.verbose(F("DRD: Normal boot." CR));
         doWiFi();
     }
 
-    execspiffs();           // Check for pending File System update
-    setClock();             // Set NTP Time
-    loadBpm() ;             // Get last BPM reading if it was a controlled reboot
-    mdnssetup();            // Set up mDNS responder
-    initWebServer();        // Turn on web server
-    doPoll();               // Get server version at startup
-    if (bubbles.start())    // Initialize bubble counter
+    execspiffs();        // Check for pending File System update
+    setClock();          // Set NTP Time
+    loadBpm();           // Get last BPM reading if it was a controlled reboot
+    mdnssetup();         // Set up mDNS responder
+    initWebServer();     // Turn on web server
+    doPoll();            // Get server version at startup
+    if (bubbles.start()) // Initialize bubble counter
         Log.notice(F("Bubble counter initialized." CR));
 
     Log.notice(F("Started %s version %s (%s) [%s]." CR), API_KEY, version(), branch(), build());
 }
 
-void loop() {
+void loop()
+{
     // Poll for server version
     Ticker getThatVersion;
     getThatVersion.attach(POLLSERVERVERSION, doPoll);
@@ -73,7 +80,7 @@ void loop() {
     // Target timer
     Ticker urlTarget;
     urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
-    
+
     // Brewer's friend timer
     Ticker bfTimer;
     bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
@@ -82,7 +89,8 @@ void loop() {
     Ticker brewfTimer;
     brewfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
 
-    while (true) {
+    while (true)
+    {
         // Handle semaphores - No radio work in a Ticker!
         tickerLoop();
 
@@ -93,19 +101,22 @@ void loop() {
         MDNS.update();
 
         // If target frequencies needs to be updated, update here
-        if (config.urltarget.update) {
+        if (config.urltarget.update)
+        {
             Log.notice(F("Resetting URL Target frequency timer to %l minutes." CR), config.urltarget.freq);
             urlTarget.detach();
             urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
             config.urltarget.update = false;
         }
-        if (config.brewersfriend.update) {
+        if (config.brewersfriend.update)
+        {
             Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
             bfTimer.detach();
             bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
             config.brewersfriend.update = false;
         }
-        if (config.brewfather.update) {
+        if (config.brewfather.update)
+        {
             Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
             bfTimer.detach();
             bfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);

@@ -25,25 +25,27 @@ SOFTWARE. */
 Bubbles bubbles;
 volatile bool doBubble;
 
-bool Bubbles::start() {
-        interruptSetup();
+bool Bubbles::start()
+{
+    interruptSetup();
 
-        // Set starting values
-        ulLastReport = millis();
-        unsigned long ulNow = millis();
-        ulStart = ulNow;
-        lastBpm = 0.0;
-        lastAmb = 0.0;
-        lastVes = 0.0;
-        doBubble = false;
+    // Set starting values
+    ulLastReport = millis();
+    unsigned long ulNow = millis();
+    ulStart = ulNow;
+    lastBpm = 0.0;
+    lastAmb = 0.0;
+    lastVes = 0.0;
+    doBubble = false;
 
-        // Set starting time
-        lastTime = getDTS();
-        update();
-        return true;
+    // Set starting time
+    lastTime = getDTS();
+    update();
+    return true;
 }
 
-bool Bubbles::update() { // Regular update loop, once per minute
+bool Bubbles::update()
+{ // Regular update loop, once per minute
     // Get NTP Time
     lastTime = getDTS();
 
@@ -61,54 +63,63 @@ bool Bubbles::update() { // Regular update loop, once per minute
     return true;
 }
 
-float Bubbles::getRawBpm() { // Return raw pulses per minute (resets counter)
-    unsigned long thisTime = millis(); // Get timer value now
+float Bubbles::getRawBpm()
+{                                                     // Return raw pulses per minute (resets counter)
+    unsigned long thisTime = millis();                // Get timer value now
     unsigned long ulLapsed = thisTime - ulLastReport; // Millis since last run
-    float fLapsed = (float) ulLapsed; // Cast to float
-    float secs = fLapsed / 60000.0; // Minutes since last request
-    float ppm = (pulse / secs); // Calculate PPM
-    pulse = 0; // Zero the pulse counter
-    ulLastReport = millis(); // Store the last report timer
-    return ppm; // Return pulses per minute
+    float fLapsed = (float)ulLapsed;                  // Cast to float
+    float secs = fLapsed / 60000.0;                   // Minutes since last request
+    float ppm = (pulse / secs);                       // Calculate PPM
+    pulse = 0;                                        // Zero the pulse counter
+    ulLastReport = millis();                          // Store the last report timer
+    return ppm;                                       // Return pulses per minute
 }
 
-float Bubbles::getAvgAmbient() {
+float Bubbles::getAvgAmbient()
+{
     // Retrieve TEMPAVG readings to calculate average
     float avg = 0.0;
     uint8_t size = tempAmbAvg.size();
-    for (int i = 0; i < tempAmbAvg.size(); i++) {
+    for (int i = 0; i < tempAmbAvg.size(); i++)
+    {
         // float thisTemp = tempAmbAvg[i];
         avg += tempAmbAvg[i] / size;
     }
-    return(avg);
+    return (avg);
 }
 
-float Bubbles::getAvgVessel() {
+float Bubbles::getAvgVessel()
+{
     // Return TEMPAVG readings to calculate average
     float avg = 0.0;
     uint8_t size = tempVesAvg.size();
-    for (int i = 0; i < tempVesAvg.size(); i++) {
+    for (int i = 0; i < tempVesAvg.size(); i++)
+    {
         // float thisTemp = tempVesAvg[i];
         avg += tempVesAvg[i] / size;
     }
-    return(avg);
+    return (avg);
 }
 
-float Bubbles::getAvgBpm() {
+float Bubbles::getAvgBpm()
+{
     // Return BUBAVG readings to calculate average
     float avg = 0.0;
     uint8_t size = bubAvg.size();
-    for (int i = 0; i < bubAvg.size(); i++) {
+    for (int i = 0; i < bubAvg.size(); i++)
+    {
         avg += bubAvg[i] / size;
     }
-    return(avg);
+    return (avg);
 }
 
-void Bubbles::setLast(double last) {
+void Bubbles::setLast(double last)
+{
     bubAvg.push(last);
 }
 
-void setDoBub() {
+void setDoBub()
+{
     // Allow a Bubble count to fire
     doBubble = true;
 }

@@ -24,7 +24,8 @@ SOFTWARE. */
 
 #ifndef DISABLE_LOGGING
 
-void setSerial() { // Start serial with auto-detected rate (default to BAUD)
+void setSerial()
+{                // Start serial with auto-detected rate (default to BAUD)
     delay(2000); // Delay to allow monitor to start
     Serial.begin(BAUD);
     // Serial.setDebugOutput(true);
@@ -34,7 +35,8 @@ void setSerial() { // Start serial with auto-detected rate (default to BAUD)
     Log.notice(F("Serial logging started at %l." CR), BAUD);
 }
 
-void printTimestamp(Print* _logOutput) {
+void printTimestamp(Print *_logOutput)
+{
     time_t now;
     time_t rawtime = time(&now);
     struct tm ts;
@@ -46,6 +48,6 @@ void printTimestamp(Print* _logOutput) {
 
 #else // DISABLE_LOGGING
 
-void serial(){}
+void serial() {}
 
 #endif // DISABLE_LOGGING

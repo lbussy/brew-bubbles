@@ -22,14 +22,21 @@ SOFTWARE. */
 
 #include "mdns.h"
 
-void mdnssetup() {
-    if (!MDNS.begin(config.hostname)) { // Start the mDNS responder
+void mdnssetup()
+{
+    if (!MDNS.begin(config.hostname))
+    { // Start the mDNS responder
         Log.error(F("Error setting up mDNS responder." CR));
-    } else {
+    }
+    else
+    {
         Log.notice(F("mDNS responder started for %s.local." CR), config.hostname);
-        if (!MDNS.addService("http", "tcp", PORT)) {
+        if (!MDNS.addService("http", "tcp", PORT))
+        {
             Log.error(F("Failed to register mDNS service." CR));
-        } else {
+        }
+        else
+        {
             Log.notice(F("HTTP registered via mDNS on port %i." CR), PORT);
         }
     }

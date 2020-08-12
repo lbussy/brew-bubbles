@@ -29,7 +29,7 @@ SOFTWARE. */
 #include <ArduinoLog.h>
 
 void setSerial();
-void printTimestamp(Print* _logOutput);
+void printTimestamp(Print *_logOutput);
 
 #define prefLen 22
 

@@ -24,11 +24,13 @@ SOFTWARE. */
 
 const char *filename = "/config.json";
 Config config;
-extern const size_t capacityDeserial = 3*JSON_OBJECT_SIZE(2) + 3*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(10) + 680;
-extern const size_t capacitySerial = 3*JSON_OBJECT_SIZE(2) + 3*JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(10);
+extern const size_t capacityDeserial = 3 * JSON_OBJECT_SIZE(2) + 3 * JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(10) + 680;
+extern const size_t capacitySerial = 3 * JSON_OBJECT_SIZE(2) + 3 * JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(10);
 
-bool deleteConfigFile() {
-    if (!LittleFS.begin()) {
+bool deleteConfigFile()
+{
+    if (!LittleFS.begin())
+    {
         return false;
     }
     return LittleFS.remove(filename);
@@ -37,9 +39,12 @@ bool deleteConfigFile() {
 bool loadConfig()
 {
     // Manage loading the configuration
-    if (!loadFile()) {
+    if (!loadFile())
+    {
         return false;
-    } else {
+    }
+    else
+    {
         saveFile();
         return true;
     }
@@ -47,21 +52,28 @@ bool loadConfig()
 
 bool loadFile()
 {
-    if (!LittleFS.begin()) {
+    if (!LittleFS.begin())
+    {
         return false;
     }
     // Loads the configuration from a file on File System
     File file = LittleFS.open(filename, "r");
-    if (!LittleFS.exists(filename) || !file) {
+    if (!LittleFS.exists(filename) || !file)
+    {
         // File does not exist or unable to read file
-    } else {
+    }
+    else
+    {
         // Existing configuration present
     }
 
-    if (!deserializeConfig(file)) {
+    if (!deserializeConfig(file))
+    {
         file.close();
         return false;
-    } else {
+    }
+    else
+    {
         file.close();
         return true;
     }
@@ -76,13 +88,15 @@ bool saveFile()
 {
     // Saves the configuration to a file on File System
     File file = LittleFS.open(filename, "w");
-    if (!file) {
+    if (!file)
+    {
         file.close();
         return false;
     }
 
     // Serialize JSON to file
-    if (!serializeConfig(file)) {
+    if (!serializeConfig(file))
+    {
         file.close();
         return false;
     }
@@ -98,10 +112,13 @@ bool deserializeConfig(Stream &src)
     // Parse the JSON object in the file
     DeserializationError err = deserializeJson(doc, src);
 
-    if (err) {
+    if (err)
+    {
         config.load(doc.as<JsonObject>());
         return true;
-    } else {
+    }
+    else
+    {
         config.load(doc.as<JsonObject>());
         return true;
     }
@@ -216,20 +233,25 @@ void ApConfig::load(JsonObjectConst obj)
 {
     // Load Access Point configuration
     //
-    if (obj["ssid"].isNull()) {
+    if (obj["ssid"].isNull())
+    {
         strlcpy(ssid, APNAME, sizeof(ssid));
-    } else {
-        const char* sd = obj["ssid"];
+    }
+    else
+    {
+        const char *sd = obj["ssid"];
         strlcpy(ssid, sd, sizeof(ssid));
     }
 
-    if (obj["passphrase"].isNull()) {
+    if (obj["passphrase"].isNull())
+    {
         strlcpy(passphrase, AP_PASSWD, sizeof(passphrase));
-    } else {
-        const char* ps = obj["passphrase"];
+    }
+    else
+    {
+        const char *ps = obj["passphrase"];
         strlcpy(passphrase, ps, sizeof(passphrase));
     }
-
 }
 
 void Bubble::save(JsonObject obj) const
@@ -242,16 +264,22 @@ void Bubble::load(JsonObjectConst obj)
 {
     // Load Bubble configuration
     //
-    if (obj["name"].isNull()) {
+    if (obj["name"].isNull())
+    {
         strlcpy(name, BUBNAME, sizeof(name));
-    } else {
-        const char* nm = obj["name"];
+    }
+    else
+    {
+        const char *nm = obj["name"];
         strlcpy(name, nm, sizeof(name));
     }
 
-    if (obj["tempinf"].isNull()) {
+    if (obj["tempinf"].isNull())
+    {
         tempinf = TEMPFORMAT;
-    } else {
+    }
+    else
+    {
         bool tf = obj["tempinf"];
         tempinf = tf;
     }
@@ -267,16 +295,22 @@ void Calibrate::load(JsonObjectConst obj)
 {
     // Load Temp Sensor Calibration configuration
     //
-    if (obj["room"].isNull()) {
+    if (obj["room"].isNull())
+    {
         room = 0.0;
-    } else {
+    }
+    else
+    {
         float rc = obj["room"];
         room = rc;
     }
 
-    if (obj["vessel"].isNull()) {
+    if (obj["vessel"].isNull())
+    {
         vessel = 0.0;
-    } else {
+    }
+    else
+    {
         float vc = obj["vessel"];
         vessel = vc;
     }
@@ -293,23 +327,32 @@ void URLTarget::load(JsonObjectConst obj)
 {
     // Load URL Target configuration
     //
-    if (obj["url"].isNull()) {
+    if (obj["url"].isNull())
+    {
         strlcpy(url, "", sizeof(url));
-    } else {
-        const char* tu = obj["url"];
+    }
+    else
+    {
+        const char *tu = obj["url"];
         strlcpy(url, tu, sizeof(url));
     }
 
-    if (obj["freq"].isNull()) {
+    if (obj["freq"].isNull())
+    {
         freq = 2;
-    } else {
+    }
+    else
+    {
         int f = obj["freq"];
         freq = f;
     }
 
-    if (obj["update"].isNull()) {
+    if (obj["update"].isNull())
+    {
         update = false;
-    } else {
+    }
+    else
+    {
         bool u = obj["update"];
         update = u;
     }
@@ -326,23 +369,32 @@ void KeyTarget::load(JsonObjectConst obj)
 {
     // Load Key-type configuration
     //
-    if (obj["key"].isNull()) {
+    if (obj["key"].isNull())
+    {
         strlcpy(key, "", sizeof(key));
-    } else {
-        const char* k = obj["key"];
+    }
+    else
+    {
+        const char *k = obj["key"];
         strlcpy(key, k, sizeof(key));
     }
 
-    if (obj["freq"].isNull()) {
+    if (obj["freq"].isNull())
+    {
         freq = 15;
-    } else {
+    }
+    else
+    {
         int f = obj["freq"];
         freq = f;
     }
 
-    if (obj["update"].isNull()) {
+    if (obj["update"].isNull())
+    {
         update = false;
-    } else {
+    }
+    else
+    {
         bool u = obj["update"];
         update = u;
     }
@@ -355,10 +407,13 @@ void Config::load(JsonObjectConst obj)
 
     apconfig.load(obj["apconfig"]);
 
-    if (obj["hostname"].isNull()) {
+    if (obj["hostname"].isNull())
+    {
         strlcpy(hostname, APNAME, sizeof(hostname));
-    } else {
-        const char* hn = obj["hostname"];
+    }
+    else
+    {
+        const char *hn = obj["hostname"];
         strlcpy(hostname, hn, sizeof(hostname));
     }
 
@@ -368,22 +423,31 @@ void Config::load(JsonObjectConst obj)
     brewersfriend.load(obj["brewersfriend"]);
     brewfather.load(obj["brewfather"]);
 
-    if (obj["dospiffs1"].isNull()) {
+    if (obj["dospiffs1"].isNull())
+    {
         dospiffs1 = false;
-    } else {
+    }
+    else
+    {
         dospiffs1 = obj["dospiffs1"];
     }
 
-    if (obj["dospiffs2"].isNull()) {
+    if (obj["dospiffs2"].isNull())
+    {
         dospiffs2 = false;
-    } else {
+    }
+    else
+    {
         dospiffs2 = obj["dospiffs2"];
     }
 
     bool firstrun = obj["didupdate"].isNull();
-    if (firstrun) {
+    if (firstrun)
+    {
         didupdate = false;
-    } else {
+    }
+    else
+    {
         didupdate = obj["didupdate"];
     }
 }

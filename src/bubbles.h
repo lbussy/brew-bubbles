@@ -30,34 +30,35 @@ SOFTWARE. */
 #include <CircularBuffer.h>
 #include <Arduino.h>
 
-struct Bubbles {
-    private:
-        // Private Methods
-        float getRawBpm();
+struct Bubbles
+{
+private:
+    // Private Methods
+    float getRawBpm();
 
-        // Private Properties
-        CircularBuffer<float, TEMPAVG> tempAmbAvg;
-        CircularBuffer<float, TEMPAVG> tempVesAvg;
-        CircularBuffer<float, BUBAVG> bubAvg;
-        volatile unsigned long ulStart;     // Start time
-        volatile unsigned long ulLastReport;// Store time of last report (millis())
-        volatile unsigned long ulMicroLast; // Last pulse time for resolution (micros())
-        float lastAmb;
-        float lastVes;
+    // Private Properties
+    CircularBuffer<float, TEMPAVG> tempAmbAvg;
+    CircularBuffer<float, TEMPAVG> tempVesAvg;
+    CircularBuffer<float, BUBAVG> bubAvg;
+    volatile unsigned long ulStart;      // Start time
+    volatile unsigned long ulLastReport; // Store time of last report (millis())
+    volatile unsigned long ulMicroLast;  // Last pulse time for resolution (micros())
+    float lastAmb;
+    float lastVes;
 
-    public:
-        // Public Methods
-        bool start();
-        bool update();                  // Call every 60 seconds
-        float getAvgAmbient();
-        float getAvgVessel();
-        float getAvgBpm();
-        void setLast(double);           // Push last reading on reboot
+public:
+    // Public Methods
+    bool start();
+    bool update(); // Call every 60 seconds
+    float getAvgAmbient();
+    float getAvgVessel();
+    float getAvgBpm();
+    void setLast(double); // Push last reading on reboot
 
-        // Public Properties
-        float lastBpm;                  // Holds most recent count
-        String lastTime;
-        int sampleSize;
+    // Public Properties
+    float lastBpm; // Holds most recent count
+    String lastTime;
+    int sampleSize;
 };
 
 extern volatile int pulse;

@@ -26,12 +26,13 @@ SOFTWARE. */
 volatile int pulse;
 
 void interruptSetup()
-{ 
+{
     pulse = 0;
-    pinMode(COUNTPIN, INPUT_PULLUP); 
-    attachInterrupt(digitalPinToInterrupt(COUNTPIN), handleInterrupt, RISING); 
+    pinMode(COUNTPIN, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(COUNTPIN), handleInterrupt, RISING);
 }
 
-void ICACHE_RAM_ATTR handleInterrupt() { 
-    pulse++; 
+void ICACHE_RAM_ATTR handleInterrupt()
+{
+    pulse++;
 }

@@ -22,7 +22,8 @@ SOFTWARE. */
 
 #include "execota.h"
 
-void execfw() {
+void execfw()
+{
     Log.notice(F("Starting the Firmware OTA pull, will reboot without notice." CR));
 
     // Stop web server before OTA update - will restart on reset
@@ -39,39 +40,42 @@ void execfw() {
     WiFiClient _client;
     t_httpUpdate_return ret = ESPhttpUpdate.update(_client, F(FIRMWAREURL), "0");
 
-    switch(ret) {
-        case HTTP_UPDATE_FAILED:
-            Log.error(F("HTTP Firmware OTA Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-            // Don't allow anything to proceed
-            config.dospiffs1 = false;
-            config.dospiffs2 = false;
-            config.didupdate = false;
-            saveConfig();
-            ESP.restart();
-            break;
+    switch (ret)
+    {
+    case HTTP_UPDATE_FAILED:
+        Log.error(F("HTTP Firmware OTA Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+        // Don't allow anything to proceed
+        config.dospiffs1 = false;
+        config.dospiffs2 = false;
+        config.didupdate = false;
+        saveConfig();
+        ESP.restart();
+        break;
 
-        case HTTP_UPDATE_NO_UPDATES:
-            Log.notice(F("HTTP Firmware OTA Update: No updates." CR));
-            // Don't allow anything to proceed
-            config.dospiffs1 = false;
-            config.dospiffs2 = false;
-            config.didupdate = false;
-            saveConfig();
-            ESP.restart();
-            break;
-        
-        case HTTP_UPDATE_OK:
-            // We should never actually reach this as the controller
-            // resets after OTA
-            Log.notice(F("HTTP Firmware OTA Update complete, restarting." CR));
-            ESP.restart();
-            _delay(1000);
-            break;
+    case HTTP_UPDATE_NO_UPDATES:
+        Log.notice(F("HTTP Firmware OTA Update: No updates." CR));
+        // Don't allow anything to proceed
+        config.dospiffs1 = false;
+        config.dospiffs2 = false;
+        config.didupdate = false;
+        saveConfig();
+        ESP.restart();
+        break;
+
+    case HTTP_UPDATE_OK:
+        // We should never actually reach this as the controller
+        // resets after OTA
+        Log.notice(F("HTTP Firmware OTA Update complete, restarting." CR));
+        ESP.restart();
+        _delay(1000);
+        break;
     }
 }
 
-void execspiffs() {
-    if (config.dospiffs1) {
+void execspiffs()
+{
+    if (config.dospiffs1)
+    {
         Log.notice(F("Rebooting a second time before File System OTA pull." CR));
         config.dospiffs1 = false;
         config.dospiffs2 = true;
@@ -80,7 +84,9 @@ void execspiffs() {
         _delay(3000);
         ESP.restart();
         _delay(1000);
-    } else if (config.dospiffs2) {
+    }
+    else if (config.dospiffs2)
+    {
         Log.notice(F("Starting the File System OTA pull." CR));
 
         // Stop web server before OTA update - will restart on reset
@@ -91,28 +97,31 @@ void execspiffs() {
         WiFiClient client;
         t_httpUpdate_return ret = ESPhttpUpdate.updateFS(client, F(LITTLEFSURL), "");
 
-        switch(ret) {
-            case HTTP_UPDATE_FAILED:
-                Log.error(F("HTTP File System OTA Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-                break;
+        switch (ret)
+        {
+        case HTTP_UPDATE_FAILED:
+            Log.error(F("HTTP File System OTA Update failed error (%d): %s" CR), ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+            break;
 
-            case HTTP_UPDATE_NO_UPDATES:
-                Log.notice(F("HTTP File System OTA Update: No updates." CR));
-                break;
+        case HTTP_UPDATE_NO_UPDATES:
+            Log.notice(F("HTTP File System OTA Update: No updates." CR));
+            break;
 
-            case HTTP_UPDATE_OK:
-                // Reset File System update flag
-                config.dospiffs1 = false;
-                config.dospiffs2 = false;
-                config.didupdate = true;
-                saveConfig(); // This not only saves the flags, it (re)saves the whole config after File System wipes it
-                _delay(1000);
-                Log.notice(F("HTTP File System OTA Update complete, restarting." CR));
-                ESP.restart();
-                _delay(1000);
-                break;
+        case HTTP_UPDATE_OK:
+            // Reset File System update flag
+            config.dospiffs1 = false;
+            config.dospiffs2 = false;
+            config.didupdate = true;
+            saveConfig(); // This not only saves the flags, it (re)saves the whole config after File System wipes it
+            _delay(1000);
+            Log.notice(F("HTTP File System OTA Update complete, restarting." CR));
+            ESP.restart();
+            _delay(1000);
+            break;
         }
-    } else {
+    }
+    else
+    {
         Log.verbose(F("No OTA pending." CR));
     }
 }
