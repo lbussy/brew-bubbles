@@ -22,18 +22,6 @@ SOFTWARE. */
 
 #include "pushhelper.h"
 
-IPAddress resolveHost(const char *hostname)
-{
-    Log.verbose(F("Host lookup: %s." CR), hostname);
-    IPAddress returnIP = INADDR_NONE;
-    if (WiFi.hostByName(hostname, returnIP, 10000) == 0)
-    {
-        Log.error(F("Host lookup error." CR));
-        returnIP = INADDR_NONE;
-    }
-    return returnIP;
-}
-
 bool pushToTarget(PushTarget *target, IPAddress targetIP, int port)
 {
     LCBUrl lcburl;
@@ -168,28 +156,34 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port)
 }
 
 void setDoURLTarget()
-{
+{                       // Do URL Target
     doURLTarget = true; // Semaphore required for Ticker + radio event
 }
 
 void setDoBFTarget()
-{
+{                      // Do Brewfather target
     doBFTarget = true; // Semaphore required for Ticker + radio event
 }
 
 void setDoBrewfTarget()
-{
+{                         // Do Brewer's Friend target
     doBrewfTarget = true; // Semaphore required for Ticker + radio event
 }
 
 void setDoReset()
-{
+{                   // Do reset
     doReset = true; // Semaphore required for reset in callback
+}
+
+void setDoOTA()
+{                 // Do OTA upgrade
+    doOTA = true; // Semaphore required for OTA in callback
 }
 
 void tickerLoop()
 {
     Target *target = Target::getInstance();
+    TSTarget *tsTarget = TSTarget::getInstance();
     BFTarget *bfTarget = BFTarget::getInstance();
     BrewfTarget *brewfTarget = BrewfTarget::getInstance();
 
@@ -209,33 +203,41 @@ void tickerLoop()
 
     // Handle JSON posts
     //
-    // Do URL Target post
     if (doURLTarget)
-    {
+    { // Do URL Target post
         doURLTarget = false;
         target->push();
     }
-    //
-    // Do Brewer's Friend Post
+
     if (doBFTarget)
-    { // Do BF post
+    { // Do Brewer's Friend Post
         doBFTarget = false;
         bfTarget->push();
     }
-    //
-    // Do Brewfather Post
+
+    if (doTSTarget)
+    { // Do Thingspeak Post
+        doTSTarget = false;
+        tsTarget->push();
+    }
+
     if (doBrewfTarget)
-    { // Do BF post
+    { // Do Brewfather Post
         doBrewfTarget = false;
         brewfTarget->push();
     }
 
-    // Check for Reset Pending
-    // Necessary because we cannot delay in a callback
+    // Other maintenance
+    //
     if (doReset)
-    {
+    { // Check for Reset Pending
         doReset = false;
         resetController();
     }
-}
 
+    if (doOTA)
+    { // Handle OTA update
+        doOTA = false;
+        execfw();
+    }
+}

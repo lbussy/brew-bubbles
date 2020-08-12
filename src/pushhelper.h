@@ -28,17 +28,26 @@ SOFTWARE. */
 #include "target.h"
 #include "brewfather.h"
 #include "brewersfriend.h"
+#include "thingspeak.h"
 #include "execota.h"
 #include <ESP8266WiFi.h>
 
-IPAddress resolveHost(const char hostname[129]);
-bool pushToTarget(PushTarget*, IPAddress, int);
-void updateLoop();
+bool pushToTarget(PushTarget *, IPAddress, int);
+void tickerLoop();
 void setDoURLTarget();
 void setDoBFTarget();
+void setDoTSTarget();
 void setDoBrewfTarget();
+void setDoOTA();
 void setDoReset();
 extern volatile bool doBubble;
 extern struct Bubbles bubbles;
+
+static bool __attribute__((unused)) doURLTarget = false;   // Semaphore for Target timer
+static bool __attribute__((unused)) doTSTarget = false;    // Semaphore for Thingspeak timer
+static bool __attribute__((unused)) doBFTarget = false;    // Semaphore for Brewer's Friend timer
+static bool __attribute__((unused)) doBrewfTarget = false; // Semaphore for Brewfather timer
+static bool __attribute__((unused)) doReset = false;       // Semahore for reset
+static bool __attribute__((unused)) doOTA = false;         // Semahore for reset
 
 #endif // _PUSHHELPER_H
