@@ -112,8 +112,6 @@ void loop() {
             config.brewfather.update = false;
         }
 
-        _delay(50); // Required to "loosen up" the loop so mDNS and webpages are responsive
-
         yield();
     }
 }

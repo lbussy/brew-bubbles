@@ -25,7 +25,7 @@ SOFTWARE. */
 #ifndef DISABLE_LOGGING
 
 void setSerial() { // Start serial with auto-detected rate (default to BAUD)
-    _delay(3000); // Delay to allow monitor to start
+    delay(2000); // Delay to allow monitor to start
     Serial.begin(BAUD);
     // Serial.setDebugOutput(true);
     Serial.flush();

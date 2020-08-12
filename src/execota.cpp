@@ -24,7 +24,6 @@ SOFTWARE. */
 
 void execfw() {
     Log.notice(F("Starting the Firmware OTA pull, will reboot without notice." CR));
-    _delay(5000); // Let page finish loading
 
     // Stop web server before OTA update - will restart on reset
     stopWebServer();
@@ -37,8 +36,8 @@ void execfw() {
 
     ESPhttpUpdate.setLedPin(LED, LOW);
     // "http://www.brewbubbles.com/firmware/firmware.bin"
-    WiFiClient client;
-    t_httpUpdate_return ret = ESPhttpUpdate.update(client, F(FIRMWAREURL), "");
+    WiFiClient _client;
+    t_httpUpdate_return ret = ESPhttpUpdate.update(_client, F(FIRMWAREURL), "0");
 
     switch(ret) {
         case HTTP_UPDATE_FAILED:
@@ -48,6 +47,7 @@ void execfw() {
             config.dospiffs2 = false;
             config.didupdate = false;
             saveConfig();
+            ESP.restart();
             break;
 
         case HTTP_UPDATE_NO_UPDATES:
@@ -57,6 +57,7 @@ void execfw() {
             config.dospiffs2 = false;
             config.didupdate = false;
             saveConfig();
+            ESP.restart();
             break;
         
         case HTTP_UPDATE_OK:
@@ -88,7 +89,7 @@ void execspiffs() {
         ESPhttpUpdate.setLedPin(LED, LOW);
         // "http://www.brewbubbles.com/firmware/spiffs.bin"
         WiFiClient client;
-        t_httpUpdate_return ret = ESPhttpUpdate.updateFS(client, F(SPIFFSURL), "");
+        t_httpUpdate_return ret = ESPhttpUpdate.updateFS(client, F(LITTLEFSURL), "");
 
         switch(ret) {
             case HTTP_UPDATE_FAILED:

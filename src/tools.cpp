@@ -23,6 +23,7 @@ SOFTWARE. */
 #include "tools.h"
 
 void _delay(unsigned long ulDelay) {
+    Log.verbose(F("DEBUG: In _delay()." CR));
     // Safe semi-blocking delay
 #ifdef ESP32
     vTaskDelay(ulDelay); // Builtin to ESP32
@@ -92,5 +93,77 @@ void saveBpm() {
         } else {
             Log.verbose(F("Saved lastBpm." CR), bpmFileName);
         }
+    }
+}
+
+void setDoURLTarget() {
+    doURLTarget = true; // Semaphore required for Ticker + radio event
+}
+
+void setDoBFTarget() {
+    doBFTarget = true; // Semaphore required for Ticker + radio event
+}
+
+void setDoBrewfTarget() {
+    doBrewfTarget = true; // Semaphore required for Ticker + radio event
+}
+
+void setDoReset() {
+    doReset = true; // Semaphore required for reset in callback
+}
+
+void setDoOTA() {
+    doOTA = true; // Semaphore required for OTA in callback
+}
+
+void tickerLoop() {
+    Target *target = Target::getInstance();
+    BFTarget *bfTarget = BFTarget::getInstance();
+    BrewfTarget *brewfTarget = BrewfTarget::getInstance();
+
+    // Trigger Bubble check
+    //
+    if (doBubble) {
+        doBubble = false;
+        if (bubbles.update())
+            Log.verbose(F("Current BPM is %D. Averages (%l in sample): BPM = %D, Ambient = %D, Vessel = %D." CR),
+                bubbles.lastBpm,
+                bubbles.sampleSize,
+                bubbles.getAvgBpm(),
+                bubbles.getAvgAmbient(),
+                bubbles.getAvgVessel()
+    );
+    }
+
+    // Handle JSON posts
+    //
+    // Do URL Target post
+    if (doURLTarget) {
+        doURLTarget = false;
+        target->push();
+    }
+    //
+    // Do Brewer's Friend Post
+    if (doBFTarget) { // Do BF post
+        doBFTarget = false;
+        bfTarget->push();
+    }
+    //
+    // Do Brewfather Post
+    if (doBrewfTarget) { // Do BF post
+        doBrewfTarget = false;
+        brewfTarget->push();
+    }
+
+    // Check for Reset Pending
+    // Necessary because we cannot delay in a callback
+    if (doReset) {
+        doReset = false;
+        resetController();
+    }
+
+    if (doOTA) {
+        doOTA = false;
+        execfw();
     }
 }

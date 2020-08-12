@@ -105,7 +105,6 @@ bool deserializeConfig(Stream &src)
         config.load(doc.as<JsonObject>());
         return true;
     }
-    // TODO:  Can I return false here somehow?
 }
 
 bool serializeConfig(Print &dst)
@@ -117,7 +116,7 @@ bool serializeConfig(Print &dst)
     JsonObject root = doc.to<JsonObject>();
 
     // Fill the object
-    config.save(root); // TODO:  I think this is why it's not working right, it's reloading the config
+    config.save(root);
 
     // Serialize JSON to file
     return serializeJsonPretty(doc, dst) > 0;

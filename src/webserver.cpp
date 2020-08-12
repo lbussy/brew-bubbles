@@ -85,8 +85,8 @@ void setActionPageHandlers()
 
     server.on("/otastart/", HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing /otastart/." CR));
-        request->send(200, F("text/plain"), F("200: OTA started."));
-        execfw(); // Trigger the OTA update
+        request->send(200, F("text/plain"), F("200: OTA queued."));
+        setDoOTA();
     });
 
     server.on("/clearupdate/", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -422,9 +422,6 @@ void setSettingsAliases()
             bool updated = false;
 
             // Parse JSON
-
-            // TODO:  Use NULL checks from jsonconfig
-            // TODO:  Can I use jsonconfig to handle this?
 
             // Parse Access Point Settings Object
             const char *ssid = doc["apconfig"]["ssid"];
