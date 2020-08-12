@@ -47,6 +47,7 @@ class PushTarget {
         pushPoint ambientTemp;  // Room or chamber temp
         pushPoint vesselTemp;   // Brew temp
         pushPoint bpm;          // Bubbles per minute
+        pushPoint type;         // POST or GET
 };
 
 #endif // _PUSHTARGET_H
