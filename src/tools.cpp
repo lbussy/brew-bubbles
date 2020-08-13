@@ -24,7 +24,6 @@ SOFTWARE. */
 
 void _delay(unsigned long ulDelay)
 {
-    Log.verbose(F("DEBUG: In _delay()." CR));
     // Safe semi-blocking delay
 #ifdef ESP32
     vTaskDelay(ulDelay); // Builtin to ESP32

@@ -24,8 +24,9 @@ SOFTWARE. */
 
 const char *filename = "/config.json";
 Config config;
-extern const size_t capacityDeserial = 3 * JSON_OBJECT_SIZE(2) + 3 * JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(10) + 680;
-extern const size_t capacitySerial = 3 * JSON_OBJECT_SIZE(2) + 3 * JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(10);
+
+extern const size_t capacitySerial = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + 3*JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(11);
+extern const size_t capacityDeserial = capacitySerial + 810;
 
 bool deleteConfigFile()
 {
@@ -360,6 +361,7 @@ void URLTarget::load(JsonObjectConst obj)
 
 void KeyTarget::save(JsonObject obj) const
 {
+    obj["channel"] = channel;
     obj["key"] = key;
     obj["freq"] = freq;
     obj["update"] = update;
@@ -369,6 +371,16 @@ void KeyTarget::load(JsonObjectConst obj)
 {
     // Load Key-type configuration
     //
+    if (obj["channel"].isNull())
+    {
+        channel = 0;
+    }
+    else
+    {
+        int c = obj["channel"];
+        channel = c;
+    }
+
     if (obj["key"].isNull())
     {
         strlcpy(key, "", sizeof(key));
@@ -422,6 +434,7 @@ void Config::load(JsonObjectConst obj)
     urltarget.load(obj["urltarget"]);
     brewersfriend.load(obj["brewersfriend"]);
     brewfather.load(obj["brewfather"]);
+    thingspeak.load(obj["thingspeak"]);
 
     if (obj["dospiffs1"].isNull())
     {
@@ -468,6 +481,8 @@ void Config::save(JsonObject obj) const
     brewersfriend.save(obj.createNestedObject("brewersfriend"));
     // Add Brewfather object
     brewfather.save(obj.createNestedObject("brewfather"));
+    // Add Thingspeak object
+    thingspeak.save(obj.createNestedObject("thingspeak"));
     // Add dospiffs1 object
     obj["dospiffs1"] = dospiffs1;
     // Add dospiffs2 object

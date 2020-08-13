@@ -72,6 +72,7 @@ struct KeyTarget
 {
     // Stored Brewer's Friend configuration
     char key[64];
+    int channel;
     int freq;
     bool update;
 
@@ -89,6 +90,7 @@ struct Config
     URLTarget urltarget;
     KeyTarget brewersfriend;
     KeyTarget brewfather;
+    KeyTarget thingspeak;
     bool dospiffs1;
     bool dospiffs2;
     bool didupdate;

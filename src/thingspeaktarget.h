@@ -26,6 +26,7 @@ SOFTWARE. */
 #include "pushtarget.h"
 #include "pushhelper.h"
 #include "jsonconfig.h"
+#include <ThingSpeak.h>
 #include <LCBUrl.h>
 #include <ArduinoLog.h>
 #include <Arduino.h>

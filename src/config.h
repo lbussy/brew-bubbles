@@ -271,7 +271,7 @@ SOFTWARE. */
 // Poll Brew Bubbles server for available version (time in seconds)
 //
 #ifndef POLLSERVERVERSION
-#define POLLSERVERVERSION 60
+#define POLLSERVERVERSION 3600
 #endif
 //
 //////////////////////////////////////////////////////////////////////////

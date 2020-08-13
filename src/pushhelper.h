@@ -28,7 +28,7 @@ SOFTWARE. */
 #include "target.h"
 #include "brewfather.h"
 #include "brewersfriend.h"
-#include "thingspeak.h"
+#include "thingspeaktarget.h"
 #include "execota.h"
 #include <ESP8266WiFi.h>
 

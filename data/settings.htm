@@ -110,6 +110,7 @@
                             <a class="dropdown-item" data-toggle="tab" href="#urltarget">URL Target</a>
                             <a class="dropdown-item" data-toggle="tab" href="#brewersfriend">Brewer's Friend</a>
                             <a class="dropdown-item" data-toggle="tab" href="#brewfather">Brewfather</a>
+                            <a class="dropdown-item" data-toggle="tab" href="#thingspeak">Thingspeak</a>
                         </div>
                     </li> <!-- Targets Nav Item -->
 
@@ -373,7 +374,7 @@
 
                     <div class="tab-pane fade" id="brewfather"> <!-- Brewfather Settings tab -->
                         <div class="card-header">
-                            <h4 class="card-title">Brewfather Target</h4>
+                            <h4 class="card-title">Brewfather Target Settings</h4>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
@@ -421,6 +422,74 @@
                             </ul>
                         </div>
                     </div> <!-- Brewfather Settings tab -->
+
+                    <div class="tab-pane fade" id="thingspeak"> <!-- ThingSpeak Settings tab -->
+                        <div class="card-header">
+                            <h4 class="card-title">ThingSpeak Target Settings</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+
+                                    <p class="card-text">
+                                        These settings control how Brew Bubbles talks to
+                                        <a href="https://thingspeak.com/">ThingSpeak.</a>
+                                        ThingSpeak supports logging brew-related data, and
+                                        with some imagination, several dashboards may be
+                                        created to visualize and make use of your data. To
+                                        find your API key; log into your ThingSpeak account
+                                        and go to `My Profile.' Your API key will be a 10
+                                        to 64-character string of letters and numbers in the
+                                        'ThingSpeak Settings' section.
+                                    </p>
+
+                                    <form id="setthingspeakchannel" action="/settings/update/" method="POST"> <!-- ThingSpeak Channel Form -->
+                                        <div class="form-group row">
+                                            <label for="thingSpeakChannel" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                                title="Enter the Channel number of your target ThingSpeak channel.">
+                                                ThingSpeak Channel
+                                            </label>
+                                            <div class="col-sm-8">
+                                                <input type="number" class="form-control" id="thingspeakchannel" name="thingspeakchannel"
+                                                    min="1000" max="9999999999" placeholder="1234567890">
+                                            </div>
+                                            <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
+                                            </div>
+                                        </div>
+                                    </form> <!-- ThingSpeak Key Form -->
+
+                                    <form id="setthingspeakkey" action="/settings/update/" method="POST"> <!-- ThingSpeak Key Form -->
+                                        <div class="form-group row">
+                                            <label for="thingSpeakKey" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                                title="Enter the Write API Key from your ThingSpeak channel. To disable pushing to ThingSpeak, delete the key.">
+                                                ThingSpeak Key
+                                            </label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control" id="thingspeakkey" name="thingspeakkey"
+                                                    minlength="10" maxlength="64" placeholder="DD24FNDN84305AJ">
+                                            </div>
+                                            <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
+                                            </div>
+                                        </div>
+                                    </form> <!-- ThingSpeak Key Form -->
+
+                                    <form id="setthingspeakfreq" action="/settings/update/" method="POST"> <!-- ThingSpeak Frequency Form -->
+                                        <div class="form-group row">
+                                            <label for="tsPushEvery" class="col-sm-2 col-form-label" data-toggle="tooltip"
+                                                title="How often (in minutes) to push data to ThingSpeak">Push Frequency</label>
+                                            <div class="col-sm-8">
+                                                <input type="number" class="form-control" id="thingspeakfreq" placeholder="15"
+                                                    name="thingspeakfreq" min="15" max="120">
+                                            </div>
+                                            <div class="col-sm-2"><button class="btn btn-primary" id="submitSettings">Update</button>
+                                            </div>
+                                        </div>
+                                    </form> <!-- ThingSpeak Frequency Form -->
+
+                                </li>
+                            </ul>
+                        </div>
+                    </div> <!-- ThingSpeak Settings tab -->
 
                     <div class="tab-pane fade" id="reset"> <!-- Reset Controller tab -->
                         <div class="card-header">
@@ -540,6 +609,9 @@
                         $('#brewersfriendfreq').val(config.brewersfriend.freq);
                         $('#brewfatherkey').val(config.brewfather.key);
                         $('#brewfatherfreq').val(config.brewfather.freq);
+                        $('#thingspeakchannel').val(config.thingspeak.channel);
+                        $('#thingspeakkey').val(config.thingspeak.key);
+                        $('#thingspeakfreq').val(config.thingspeak.freq);
                     }
                     catch {
                         alert("Unable to parse configuration data from SPIFFS.");

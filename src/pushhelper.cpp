@@ -170,6 +170,11 @@ void setDoBrewfTarget()
     doBrewfTarget = true; // Semaphore required for Ticker + radio event
 }
 
+void setDoTSTarget()
+{                      // Do ThingSpeak target
+    doTSTarget = true; // Semaphore required for Ticker + radio event
+}
+
 void setDoReset()
 {                   // Do reset
     doReset = true; // Semaphore required for reset in callback
