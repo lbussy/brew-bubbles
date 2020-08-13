@@ -2,14 +2,7 @@
 
 ## Open
 
-- Add Thingspeak support
-- Move posting targets to async
-- Change so that posting configuration changes is not a complete page reload
-- See if we can do something about entering a bad password on portal
-- Wipe out temp array contents when temp format changes
-- Fix 'nan' error in Bubbles after SPIFFS upload
-- Review reboot schedule to see if it's still needed
-- Review mDNS restart schedule to see if it's still needed
+List closed
 
 ## Complete
 
@@ -155,3 +148,12 @@
 - ~~Test web page controller reset button~~
 - ~~Reboot not working - probably related to saveBpm() and/or loadBpm() [Issue #19](https://github.com/lbussy/brew-bubbles/issues/19)~~
 - ~~Add BrewFlasher to docs~~
+- ~~Add Thingspeak support: https://github.com/mathworks/thingspeak-arduino~~
+- ~~Fix 'nan' error in Bubbles after SPIFFS upload~~
+- ~~Wipe out temp array contents when temp format changes~~
+- ~~Review reboot schedule to see if it's still needed~~
+- ~~Review mDNS restart schedule to see if it's still needed~~
+- ~~See if we can do something about entering a bad password on portal~~
+- ~~Move posting targets to async~~ (moved to #30)
+- ~~Change so that posting configuration changes is not a complete page reload~~ (moved to #31)
+- ~~Have the app create its own Thingspeak channel~~ (Moved to #32)

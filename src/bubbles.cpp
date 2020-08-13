@@ -118,6 +118,12 @@ void Bubbles::setLast(double last)
     bubAvg.push(last);
 }
 
+void Bubbles::wipeArray()
+{
+    tempAmbAvg.clear();
+    tempVesAvg.clear();
+}
+
 void setDoBub()
 {
     // Allow a Bubble count to fire
