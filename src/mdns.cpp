@@ -33,11 +33,19 @@ void mdnssetup()
         Log.notice(F("mDNS responder started for %s.local." CR), config.hostname);
         if (!MDNS.addService("http", "tcp", PORT))
         {
-            Log.error(F("Failed to register mDNS service." CR));
+            Log.error(F("Failed to register Web mDNS service." CR));
         }
         else
         {
             Log.notice(F("HTTP registered via mDNS on port %i." CR), PORT);
+        }
+        if (!MDNS.addService("brewbubbles", "tcp", PORT))
+        {
+            Log.error(F("Failed to register Brew Bubbles mDNS service." CR));
+        }
+        else
+        {
+            Log.notice(F("Brew Bubbles registered via mDNS on port %i." CR), PORT);
         }
     }
 }
