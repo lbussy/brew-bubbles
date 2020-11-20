@@ -153,6 +153,72 @@
                     // Can post-process here
                 });
         }
+
+        function loadUptime() { // Get uptime information
+            var thisVersionJson = "/uptime/";
+            var thisVersion = $.getJSON(thisVersionJson, function () {
+            })
+                .done(function (thisVersion) {
+                    try {
+                        //$('#thisVersion').text("v" + thisVersion.version);
+                    }
+                    catch {
+                        //alert("Unable to parse current version from controller.");
+                        //$('#thisVersion').text("(Error loading version.)");
+                    }
+                })
+                .fail(function () {
+                    //alert("Failed getting current version from controller.");
+                    //$('#thisVersion').text("(Error loading version.)");
+                })
+                .always(function () {
+                    // Can post-process here
+                });
+        }
+
+        function loadHeap() { // Get heap information
+            var thisVersionJson = "/heap/";
+            var thisVersion = $.getJSON(thisVersionJson, function () {
+            })
+                .done(function (thisVersion) {
+                    try {
+                        //$('#thisVersion').text("v" + thisVersion.version);
+                    }
+                    catch {
+                        //alert("Unable to parse current version from controller.");
+                        //$('#thisVersion').text("(Error loading version.)");
+                    }
+                })
+                .fail(function () {
+                    //alert("Failed getting current version from controller.");
+                    //$('#thisVersion').text("(Error loading version.)");
+                })
+                .always(function () {
+                    // Can post-process here
+                });
+        }
+
+        function loadResetReason() { // Get last reset reason
+            var thisVersionJson = "/resetreason/";
+            var thisVersion = $.getJSON(thisVersionJson, function () {
+            })
+                .done(function (thisVersion) {
+                    try {
+                        //$('#thisVersion').text("v" + thisVersion.version);
+                    }
+                    catch {
+                        //alert("Unable to parse current version from controller.");
+                        //$('#thisVersion').text("(Error loading version.)");
+                    }
+                })
+                .fail(function () {
+                    //alert("Failed getting current version from controller.");
+                    //$('#thisVersion').text("(Error loading version.)");
+                })
+                .always(function () {
+                    // Can post-process here
+                });
+        }
     </script>
 
 </body>
