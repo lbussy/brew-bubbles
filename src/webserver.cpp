@@ -83,29 +83,39 @@ void setActionPageHandlers()
 {
     // Action Page Handlers
 
-    server.on("/uptime/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        uptime up;
-        up.calculateUptime();
-        const int days = up.getDays();
-        const int hours = up.getHours();
-        const int minutes = up.getMinutes();
-        const int seconds = up.getSeconds();
-        const int milliseconds = up.getMilliseconds();
-
-        const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(5);
-        StaticJsonDocument<capacity> doc;
-        JsonObject u = doc.createNestedObject("u");
-
-        u["days"] = days;
-        u["hours"] = hours;
-        u["minutes"] = minutes;
-        u["seconds"] = seconds;
-        u["millis"] = milliseconds;
-
-        String uptime;
-        serializeJson(doc, uptime);
-        request->send(200, F("text/plain"), uptime);
+    server.on("/wifi2/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Processing /wifi2/." CR));
+        request->send(LittleFS, "/wifi2.htm");
+        resetWifi(); // Wipe settings, reset controller
     });
+
+    server.on("/reset/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Processing /reset/." CR));
+        // Redirect to Reset page
+        request->send(LittleFS, "/reset.htm");
+        setDoReset();
+    });
+
+    server.on("/otastart/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Processing /otastart/." CR));
+        request->send(200, F("text/plain"), F("200: OTA queued."));
+        setDoOTA();
+    });
+
+    server.on("/clearupdate/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Processing /clearupdate/." CR));
+        Log.verbose(F("Clearing any update flags." CR));
+        config.dospiffs1 = false;
+        config.dospiffs2 = false;
+        config.didupdate = false;
+        saveConfig();
+        request->send(200, F("text/plain"), F("200: OK."));
+    });
+}
+
+void setJsonHandlers()
+{
+    // JSON Handlers
 
     server.on("/resetreason/", HTTP_GET, [](AsyncWebServerRequest *request) {
         const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2);
@@ -142,39 +152,29 @@ void setActionPageHandlers()
         request->send(200, F("text/plain"), heap);
     });
 
-    server.on("/wifi2/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        Log.verbose(F("Processing /wifi2/." CR));
-        request->send(LittleFS, "/wifi2.htm");
-        resetWifi(); // Wipe settings, reset controller
-    });
+    server.on("/uptime/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        uptime up;
+        up.calculateUptime();
+        const int days = up.getDays();
+        const int hours = up.getHours();
+        const int minutes = up.getMinutes();
+        const int seconds = up.getSeconds();
+        const int milliseconds = up.getMilliseconds();
 
-    server.on("/reset/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        Log.verbose(F("Processing /reset/." CR));
-        // Redirect to Reset page
-        request->send(LittleFS, "/reset.htm");
-        setDoReset();
-    });
+        const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(5);
+        StaticJsonDocument<capacity> doc;
+        JsonObject u = doc.createNestedObject("u");
 
-    server.on("/otastart/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        Log.verbose(F("Processing /otastart/." CR));
-        request->send(200, F("text/plain"), F("200: OTA queued."));
-        setDoOTA();
-    });
+        u["days"] = days;
+        u["hours"] = hours;
+        u["minutes"] = minutes;
+        u["seconds"] = seconds;
+        u["millis"] = milliseconds;
 
-    server.on("/clearupdate/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        Log.verbose(F("Processing /clearupdate/." CR));
-        Log.verbose(F("Clearing any update flags." CR));
-        config.dospiffs1 = false;
-        config.dospiffs2 = false;
-        config.didupdate = false;
-        saveConfig();
-        request->send(200, F("text/plain"), F("200: OK."));
+        String uptime;
+        serializeJson(doc, uptime);
+        request->send(200, F("text/plain"), uptime);
     });
-}
-
-void setJsonHandlers()
-{
-    // JSON Handlers
 
     server.on("/bubble/", HTTP_GET, [](AsyncWebServerRequest *request) {
         // Used to provide the Bubbles json
