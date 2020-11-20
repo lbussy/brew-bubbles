@@ -24,6 +24,25 @@ SOFTWARE. */
 
 AsyncWebServer server(PORT);
 
+const char *resetReason[7] = {
+    "REASON_DEFAULT_RST", //      = 0,    /* normal startup by power on */
+    "REASON_WDT_RST", //          = 1,    /* hardware watch dog reset */
+    "REASON_EXCEPTION_RST", //    = 2,    /* exception reset, GPIO status won’t change */
+    "REASON_SOFT_WDT_RST", //     = 3,    /* software watch dog reset, GPIO status won’t change */
+    "REASON_SOFT_RESTART", //     = 4,    /* software restart ,system_restart , GPIO status won’t change */
+    "REASON_DEEP_SLEEP_AWAKE", // = 5,    /* wake up from deep-sleep */
+    "REASON_EXT_SYS_RST" //      = 6     /* external system reset */
+};
+
+const char *resetDescription[7] = {
+    "Normal startup by power on",
+    "Hardware watch dog reset",
+    "Exception reset, GPIO status won’t change",
+    "Software watch dog reset, GPIO status won’t change",
+    "Software restart, system_restart, GPIO status won’t change",
+    "Wake up from deep-sleep",
+    "External system reset"};
+
 void initWebServer()
 {
     setRegPageAliases();
@@ -88,6 +107,19 @@ void setActionPageHandlers()
         serializeJson(doc, uptime);
 
         request->send(200, F("text/plain"), uptime);
+    });
+
+    server.on("/resetreason/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2);
+        StaticJsonDocument<capacity> doc;
+        JsonObject r = doc.createNestedObject("r");
+        rst_info *_reset = ESP.getResetInfoPtr();
+        unsigned int reset = (unsigned int)(*_reset).reason;
+        r["reason"] = resetReason[reset];
+        r["description"] = resetDescription[reset];
+        String resetreason;
+        serializeJson(doc, resetreason);
+        request->send(200, F("text/plain"), resetreason);
     });
 
     server.on("/heap/", HTTP_GET, [](AsyncWebServerRequest *request) {
