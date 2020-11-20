@@ -36,6 +36,7 @@ SOFTWARE. */
 #include "thatVersion.h"
 #include "pushhelper.h"
 #include "tools.h"
+#include <uptime.h>
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
 #include <AsyncJson.h>

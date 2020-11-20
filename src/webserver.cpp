@@ -64,7 +64,34 @@ void setActionPageHandlers()
 {
     // Action Page Handlers
 
+    server.on("/uptime/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        uptime up;
+        up.calculateUptime();
+
+        const int days = up.getDays();
+        const int hours = up.getHours();
+        const int minutes = up.getMinutes();
+        const int seconds = up.getSeconds();
+        const int milliseconds = up.getMilliseconds();
+
+        const size_t capacity = JSON_ARRAY_SIZE(1) + JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(5) + 50;
+        StaticJsonDocument<capacity> doc;
+        JsonObject u = doc.createNestedObject("u");
+
+        u["days"] = days;
+        u["hours"] = hours;
+        u["minutes"] = minutes;
+        u["seconds"] = seconds;
+        u["millis"] = milliseconds;
+
+        String uptime;
+        serializeJson(doc, uptime);
+
+        request->send(200, F("text/plain"), uptime);
+    });
+
     server.on("/heap/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        // TODO:  Take this from WiFiManager and get better information
         uint32_t _heap = ESP.getFreeHeap();
         String heap = "Current heap: " + String(_heap);
         request->send(200, F("text/plain"), heap);
