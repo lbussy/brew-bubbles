@@ -86,14 +86,13 @@ void setActionPageHandlers()
     server.on("/uptime/", HTTP_GET, [](AsyncWebServerRequest *request) {
         uptime up;
         up.calculateUptime();
-
         const int days = up.getDays();
         const int hours = up.getHours();
         const int minutes = up.getMinutes();
         const int seconds = up.getSeconds();
         const int milliseconds = up.getMilliseconds();
 
-        const size_t capacity = JSON_ARRAY_SIZE(1) + JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(5) + 50;
+        const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(5);
         StaticJsonDocument<capacity> doc;
         JsonObject u = doc.createNestedObject("u");
 
@@ -105,7 +104,6 @@ void setActionPageHandlers()
 
         String uptime;
         serializeJson(doc, uptime);
-
         request->send(200, F("text/plain"), uptime);
     });
 
@@ -113,19 +111,34 @@ void setActionPageHandlers()
         const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2);
         StaticJsonDocument<capacity> doc;
         JsonObject r = doc.createNestedObject("r");
+
         rst_info *_reset = ESP.getResetInfoPtr();
         unsigned int reset = (unsigned int)(*_reset).reason;
+
         r["reason"] = resetReason[reset];
         r["description"] = resetDescription[reset];
+
         String resetreason;
         serializeJson(doc, resetreason);
         request->send(200, F("text/plain"), resetreason);
     });
 
     server.on("/heap/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        // TODO:  Take this from WiFiManager and get better information
-        uint32_t _heap = ESP.getFreeHeap();
-        String heap = "Current heap: " + String(_heap);
+        const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(3);
+        StaticJsonDocument<capacity> doc;
+        JsonObject h = doc.createNestedObject("h");
+
+        uint32_t free;
+        uint16_t max;
+        uint8_t frag;
+        ESP.getHeapStats(&free, &max, &frag);
+
+        h["free"] = free;
+        h["max"] = max;
+        h["frag"] = frag;
+
+        String heap;
+        serializeJson(doc, heap);
         request->send(200, F("text/plain"), heap);
     });
 
