@@ -188,7 +188,7 @@ void setDoOTA()
 void tickerLoop()
 {
     Target *target = Target::getInstance();
-    TSTarget *tsTarget = TSTarget::getInstance();
+    // TODO: TSTarget *tsTarget = TSTarget::getInstance();
     BFTarget *bfTarget = BFTarget::getInstance();
     BrewfTarget *brewfTarget = BrewfTarget::getInstance();
 
@@ -220,11 +220,12 @@ void tickerLoop()
         bfTarget->push();
     }
 
-    if (doTSTarget)
-    { // Do Thingspeak Post
-        doTSTarget = false;
-        tsTarget->push();
-    }
+    // TODO: 
+    // if (doTSTarget)
+    // { // Do Thingspeak Post
+    //     doTSTarget = false;
+    //     tsTarget->push();
+    // }
 
     if (doBrewfTarget)
     { // Do Brewfather Post
