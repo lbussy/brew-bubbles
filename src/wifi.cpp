@@ -32,6 +32,16 @@ void doWiFi()
 
 void doWiFi(bool ignore = false)
 { // Handle WiFi and optionally ignore current config
+    // Eliminate 4-way handshake errors
+    WiFi.disconnect();
+    WiFi.enableSTA(true);
+    WiFi.enableAP(false);
+#ifdef ESP8266
+    WiFi.setSleepMode(WIFI_NONE_SLEEP);
+#elif ESP32
+    WiFi.setSleep(false);
+#endif
+
     AsyncWiFiManager myAsyncWifiManager;
 
     // AsyncWiFiManager Callbacks
