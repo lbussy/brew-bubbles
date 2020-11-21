@@ -85,7 +85,9 @@ void doWiFi(bool ignore = false)
         myAsyncWifiManager.setConfigPortalTimeout(120);
         if (myAsyncWifiManager.startConfigPortal(config.apconfig.ssid, config.apconfig.passphrase))
         {
-            // We finished with portal, do we need this?
+            if (blinker.active())
+                blinker.detach(); // Turn off blinker
+            digitalWrite(LED, LOW);
         }
         else
         {
