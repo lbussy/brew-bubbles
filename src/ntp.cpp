@@ -27,13 +27,12 @@ void setClock()
     Ticker blinker;
     Log.notice(F("Entering blocking loop to get NTP time."));
     blinker.attach_ms(NTPBLINK, ntpBlinker);
-    configTime(GMT, 0, "pool.ntp.org", "time.nist.gov");
-    time_t nowSecs = time(nullptr);
     time_t startSecs = time(nullptr);
     int cycle = 0;
-    while (nowSecs < EPOCH_1_1_2019)
+    while (time(nullptr) < EPOCH_1_1_2019)
     {
-        if (nowSecs - startSecs > 9)
+        configTime("GMT", "pool.ntp.org", "time.nist.gov");
+        if (time(nullptr) - startSecs > 9)
         {
             if (cycle > 9)
             {
@@ -42,26 +41,28 @@ void setClock()
             }
 #ifdef LOG_LEVEL
             Serial.println();
+            //myPrintln();
 #endif
             Log.verbose(F("Re-requesting time hack."));
-            configTime(GMT, 0, "pool.ntp.org", "time.nist.gov");
             startSecs = time(nullptr);
             cycle++;
         }
 #ifdef LOG_LEVEL
         Serial.print(F("."));
+        //myPrint(F("."));
 #endif
         delay(1000);
         yield();
-        nowSecs = time(nullptr);
     }
     blinker.detach();
 #ifdef LOG_LEVEL
     Serial.println();
+    //myPrintln();
 #endif
     lastNTPUpdate = millis();
     Log.notice(F("NTP time set." CR));
     struct tm timeinfo;
+    time_t nowSecs = time(nullptr);
     gmtime_r(&nowSecs, &timeinfo);
 }
 
