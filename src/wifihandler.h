@@ -20,43 +20,47 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _WEBSERVER_H
-#define _WEBSERVER_H
+#ifndef _WIFI_H
+#define _WIFI_H
 
-#ifndef USE_LITTLEFS
-#define USE_LITTLEFS
-#endif
+#define WM_ASYNC
 
-#include "wifihandler.h"
-#include "execota.h"
-#include "bubbles.h"
-#include "jsonconfig.h"
-#include "version.h"
 #include "config.h"
-#include "thatVersion.h"
-#include "pushhelper.h"
+#include "jsonconfig.h"
 #include "tools.h"
-#include <uptime.h>
-#include <ArduinoLog.h>
-#include <ArduinoJson.h>
-#include <AsyncJson.h>
-#include <LittleFS.h>
-#include <ESPAsyncWebServer.h>
-#include <ESP8266HTTPClient.h>
-#include <ESP8266mDNS.h>
-#include <Arduino.h>
+#include "mdns.h"
 
-void initWebServer();
-void setRegPageAliases();
-void setActionPageHandlers();
-void setJsonHandlers();
-void setSettingsAliases();
-void stopWebServer();
+#ifdef ESP8266
+#include <ESP8266WiFi.h>
+#endif
+#ifdef ESP32
+#include <WiFi.h>
+#endif
+#include <AsyncWiFiManager.h>
+
+#include <Ticker.h>
+#include <ArduinoLog.h>
+
+void wifiBlinker();
+void doWiFi();
+void doWiFi(bool);
+void resetWifi();
+
+// WiFiManager Callbacks
+void apCallback(AsyncWiFiManager *myWiFiManager);
+void configResetCallback();
+void preSaveConfigCallback();
+void saveConfigCallback();
+void saveParamsCallback();
+void webServerCallback();
 
 extern struct Config config;
-extern struct ThatVersion thatVersion;
-extern struct Bubbles bubbles;
-extern const size_t capacityDeserial;
 extern const size_t capacitySerial;
+extern const size_t capacityDeserial;
 
-#endif // _WEBSERVER_H
+struct tcp_pcb;
+extern struct tcp_pcb *tcp_tw_pcbs;
+extern "C" void tcp_abort(struct tcp_pcb *pcb);
+void tcpCleanup(void);
+
+#endif // _WIFI_H

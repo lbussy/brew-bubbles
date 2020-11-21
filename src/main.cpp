@@ -95,45 +95,55 @@ void loop()
 
     while (true)
     {
-        // Handle semaphores - No radio work in a Ticker!
-        tickerLoop();
-
-        // Toggle LED according to sensor
-        digitalWrite(LED, !digitalRead(COUNTPIN));
-
-        // Handle mDNS requests
-        MDNS.update();
-
-        // If target frequencies needs to be updated, update here
-        if (config.urltarget.update)
+        if (doNonBlock)
         {
-            Log.notice(F("Resetting URL Target frequency timer to %l minutes." CR), config.urltarget.freq);
-            urlTarget.detach();
-            urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
-            config.urltarget.update = false;
+            // Handle nonblocking portal (if configured)
+            myAsyncWifiManager.process();
         }
-        if (config.brewersfriend.update)
+        else
         {
-            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
-            bfTimer.detach();
-            bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
-            config.brewersfriend.update = false;
-        }
-        if (config.brewfather.update)
-        {
-            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
-            bfTimer.detach();
-            bfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
-            config.brewfather.update = false;
-        }
-        if (config.thingspeak.update)
-        {
-            Log.notice(F("Resetting ThingSpeak frequency timer to %l minutes." CR), config.thingspeak.freq);
-            tsTimer.detach();
-            tsTimer.attach(config.thingspeak.freq * 60, setDoTSTarget);
-            config.thingspeak.update = false;
-        }
+            // Handle semaphores - No radio work in a Ticker!
+            tickerLoop();
 
-        yield();
+            // Toggle LED according to sensor
+            digitalWrite(LED, !digitalRead(COUNTPIN));
+
+            // Handle mDNS requests
+            MDNS.update();
+
+            // If target frequencies needs to be updated, update here
+            if (config.urltarget.update)
+            {
+                Log.notice(F("Resetting URL Target frequency timer to %l minutes." CR), config.urltarget.freq);
+                urlTarget.detach();
+                urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
+                config.urltarget.update = false;
+            }
+            if (config.brewersfriend.update)
+            {
+                Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
+                bfTimer.detach();
+                bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
+                config.brewersfriend.update = false;
+            }
+            if (config.brewfather.update)
+            {
+                Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
+                bfTimer.detach();
+                bfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
+                config.brewfather.update = false;
+            }
+            if (config.thingspeak.update)
+            {
+                Log.notice(F("Resetting ThingSpeak frequency timer to %l minutes." CR), config.thingspeak.freq);
+                tsTimer.detach();
+                tsTimer.attach(config.thingspeak.freq * 60, setDoTSTarget);
+                config.thingspeak.update = false;
+            }
+
+            maintenanceLoop();  // Handle mundane tasks
+
+            yield();
+        }
     }
 }

@@ -28,7 +28,7 @@ SOFTWARE. */
 #include "execota.h"
 #include "jsonconfig.h"
 #include "webserver.h"
-#include "wifi.h"
+#include "wifihandler.h"
 #include "version.h"
 #include "bubbles.h"
 #include "mdns.h"
@@ -53,5 +53,6 @@ extern const char *filename;
 extern struct ThatVersion thatVersion;
 extern struct Bubbles bubbles;
 extern volatile bool doBubble;
+extern AsyncWiFiManager myAsyncWifiManager;
 
 #endif // _MAIN_H
