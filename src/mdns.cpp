@@ -31,21 +31,21 @@ void mdnssetup()
     else
     {
         Log.notice(F("mDNS responder started for %s.local." CR), config.hostname);
-        if (!MDNS.addService("http", "tcp", PORT))
+        if (!MDNS.addService("http", "tcp", HTTPPORT))
         {
             Log.error(F("Failed to register Web mDNS service." CR));
         }
         else
         {
-            Log.notice(F("HTTP registered via mDNS on port %i." CR), PORT);
+            Log.notice(F("HTTP registered via mDNS on port %i." CR), HTTPPORT);
         }
-        if (!MDNS.addService("brewbubbles", "tcp", PORT))
+        if (!MDNS.addService(config.hostname, "tcp", HTTPPORT))
         {
-            Log.error(F("Failed to register Brew Bubbles mDNS service." CR));
+            Log.error(F("Failed to register %s mDNS service." CR), API_KEY);
         }
         else
         {
-            Log.notice(F("Brew Bubbles registered via mDNS on port %i." CR), PORT);
+            Log.notice(F("%s registered via mDNS on port %i." CR), API_KEY, HTTPPORT);
         }
     }
 }
@@ -64,8 +64,8 @@ void mdnsreset()
 #elif ESP8266
         Log.notice(F("mDNS responder restarted, hostname: %s.local." CR), WiFi.hostname().c_str());
 #endif
-        MDNS.addService("http", "tcp", PORT);
-        MDNS.addService("kegcop", "tcp", PORT);
+        MDNS.addService("http", "tcp", HTTPPORT);
+        MDNS.addService(config.hostname, "tcp", HTTPPORT);
 #if DOTELNET == true
         MDNS.addService("telnet", "tcp", TELNETPORT);
 #endif

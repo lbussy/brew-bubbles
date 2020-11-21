@@ -340,8 +340,8 @@ SOFTWARE. */
 //
 // Port for local web services
 //
-#ifndef PORT
-#define PORT 80
+#ifndef HTTPPORT
+#define HTTPPORT 80
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
