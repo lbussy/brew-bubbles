@@ -36,7 +36,8 @@ SOFTWARE. */
 #include "thatVersion.h"
 #include "pushhelper.h"
 #include "tools.h"
-#include <uptime.h>
+#include "uptime.h"
+#include <SPIFFSEditor.h>
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
@@ -51,6 +52,7 @@ void setRegPageAliases();
 void setActionPageHandlers();
 void setJsonHandlers();
 void setSettingsAliases();
+void setEditor();
 void stopWebServer();
 
 extern struct Config config;

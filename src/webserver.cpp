@@ -31,6 +31,7 @@ void initWebServer()
     setActionPageHandlers();
     setJsonHandlers();
     setSettingsAliases();
+    setEditor();
 
     // File not found handler
 
@@ -100,6 +101,9 @@ void setJsonHandlers()
     // JSON Handlers
 
     server.on("/resetreason/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        // Used to provide the reset reason json
+        Log.verbose(F("Sending /resetreason/." CR));
+
         const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2);
         StaticJsonDocument<capacity> doc;
         JsonObject r = doc.createNestedObject("r");
@@ -116,6 +120,9 @@ void setJsonHandlers()
     });
 
     server.on("/heap/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        // Used to provide the heap json
+        Log.verbose(F("Sending /heap/." CR));
+
         const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(3);
         StaticJsonDocument<capacity> doc;
         JsonObject h = doc.createNestedObject("h");
@@ -135,27 +142,28 @@ void setJsonHandlers()
     });
 
     server.on("/uptime/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        uptime up;
-        up.calculateUptime();
-        const int days = up.getDays();
-        const int hours = up.getHours();
-        const int minutes = up.getMinutes();
-        const int seconds = up.getSeconds();
-        const int milliseconds = up.getMilliseconds();
+        // Used to provide the uptime json
+        Log.verbose(F("Sending /uptime/." CR));
 
         const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(5);
         StaticJsonDocument<capacity> doc;
         JsonObject u = doc.createNestedObject("u");
 
+        const int days = uptimeDays();
+        const int hours = uptimeHours();
+        const int minutes = uptimeMinutes();
+        const int seconds = uptimeSeconds();
+        const int millis = uptimeMillis();
+
         u["days"] = days;
         u["hours"] = hours;
         u["minutes"] = minutes;
         u["seconds"] = seconds;
-        u["millis"] = milliseconds;
+        u["millis"] = millis;
 
-        String uptime;
-        serializeJson(doc, uptime);
-        request->send(200, F("text/plain"), uptime);
+        String ut = "";
+        serializeJson(doc, ut);
+        request->send(200, F("text/plain"), ut);
     });
 
     server.on("/bubble/", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -710,6 +718,21 @@ void setSettingsAliases()
     //     }
     // });
 }
+
+#ifdef SPIFFSEDIT
+void setEditor()
+{
+    // Setup SPIFFS editor
+#ifdef ESP32
+    server.addHandler(new SPIFFSEditor(SPIFFS, SPIFFSEDITUSER, SPIFFSEDITPW));
+#elif defined(ESP8266)
+    server.addHandler(new SPIFFSEditor(SPIFFSEDITUSER, SPIFFSEDITPW));
+#endif
+    server.on("/edit/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        request->redirect("/edit");
+    });
+}
+#endif
 
 void stopWebServer()
 {
