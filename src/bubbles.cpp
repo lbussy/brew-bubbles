@@ -40,7 +40,6 @@ bool Bubbles::start()
 
     // Set starting time
     lastTime = getDTS();
-    update();
     return true;
 }
 
@@ -59,6 +58,8 @@ bool Bubbles::update()
     tempVesAvg.push(lastVes);
     bubAvg.push(lastBpm);
     sampleSize = tempVesAvg.size();
+
+    saveBpm();
 
     return true;
 }
