@@ -1,6 +1,6 @@
 /* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
-This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
+This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ SOFTWARE. */
 #define USE_LITTLEFS
 #endif
 
-#include "resetreasons.h"
 #include "wifihandler.h"
 #include "execota.h"
 #include "bubbles.h"
@@ -59,5 +58,7 @@ extern struct ThatVersion thatVersion;
 extern struct Bubbles bubbles;
 extern const size_t capacityDeserial;
 extern const size_t capacitySerial;
+extern const char *resetReason[7];
+extern const char *resetDescription[7];
 
 #endif // _WEBSERVER_H

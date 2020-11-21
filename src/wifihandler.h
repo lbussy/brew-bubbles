@@ -1,6 +1,6 @@
 /* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
-This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
+This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,8 +20,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _WIFI_H
-#define _WIFI_H
+#ifndef _WIFIHANDLER_H
+#define _WIFIHANDLER_H
 
 #define WM_ASYNC
 
@@ -63,4 +63,4 @@ extern struct tcp_pcb *tcp_tw_pcbs;
 extern "C" void tcp_abort(struct tcp_pcb *pcb);
 void tcpCleanup(void);
 
-#endif // _WIFI_H
+#endif // _WIFIHANDLER_H
