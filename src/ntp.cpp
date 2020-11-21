@@ -59,6 +59,7 @@ void setClock()
 #ifdef LOG_LEVEL
     Serial.println();
 #endif
+    lastNTPUpdate = millis();
     Log.notice(F("NTP time set." CR));
     struct tm timeinfo;
     gmtime_r(&nowSecs, &timeinfo);

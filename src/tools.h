@@ -24,6 +24,7 @@ SOFTWARE. */
 #define _TOOLS_H
 
 #include "bubbles.h"
+#include "wifihandler.h"
 #include <LittleFS.h>
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
@@ -37,6 +38,12 @@ void resetController();
 void loadBpm();
 void saveBpm();
 
+void setDoReset();
+void maintenanceLoop();
+
 extern struct Bubbles bubbles;
+
+static bool __attribute__((unused)) doNonBlock = false;     // Semaphore for non-blocking portal
+static bool __attribute__((unused)) doReset = false;        // Semaphore for reset
 
 #endif

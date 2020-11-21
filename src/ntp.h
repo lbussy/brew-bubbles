@@ -46,6 +46,8 @@ int getSecond(); // tm_sec
 int getYDay();   // tm_yday
 void ntpBlinker();
 
+static uint32_t __attribute__((unused)) lastNTPUpdate = 0;
+
 static const float __attribute__((unused)) GMT = 0;
 static const float __attribute__((unused)) UTC = 0;
 static const float __attribute__((unused)) ECT = 1.00;

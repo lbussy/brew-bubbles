@@ -39,7 +39,6 @@ void setDoBFTarget();
 void setDoTSTarget();
 void setDoBrewfTarget();
 void setDoOTA();
-void setDoReset();
 extern volatile bool doBubble;
 extern struct Bubbles bubbles;
 
@@ -47,7 +46,6 @@ static bool __attribute__((unused)) doURLTarget = false;   // Semaphore for Targ
 static bool __attribute__((unused)) doTSTarget = false;    // Semaphore for Thingspeak timer
 static bool __attribute__((unused)) doBFTarget = false;    // Semaphore for Brewer's Friend timer
 static bool __attribute__((unused)) doBrewfTarget = false; // Semaphore for Brewfather timer
-static bool __attribute__((unused)) doReset = false;       // Semahore for reset
 static bool __attribute__((unused)) doOTA = false;         // Semahore for reset
 
 #endif // _PUSHHELPER_H

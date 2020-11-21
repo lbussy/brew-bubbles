@@ -175,11 +175,6 @@ void setDoTSTarget()
     doTSTarget = true; // Semaphore required for Ticker + radio event
 }
 
-void setDoReset()
-{                   // Do reset
-    doReset = true; // Semaphore required for reset in callback
-}
-
 void setDoOTA()
 {                 // Do OTA upgrade
     doOTA = true; // Semaphore required for OTA in callback
