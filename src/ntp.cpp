@@ -40,24 +40,21 @@ void setClock()
                 ESP.restart();
             }
 #ifdef LOG_LEVEL
-            Serial.println();
-            //myPrintln();
+            myPrintln();
 #endif
             Log.verbose(F("Re-requesting time hack."));
             startSecs = time(nullptr);
             cycle++;
         }
 #ifdef LOG_LEVEL
-        Serial.print(F("."));
-        //myPrint(F("."));
+        myPrint(F("."));
 #endif
         delay(1000);
         yield();
     }
     blinker.detach();
 #ifdef LOG_LEVEL
-    Serial.println();
-    //myPrintln();
+    myPrintln();
 #endif
     lastNTPUpdate = millis();
     Log.notice(F("NTP time set." CR));

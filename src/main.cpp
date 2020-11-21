@@ -91,7 +91,7 @@ void loop()
 
     // ThingSpeak timer
     Ticker tsTimer;
-    tsTimer.attach(config.thingspeak.freq * 60, setDoTSTarget); 
+    tsTimer.attach(config.thingspeak.freq * 60, setDoTSTarget);
 
     while (true)
     {
@@ -141,8 +141,8 @@ void loop()
                 config.thingspeak.update = false;
             }
 
-            maintenanceLoop();  // Handle mundane tasks
-
+            maintenanceLoop(); // Handle mundane tasks
+            serialLoop();
             yield();
         }
     }
