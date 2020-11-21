@@ -20,8 +20,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _BUB_SERIAL_H
-#define _BUB_SERIAL_H
+#ifndef _SERIALHANDLER_H
+#define _SERIALHANDLER_H
 
 #include "config.h"
 #include "tools.h"
@@ -33,4 +33,4 @@ void printTimestamp(Print *_logOutput);
 
 #define prefLen 22
 
-#endif //_BUB_SERIAL_H
+#endif //_SERIALHANDLER_H

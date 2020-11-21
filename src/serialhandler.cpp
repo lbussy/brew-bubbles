@@ -20,19 +20,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#include "serial_setup.h"
+#include "serialhandler.h"
+
+#undef SERIAL
+#if DOTELNET == true
+ESPTelnet SerialAndTelnet;
+#define SERIAL SerialAndTelnet // Use Telnet
+#else
+#define SERIAL Serial // Use hardware serial
+#endif
 
 #ifndef DISABLE_LOGGING
 
 void setSerial()
 {                // Start serial with auto-detected rate (default to BAUD)
     delay(2000); // Delay to allow monitor to start
-    Serial.begin(BAUD);
-    // Serial.setDebugOutput(true);
-    Serial.flush();
-    Log.begin(LOG_LEVEL, &Serial, true);
+    SERIAL.begin(BAUD);
+    // SERIAL.setDebugOutput(true);
+    SERIAL.flush();
+    Log.begin(LOG_LEVEL, &SERIAL, true);
     Log.setPrefix(printTimestamp);
-    Log.notice(F("Serial logging started at %l." CR), BAUD);
+    Log.notice(F("SERIAL logging started at %l." CR), BAUD);
 }
 
 void printTimestamp(Print *_logOutput)
