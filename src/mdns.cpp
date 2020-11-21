@@ -49,3 +49,25 @@ void mdnssetup()
         }
     }
 }
+
+void mdnsreset()
+{
+    MDNS.end();
+    if (!MDNS.begin(config.hostname))
+    {
+        Log.error(F("Error resetting MDNS responder."));
+    }
+    else
+    {
+#ifdef ESP32
+        Log.notice(F("mDNS responder restarted, hostname: %s.local." CR), WiFi.getHostname());
+#elif ESP8266
+        Log.notice(F("mDNS responder restarted, hostname: %s.local." CR), WiFi.hostname().c_str());
+#endif
+        MDNS.addService("http", "tcp", PORT);
+        MDNS.addService("kegcop", "tcp", PORT);
+#if DOTELNET == true
+        MDNS.addService("telnet", "tcp", TELNETPORT);
+#endif
+    }
+}
