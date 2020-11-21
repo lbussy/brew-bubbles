@@ -83,12 +83,9 @@
 
         <div class="container" id="settingsapp"> <!-- Container -->
 
-            <div class="page-header" id="banner">
-                <h1>About</h1>
-            </div>
             <div class="card border-dark mb-3"> <!-- About Brew Bubbles Information -->
                 <div class="card-header">
-                    <h4 class="card-title">Brew Bubbles <span id="thisVersion">(version loading...)</span></h4>
+                    <h4 class="card-title">About Brew Bubbles <span id="thisVersion">(version loading...)</span></h4>
                 </div>
                 <div class="card-body">
                     <p><a href="https://www.brewbubbles.com/">Brew Bubbles</a> is a project by Lee
@@ -97,6 +94,9 @@
                         <a href="https://www.homebrewtalk.com/forum/members/lbussy.144719/">
                         LBussy</a> on the HomeBrewTalk Forums (free registration required).
                     </p>
+                    <p>Uptime: <span id="uptime">(uptime loading...)</span></p>
+                    <p>Reset Reason: <span id="resetReason">(reset reason loading...)</span></p>
+                    <p>Heap: <span id="heap">(heap loading...)</span></p>
                 </div>
             </div> <!-- About Brew Bubbles Information -->
 
@@ -130,6 +130,8 @@
 
         function loadPage() { // Load the page's JS elements
             loadThisVersion(); // Populate form with controller settings
+            loadUptime();
+            loadHeap();
         }
 
         function loadThisVersion() { // Get current parameters
@@ -141,12 +143,12 @@
                         $('#thisVersion').text("v" + thisVersion.version);
                     }
                     catch {
-                        alert("Unable to parse current version from controller.");
-                        $('#thisVersion').text("(Error loading version.)");
+                        // alert("Unable to parse current version from controller.");
+                        $('#thisVersion').text("(Error parsing version.)");
                     }
                 })
                 .fail(function () {
-                    alert("Failed getting current version from controller.");
+                    // alert("Failed getting current version from controller.");
                     $('#thisVersion').text("(Error loading version.)");
                 })
                 .always(function () {
@@ -155,21 +157,19 @@
         }
 
         function loadUptime() { // Get uptime information
-            var thisVersionJson = "/uptime/";
-            var thisVersion = $.getJSON(thisVersionJson, function () {
+            var uptimeJson = "/uptime/";
+            var uptime = $.getJSON(uptimeJson, function () {
             })
-                .done(function (thisVersion) {
+                .done(function (uptime) {
                     try {
-                        //$('#thisVersion').text("v" + thisVersion.version);
+                        $('#uptime').text("v" + thisVersion.version);
                     }
                     catch {
-                        //alert("Unable to parse current version from controller.");
-                        //$('#thisVersion').text("(Error loading version.)");
+                        $('#uptime').text("(Error loading uptime.)");
                     }
                 })
                 .fail(function () {
-                    //alert("Failed getting current version from controller.");
-                    //$('#thisVersion').text("(Error loading version.)");
+                    $('#uptime').text("(Error loading uptime.)");
                 })
                 .always(function () {
                     // Can post-process here
@@ -177,21 +177,19 @@
         }
 
         function loadHeap() { // Get heap information
-            var thisVersionJson = "/heap/";
-            var thisVersion = $.getJSON(thisVersionJson, function () {
+            var heapJson = "/heap/";
+            var heap = $.getJSON(heapJson, function () {
             })
-                .done(function (thisVersion) {
+                .done(function (heap) {
                     try {
-                        //$('#thisVersion').text("v" + thisVersion.version);
+                        $('#heap').text(heap.h.free.toString());
                     }
                     catch {
-                        //alert("Unable to parse current version from controller.");
-                        //$('#thisVersion').text("(Error loading version.)");
+                        $('#heap').text("(Error loading heap.)");
                     }
                 })
                 .fail(function () {
-                    //alert("Failed getting current version from controller.");
-                    //$('#thisVersion').text("(Error loading version.)");
+                    $('#heap').text("(Error loading heap.)");
                 })
                 .always(function () {
                     // Can post-process here
@@ -207,12 +205,10 @@
                         //$('#thisVersion').text("v" + thisVersion.version);
                     }
                     catch {
-                        //alert("Unable to parse current version from controller.");
                         //$('#thisVersion').text("(Error loading version.)");
                     }
                 })
                 .fail(function () {
-                    //alert("Failed getting current version from controller.");
                     //$('#thisVersion').text("(Error loading version.)");
                 })
                 .always(function () {
