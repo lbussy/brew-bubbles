@@ -31,6 +31,9 @@ SOFTWARE. */
 
 #include "config.h"
 #include "tools.h"
+#include "serial_setup.h"
+// TODO:
+// #include "serialhandler.h"
 #include <Ticker.h>
 #include <ArduinoLog.h>
 
@@ -45,6 +48,8 @@ int getMinute(); // tm_min
 int getSecond(); // tm_sec
 int getYDay();   // tm_yday
 void ntpBlinker();
+
+static uint32_t __attribute__((unused)) lastNTPUpdate = 0;
 
 static const float __attribute__((unused)) GMT = 0;
 static const float __attribute__((unused)) UTC = 0;

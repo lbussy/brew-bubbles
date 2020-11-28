@@ -28,7 +28,7 @@ SOFTWARE. */
 #include "execota.h"
 #include "jsonconfig.h"
 #include "webserver.h"
-#include "wifi.h"
+#include "wifihandler.h"
 #include "version.h"
 #include "pushtarget.h"
 #include "target.h"
