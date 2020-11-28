@@ -36,6 +36,8 @@ SOFTWARE. */
 #include "thatVersion.h"
 #include "pushhelper.h"
 #include "tools.h"
+#include "uptime.h"
+#include <SPIFFSEditor.h>
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
 #include <AsyncJson.h>
@@ -50,6 +52,7 @@ void setRegPageAliases();
 void setActionPageHandlers();
 void setJsonHandlers();
 void setSettingsAliases();
+void setEditor();
 void stopWebServer();
 
 extern struct Config config;
@@ -57,5 +60,7 @@ extern struct ThatVersion thatVersion;
 extern struct Bubbles bubbles;
 extern const size_t capacityDeserial;
 extern const size_t capacitySerial;
+extern const char *resetReason[7];
+extern const char *resetDescription[7];
 
 #endif // _WEBSERVER_H
