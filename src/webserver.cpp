@@ -464,67 +464,66 @@ void setSettingsAliases()
                     strcat(redirect, hashloc); // Redirect to Brewfather Control
                     Log.notice(F("POSTed brewfatherfreq, redirecting to %s." CR), redirect);
                 }
-                // TODO:
-                // else if (strcmp(name, "thingspeakchannel") == 0) // Change Thingspeeak frequency
-                // {
-                //     const char *hashloc = "#thingspeak";
-                //     if (strlen(value) == 0)
-                //     {
-                //         Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling ThingSpeak Target." CR), name, value);
-                //         config.thingspeak.channel = 0;
-                //     }
-                //     else if ((atoi(value) < 1000) || (atoi(value) > 9999999999))
-                //     {
-                //         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                //     }
-                //     else
-                //     {
-                //         Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                //         config.thingspeak.channel = atoi(value);
-                //         config.thingspeak.update = true;
-                //         saveConfig();
-                //     }
-                //     strcat(redirect, hashloc); // Redirect to ThingSpeak Control
-                //     Log.notice(F("POSTed thingspeakchannel, redirecting to %s." CR), redirect);
-                // }
-                // else if (strcmp(name, "thingspeakkey") == 0) // Change ThingSpeak key
-                // {
-                //     const char *hashloc = "#thingspeak";
-                //     if (strlen(value) == 0)
-                //     {
-                //         Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling ThingSpeak Target." CR), name, value);
-                //         strlcpy(config.thingspeak.key, value, sizeof(config.thingspeak.key));
-                //     }
-                //     else if ((strlen(value) < 10) || (strlen(value) > 64))
-                //     {
-                //         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                //     }
-                //     else
-                //     {
-                //         Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                //         strlcpy(config.thingspeak.key, value, sizeof(config.thingspeak.key));
-                //         saveConfig();
-                //     }
-                //     strcat(redirect, hashloc); // Redirect to ThingSpeak Control
-                //     Log.notice(F("POSTed thingspeeakkey, redirecting to %s." CR), redirect);
-                // }
-                // else if (strcmp(name, "thingspeakfreq") == 0) // Change Thingspeeak frequency
-                // {
-                //     const char *hashloc = "#thingspeak";
-                //     if ((atoi(value) < 15) || (atoi(value) > 120))
-                //     {
-                //         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                //     }
-                //     else
-                //     {
-                //         Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                //         config.thingspeak.freq = atoi(value);
-                //         config.thingspeak.update = true;
-                //         saveConfig();
-                //     }
-                //     strcat(redirect, hashloc); // Redirect to ThingSpeak Control
-                //     Log.notice(F("POSTed thingspeakfreq, redirecting to %s." CR), redirect);
-                // }
+                else if (strcmp(name, "thingspeakchannel") == 0) // Change Thingspeeak frequency
+                {
+                    const char *hashloc = "#thingspeak";
+                    if (strlen(value) == 0)
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling ThingSpeak Target." CR), name, value);
+                        config.thingspeak.channel = 0;
+                    }
+                    else if ((atoi(value) < 1000) || (atoi(value) > 9999999999))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        config.thingspeak.channel = atoi(value);
+                        config.thingspeak.update = true;
+                        saveConfig();
+                    }
+                    strcat(redirect, hashloc); // Redirect to ThingSpeak Control
+                    Log.notice(F("POSTed thingspeakchannel, redirecting to %s." CR), redirect);
+                }
+                else if (strcmp(name, "thingspeakkey") == 0) // Change ThingSpeak key
+                {
+                    const char *hashloc = "#thingspeak";
+                    if (strlen(value) == 0)
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling ThingSpeak Target." CR), name, value);
+                        strlcpy(config.thingspeak.key, value, sizeof(config.thingspeak.key));
+                    }
+                    else if ((strlen(value) < 10) || (strlen(value) > 64))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        strlcpy(config.thingspeak.key, value, sizeof(config.thingspeak.key));
+                        saveConfig();
+                    }
+                    strcat(redirect, hashloc); // Redirect to ThingSpeak Control
+                    Log.notice(F("POSTed thingspeeakkey, redirecting to %s." CR), redirect);
+                }
+                else if (strcmp(name, "thingspeakfreq") == 0) // Change Thingspeeak frequency
+                {
+                    const char *hashloc = "#thingspeak";
+                    if ((atoi(value) < 1) || (atoi(value) > 120))
+                    {
+                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                    }
+                    else
+                    {
+                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                        config.thingspeak.freq = atoi(value);
+                        config.thingspeak.update = true;
+                        saveConfig();
+                    }
+                    strcat(redirect, hashloc); // Redirect to ThingSpeak Control
+                    Log.notice(F("POSTed thingspeakfreq, redirecting to %s." CR), redirect);
+                }
                 else // Settings pair not found
                 {
                     Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
