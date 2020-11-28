@@ -89,6 +89,10 @@ void loop()
     Ticker brewfTimer;
     brewfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
 
+    // ThingSpeak timer
+    Ticker tsTimer;
+    tsTimer.attach(config.brewfather.freq * 60, setDoBFTarget);
+
     while (true)
     {
         // Handle semaphores - No radio work in a Ticker!
