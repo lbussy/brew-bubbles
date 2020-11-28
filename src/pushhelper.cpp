@@ -1,6 +1,6 @@
 /* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
-This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
+This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,17 +22,20 @@ SOFTWARE. */
 
 #include "pushhelper.h"
 
-IPAddress resolveHost(const char *hostname) {
+IPAddress resolveHost(const char *hostname)
+{
     Log.verbose(F("Host lookup: %s." CR), hostname);
     IPAddress returnIP = INADDR_NONE;
-    if (WiFi.hostByName(hostname, returnIP, 10000) == 0) {
+    if (WiFi.hostByName(hostname, returnIP, 10000) == 0)
+    {
         Log.error(F("Host lookup error." CR));
         returnIP = INADDR_NONE;
     }
     return returnIP;
 }
 
-bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
+bool pushToTarget(PushTarget *target, IPAddress targetIP, int port)
+{
     LCBUrl lcburl;
     lcburl.setUrl(String(target->url) + String(target->key.name));
 
@@ -41,24 +44,31 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
     const size_t capacity = JSON_OBJECT_SIZE(8) + 210;
     StaticJsonDocument<capacity> doc;
 
-    if (target->apiName.enabled) doc[target->apiName.name] = F(API_KEY);
-    if (target->bubName.enabled) doc[target->bubName.name] = config.bubble.name;
-    if (target->bpm.enabled) doc[target->bpm.name] = bubbles.getAvgBpm();
-    if (target->ambientTemp.enabled) doc[target->ambientTemp.name] = bubbles.getAvgAmbient();
-    if (target->vesselTemp.enabled) doc[target->vesselTemp.name] = bubbles.getAvgVessel();
-    if (target->tempFormat.enabled) {
-        if (config.bubble.tempinf == true) doc[target->tempFormat.name] = F("F");
-        else doc[target->tempFormat.name] = F("C");
+    if (target->apiName.enabled)
+        doc[target->apiName.name] = F(API_KEY);
+    if (target->bubName.enabled)
+        doc[target->bubName.name] = config.bubble.name;
+    if (target->bpm.enabled)
+        doc[target->bpm.name] = bubbles.getAvgBpm();
+    if (target->ambientTemp.enabled)
+        doc[target->ambientTemp.name] = bubbles.getAvgAmbient();
+    if (target->vesselTemp.enabled)
+        doc[target->vesselTemp.name] = bubbles.getAvgVessel();
+    if (target->tempFormat.enabled)
+    {
+        if (config.bubble.tempinf == true)
+            doc[target->tempFormat.name] = F("F");
+        else
+            doc[target->tempFormat.name] = F("C");
     }
     String json;
     serializeJson(doc, json);
 
     // Use the IP address we resolved (necessary for mDNS)
     Log.verbose(F("Connecting to: %s at %s on port %l" CR),
-        lcburl.getHost().c_str(),
-        targetIP.toString().c_str(),
-        port
-    );
+                lcburl.getHost().c_str(),
+                targetIP.toString().c_str(),
+                port);
 
     WiFiClient client;
     //  1 = SUCCESS
@@ -69,21 +79,25 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
     // -4 = INVALID_RESPONSE
     client.setNoDelay(true);
     client.setTimeout(10000);
-    if (client.connect(targetIP, port)) {
+    if (client.connect(targetIP, port))
+    {
         Log.notice(F("Connected to: %s." CR), target->target.name);
 
         // Open POST connection
-        if (lcburl.getAfterPath().length() > 0) {
+        if (lcburl.getAfterPath().length() > 0)
+        {
             Log.verbose(F("POST /%s%s HTTP/1.1" CR),
-                lcburl.getPath().c_str(),
-                lcburl.getAfterPath().c_str()
-            );
-        } else {
-             Log.verbose(F("POST /%s HTTP/1.1" CR), lcburl.getPath().c_str());
+                        lcburl.getPath().c_str(),
+                        lcburl.getAfterPath().c_str());
+        }
+        else
+        {
+            Log.verbose(F("POST /%s HTTP/1.1" CR), lcburl.getPath().c_str());
         }
         client.print(F("POST /"));
         client.print(lcburl.getPath().c_str());
-        if (lcburl.getAfterPath().length() > 0) {
+        if (lcburl.getAfterPath().length() > 0)
+        {
             client.print(lcburl.getAfterPath().c_str());
         }
         client.println(F(" HTTP/1.1"));
@@ -98,11 +112,11 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
         Log.verbose(F("Connection: close" CR));
         client.println(F("Connection: close"));
         // Content
-        Log.verbose(F("Content-Length: %l" CR),json.length());
+        Log.verbose(F("Content-Length: %l" CR), json.length());
         client.print(F("Content-Length: "));
         client.println(json.length());
         // Content Type
-        Log.verbose(F("Content-Type: application/json" CR)); 
+        Log.verbose(F("Content-Type: application/json" CR));
         client.println(F("Content-Type: application/json"));
         // Terminate headers with a blank line
         Log.verbose(F("End headers." CR));
@@ -117,29 +131,38 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port) {
         client.readBytesUntil('\r', status, sizeof(status));
         client.stop();
         Log.verbose(F("Status: %s" CR), status);
-        if (strcmp(status + 9, "200 OK") == 0) {
-            if (target->checkBody.enabled == true) {
+        if (strcmp(status + 9, "200 OK") == 0)
+        {
+            if (target->checkBody.enabled == true)
+            {
                 // Check body
                 String response = String(status);
-                if (response.indexOf(target->checkBody.name) >= 0) {
+                if (response.indexOf(target->checkBody.name) >= 0)
+                {
                     Log.verbose(F("Response body ok." CR));
                     return true;
-                } else {
+                }
+                else
+                {
                     Log.error(F("Unexpected body content: %s" CR), response.c_str());
                     return false;
                 }
-            } else {
+            }
+            else
+            {
                 return true;
             }
-        } else {
+        }
+        else
+        {
             Log.error(F("Unexpected status: %s" CR), status);
             return false;
         }
-
-    } else {
+    }
+    else
+    {
         Log.warning(F("Connection failed, Host: %s, Port: %l (Err: %d)" CR),
-            lcburl.getHost().c_str(), port, client.connected()
-        );
+                    lcburl.getHost().c_str(), port, client.connected());
         return false;
     }
 }

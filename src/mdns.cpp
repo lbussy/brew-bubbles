@@ -1,6 +1,6 @@
 /* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
-This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
+This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,14 +22,21 @@ SOFTWARE. */
 
 #include "mdns.h"
 
-void mdnssetup() {
-    if (!MDNS.begin(config.hostname)) { // Start the mDNS responder
+void mdnssetup()
+{
+    if (!MDNS.begin(config.hostname))
+    { // Start the mDNS responder
         Log.error(F("Error setting up mDNS responder." CR));
-    } else {
+    }
+    else
+    {
         Log.notice(F("mDNS responder started for %s.local." CR), config.hostname);
-        if (!MDNS.addService("http", "tcp", PORT)) {
+        if (!MDNS.addService("http", "tcp", PORT))
+        {
             Log.error(F("Failed to register mDNS service." CR));
-        } else {
+        }
+        else
+        {
             Log.notice(F("HTTP registered via mDNS on port %i." CR), PORT);
         }
     }

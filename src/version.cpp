@@ -1,6 +1,6 @@
 /* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
-This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
+This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,9 @@ SOFTWARE. */
 
 #include "version.h"
 
-const char* build() {return stringify(PIO_SRC_REV);}
-const char* branch() {return stringify(PIO_SRC_BRH);}
-const char* version() {return stringify(PIO_SRC_TAG);}
+const char *build() { return stringify(PIO_SRC_REV); }
+const char *branch() { return stringify(PIO_SRC_BRH); }
+const char *version() { return stringify(PIO_SRC_TAG); }
 
 /*
  * versionCompare: Compares two strings representing a semantic version
@@ -39,20 +39,24 @@ const char* version() {return stringify(PIO_SRC_TAG);}
  *       0: String v1 == String v2
  *       1: String v1 > String v2
  */
-int versionCompare(String v1, String v2) {
+int versionCompare(String v1, String v2)
+{
     // vnum stores each numeric part of the version
     unsigned int vnum1 = 0, vnum2 = 0;
 
     //  Loop until both string are processed
-    for (unsigned int i = 0, j = 0; (i < v1.length() || j < v2.length());) {
+    for (unsigned int i = 0, j = 0; (i < v1.length() || j < v2.length());)
+    {
         // Store numeric part of version 1 in vnum1
-        while (i < v1.length() && v1[i] != '.') {
+        while (i < v1.length() && v1[i] != '.')
+        {
             vnum1 = vnum1 * 10 + (v1[i] - '0');
             i++;
         }
 
         // Store numeric part of version 2 in vnum2
-        while (j < v2.length() && v2[j] != '.') {
+        while (j < v2.length() && v2[j] != '.')
+        {
             vnum2 = vnum2 * 10 + (v2[j] - '0');
             j++;
         }

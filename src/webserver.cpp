@@ -1,6 +1,6 @@
 /* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
-This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
+This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -160,8 +160,8 @@ void setJsonHandlers()
 
         // Serialize configuration
         DynamicJsonDocument doc(capacitySerial); // Create doc
-        JsonObject root = doc.to<JsonObject>(); // Create JSON object
-        config.save(root); // Fill the object with current config
+        JsonObject root = doc.to<JsonObject>();  // Create JSON object
+        config.save(root);                       // Fill the object with current config
         String json;
         serializeJsonPretty(doc, json); // Serialize JSON to String
 
@@ -187,13 +187,13 @@ void setSettingsAliases()
             if (p->isPost())
             {
                 // Process any p->name().c_str() / p->value().c_str() pairs
-                const char * name = p->name().c_str();
-                const char * value = p->value().c_str();
+                const char *name = p->name().c_str();
+                const char *value = p->value().c_str();
                 Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
 
                 if (strcmp(name, "mdnsid") == 0) // Change Hostname
                 {
-                    const char * hashloc = "#controller";
+                    const char *hashloc = "#controller";
                     if ((strlen(value) < 3) || (strlen(value) > 32))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -223,7 +223,7 @@ void setSettingsAliases()
                 }
                 else if (strcmp(name, "bubname") == 0) // Change Bubble ID
                 {
-                    const char * hashloc = "#controller";
+                    const char *hashloc = "#controller";
                     if ((strlen(value) < 3) || (strlen(value) > 32))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -239,7 +239,7 @@ void setSettingsAliases()
                 }
                 else if (strcmp(name, "tempformat") == 0) // Change Temperature format
                 {
-                    const char * hashloc = "#temperature";
+                    const char *hashloc = "#temperature";
                     char option[8];
                     strcpy(option, value);
                     if (strcmp(value, "option0") == 0)
@@ -257,7 +257,7 @@ void setSettingsAliases()
                 }
                 else if (strcmp(name, "calroom") == 0) // Change Room temp calibration
                 {
-                    const char * hashloc = "#temperature";
+                    const char *hashloc = "#temperature";
                     if ((atof(value) < -25) || (atof(value) > 25))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -273,7 +273,7 @@ void setSettingsAliases()
                 }
                 else if (strcmp(name, "calvessel") == 0) // Change Vessel temp calibration
                 {
-                    const char * hashloc = "#temperature";
+                    const char *hashloc = "#temperature";
                     if ((atof(value) < -25) || (atof(value) > 25))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -289,7 +289,7 @@ void setSettingsAliases()
                 }
                 else if (strcmp(name, "urltargeturl") == 0) // Change Target URL
                 {
-                    const char * hashloc = "#urltarget";
+                    const char *hashloc = "#urltarget";
                     if (strlen(value) == 0)
                     {
                         Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling Url Target." CR), name, value);
@@ -310,7 +310,7 @@ void setSettingsAliases()
                 }
                 else if (strcmp(name, "urlfreq") == 0) // Change Vessel temp calibration
                 {
-                    const char * hashloc = "#urltarget";
+                    const char *hashloc = "#urltarget";
                     if ((atoi(value) < 1) || (atoi(value) > 60))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -327,7 +327,7 @@ void setSettingsAliases()
                 }
                 else if (strcmp(name, "brewersfriendkey") == 0) // Change Brewer's Friend key
                 {
-                    const char * hashloc = "#brewersfriend";
+                    const char *hashloc = "#brewersfriend";
                     if (strlen(value) == 0)
                     {
                         Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling Brewer's Friend target." CR), name, value);
@@ -348,7 +348,7 @@ void setSettingsAliases()
                 }
                 else if (strcmp(name, "brewersfriendfreq") == 0) // Change Vessel temp calibration
                 {
-                    const char * hashloc = "#brewersfriend";
+                    const char *hashloc = "#brewersfriend";
                     if ((atoi(value) < 15) || (atoi(value) > 120))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -365,7 +365,7 @@ void setSettingsAliases()
                 }
                 else if (strcmp(name, "brewfatherkey") == 0) // Change Brewfather key
                 {
-                    const char * hashloc = "#brewfather";
+                    const char *hashloc = "#brewfather";
                     if (strlen(value) == 0)
                     {
                         Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling Brewfather Target." CR), name, value);
@@ -386,7 +386,7 @@ void setSettingsAliases()
                 }
                 else if (strcmp(name, "brewfatherfreq") == 0) // Change Vessel temp calibration
                 {
-                    const char * hashloc = "#brewfather";
+                    const char *hashloc = "#brewfather";
                     if ((atoi(value) < 15) || (atoi(value) > 120))
                     {
                         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);

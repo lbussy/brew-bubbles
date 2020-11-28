@@ -1,6 +1,6 @@
 /* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
-This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
+This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,8 @@ SOFTWARE. */
 
 #ifndef DISABLE_LOGGING
 
-void setSerial() { // Start serial with auto-detected rate (default to BAUD)
+void setSerial()
+{                // Start serial with auto-detected rate (default to BAUD)
     delay(2000); // Delay to allow monitor to start
     Serial.begin(BAUD);
     // Serial.setDebugOutput(true);
@@ -34,7 +35,8 @@ void setSerial() { // Start serial with auto-detected rate (default to BAUD)
     Log.notice(F("Serial logging started at %l." CR), BAUD);
 }
 
-void printTimestamp(Print* _logOutput) {
+void printTimestamp(Print *_logOutput)
+{
     time_t now;
     time_t rawtime = time(&now);
     struct tm ts;
@@ -46,6 +48,6 @@ void printTimestamp(Print* _logOutput) {
 
 #else // DISABLE_LOGGING
 
-void serial(){}
+void serial() {}
 
 #endif // DISABLE_LOGGING

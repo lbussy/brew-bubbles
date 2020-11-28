@@ -1,7 +1,7 @@
 
 /* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
-This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
+This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,13 @@ SOFTWARE. */
 volatile int pulse;
 
 void interruptSetup()
-{ 
+{
     pulse = 0;
-    pinMode(COUNTPIN, INPUT_PULLUP); 
-    attachInterrupt(digitalPinToInterrupt(COUNTPIN), handleInterrupt, RISING); 
+    pinMode(COUNTPIN, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(COUNTPIN), handleInterrupt, RISING);
 }
 
-void ICACHE_RAM_ATTR handleInterrupt() { 
-    pulse++; 
+void ICACHE_RAM_ATTR handleInterrupt()
+{
+    pulse++;
 }
