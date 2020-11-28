@@ -22,7 +22,7 @@ SOFTWARE. */
 
 #include "webserver.h"
 
-AsyncWebServer server(PORT);
+AsyncWebServer server(HTTPPORT);
 
 void initWebServer()
 {
@@ -42,7 +42,7 @@ void initWebServer()
 
     server.begin();
 
-    Log.notice(F("Async HTTP server started on port %l." CR), PORT);
+    Log.notice(F("Async HTTP server started on port %l." CR), HTTPPORT);
     Log.verbose(F("Open: http://%s.local to view controller application." CR), WiFi.hostname().c_str());
 }
 

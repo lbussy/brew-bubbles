@@ -34,6 +34,7 @@ SOFTWARE. */
 #include <ESP8266WiFi.h>
 
 void mdnssetup();
+void mdnsreset();
 
 extern struct Config config;
 
