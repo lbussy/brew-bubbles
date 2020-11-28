@@ -122,7 +122,7 @@ void loop()
             bfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
             config.brewfather.update = false;
         }
-
+        serialLoop();
         yield();
     }
 }
