@@ -213,6 +213,13 @@ void tickerLoop()
         doBrewfTarget = false;
         brewfTarget->push();
     }
+    //
+    // Do ThingSpeak Post
+    if (doTSTarget)
+    { // Do TS post
+        doTSTarget = false;
+        pushThingspeak();
+    }
 
     // Check for Reset Pending
     // Necessary because we cannot delay in a callback

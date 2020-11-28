@@ -20,43 +20,39 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _TOOLS_H
-#define _TOOLS_H
-
-#include "bubbles.h"
-#include "brewersfriend.h"
-#include "brewfather.h"
 #include "thingspeaktarget.h"
-#include "target.h"
-#include <LittleFS.h>
-#include <ArduinoLog.h>
-#include <ArduinoJson.h>
-#include <EEPROM.h>
-#include <Arduino.h>
 
-#define EEPROM_ADDRESS 0x00
+bool pushThingspeak()
+{
+    Log.verbose(F("Triggered %s push." CR), tsName);
+    if (strlen(config.thingspeak.key))
+    {
+        WiFiClient client;
+        ThingSpeak.begin(client); // Initialize ThingSpeak
 
-void _delay(unsigned long);
-void resetController();
-void loadBpm();
-void saveBpm();
-void tickerLoop();
-void maintenanceLoop();
-void setDoURLTarget();
-void setDoBFTarget();
-void setDoBrewfTarget();
-void setDoTSTarget();
-void setDoReset();
-void setDoOTA();
-
-static bool __attribute__((unused)) doURLTarget = false;   // Semaphore for Target timer
-static bool __attribute__((unused)) doBFTarget = false;    // Semaphore for BF timer
-static bool __attribute__((unused)) doBrewfTarget = false; // Semaphore for BRF timer
-static bool __attribute__((unused)) doTSTarget = false;    // Semaphore for TS timer
-static bool __attribute__((unused)) doReset = false;       // Semaphore for reset
-static bool __attribute__((unused)) doOTA = false;         // Semaphore for reset
-static bool __attribute__((unused)) doNonBlock = false;    // Semaphore for non-blocking portal
-
-extern struct Bubbles bubbles;
-
-#endif
+        // Channel fields:
+        //
+        
+        ThingSpeak.setField(1, bubbles.getAvgBpm()); // bpm
+        ThingSpeak.setField(2, bubbles.getAvgAmbient()); // temp
+        ThingSpeak.setField(3, bubbles.getAvgVessel()); // temp
+        
+        // Write to the ThingSpeak channel
+        int retVal = ThingSpeak.writeFields(config.thingspeak.channel, config.thingspeak.key);
+        if (retVal == 200)
+        {
+            Log.notice(F("%s channel update successful." CR), tsName);
+            return true;
+        }
+        else
+        {
+            Log.error(F("Problem updating %s channel %d. HTTP error code %d." CR), tsName, config.thingspeak.channel, retVal);
+            return false;
+        }
+    }
+    else
+    {
+        Log.verbose(F("ThingSpeak not enabled, skipping." CR));
+        return false;
+    }
+}
