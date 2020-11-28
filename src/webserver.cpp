@@ -21,6 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
 #include "webserver.h"
+#include "resetreasons.h"
 
 AsyncWebServer server(HTTPPORT);
 
@@ -30,6 +31,7 @@ void initWebServer()
     setActionPageHandlers();
     setJsonHandlers();
     setSettingsAliases();
+    setEditor();
 
     // File not found handler
 
@@ -64,12 +66,6 @@ void setActionPageHandlers()
 {
     // Action Page Handlers
 
-    server.on("/heap/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        uint32_t _heap = ESP.getFreeHeap();
-        String heap = "Current heap: " + String(_heap);
-        request->send(200, F("text/plain"), heap);
-    });
-
     server.on("/wifi2/", HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing /wifi2/." CR));
         request->send(LittleFS, "/wifi2.htm");
@@ -103,6 +99,72 @@ void setActionPageHandlers()
 void setJsonHandlers()
 {
     // JSON Handlers
+
+    server.on("/resetreason/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        // Used to provide the reset reason json
+        Log.verbose(F("Sending /resetreason/." CR));
+
+        const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2);
+        StaticJsonDocument<capacity> doc;
+        JsonObject r = doc.createNestedObject("r");
+
+        rst_info *_reset = ESP.getResetInfoPtr();
+        unsigned int reset = (unsigned int)(*_reset).reason;
+
+        r["reason"] = resetReason[reset];
+        r["description"] = resetDescription[reset];
+
+        String resetreason;
+        serializeJson(doc, resetreason);
+        request->send(200, F("text/plain"), resetreason);
+    });
+
+    server.on("/heap/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        // Used to provide the heap json
+        Log.verbose(F("Sending /heap/." CR));
+
+        const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(3);
+        StaticJsonDocument<capacity> doc;
+        JsonObject h = doc.createNestedObject("h");
+
+        uint32_t free;
+        uint16_t max;
+        uint8_t frag;
+        ESP.getHeapStats(&free, &max, &frag);
+
+        h["free"] = free;
+        h["max"] = max;
+        h["frag"] = frag;
+
+        String heap;
+        serializeJson(doc, heap);
+        request->send(200, F("text/plain"), heap);
+    });
+
+    server.on("/uptime/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        // Used to provide the uptime json
+        Log.verbose(F("Sending /uptime/." CR));
+
+        const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(5);
+        StaticJsonDocument<capacity> doc;
+        JsonObject u = doc.createNestedObject("u");
+
+        const int days = uptimeDays();
+        const int hours = uptimeHours();
+        const int minutes = uptimeMinutes();
+        const int seconds = uptimeSeconds();
+        const int millis = uptimeMillis();
+
+        u["days"] = days;
+        u["hours"] = hours;
+        u["minutes"] = minutes;
+        u["seconds"] = seconds;
+        u["millis"] = millis;
+
+        String ut = "";
+        serializeJson(doc, ut);
+        request->send(200, F("text/plain"), ut);
+    });
 
     server.on("/bubble/", HTTP_GET, [](AsyncWebServerRequest *request) {
         // Used to provide the Bubbles json
@@ -251,6 +313,8 @@ void setSettingsAliases()
                         config.bubble.tempinf = true;
                     }
                     Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    // TODO:
+                    // bubbles.wipeArray(); // Clear temp array out in case we changed format
                     saveConfig();
                     strcat(redirect, hashloc); // Redirect to Temp Control
                     Log.notice(F("POSTed tempformat, redirecting to %s." CR), redirect);
@@ -346,7 +410,7 @@ void setSettingsAliases()
                     strcat(redirect, hashloc); // Redirect to Brewer's Friend Control
                     Log.notice(F("POSTed brewersfriendkey, redirecting to %s." CR), redirect);
                 }
-                else if (strcmp(name, "brewersfriendfreq") == 0) // Change Vessel temp calibration
+                else if (strcmp(name, "brewersfriendfreq") == 0) // Change Brewer's Friend frequency
                 {
                     const char *hashloc = "#brewersfriend";
                     if ((atoi(value) < 15) || (atoi(value) > 120))
@@ -384,7 +448,7 @@ void setSettingsAliases()
                     strcat(redirect, hashloc); // Redirect to Brewer's Friend Control
                     Log.notice(F("POSTed brewfatherkey, redirecting to %s." CR), redirect);
                 }
-                else if (strcmp(name, "brewfatherfreq") == 0) // Change Vessel temp calibration
+                else if (strcmp(name, "brewfatherfreq") == 0) // Change Brewfather frequency
                 {
                     const char *hashloc = "#brewfather";
                     if ((atoi(value) < 15) || (atoi(value) > 120))
@@ -401,6 +465,67 @@ void setSettingsAliases()
                     strcat(redirect, hashloc); // Redirect to Brewfather Control
                     Log.notice(F("POSTed brewfatherfreq, redirecting to %s." CR), redirect);
                 }
+                // TODO:
+                // else if (strcmp(name, "thingspeakchannel") == 0) // Change Thingspeeak frequency
+                // {
+                //     const char *hashloc = "#thingspeak";
+                //     if (strlen(value) == 0)
+                //     {
+                //         Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling ThingSpeak Target." CR), name, value);
+                //         config.thingspeak.channel = 0;
+                //     }
+                //     else if ((atoi(value) < 1000) || (atoi(value) > 9999999999))
+                //     {
+                //         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                //     }
+                //     else
+                //     {
+                //         Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                //         config.thingspeak.channel = atoi(value);
+                //         config.thingspeak.update = true;
+                //         saveConfig();
+                //     }
+                //     strcat(redirect, hashloc); // Redirect to ThingSpeak Control
+                //     Log.notice(F("POSTed thingspeakchannel, redirecting to %s." CR), redirect);
+                // }
+                // else if (strcmp(name, "thingspeakkey") == 0) // Change ThingSpeak key
+                // {
+                //     const char *hashloc = "#thingspeak";
+                //     if (strlen(value) == 0)
+                //     {
+                //         Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling ThingSpeak Target." CR), name, value);
+                //         strlcpy(config.thingspeak.key, value, sizeof(config.thingspeak.key));
+                //     }
+                //     else if ((strlen(value) < 10) || (strlen(value) > 64))
+                //     {
+                //         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                //     }
+                //     else
+                //     {
+                //         Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                //         strlcpy(config.thingspeak.key, value, sizeof(config.thingspeak.key));
+                //         saveConfig();
+                //     }
+                //     strcat(redirect, hashloc); // Redirect to ThingSpeak Control
+                //     Log.notice(F("POSTed thingspeeakkey, redirecting to %s." CR), redirect);
+                // }
+                // else if (strcmp(name, "thingspeakfreq") == 0) // Change Thingspeeak frequency
+                // {
+                //     const char *hashloc = "#thingspeak";
+                //     if ((atoi(value) < 15) || (atoi(value) > 120))
+                //     {
+                //         Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                //     }
+                //     else
+                //     {
+                //         Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                //         config.thingspeak.freq = atoi(value);
+                //         config.thingspeak.update = true;
+                //         saveConfig();
+                //     }
+                //     strcat(redirect, hashloc); // Redirect to ThingSpeak Control
+                //     Log.notice(F("POSTed thingspeakfreq, redirecting to %s." CR), redirect);
+                // }
                 else // Settings pair not found
                 {
                     Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
@@ -595,6 +720,21 @@ void setSettingsAliases()
     //     }
     // });
 }
+
+#ifdef SPIFFSEDIT
+void setEditor()
+{
+    // Setup SPIFFS editor
+#ifdef ESP32
+    server.addHandler(new SPIFFSEditor(SPIFFS, SPIFFSEDITUSER, SPIFFSEDITPW));
+#elif defined(ESP8266)
+    server.addHandler(new SPIFFSEditor(SPIFFSEDITUSER, SPIFFSEDITPW));
+#endif
+    server.on("/edit/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        request->redirect("/edit");
+    });
+}
+#endif
 
 void stopWebServer()
 {

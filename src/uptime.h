@@ -20,47 +20,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _WEBSERVER_H
-#define _WEBSERVER_H
+#ifndef _UPTIME_H
+#define _UPTIME_H
 
-#ifndef USE_LITTLEFS
-#define USE_LITTLEFS
-#endif
-
-#include "wifihandler.h"
-#include "execota.h"
-#include "bubbles.h"
-#include "jsonconfig.h"
-#include "version.h"
-#include "config.h"
-#include "thatVersion.h"
-#include "pushhelper.h"
-#include "tools.h"
-#include "uptime.h"
-#include <SPIFFSEditor.h>
-#include <ArduinoLog.h>
-#include <ArduinoJson.h>
-#include <AsyncJson.h>
-#include <LittleFS.h>
-#include <ESPAsyncWebServer.h>
-#include <ESP8266HTTPClient.h>
-#include <ESP8266mDNS.h>
 #include <Arduino.h>
 
-void initWebServer();
-void setRegPageAliases();
-void setActionPageHandlers();
-void setJsonHandlers();
-void setSettingsAliases();
-void setEditor();
-void stopWebServer();
+const int uptimeDays();
+const int uptimeHours();
+const int uptimeMinutes();
+const int uptimeSeconds();
+const int uptimeMillis();
 
-extern struct Config config;
-extern struct ThatVersion thatVersion;
-extern struct Bubbles bubbles;
-extern const size_t capacityDeserial;
-extern const size_t capacitySerial;
-extern const char *resetReason[7];
-extern const char *resetDescription[7];
-
-#endif // _WEBSERVER_H
+#endif // _UPTIME_H
