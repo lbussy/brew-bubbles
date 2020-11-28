@@ -32,7 +32,7 @@ void setup()
     if (loadConfig())
         Log.notice(F("Configuration loaded." CR));
     else
-        Log.error(F("Unable to load cofiguration." CR));
+        Log.error(F("Unable to load configuration." CR));
 
     pinMode(LED, OUTPUT);
     pinMode(RESETWIFI, INPUT_PULLUP);
@@ -91,7 +91,7 @@ void loop()
 
     // ThingSpeak timer
     Ticker tsTimer;
-    tsTimer.attach(config.brewfather.freq * 60, setDoBFTarget);
+    tsTimer.attach(config.thingspeak.freq * 60, setDoTSTarget);
 
     while (true)
     {
@@ -127,6 +127,14 @@ void loop()
             bfTimer.detach();
             bfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
             config.brewfather.update = false;
+            saveConfig();
+        }
+        if (config.thingspeak.update)
+        {
+            Log.notice(F("Resetting ThingSpeak frequency timer to %l minutes." CR), config.thingspeak.freq);
+            bfTimer.detach();
+            bfTimer.attach(config.thingspeak.freq * 60, setDoTSTarget);
+            config.thingspeak.update = false;
             saveConfig();
         }
         serialLoop();

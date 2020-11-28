@@ -1,6 +1,6 @@
 /* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
-This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
+This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,43 +20,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _TOOLS_H
-#define _TOOLS_H
+#ifndef _TSTARGET_H
+#define _TSTARGET_H
 
+#include "jsonconfig.h"
 #include "bubbles.h"
-#include "brewersfriend.h"
-#include "brewfather.h"
-#include "thingspeaktarget.h"
-#include "target.h"
-#include <LittleFS.h>
+#include <ThingSpeak.h>
+#include <LCBUrl.h>
 #include <ArduinoLog.h>
-#include <ArduinoJson.h>
-#include <EEPROM.h>
 #include <Arduino.h>
 
-#define EEPROM_ADDRESS 0x00
+static const char __attribute__((unused)) * tsName = "Thingspeak";
+bool pushThingspeak();
+int createThingspeakChannel();
 
-void _delay(unsigned long);
-void resetController();
-void loadBpm();
-void saveBpm();
-void tickerLoop();
-void maintenanceLoop();
-void setDoURLTarget();
-void setDoBFTarget();
-void setDoBrewfTarget();
-void setDoTSTarget();
-void setDoReset();
-void setDoOTA();
-
-static bool __attribute__((unused)) doURLTarget = false;   // Semaphore for Target timer
-static bool __attribute__((unused)) doBFTarget = false;    // Semaphore for BF timer
-static bool __attribute__((unused)) doBrewfTarget = false; // Semaphore for BRF timer
-static bool __attribute__((unused)) doTSTarget = false;    // Semaphore for TS timer
-static bool __attribute__((unused)) doReset = false;       // Semaphore for reset
-static bool __attribute__((unused)) doOTA = false;         // Semaphore for reset
-static bool __attribute__((unused)) doNonBlock = false;    // Semaphore for non-blocking portal
-
+extern struct Config config;
 extern struct Bubbles bubbles;
 
-#endif
+#endif // _TSTARGET_H
