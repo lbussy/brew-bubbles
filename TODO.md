@@ -4,6 +4,7 @@
 
 - Remove lockup if there's no time hack
 - Add Thingspeak support
+  - Return (402): {"status":"402","error":"Payment required."}
 - Change so that posting configuration changes is not a complete page reload
 - Merge update pages
 - Add mouseover on debug items
