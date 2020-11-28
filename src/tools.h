@@ -1,6 +1,6 @@
 /* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
 
-This file is part of Lee Bussy's Brew Bubbbles (brew-bubbles).
+This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -46,11 +46,11 @@ void setDoBrewfTarget();
 void setDoReset();
 void setDoOTA();
 
-static bool __attribute__((unused)) doURLTarget = false;    // Semaphore for Target timer
-static bool __attribute__((unused)) doBFTarget = false;     // Semaphore for BF timer
-static bool __attribute__((unused)) doBrewfTarget = false;  // Semaphore for BRF timer
-static bool __attribute__((unused)) doReset = false;        // Semahore for reset
-static bool __attribute__((unused)) doOTA = false;          // Semahore for reset
+static bool __attribute__((unused)) doURLTarget = false;   // Semaphore for Target timer
+static bool __attribute__((unused)) doBFTarget = false;    // Semaphore for BF timer
+static bool __attribute__((unused)) doBrewfTarget = false; // Semaphore for BRF timer
+static bool __attribute__((unused)) doReset = false;       // Semahore for reset
+static bool __attribute__((unused)) doOTA = false;         // Semahore for reset
 
 extern struct Bubbles bubbles;
 

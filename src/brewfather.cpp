@@ -22,10 +22,12 @@ SOFTWARE. */
 
 #include "brewfather.h"
 
-BrewfTarget* BrewfTarget::single = NULL;
+BrewfTarget *BrewfTarget::single = NULL;
 
-BrewfTarget* BrewfTarget::getInstance() {
-    if (!single) {
+BrewfTarget *BrewfTarget::getInstance()
+{
+    if (!single)
+    {
         single = new BrewfTarget();
         single->target = new PushTarget;
         single->target->ip = INADDR_NONE;
@@ -67,42 +69,61 @@ BrewfTarget* BrewfTarget::getInstance() {
     return single;
 }
 
-bool BrewfTarget::push() {
+bool BrewfTarget::push()
+{
     Log.verbose(F("Triggered %s push." CR), single->target->target.name);
-    if (single->target->target.enabled && strlen(config.brewfather.key)) { // Key target is unique per target (for now)
+    if (single->target->target.enabled && strlen(config.brewfather.key))
+    {                                                                                            // Key target is unique per target (for now)
         strlcpy(single->target->key.name, config.brewfather.key, sizeof(config.brewfather.key)); // Key target is unique per target (for now)
-    } else {
+    }
+    else
+    {
         single->target->target.enabled = false;
         strlcpy(single->target->key.name, "", sizeof(""));
     }
     LCBUrl lcburl;
-    if (single->target->target.enabled) {
-        if (lcburl.setUrl(String(single->target->url))) {
+    if (single->target->target.enabled)
+    {
+        if (lcburl.setUrl(String(single->target->url)))
+        {
             IPAddress resolvedIP = resolveHost(lcburl.getHost().c_str());
-            if (resolvedIP == INADDR_NONE) {
-                if (single->target->ip == INADDR_NONE) {
+            if (resolvedIP == INADDR_NONE)
+            {
+                if (single->target->ip == INADDR_NONE)
+                {
                     Log.error(F("Unable to resolve host %s to IP address." CR), lcburl.getHost().c_str());
                     return false;
-                } else {
+                }
+                else
+                {
                     Log.verbose(F("Using cached information for host %s at IP %s." CR), lcburl.getHost().c_str(), single->target->ip.toString().c_str());
                 }
-            } else {
+            }
+            else
+            {
                 Log.verbose(F("Resolved host %s to IP %s." CR), lcburl.getHost().c_str(), resolvedIP.toString().c_str());
                 single->target->ip = resolvedIP;
             }
-        } else {
+        }
+        else
+        {
             Log.error(F("Invalid URL in %s configuration: %s" CR), single->target->target.name, single->target->url);
             return false;
         }
-    } else {
+    }
+    else
+    {
         Log.verbose(F("%s not enabled, skipping." CR), single->target->target.name);
         return true;
     }
 
-    if (pushToTarget(single->target, target->ip, lcburl.getPort())) {
+    if (pushToTarget(single->target, target->ip, lcburl.getPort()))
+    {
         Log.notice(F("%s post ok." CR), single->target->target.name);
         return true;
-    } else {
+    }
+    else
+    {
         Log.error(F("%s post failed." CR), single->target->target.name);
         return false;
     }
