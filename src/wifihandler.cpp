@@ -85,12 +85,11 @@ void doWiFi(bool dontUseStoredCreds)
     AsyncWiFiManagerParameter hostname("hostname", "Custom Hostname", HOSTNAME, 32);
     awm.addParameter(&hostname);
 
-    // TODO:
-    // if (doNonBlock)
-    // {
-    //     // Enable nonblocking portal (if configured)
-    //     awm.setConfigPortalBlocking(false);
-    // }
+    if (doNonBlock)
+    {
+        // Enable nonblocking portal (if configured)
+        awm.setConfigPortalBlocking(false);
+    }
 
     if (dontUseStoredCreds)
     {
@@ -160,14 +159,13 @@ void doWiFi(bool dontUseStoredCreds)
         }
     }
 
-    // TODO:
-    // if (doNonBlock)
-    // {
-    //     // Turn off nonblocking portal (if configured)
-    //     Log.notice(F("Returning after non-blocking reconnect." CR));
-    //     doNonBlock = false;
-    //     mdnsreset();
-    // }
+    if (doNonBlock)
+    {
+        // Turn off nonblocking portal (if configured)
+        Log.notice(F("Returning after non-blocking reconnect." CR));
+        doNonBlock = false;
+        mdnsreset();
+    }
 
     Log.notice(F("Connected. IP address: %s." CR), WiFi.localIP().toString().c_str());
     blinker.detach();        // Turn off blinker
