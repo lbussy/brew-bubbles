@@ -123,8 +123,7 @@ void maintenanceLoop()
     if (WiFi.status() != WL_CONNECTED)
     {
         Log.warning(F("Maintenance: WiFi not connected, reconnecting." CR));
-        // TODO:
-        // doNonBlock = true;
+        doNonBlock = true;
         doWiFi(); // With doNonBlock, this should be non-blocking
     }
     if (millis() > ESPREBOOT)

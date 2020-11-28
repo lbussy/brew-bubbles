@@ -50,8 +50,9 @@ void setDoOTA();
 static bool __attribute__((unused)) doURLTarget = false;   // Semaphore for Target timer
 static bool __attribute__((unused)) doBFTarget = false;    // Semaphore for BF timer
 static bool __attribute__((unused)) doBrewfTarget = false; // Semaphore for BRF timer
-static bool __attribute__((unused)) doReset = false;       // Semahore for reset
-static bool __attribute__((unused)) doOTA = false;         // Semahore for reset
+static bool __attribute__((unused)) doReset = false;       // Semaphore for reset
+static bool __attribute__((unused)) doOTA = false;         // Semaphore for reset
+static bool __attribute__((unused)) doNonBlock = false;    // Semaphore for non-blocking portal
 
 extern struct Bubbles bubbles;
 
