@@ -161,6 +161,11 @@ void setDoBrewfTarget()
     doBrewfTarget = true; // Semaphore required for Ticker + radio event
 }
 
+void setDoTSTarget()
+{
+    doTSTarget = true; // Semaphore required for Ticker + radio event
+}
+
 void setDoOTA()
 {
     doOTA = true; // Semaphore required for OTA in callback
