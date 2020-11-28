@@ -104,7 +104,7 @@ Select "ESP8266 DownloadTool."  Setup as follows:
   - Click the ellipsis (...) next to the text field
   - Navigate to the firmware directory, select `firmware.bin` and click "*Open*"
   - In the right-most text field after the "*@*" symbol, enter the address `0x00000` (zero, the lower-case letter "X", followed by five zeros)
-- Add the SPIFFS file
+- Add the SPIFFS (LittleFS) file
   - Check the second checkbox
   - Click the ellipsis (...) next to the text field
   - Navigate to the firmware directory, select `littlefs.bin` and click "*Open*"
