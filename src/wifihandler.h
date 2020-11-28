@@ -20,19 +20,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _WIFI_H
-#define _WIFI_H
+#ifndef _WIFIHANDLER_H
+#define _WIFIHANDLER_H
 
 #define WM_ASYNC
 
 #include "config.h"
 #include "jsonconfig.h"
 #include "tools.h"
-#include "pushhelper.h"
+#include "mdns.h"
+
+#ifdef ESP8266
 #include <ESP8266WiFi.h>
+#endif
+#ifdef ESP32
+#include <WiFi.h>
+#endif
+#include <AsyncWiFiManager.h>
+
 #include <Ticker.h>
 #include <ArduinoLog.h>
-#include <AsyncWiFiManager.h>
 
 void wifiBlinker();
 void doWiFi();
@@ -48,5 +55,12 @@ void saveParamsCallback();
 void webServerCallback();
 
 extern struct Config config;
+extern const size_t capacitySerial;
+extern const size_t capacityDeserial;
 
-#endif // _WIFI_H
+struct tcp_pcb;
+extern struct tcp_pcb *tcp_tw_pcbs;
+extern "C" void tcp_abort(struct tcp_pcb *pcb);
+void tcpCleanup(void);
+
+#endif // _WIFIHANDLER_H

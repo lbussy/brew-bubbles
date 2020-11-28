@@ -27,7 +27,7 @@ SOFTWARE. */
 #define USE_LITTLEFS
 #endif
 
-#include "wifi.h"
+#include "wifihandler.h"
 #include "execota.h"
 #include "bubbles.h"
 #include "jsonconfig.h"
