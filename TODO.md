@@ -5,11 +5,6 @@
 - Remove lockup if there's no time hack
 - Add Thingspeak support
 - Change so that posting configuration changes is not a complete page reload
-- See if we can do something about entering a bad password on portal
-- Wipe out temp array contents when temp format changes
-- Fix 'nan' error in Bubbles after SPIFFS upload
-- Review reboot schedule to see if it's still needed
-- Review mDNS restart schedule to see if it's still needed
 
 ## Complete
 
@@ -156,3 +151,8 @@
 - ~~Reboot not working - probably related to saveBpm() and/or loadBpm() [Issue #19](https://github.com/lbussy/brew-bubbles/issues/19)~~
 - ~~Add BrewFlasher to docs~~
 - ~~Move posting targets to async (not going to do this)~~
+- ~~Review reboot schedule to see if it's still needed~~
+- ~~Wipe out temp array contents when temp format changes~~
+- ~~Review mDNS restart schedule to see if it's still needed~~
+- ~~See if we can do something about entering a bad password on portal~~
+- ~~Fix 'nan' error in Bubbles after SPIFFS upload~~
