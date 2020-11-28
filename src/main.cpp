@@ -126,6 +126,7 @@ void loop()
             saveConfig();
         }
         serialLoop();
+        maintenanceLoop();
         yield();
     }
 }

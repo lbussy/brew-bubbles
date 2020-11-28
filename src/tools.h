@@ -40,6 +40,7 @@ void resetController();
 void loadBpm();
 void saveBpm();
 void tickerLoop();
+void maintenanceLoop();
 void setDoURLTarget();
 void setDoBFTarget();
 void setDoBrewfTarget();
