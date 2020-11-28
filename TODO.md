@@ -2,9 +2,6 @@
 
 ## Open
 
-- Remove lockup if there's no time hack
-- Add Thingspeak support
-  - Return (402): {"status":"402","error":"Payment required."}
 - Change so that posting configuration changes is not a complete page reload
 - Add mouseover on debug items
   - free = Total free bytes in the heap. Equivalent to multi_free_heap_size().
@@ -162,3 +159,5 @@
 - ~~See if we can do something about entering a bad password on portal~~
 - ~~Fix 'nan' error in Bubbles after SPIFFS upload~~
 - ~~Merge update pages~~
+- ~~Add ThingSpeak support~~
+- ~~Remove lockup if there's no time hack~~

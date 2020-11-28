@@ -37,8 +37,12 @@ void setClock()
             if (cycle > 9)
             {
 
-                Log.warning(F(CR "Unable to get time hack from %s, rebooting." CR), TIMESERVER);
-                ESP.restart();
+                Log.warning(F(CR "Unable to get time hack from %s, starting with epoch." CR), TIMESERVER);
+                blinker.detach();
+#ifdef LOG_LEVEL
+                myPrintln();
+#endif
+                return;
             }
 #ifdef LOG_LEVEL
             myPrintln();

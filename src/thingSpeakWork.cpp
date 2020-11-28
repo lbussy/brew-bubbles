@@ -39,6 +39,7 @@ SOFTWARE. */
 
 void getNewBBChannel(String &writeKey, const char *key, const char *bubName)
 {
+    // TODO:  Check for: Return (402): {"status":"402","error":"Payment required."}
     String postData;
 
     // Name the Channel
