@@ -313,8 +313,7 @@ void setSettingsAliases()
                         config.bubble.tempinf = true;
                     }
                     Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                    // TODO:
-                    // bubbles.wipeArray(); // Clear temp array out in case we changed format
+                    bubbles.wipeArray(); // Clear temp array out in case we changed format
                     saveConfig();
                     strcat(redirect, hashloc); // Redirect to Temp Control
                     Log.notice(F("POSTed tempformat, redirecting to %s." CR), redirect);
