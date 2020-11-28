@@ -81,22 +81,35 @@
 
     <main role="main" class="flex-shrink-0">
 
-        <div class="container" id="settingsapp"> <!-- Container -->
+        <div class="container" id="settingsapp">
+            <!-- Container -->
 
-            <div class="page-header" id="banner">
-                <h1>About</h1>
-            </div>
-            <div class="card border-dark mb-3"> <!-- About Brew Bubbles Information -->
+            <div class="card border-dark mb-3">
+                <!-- About Brew Bubbles Information -->
                 <div class="card-header">
-                    <h4 class="card-title">Brew Bubbles <span id="thisVersion">(version loading...)</span></h4>
+                    <h4 class="card-title">About Brew Bubbles <span id="thisVersion">(version loading...)</span></h4>
                 </div>
                 <div class="card-body">
                     <p><a href="https://www.brewbubbles.com/">Brew Bubbles</a> is a project by Lee
                         Bussy and <a href="/license.htm">is licensed under
-                        The MIT License</a>. Inquiries may be directed to
+                            The MIT License</a>. Inquiries may be directed to
                         <a href="https://www.homebrewtalk.com/forum/members/lbussy.144719/">
-                        LBussy</a> on the HomeBrewTalk Forums (free registration required).
+                            LBussy</a> on the HomeBrewTalk Forums (free registration required).
                     </p>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Uptime: </strong>
+                            <span id="uptime">...loading</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Reset Reason: </strong>
+                            <span id="resetreason">...loading</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>Heap Information: </strong>
+                            <span id="heap">...loading</span>
+                        </li>
+                    </ul>
                 </div>
             </div> <!-- About Brew Bubbles Information -->
 
@@ -106,7 +119,7 @@
 
     <footer class="footer mt-auto py-3">
         <div class="container">
-            <span class="text-muted">Copyright &copy; 2019-2020, Lee C. Bussy</span>
+            <span class="text-muted">Copyright © 2019-2020, Lee C. Bussy</span>
         </div>
     </footer>
 
@@ -129,7 +142,10 @@
         else window.onload = loadPage;
 
         function loadPage() { // Load the page's JS elements
-            loadThisVersion(); // Populate form with controller settings
+            loadThisVersion();  // Populate form with controller settings
+            loadUptime();       // Load uptime information
+            loadHeap();         // Load heap information
+            loadResetReason();  // Load last reset reason
         }
 
         function loadThisVersion() { // Get current parameters
@@ -141,12 +157,85 @@
                         $('#thisVersion').text("v" + thisVersion.version);
                     }
                     catch {
-                        alert("Unable to parse current version from controller.");
-                        $('#thisVersion').text("(Error loading version.)");
+                        $('#thisVersion').text("(Error parsing version.)");
                     }
                 })
                 .fail(function () {
-                    alert("Failed getting current version from controller.");
+                    $('#thisVersion').text("(Error loading version.)");
+                })
+                .always(function () {
+                    // Can post-process here
+                });
+        }
+
+        function loadUptime() { // Get uptime information
+            var uptimeJson = "/uptime/";
+            var uptime = $.getJSON(uptimeJson, function () {
+            })
+                .done(function (uptime) {
+                    try {
+                        var days = uptime.u.days.toString();
+                        var hours = uptime.u.hours.toString();
+                        var minutes = uptime.u.minutes.toString();
+                        var seconds = uptime.u.seconds.toString();
+
+                        var uptime = "Days: " + days + ", Hours: " + hours + ", Minutes: " + minutes + ", Seconds: " + seconds;
+                        $('#uptime').text(uptime);
+                    }
+                    catch {
+                        $('#uptime').text("(Error parsing uptime.)");
+                    }
+                })
+                .fail(function () {
+                    $('#uptime').text("(Error loading uptime.)");
+                })
+                .always(function () {
+                    // Can post-process here
+                });
+        }
+
+        function loadHeap() { // Get heap information
+            var heapJson = "/heap/";
+            var heap = $.getJSON(heapJson, function () {
+            })
+                .done(function (heap) {
+                    try {
+                        var free = heap.h.free;
+                        var max = heap.h.max;
+                        var frag = heap.h.frag;
+
+                        var heapinfo = "Free Heap: " + free + ", Max: " + max + ", Frags: " + frag;
+                        $('#heap').text(heapinfo);
+                    }
+                    catch {
+                        $('#heap').text("(Error parsing heap.)");
+                    }
+                })
+                .fail(function () {
+                    $('#heap').text("(Error loading heap.)");
+                })
+                .always(function () {
+                    // Can post-process here
+                });
+        }
+
+        function loadResetReason() { // Get last reset reason
+            var resetJson = "/resetreason/";
+            var reset = $.getJSON(resetJson, function () {
+            })
+                .done(function (reset) {
+                    try {
+                        var resetReason = reset.r.reason;
+                        var resetDescription = reset.r.description;
+
+                        var resetText = "Reason: " + resetReason + ", Description: " + resetDescription;
+                        $('#resetreason').text(resetText);
+                    }
+                    catch {
+                        $('#thisVersion').text("(Error parsing version.)");
+                    }
+                })
+                .fail(function () {
                     $('#thisVersion').text("(Error loading version.)");
                 })
                 .always(function () {
