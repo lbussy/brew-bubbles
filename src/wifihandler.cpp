@@ -22,7 +22,7 @@ SOFTWARE. */
 
 #include "wifihandler.h"
 
-AsyncWiFiManager myAsyncWifiManager;
+AsyncWiFiManager awm;
 bool shouldSaveConfig = false;
 Ticker blinker;
 
@@ -41,22 +41,23 @@ void doWiFi(bool dontUseStoredCreds)
 #elif ESP32
     WiFi.setSleep(false);
 #endif
+    awm.setCleanConnect(true); // Always disconnect before connecting
 
     // AsyncWiFiManager Callbacks
-    myAsyncWifiManager.setAPCallback(apCallback);                       // Called after AP has started
-    myAsyncWifiManager.setWebServerCallback(webServerCallback);         // Called after webserver is setup
-    myAsyncWifiManager.setPreSaveConfigCallback(preSaveConfigCallback); // Called before saving wifi creds or parameters
-    myAsyncWifiManager.setSaveParamsCallback(saveParamsCallback);       // Called after wifi parameters are saved
-    myAsyncWifiManager.setSaveConfigCallback(saveConfigCallback);       // Called only if optional parameters are saved, or setBreakAfterConfig(true)
-    myAsyncWifiManager.setConfigResetCallback(configResetCallback);     // Called after settings are reset
+    awm.setAPCallback(apCallback);                       // Called after AP has started
+    awm.setWebServerCallback(webServerCallback);         // Called after webserver is setup
+    awm.setPreSaveConfigCallback(preSaveConfigCallback); // Called before saving WiFi creds or parameters
+    awm.setSaveParamsCallback(saveParamsCallback);       // Called after WiFi parameters are saved
+    awm.setSaveConfigCallback(saveConfigCallback);       // Called only if optional parameters are saved, or setBreakAfterConfig(true)
+    awm.setConfigResetCallback(configResetCallback);     // Called after settings are reset
 
 #ifndef DISABLE_LOGGING
     if (Log.getLevel())
-        myAsyncWifiManager.setDebugOutput(true); // Verbose debug is enabled by default
+        awm.setDebugOutput(true); // Verbose debug is enabled by default
     else
-        myAsyncWifiManager.setDebugOutput(false);
+        awm.setDebugOutput(false);
 #else
-    myAsyncWifiManager.setDebugOutput(false);
+    awm.setDebugOutput(false);
 #endif
 
     std::vector<const char *> _wfmPortalMenu = {
@@ -70,34 +71,34 @@ void doWiFi(bool dontUseStoredCreds)
         "restart",
         "exit"};
 
-    myAsyncWifiManager.setMenu(_wfmPortalMenu); // Set menu items
-    // myAsyncWifiManager.setCustomHeadElement("<style>html{filter: invert(100%); -webkit-filter: invert(100%);}</style>");
-    // myAsyncWifiManager.setClass(F("invert"));   // Set dark theme
+    awm.setMenu(_wfmPortalMenu); // Set menu items
+    // awm.setCustomHeadElement("<style>html{filter: invert(100%); -webkit-filter: invert(100%);}</style>");
+    // awm.setClass(F("invert"));   // Set dark theme
 
-    myAsyncWifiManager.setCountry(WIFI_COUNTRY);    // Setting wifi country seems to improve OSX soft ap connectivity
-    myAsyncWifiManager.setWiFiAPChannel(WIFI_CHAN); // Set WiFi channel
+    awm.setCountry(WIFI_COUNTRY);    // Setting WiFi country seems to improve OSX soft ap connectivity
+    awm.setWiFiAPChannel(WIFI_CHAN); // Set WiFi channel
 
-    myAsyncWifiManager.setShowStaticFields(true); // Force show static ip fields
-    myAsyncWifiManager.setShowDnsFields(true);    // Force show dns field always
+    awm.setShowStaticFields(true); // Force show static ip fields
+    awm.setShowDnsFields(true);    // Force show dns field always
 
     // Allow non-default host name
     AsyncWiFiManagerParameter hostname("hostname", "Custom Hostname", HOSTNAME, 32);
-    myAsyncWifiManager.addParameter(&hostname);
+    awm.addParameter(&hostname);
 
     // TODO:
     // if (doNonBlock)
     // {
     //     // Enable nonblocking portal (if configured)
-    //     myAsyncWifiManager.setConfigPortalBlocking(false);
+    //     awm.setConfigPortalBlocking(false);
     // }
 
     if (dontUseStoredCreds)
     {
         // Voluntary portal
         blinker.attach_ms(APBLINK, wifiBlinker);
-        myAsyncWifiManager.setConfigPortalTimeout(120);
+        awm.setConfigPortalTimeout(120);
 
-        if (myAsyncWifiManager.startConfigPortal(config.apconfig.ssid, config.apconfig.passphrase))
+        if (awm.startConfigPortal(config.apconfig.ssid, config.apconfig.passphrase))
         {
             // We finished with portal, do we need this?
         }
@@ -115,9 +116,9 @@ void doWiFi(bool dontUseStoredCreds)
     else
     { // Normal WiFi connection attempt
         blinker.attach_ms(STABLINK, wifiBlinker);
-        myAsyncWifiManager.setConnectTimeout(30);
-        myAsyncWifiManager.setConfigPortalTimeout(120);
-        if (!myAsyncWifiManager.autoConnect(config.apconfig.ssid, config.apconfig.passphrase))
+        awm.setConnectTimeout(30);
+        awm.setConfigPortalTimeout(120);
+        if (!awm.autoConnect(config.apconfig.ssid, config.apconfig.passphrase))
         {
             Log.warning(F("Failed to connect and/or hit timeout." CR));
             blinker.detach(); // Turn off blinker
@@ -174,12 +175,11 @@ void doWiFi(bool dontUseStoredCreds)
 }
 
 void resetWifi()
-{ // Wipe wifi settings and reset controller
-    AsyncWiFiManager myAsyncWifiManager;
-    myAsyncWifiManager.resetSettings();
+{ // Wipe WiFi settings and reset controller
+    awm.resetSettings();
     blinker.detach();       // Turn off blinker
     digitalWrite(LED, LOW); // Turn on LED
-    Log.notice(F("Restarting after clearing wifi settings." CR));
+    Log.notice(F("Restarting after clearing WiFi settings." CR));
     ESP.restart();
 }
 
