@@ -60,6 +60,7 @@ bool Bubbles::update()
     bubAvg.push(lastBpm);
     sampleSize = tempVesAvg.size();
 
+    saveBpm();
     return true;
 }
 

@@ -107,6 +107,7 @@ void loop()
             urlTarget.detach();
             urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
             config.urltarget.update = false;
+            saveConfig();
         }
         if (config.brewersfriend.update)
         {
@@ -114,6 +115,7 @@ void loop()
             bfTimer.detach();
             bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
             config.brewersfriend.update = false;
+            saveConfig();
         }
         if (config.brewfather.update)
         {
@@ -121,6 +123,7 @@ void loop()
             bfTimer.detach();
             bfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
             config.brewfather.update = false;
+            saveConfig();
         }
         serialLoop();
         yield();
