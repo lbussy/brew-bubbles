@@ -53,6 +53,7 @@ public:
     float getAvgAmbient();
     float getAvgVessel();
     float getAvgBpm();
+    void wipeArray();     // Wipe array on format change
     void setLast(double); // Push last reading on reboot
 
     // Public Properties
