@@ -6,7 +6,6 @@
 - Add Thingspeak support
   - Return (402): {"status":"402","error":"Payment required."}
 - Change so that posting configuration changes is not a complete page reload
-- Merge update pages
 - Add mouseover on debug items
   - free = Total free bytes in the heap. Equivalent to multi_free_heap_size().
 	- max = Size of largest free block in the heap. This is the largest malloc-able size.
@@ -162,3 +161,4 @@
 - ~~Review mDNS restart schedule to see if it's still needed~~
 - ~~See if we can do something about entering a bad password on portal~~
 - ~~Fix 'nan' error in Bubbles after SPIFFS upload~~
+- ~~Merge update pages~~
