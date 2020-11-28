@@ -43,6 +43,10 @@
             padding-right: 15px;
             padding-left: 15px;
         }
+
+        .tooltip-inner {
+            text-align: left;
+        }
     </style>
 
 </head>
@@ -99,15 +103,15 @@
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <strong>Uptime: </strong>
-                            <span id="uptime">...loading</span>
+                            <span id="uptime" data-html="true" data-toggle="tooltip">...loading</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <strong>Reset Reason: </strong>
-                            <span id="resetreason">...loading</span>
+                            <span id="resetreason" data-html="true" data-toggle="tooltip">...loading</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <strong>Heap Information: </strong>
-                            <span id="heap">...loading</span>
+                            <span id="heap" data-html="true" data-toggle="tooltip">...loading</span>
                         </li>
                     </ul>
                 </div>
@@ -142,6 +146,19 @@
         else window.onload = loadPage;
 
         function loadPage() { // Load the page's JS elements
+            $(document).tooltip({ // Enable tooltips
+                'selector': '[data-toggle=tooltip]',
+                'toggleEnabled': true
+            });
+            var heapToolTip = "Heap Information:<br>";
+            heapToolTip += "<ul>";
+            heapToolTip += "<li>Free Heap = Total free bytes in the heap";
+            heapToolTip += "<li>Max = Size of largest free block in the heap";
+            heapToolTip += "<li>Frags = 100 - (max * 100) / free";
+            heapToolTip += "</ul>";
+            $("#uptime").attr("data-original-title", "Time since last controller (re)start");
+            $("#resetreason").attr("data-original-title", "Reason for last (re)start");
+            $("#heap").attr("data-original-title", heapToolTip);
             loadThisVersion();  // Populate form with controller settings
             loadUptime();       // Load uptime information
             loadHeap();         // Load heap information
