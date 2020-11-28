@@ -31,9 +31,7 @@ SOFTWARE. */
 
 #include "config.h"
 #include "tools.h"
-#include "serial_setup.h"
-// TODO:
-// #include "serialhandler.h"
+#include "serialhandler.h"
 #include <Ticker.h>
 #include <ArduinoLog.h>
 

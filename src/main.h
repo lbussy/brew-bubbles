@@ -23,7 +23,7 @@ SOFTWARE. */
 #ifndef _MAIN_H
 #define _MAIN_H
 
-#include "serial_setup.h"
+#include "serialhandler.h"
 #include "config.h"
 #include "execota.h"
 #include "jsonconfig.h"
