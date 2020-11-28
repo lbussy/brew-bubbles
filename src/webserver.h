@@ -27,6 +27,7 @@ SOFTWARE. */
 #define USE_LITTLEFS
 #endif
 
+#include "resetreasons.h"
 #include "wifihandler.h"
 #include "execota.h"
 #include "bubbles.h"
