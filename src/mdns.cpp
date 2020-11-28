@@ -31,13 +31,43 @@ void mdnssetup()
     else
     {
         Log.notice(F("mDNS responder started for %s.local." CR), config.hostname);
-        if (!MDNS.addService("http", "tcp", PORT))
+        if (!MDNS.addService("http", "tcp", HTTPPORT))
         {
-            Log.error(F("Failed to register mDNS service." CR));
+            Log.error(F("Failed to register Web mDNS service." CR));
         }
         else
         {
-            Log.notice(F("HTTP registered via mDNS on port %i." CR), PORT);
+            Log.notice(F("HTTP registered via mDNS on port %i." CR), HTTPPORT);
         }
+        if (!MDNS.addService(config.hostname, "tcp", HTTPPORT))
+        {
+            Log.error(F("Failed to register %s mDNS service." CR), API_KEY);
+        }
+        else
+        {
+            Log.notice(F("%s registered via mDNS on port %i." CR), API_KEY, HTTPPORT);
+        }
+    }
+}
+
+void mdnsreset()
+{
+    MDNS.end();
+    if (!MDNS.begin(config.hostname))
+    {
+        Log.error(F("Error resetting MDNS responder."));
+    }
+    else
+    {
+#ifdef ESP32
+        Log.notice(F("mDNS responder restarted, hostname: %s.local." CR), WiFi.getHostname());
+#elif ESP8266
+        Log.notice(F("mDNS responder restarted, hostname: %s.local." CR), WiFi.hostname().c_str());
+#endif
+        MDNS.addService("http", "tcp", HTTPPORT);
+        MDNS.addService(config.hostname, "tcp", HTTPPORT);
+#if DOTELNET == true
+        MDNS.addService("telnet", "tcp", TELNETPORT);
+#endif
     }
 }
