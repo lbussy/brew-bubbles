@@ -20,47 +20,26 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _WEBSERVER_H
-#define _WEBSERVER_H
+#ifndef _RESETREASONS_H
+#define _RESETREASONS_H
 
-#ifndef USE_LITTLEFS
-#define USE_LITTLEFS
-#endif
+const char *resetReason[7] = {
+    "REASON_DEFAULT_RST",      // = 0, /* normal startup by power on */
+    "REASON_WDT_RST",          // = 1, /* hardware watch dog reset */
+    "REASON_EXCEPTION_RST",    // = 2, /* exception reset, GPIO status won’t change */
+    "REASON_SOFT_WDT_RST",     // = 3, /* software watch dog reset, GPIO status won’t change */
+    "REASON_SOFT_RESTART",     // = 4, /* software restart ,system_restart , GPIO status won’t change */
+    "REASON_DEEP_SLEEP_AWAKE", // = 5, /* wake up from deep-sleep */
+    "REASON_EXT_SYS_RST"       //  = 6 /* external system reset */
+};
 
-#include "wifihandler.h"
-#include "execota.h"
-#include "bubbles.h"
-#include "jsonconfig.h"
-#include "version.h"
-#include "config.h"
-#include "thatVersion.h"
-#include "pushhelper.h"
-#include "tools.h"
-#include "uptime.h"
-#include <SPIFFSEditor.h>
-#include <ArduinoLog.h>
-#include <ArduinoJson.h>
-#include <AsyncJson.h>
-#include <LittleFS.h>
-#include <ESPAsyncWebServer.h>
-#include <ESP8266HTTPClient.h>
-#include <ESP8266mDNS.h>
-#include <Arduino.h>
+const char *resetDescription[7] = {
+    "Normal startup by power on",
+    "Hardware watch dog reset",
+    "Exception reset, GPIO status won’t change",
+    "Software watch dog reset, GPIO status won’t change",
+    "Software restart, system_restart, GPIO status won’t change",
+    "Wake up from deep-sleep",
+    "External system reset"};
 
-void initWebServer();
-void setRegPageAliases();
-void setActionPageHandlers();
-void setJsonHandlers();
-void setSettingsAliases();
-void setEditor();
-void stopWebServer();
-
-extern struct Config config;
-extern struct ThatVersion thatVersion;
-extern struct Bubbles bubbles;
-extern const size_t capacityDeserial;
-extern const size_t capacitySerial;
-extern const char *resetReason[7];
-extern const char *resetDescription[7];
-
-#endif // _WEBSERVER_H
+#endif // _RESETREASONS_H
