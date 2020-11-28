@@ -113,6 +113,40 @@ void saveBpm()
     }
 }
 
+void maintenanceLoop()
+{
+    if (ESP.getFreeHeap() < MINFREEHEAP)
+    {
+        Log.warning(F("Maintenance: Heap memory has degraded below safe minimum, restarting." CR));
+        resetController();
+    }
+    if (WiFi.status() != WL_CONNECTED)
+    {
+        Log.warning(F("Maintenance: WiFi not connected, reconnecting." CR));
+        // TODO:
+        // doNonBlock = true;
+        doWiFi(); // With doNonBlock, this should be non-blocking
+    }
+    if (millis() > ESPREBOOT)
+    {
+        // The ms clock will rollover after ~49 days.  To be on the safe side,
+        // restart the ESP after about 42 days to reset the ms clock.
+        Log.warning(F("Maintenance: Six week routine restart."));
+        ESP.restart();
+    }
+    if (lastNTPUpdate > NTPRESET)
+    {
+        // Reset NTP (blocking) every measured 24 hours
+        Log.notice(F("Maintenance: Setting time"));
+        setClock();
+    }
+}
+
+void setDoReset()
+{
+    doReset = true; // Semaphore required for reset in callback
+}
+
 void setDoURLTarget()
 {
     doURLTarget = true; // Semaphore required for Ticker + radio event
@@ -126,11 +160,6 @@ void setDoBFTarget()
 void setDoBrewfTarget()
 {
     doBrewfTarget = true; // Semaphore required for Ticker + radio event
-}
-
-void setDoReset()
-{
-    doReset = true; // Semaphore required for reset in callback
 }
 
 void setDoOTA()

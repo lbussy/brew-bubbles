@@ -37,7 +37,6 @@ void updateLoop();
 void setDoURLTarget();
 void setDoBFTarget();
 void setDoBrewfTarget();
-void setDoReset();
 extern volatile bool doBubble;
 extern struct Bubbles bubbles;
 
