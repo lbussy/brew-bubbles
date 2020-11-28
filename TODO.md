@@ -3,6 +3,7 @@
 ## Open
 
 - Change so that posting configuration changes is not a complete page reload
+- Update documentation
 
 ## Complete
 
