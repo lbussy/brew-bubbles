@@ -25,7 +25,7 @@ SOFTWARE. */
 bool pushThingspeak()
 {
     Log.verbose(F("Triggered %s push." CR), tsName);
-    if (strlen(config.thingspeak.key))
+    if (strlen(config.thingspeak.key) && config.thingspeak.channel > 0)
     {
         WiFiClient client;
         ThingSpeak.begin(client); // Initialize ThingSpeak
