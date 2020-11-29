@@ -115,7 +115,7 @@ SOFTWARE. */
 // Minumum Free Heap, triggers reset if below this value
 //
 #ifndef MINFREEHEAP
-#define MINFREEHEAP 10000
+#define MINFREEHEAP 5000
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
