@@ -234,489 +234,504 @@ void setJsonHandlers()
 
 void setSettingsAliases()
 {
-    server.on("/settings/update/", HTTP_POST, [](AsyncWebServerRequest *request) { // Settings Update Handler
-        // Process POST configuration changes
-        Log.verbose(F("Processing post to /settings/update/." CR));
-        // Start to concatenate redurect URL
-        char redirect[66];
-        strcpy(redirect, "/settings/");
-
-        //Scroll through all POSTed parameters
-        int params = request->params();
-        for (int i = 0; i < params; i++)
+    server.on("/settings/controller/", HTTP_POST, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Processing post to /settings/controller/." CR));
+        if (handleControllerPost(request))
         {
-            AsyncWebParameter *p = request->getParam(i);
-            if (p->isPost())
-            {
-                // Process any p->name().c_str() / p->value().c_str() pairs
-                const char *name = p->name().c_str();
-                const char *value = p->value().c_str();
-                Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
-
-                if (strcmp(name, "mdnsid") == 0) // Change Hostname
-                {
-                    const char *hashloc = "#controller";
-                    if ((strlen(value) < 3) || (strlen(value) > 32))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        strlcpy(config.hostname, value, sizeof(config.hostname));
-                        saveConfig();
-
-                        // Reset hostname
-                        wifi_station_set_hostname(config.hostname);
-                        MDNS.setHostname(config.hostname);
-                        MDNS.notifyAPChange();
-                        MDNS.announce();
-
-                        // Creeate a full URL for redirection
-                        char hostname[45];
-                        strcpy(hostname, "http://");
-                        strcat(hostname, config.hostname);
-                        strcat(hostname, ".local");
-                        strcpy(redirect, hostname);
-                        strcat(redirect, "/settings/");
-                        strcat(redirect, hashloc); // Redirect to Controller box
-                        Log.verbose(F("POSTed mdnsid, redirecting to %s." CR), redirect);
-                    }
-                }
-                else if (strcmp(name, "bubname") == 0) // Change Bubble ID
-                {
-                    const char *hashloc = "#controller";
-                    if ((strlen(value) < 3) || (strlen(value) > 32))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        strlcpy(config.bubble.name, value, sizeof(config.bubble.name));
-                        saveConfig();
-                    }
-                    strcat(redirect, hashloc); // Redirect to Controller box
-                    Log.notice(F("POSTed bubname, redirecting to %s." CR), redirect);
-                }
-                else if (strcmp(name, "tempformat") == 0) // Change Temperature format
-                {
-                    const char *hashloc = "#temperature";
-                    char option[8];
-                    strcpy(option, value);
-                    if (strcmp(value, "option0") == 0)
-                    {
-                        config.bubble.tempinf = false;
-                    }
-                    else
-                    {
-                        config.bubble.tempinf = true;
-                    }
-                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                    bubbles.wipeArray(); // Clear temp array out in case we changed format
-                    saveConfig();
-                    strcat(redirect, hashloc); // Redirect to Temp Control
-                    Log.notice(F("POSTed tempformat, redirecting to %s." CR), redirect);
-                }
-                else if (strcmp(name, "calroom") == 0) // Change Room temp calibration
-                {
-                    const char *hashloc = "#temperature";
-                    if ((atof(value) < -25) || (atof(value) > 25))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        config.calibrate.room = atof(value);
-                        saveConfig();
-                    }
-                    strcat(redirect, hashloc); // Redirect to Temp Control
-                    Log.notice(F("POSTed calroom, redirecting to %s." CR), redirect);
-                }
-                else if (strcmp(name, "calvessel") == 0) // Change Vessel temp calibration
-                {
-                    const char *hashloc = "#temperature";
-                    if ((atof(value) < -25) || (atof(value) > 25))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        config.calibrate.vessel = atof(value);
-                        saveConfig();
-                    }
-                    strcat(redirect, hashloc); // Redirect to Temp Control
-                    Log.notice(F("POSTed calvessel, redirecting to %s." CR), redirect);
-                }
-                else if (strcmp(name, "urltargeturl") == 0) // Change Target URL
-                {
-                    const char *hashloc = "#urltarget";
-                    if (strlen(value) == 0)
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling Url Target." CR), name, value);
-                        strlcpy(config.urltarget.url, value, sizeof(config.urltarget.url));
-                    }
-                    else if ((strlen(value) < 3) || (strlen(value) > 128))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        strlcpy(config.urltarget.url, value, sizeof(config.urltarget.url));
-                        saveConfig();
-                    }
-                    strcat(redirect, hashloc); // Redirect to Target Control
-                    Log.notice(F("POSTed urltarget, redirecting to %s." CR), redirect);
-                }
-                else if (strcmp(name, "urlfreq") == 0) // Change Vessel temp calibration
-                {
-                    const char *hashloc = "#urltarget";
-                    if ((atoi(value) < 1) || (atoi(value) > 60))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        config.urltarget.freq = atoi(value);
-                        config.urltarget.update = true;
-                        saveConfig();
-                    }
-                    strcat(redirect, hashloc); // Redirect to Target Control
-                    Log.notice(F("POSTed urlfreq, redirecting to %s." CR), redirect);
-                }
-                else if (strcmp(name, "brewersfriendkey") == 0) // Change Brewer's Friend key
-                {
-                    const char *hashloc = "#brewersfriend";
-                    if (strlen(value) == 0)
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling Brewer's Friend target." CR), name, value);
-                        strlcpy(config.brewersfriend.key, value, sizeof(config.brewersfriend.key));
-                    }
-                    else if ((strlen(value) < 20) || (strlen(value) > 64))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        strlcpy(config.brewersfriend.key, value, sizeof(config.brewersfriend.key));
-                        saveConfig();
-                    }
-                    strcat(redirect, hashloc); // Redirect to Brewer's Friend Control
-                    Log.notice(F("POSTed brewersfriendkey, redirecting to %s." CR), redirect);
-                }
-                else if (strcmp(name, "brewersfriendfreq") == 0) // Change Brewer's Friend frequency
-                {
-                    const char *hashloc = "#brewersfriend";
-                    if ((atoi(value) < 15) || (atoi(value) > 120))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        config.brewersfriend.freq = atoi(value);
-                        config.brewersfriend.update = true;
-                        saveConfig();
-                    }
-                    strcat(redirect, hashloc); // Redirect to Brewer's Friend Control
-                    Log.notice(F("POSTed brewersfriendfreq, redirecting to %s." CR), redirect);
-                }
-                else if (strcmp(name, "brewfatherkey") == 0) // Change Brewfather key
-                {
-                    const char *hashloc = "#brewfather";
-                    if (strlen(value) == 0)
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling Brewfather Target." CR), name, value);
-                        strlcpy(config.brewfather.key, value, sizeof(config.brewfather.key));
-                    }
-                    else if ((strlen(value) < 10) || (strlen(value) > 64))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        strlcpy(config.brewfather.key, value, sizeof(config.brewfather.key));
-                        saveConfig();
-                    }
-                    strcat(redirect, hashloc); // Redirect to Brewer's Friend Control
-                    Log.notice(F("POSTed brewfatherkey, redirecting to %s." CR), redirect);
-                }
-                else if (strcmp(name, "brewfatherfreq") == 0) // Change Brewfather frequency
-                {
-                    const char *hashloc = "#brewfather";
-                    if ((atoi(value) < 15) || (atoi(value) > 120))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        config.brewfather.freq = atoi(value);
-                        config.brewfather.update = true;
-                        saveConfig();
-                    }
-                    strcat(redirect, hashloc); // Redirect to Brewfather Control
-                    Log.notice(F("POSTed brewfatherfreq, redirecting to %s." CR), redirect);
-                }
-                else if (strcmp(name, "thingspeakchannel") == 0) // Change Thingspeeak frequency
-                {
-                    const char *hashloc = "#thingspeak";
-                    if (strlen(value) == 0)
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling ThingSpeak Target." CR), name, value);
-                        config.thingspeak.channel = 0;
-                    }
-                    else if ((atoi(value) < 1000) || (atoi(value) > 9999999999))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        config.thingspeak.channel = atoi(value);
-                        config.thingspeak.update = true;
-                        saveConfig();
-                    }
-                    strcat(redirect, hashloc); // Redirect to ThingSpeak Control
-                    Log.notice(F("POSTed thingspeakchannel, redirecting to %s." CR), redirect);
-                }
-                else if (strcmp(name, "thingspeakkey") == 0) // Change ThingSpeak key
-                {
-                    const char *hashloc = "#thingspeak";
-                    if (strlen(value) == 0)
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling ThingSpeak Target." CR), name, value);
-                        strlcpy(config.thingspeak.key, value, sizeof(config.thingspeak.key));
-                    }
-                    else if ((strlen(value) < 10) || (strlen(value) > 64))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        strlcpy(config.thingspeak.key, value, sizeof(config.thingspeak.key));
-                        saveConfig();
-                    }
-                    strcat(redirect, hashloc); // Redirect to ThingSpeak Control
-                    Log.notice(F("POSTed thingspeeakkey, redirecting to %s." CR), redirect);
-                }
-                else if (strcmp(name, "thingspeakfreq") == 0) // Change Thingspeeak frequency
-                {
-                    const char *hashloc = "#thingspeak";
-                    if ((atoi(value) < 1) || (atoi(value) > 120))
-                    {
-                        Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                    }
-                    else
-                    {
-                        Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
-                        config.thingspeak.freq = atoi(value);
-                        config.thingspeak.update = true;
-                        saveConfig();
-                    }
-                    strcat(redirect, hashloc); // Redirect to ThingSpeak Control
-                    Log.notice(F("POSTed thingspeakfreq, redirecting to %s." CR), redirect);
-                }
-                else // Settings pair not found
-                {
-                    Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
-                }
-            }
-        }
-
-        // Redirect to Settings page
-        request->redirect(redirect);
-    });
-
-    server.on("/config/apply/", HTTP_POST, [](AsyncWebServerRequest *request) { // Process JSON POST configuration changes (bulk)
-        Log.verbose(F("Processing post to /config/apply/." CR));
-        String input = request->arg(F("plain"));
-        DynamicJsonDocument doc(capacityDeserial);
-        DeserializationError err = deserializeJson(doc, input);
-        if (!err)
-        {
-            bool updated = false;
-
-            // Parse JSON
-
-            // Parse Access Point Settings Object
-            const char *ssid = doc["apconfig"]["ssid"];
-            if ((ssid) && (strcmp(ssid, config.apconfig.ssid) != 0))
-            {
-                updated = true;
-                strlcpy(config.apconfig.ssid, ssid, sizeof(config.apconfig.ssid));
-            }
-            const char *appwd = doc["apconfig"]["appwd"];
-            if ((appwd) && (strcmp(appwd, config.apconfig.passphrase) != 0))
-            {
-                updated = true;
-                strlcpy(config.apconfig.passphrase, appwd, sizeof(config.apconfig.passphrase));
-            }
-
-            // Parse Hostname Settings Object
-            const char *hostname = doc["hostname"];
-            bool hostNameChanged = false;
-            if ((hostname) && (strcmp(hostname, config.hostname) != 0))
-            {
-                updated = true;
-                hostNameChanged = true;
-                strlcpy(config.hostname, hostname, sizeof(config.hostname));
-            }
-
-            // Parse Bubble Settings Object
-            const char *bubname = doc["bubbleconfig"]["name"];
-            if ((bubname) && (strcmp(bubname, config.bubble.name) != 0))
-            {
-                updated = true;
-                strlcpy(config.bubble.name, bubname, sizeof(config.bubble.name));
-            }
-
-            JsonVariant tempinf = doc["bubbleconfig"]["tempinf"];
-            if ((!tempinf.isNull()) && (!config.bubble.tempinf == tempinf))
-            {
-                updated = true;
-                config.bubble.tempinf = tempinf;
-            }
-
-            // Parse temperature calibration
-            double calAmbient = doc["calibrate"]["room"];
-            if ((calAmbient) && (!calAmbient == config.calibrate.room))
-            {
-                updated = true;
-                config.calibrate.room = calAmbient;
-            }
-
-            double calVessel = doc["calibrate"]["vessel"];
-            if ((calVessel) && (!calVessel == config.calibrate.vessel))
-            {
-                updated = true;
-                config.calibrate.vessel = calVessel;
-            }
-
-            // Parse Target Settings Object
-            const char *targeturl = doc["targetconfig"]["targeturl"];
-            if ((targeturl) && (strcmp(targeturl, config.urltarget.url) != 0))
-            {
-                updated = true;
-                strlcpy(config.urltarget.url, doc["targetconfig"]["targeturl"], sizeof(config.urltarget.url));
-            }
-
-            unsigned long targetfreq = doc["targetconfig"]["targetfreq"];
-            if ((targetfreq) && (!targetfreq == config.urltarget.freq))
-            {
-                updated = true;
-                config.urltarget.freq = targetfreq;
-            }
-
-            // Parse Brewer's Friend Settings Object
-            const char *bfkey = doc["bfconfig"]["bfkey"];
-            if ((bfkey) && (strcmp(bfkey, config.brewersfriend.key) != 0))
-            {
-                updated = true;
-                strlcpy(config.brewersfriend.key, bfkey, sizeof(config.brewersfriend.key));
-            }
-
-            unsigned long bffreq = doc["bfconfig"]["freq"];
-            if ((bffreq) && (!bffreq == config.brewersfriend.freq))
-            {
-                updated = true;
-                config.brewersfriend.freq = bffreq;
-            }
-
-            // Parse File System OTA update choice
-            JsonVariant dospiffs1 = doc["dospiffs1"];
-            if ((!dospiffs1.isNull()) && (!dospiffs1 == config.dospiffs1))
-            {
-                updated = true;
-                config.dospiffs1 = dospiffs1;
-            }
-
-            // Parse File System OTA update choice
-            JsonVariant dospiffs2 = doc["dospiffs2"];
-            if ((!dospiffs2.isNull()) && (!dospiffs2 == config.dospiffs2))
-            {
-                updated = true;
-                config.dospiffs2 = dospiffs2;
-            }
-
-            // Parse OTA update semaphore choice
-            JsonVariant didupdate = doc["didupdate"];
-            if ((!didupdate.isNull()) && (!didupdate == config.didupdate))
-            {
-                updated = true;
-                config.didupdate = didupdate;
-            }
-
-            if (updated)
-            {
-                // Save configuration to file
-                saveConfig();
-
-                // Reset hostname
-                if (hostNameChanged)
-                {
-                    wifi_station_set_hostname(hostname);
-                    MDNS.setHostname(hostname);
-                    MDNS.notifyAPChange();
-                    MDNS.announce();
-
-                    char hostredirect[39];
-                    strcpy(hostredirect, config.hostname);
-                    strcat(hostredirect, ".local");
-                    Log.notice(F("Redirecting to new URL: http://%s.local/" CR), hostname);
-
-                    // Send redirect information
-                    Log.verbose(F("Sending %s for redirect." CR), hostredirect);
-                    request->redirect(hostredirect);
-                }
-                else
-                {
-                    request->send(200, F("text/html"), F("Ok."));
-                }
-            }
+            request->send(200, F("text/plain"), F("Ok"));
         }
         else
         {
-            request->send(500, F("text/json"), err.c_str());
+            request->send(500, F("text/plain"), F("Unable to process data"));
         }
     });
 
-    // server.on("/json/", HTTP_POST, [](AsyncWebServerRequest *request) { // New bulk JSON handler
-    //     Log.verbose(F("Processing /json/ POST." CR));
+    server.on("/settings/controller/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Invalid method to /settings/tapcontrol/." CR));
+        request->send(405, F("text/plain"), F("Method not allowed."));
+    });
 
-    //     String input = request->arg(F("plain"));
-    //     DynamicJsonDocument doc(capacityDeserial);
-    //     DeserializationError error = deserializeJson(doc, input);
+    server.on("/settings/temperature/", HTTP_POST, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Processing post to /settings/tempcontrol/." CR));
+        if (handleTemperaturePost(request))
+        {
+            request->send(200, F("text/plain"), F("Ok"));
+        }
+        else
+        {
+            request->send(500, F("text/plain"), F("Unable to process data"));
+        }
+    });
 
-    //     // TODO:  Can't receive a full JSON file (yet) - crashes
-    //     Log.verbose(F("DEBUG:  Received JSON:" CR));
-    //     serializeJsonPretty(doc, Serial);
-    //     Serial.println();
+    server.on("/settings/temperature/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Invalid method to /settings/tapcontrol/." CR));
+        request->send(405, F("text/plain"), F("Method not allowed."));
+    });
 
-    //     if (error) {
-    //         Log.verbose(F("Error while processing /apply/: %s" CR), error.c_str());
-    //         request->send(500, "text/plain", error.c_str());
-    //     } else {
-    //         if (mergeJsonObject(doc)) {
+    server.on("/settings/urltarget/", HTTP_POST, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Processing post to /settings/urltarget/." CR));
+        if (handleURLTargetPost(request))
+        {
+            request->send(200, F("text/plain"), F("Ok"));
+        }
+        else
+        {
+            request->send(500, F("text/plain"), F("Unable to process data"));
+        }
+    });
 
-    //             Log.verbose(F("DEBUG:  Merged JSON file:" CR));
-    //             printFile();
+    server.on("/settings/urltarget/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Invalid method to /settings/tapcontrol/." CR));
+        request->send(405, F("text/plain"), F("Method not allowed."));
+    });
 
-    //             request->send(200, "text/plain", "Ok");
-    //             // TODO:  Check for doc.containsKey("foo") and do follow-up processing
-    //             // Hostname as well as URL, Brewer's Friend and Brewfather Frequencies
-    //         } else {
-    //             request->send(500, "text/plain", "Unable to merge JSON.");
-    //         }
-    //     }
-    // });
+    server.on("/settings/brewersfriendtarget/", HTTP_POST, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Processing post to /settings/brewersfriendtarget/." CR));
+        if (handleBrewersFriendTargetPost(request))
+        {
+            request->send(200, F("text/plain"), F("Ok"));
+        }
+        else
+        {
+            request->send(500, F("text/plain"), F("Unable to process data"));
+        }
+    });
+
+    server.on("/settings/brewersfriendtarget/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Invalid method to /settings/brewersfriendtarget/." CR));
+        request->send(405, F("text/plain"), F("Method not allowed."));
+    });
+
+    server.on("/settings/brewfathertarget/", HTTP_POST, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Processing post to /settings/brewersfriendtarget/." CR));
+        if (handleBrewfatherTargetPost(request))
+        {
+            request->send(200, F("text/plain"), F("Ok"));
+        }
+        else
+        {
+            request->send(500, F("text/plain"), F("Unable to process data"));
+        }
+    });
+
+    server.on("/settings/brewfathertarget/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Invalid method to /settings/brewersfriendtarget/." CR));
+        request->send(405, F("text/plain"), F("Method not allowed."));
+    });
+
+    server.on("/settings/thingspeaktarget/", HTTP_POST, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Processing post to /settings/thingspeaktarget/." CR));
+        if (handleThingSpeakTargetPost(request))
+        {
+            request->send(200, F("text/plain"), F("Ok"));
+        }
+        else
+        {
+            request->send(500, F("text/plain"), F("Unable to process data"));
+        }
+    });
+
+    server.on("/settings/thingspeaktarget/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+        Log.verbose(F("Invalid method to /settings/thingspeaktarget/." CR));
+        request->send(405, F("text/plain"), F("Method not allowed."));
+    });
+}
+
+bool handleControllerPost(AsyncWebServerRequest *request) // Handle controller settings
+{
+    bool hostnamechanged = false;
+    // Loop through all parameters
+    int params = request->params();
+    for (int i = 0; i < params; i++)
+    {
+        AsyncWebParameter *p = request->getParam(i);
+        if (p->isPost())
+        {
+            // Process any p->name().c_str() / p->value().c_str() pairs
+            const char *name = p->name().c_str();
+            const char *value = p->value().c_str();
+            Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
+
+            // Controller settings
+            //
+            if (strcmp(name, "mdnsid") == 0) // Set hostname
+            {
+                if ((strlen(value) < 3) || (strlen(value) > 32))
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not valid." CR), name, value);
+                }
+                else
+                {
+                    if (!strcmp(config.hostname, value) == 0)
+                    {
+                        hostnamechanged = true;
+                    }
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    strlcpy(config.hostname, value, sizeof(config.hostname));
+                }
+            }
+            if (strcmp(name, "bubname") == 0) // Set brew bubbles name
+            {
+                if ((strlen(value) < 3) || (strlen(value) > 32))
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not valid." CR), name, value);
+                }
+                else
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    strlcpy(config.bubble.name, value, sizeof(config.bubble.name));
+                }
+            }
+        }
+        if (hostnamechanged)
+        { // We reset hostname, process
+            hostnamechanged = false;
+#ifdef ESP8266
+            wifi_station_set_hostname(config.hostname);
+#elif defined ESP32
+            tcpip_adapter_set_hostname(TCPIP_ADAPTER_IF_STA, config.hostname);
+#endif
+            mdnsreset();
+            Log.verbose(F("POSTed new mDNSid, reset mDNS stack." CR));
+        }
+    }
+    if (saveConfig())
+    {
+        return true;
+    }
+    else
+    {
+        Log.error(F("Error: Unable to save tap configuration data." CR));
+        return false;
+    }
+}
+
+bool handleTemperaturePost(AsyncWebServerRequest *request) // Handle Temperature post
+{
+    bool tempinf = config.bubble.tempinf;
+    // Loop through all parameters
+    int params = request->params();
+    for (int i = 0; i < params; i++)
+    {
+        AsyncWebParameter *p = request->getParam(i);
+        if (p->isPost())
+        {
+            // Process any p->name().c_str() / p->value().c_str() pairs
+            const char *name = p->name().c_str();
+            const char *value = p->value().c_str();
+            Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
+
+            // Target url settings
+            //
+            if (strcmp(name, "calroom") == 0) // Set room calibration
+            {
+                const double val = atof(value);
+                if ((val >= -25) || (val <= 25))
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    config.calibrate.room = val;
+                }
+                else
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not valid." CR), name, value);
+                }
+            }
+            if (strcmp(name, "calvessel") == 0) // Set vessel calibration
+            {
+                const double val = atof(value);
+                if ((val >= -25) || (val <= 25))
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    config.calibrate.vessel = val;
+                }
+                else
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not valid." CR), name, value);
+                }
+            }
+            if (strcmp(name, "tempformat") == 0) // Set temperature format
+            {
+                if (strcmp(value, "celsius") == 0)
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    config.bubble.tempinf = false;
+                }
+                else if (strcmp(value, "fahrenheit") == 0)
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    config.bubble.tempinf = true;
+                }
+                else
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not valid." CR), name, value);
+                }
+            }
+            if (!tempinf == config.bubble.tempinf)
+                bubbles.wipeArray(); // Clear temp array out in case we changed format
+        }
+    }
+    if (saveConfig())
+    {
+        return true;
+    }
+    else
+    {
+        Log.error(F("Error: Unable to save tap configuration data." CR));
+        return false;
+    }
+}
+
+bool handleURLTargetPost(AsyncWebServerRequest *request) // Handle URL Target Post
+{
+    // Loop through all parameters
+    int params = request->params();
+    for (int i = 0; i < params; i++)
+    {
+        AsyncWebParameter *p = request->getParam(i);
+        if (p->isPost())
+        {
+            // Process any p->name().c_str() / p->value().c_str() pairs
+            const char *name = p->name().c_str();
+            const char *value = p->value().c_str();
+            Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
+
+            // URL Target settings
+            //
+            if (strcmp(name, "urltargeturl") == 0) // Change Target URL
+            {
+                if (strlen(value) == 0)
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling Url Target." CR), name, value);
+                    strlcpy(config.urltarget.url, value, sizeof(config.urltarget.url));
+                }
+                else if ((strlen(value) < 3) || (strlen(value) > 128))
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                }
+                else
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    strlcpy(config.urltarget.url, value, sizeof(config.urltarget.url));
+                }
+            }
+            if (strcmp(name, "urlfreq") == 0) // Change Target URL frequency
+            {
+                if ((atoi(value) < 1) || (atoi(value) > 60))
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                }
+                else
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    config.urltarget.freq = atoi(value);
+                    config.urltarget.update = true;
+                }
+            }
+        }
+    }
+    if (saveConfig())
+    {
+        return true;
+    }
+    else
+    {
+        Log.error(F("Error: Unable to save tap configuration data." CR));
+        return false;
+    }
+}
+
+bool handleBrewersFriendTargetPost(AsyncWebServerRequest *request) // Handle Brewer's Friend Target Post
+{
+    // Loop through all parameters
+    int params = request->params();
+    for (int i = 0; i < params; i++)
+    {
+        AsyncWebParameter *p = request->getParam(i);
+        if (p->isPost())
+        {
+            // Process any p->name().c_str() / p->value().c_str() pairs
+            const char *name = p->name().c_str();
+            const char *value = p->value().c_str();
+            Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
+
+            // Brewer's Friend target settings
+            //
+            if (strcmp(name, "brewersfriendkey") == 0) // Change Brewer's Friend key
+            {
+                if (strlen(value) == 0)
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied. Disabling Brewer's Friend target." CR), name, value);
+                    strlcpy(config.brewersfriend.key, value, sizeof(config.brewersfriend.key));
+                }
+                else if ((strlen(value) < 20) || (strlen(value) > 64))
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                }
+                else
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    strlcpy(config.brewersfriend.key, value, sizeof(config.brewersfriend.key));
+                }
+            }
+            if (strcmp(name, "brewersfriendfreq") == 0) // Change Brewer's Friend frequency
+            {
+                if ((atoi(value) < 15) || (atoi(value) > 120))
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                }
+                else
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    config.brewersfriend.freq = atoi(value);
+                    config.brewersfriend.update = true;
+                }
+            }
+        }
+    }
+    if (saveConfig())
+    {
+        return true;
+    }
+    else
+    {
+        Log.error(F("Error: Unable to save tap configuration data." CR));
+        return false;
+    }
+}
+
+bool handleBrewfatherTargetPost(AsyncWebServerRequest *request) // Handle Brewfather Target Post
+{
+    // Loop through all parameters
+    int params = request->params();
+    for (int i = 0; i < params; i++)
+    {
+        AsyncWebParameter *p = request->getParam(i);
+        if (p->isPost())
+        {
+            // Process any p->name().c_str() / p->value().c_str() pairs
+            const char *name = p->name().c_str();
+            const char *value = p->value().c_str();
+            Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
+
+            // Brewer's Friend target settings
+            //
+            if (strcmp(name, "brewfatherkey") == 0) // Change Brewfather key
+            {
+                if (strlen(value) == 0)
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied. Disabling Brewfather target." CR), name, value);
+                    strlcpy(config.brewfather.key, value, sizeof(config.brewfather.key));
+                }
+                else if ((strlen(value) < 10) || (strlen(value) > 64))
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                }
+                else
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    strlcpy(config.brewfather.key, value, sizeof(config.brewfather.key));
+                }
+            }
+            if (strcmp(name, "brewfatherfreq") == 0) // Change Brewfather frequency
+            {
+                if ((atoi(value) < 15) || (atoi(value) > 120))
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                }
+                else
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    config.brewfather.freq = atoi(value);
+                    config.brewfather.update = true;
+                }
+            }
+        }
+    }
+    if (saveConfig())
+    {
+        return true;
+    }
+    else
+    {
+        Log.error(F("Error: Unable to save tap configuration data." CR));
+        return false;
+    }
+}
+
+bool handleThingSpeakTargetPost(AsyncWebServerRequest *request) // Handle ThingSpeak Target Post
+{
+    // Loop through all parameters
+    int params = request->params();
+    for (int i = 0; i < params; i++)
+    {
+        AsyncWebParameter *p = request->getParam(i);
+        if (p->isPost())
+        {
+            // Process any p->name().c_str() / p->value().c_str() pairs
+            const char *name = p->name().c_str();
+            const char *value = p->value().c_str();
+            Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
+
+            // ThingSpeak target settings
+            //
+            if (strcmp(name, "thingspeakchannel") == 0) // Change ThingSpeak channel
+            {
+                if ((atoi(value) == 0))
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied. Disabling ThingSpeak target." CR), name, value);
+                    config.thingspeak.channel = atoi(value);
+                }
+                else if ((atoi(value) < 1000) || (atoi(value) > 9999999999))
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                }
+                else
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    config.thingspeak.channel = atoi(value);
+                }
+            }
+            if (strcmp(name, "thingspeakkey") == 0) // Change    key
+            {
+                if (strlen(value) == 0)
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied. Disabling ThingSpeak target." CR), name, value);
+                    strlcpy(config.thingspeak.key, value, sizeof(config.thingspeak.key));
+                }
+                else if ((strlen(value) < 10) || (strlen(value) > 64))
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                }
+                else
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    strlcpy(config.thingspeak.key, value, sizeof(config.thingspeak.key));
+                }
+            }
+            if (strcmp(name, "thingspeakfreq") == 0) // Change ThingSpeak frequency
+            {
+                if ((atoi(value) < 1) || (atoi(value) > 120))
+                {
+                    Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                }
+                else
+                {
+                    Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                    config.thingspeak.freq = atoi(value);
+                    config.thingspeak.update = true;
+                }
+            }
+        }
+    }
+    if (saveConfig())
+    {
+        return true;
+    }
+    else
+    {
+        Log.error(F("Error: Unable to save tap configuration data." CR));
+        return false;
+    }
 }
 
 #ifdef SPIFFSEDIT

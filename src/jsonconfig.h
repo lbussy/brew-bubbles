@@ -70,7 +70,7 @@ struct URLTarget
 
 struct KeyTarget
 {
-    // Stored Brewer's Friend configuration
+    // Stores Key Target configurations
     char key[64];
     int channel;
     int freq;
