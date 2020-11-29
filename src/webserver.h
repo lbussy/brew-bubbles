@@ -55,6 +55,13 @@ void setSettingsAliases();
 void setEditor();
 void stopWebServer();
 
+bool handleControllerPost(AsyncWebServerRequest *request);
+bool handleTemperaturePost(AsyncWebServerRequest *request);
+bool handleURLTargetPost(AsyncWebServerRequest *request);
+bool handleBrewersFriendTargetPost(AsyncWebServerRequest *request);
+bool handleBrewfatherTargetPost(AsyncWebServerRequest *request);
+bool handleThingSpeakTargetPost(AsyncWebServerRequest *request);
+
 extern struct Config config;
 extern struct ThatVersion thatVersion;
 extern struct Bubbles bubbles;
