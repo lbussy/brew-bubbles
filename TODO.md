@@ -2,7 +2,7 @@
 
 ## Open
 
-- Change so that posting configuration changes is not a complete page reload
+- Auto-reload the About page information
 - Update documentation
 
 ## Complete
@@ -162,3 +162,4 @@
   - ~~free = Total free bytes in the heap. Equivalent to multi_free_heap_size().~~
 	- ~~max = Size of largest free block in the heap. This is the largest malloc-able size.~~
 	- ~~frag = 100 - (max * 100) / free~~
+- ~~Change so that posting configuration changes is not a complete page reload~~
