@@ -123,17 +123,17 @@ void loop()
         }
         if (config.brewfather.update)
         {
-            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
-            bfTimer.detach();
-            bfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
+            Log.notice(F("Resetting Brewfather frequency timer to %l minutes." CR), config.brewfather.freq);
+            brewfTimer.detach();
+            brewfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
             config.brewfather.update = false;
             saveConfig();
         }
         if (config.thingspeak.update)
         {
             Log.notice(F("Resetting ThingSpeak frequency timer to %l minutes." CR), config.thingspeak.freq);
-            bfTimer.detach();
-            bfTimer.attach(config.thingspeak.freq * 60, setDoTSTarget);
+            tsTimer.detach();
+            tsTimer.attach(config.thingspeak.freq * 60, setDoTSTarget);
             config.thingspeak.update = false;
             saveConfig();
         }
