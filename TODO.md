@@ -3,6 +3,7 @@
 ## Open
 
 - Auto-reload the About page information
+- Look into NaN on Bubbles after flash
 - Update documentation
 
 ## Complete
