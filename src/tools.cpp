@@ -63,6 +63,7 @@ void loadBpm()
     if (!LittleFS.exists(bpmFileName) || !file)
     {
         Log.notice(F("No lastBpm available." CR));
+        bubbles.setLast(0);
     }
     else
     {
