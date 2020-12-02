@@ -35,6 +35,7 @@ SOFTWARE. */
 #include <Arduino.h>
 
 #define EEPROM_ADDRESS 0x00
+#define LASTBPM_JSON "lastBpm.json"
 
 void _delay(unsigned long);
 void resetController();
