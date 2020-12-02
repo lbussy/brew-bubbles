@@ -53,8 +53,10 @@ public:
     float getAvgAmbient();
     float getAvgVessel();
     float getAvgBpm();
+    unsigned long getCurrentAge();
     void wipeArray();     // Wipe array on format change
-    void setLast(double); // Push last reading on reboot
+    void setLast(time_t dts, double lastBpm, double lastAmb, double lastVes); // Push last readings on reboot
+    void clearLast(); // Clear the bubbles array and set to 0 to avoid NaN
 
     // Public Properties
     float lastBpm; // Holds most recent count

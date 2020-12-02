@@ -3,13 +3,14 @@
 ## Open
 
 - Auto-reload the About page information
-- ~~Look into NaN on Bubbles after flash~~
 - Detect first run after flash
+- Normalize DRD with KC
 - Add build and branch to version display on page
 - Use a semaphore file for first boot
-- Time stamp last bubble reading
-- Add temps to last bubble
 - Update documentation
+- ~~Look into NaN on Bubbles after flash~~
+- ~~Time stamp last bubble reading~~
+- ~~Add temps to last bubble~~
 
 ## Complete
 

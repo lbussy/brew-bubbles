@@ -33,14 +33,10 @@ bool Bubbles::start()
     ulLastReport = millis();
     unsigned long ulNow = millis();
     ulStart = ulNow;
-    lastBpm = 0.0;
-    lastAmb = 0.0;
-    lastVes = 0.0;
     doBubble = false;
 
     // Set starting time
     lastTime = getDTS();
-    update();
     return true;
 }
 
@@ -86,7 +82,10 @@ float Bubbles::getAvgAmbient()
         // float thisTemp = tempAmbAvg[i];
         avg += tempAmbAvg[i] / size;
     }
-    return (avg);
+    if (avg)
+        return (avg);
+    else
+        return getTemp(AMBSENSOR);
 }
 
 float Bubbles::getAvgVessel()
@@ -96,10 +95,12 @@ float Bubbles::getAvgVessel()
     uint8_t size = tempVesAvg.size();
     for (int i = 0; i < tempVesAvg.size(); i++)
     {
-        // float thisTemp = tempVesAvg[i];
         avg += tempVesAvg[i] / size;
     }
-    return (avg);
+    if (avg)
+        return (avg);
+    else
+        return getTemp(VESSENSOR);
 }
 
 float Bubbles::getAvgBpm()
@@ -114,9 +115,54 @@ float Bubbles::getAvgBpm()
     return (avg);
 }
 
-void Bubbles::setLast(double last)
+void Bubbles::setLast(time_t dts, double lastBpm, double lastAmb, double lastVes)
 {
-    bubAvg.push(last);
+    long expAge = dts + (LASTBPMEXP / 60);
+    time_t now = time(nullptr);
+    if (expAge > now)
+    {
+        // JSON expired
+        Log.verbose(F("Last BPM JSON expired." CR));
+        saveBpm();
+    }
+    else
+    {
+        Log.notice(F("Loading last BPM." CR));
+        // Loading JSON information
+        if (!lastBpm)
+            bubAvg.push(0);
+        else
+            bubAvg.push(lastBpm);
+
+        // Don't push 0 to temps, get a fresh value
+        if (lastAmb == 0)
+        {
+            tempAmbAvg.push(getTemp(AMBSENSOR));
+        }
+        else
+        {
+            tempAmbAvg.push(lastAmb);
+        }
+        if (lastVes == 0)
+        {
+            tempVesAvg.push(getTemp(VESSENSOR));
+        }
+        else
+        {
+            tempVesAvg.push(lastVes);
+        }
+    }
+}
+
+unsigned long Bubbles::getCurrentAge()
+{
+    // Current age of lastBpm report in millis
+    return millis() - ulLastReport;
+}
+
+void Bubbles::clearLast()
+{
+    bubAvg.clear();
 }
 
 void Bubbles::wipeArray()

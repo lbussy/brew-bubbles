@@ -47,9 +47,9 @@ void resetController()
 
 void loadBpm()
 {
-    const size_t capacity = JSON_OBJECT_SIZE(1) + 10;
+    const size_t capacity = JSON_OBJECT_SIZE(4) + 40;
     DynamicJsonDocument doc(capacity);
-    const char *bpmFileName = "lastBpm.json";
+    const char *bpmFileName = LASTBPM_JSON;
 
     // Mount File System
     if (!LittleFS.begin())
@@ -63,7 +63,7 @@ void loadBpm()
     if (!LittleFS.exists(bpmFileName) || !file)
     {
         Log.notice(F("No lastBpm available." CR));
-        bubbles.setLast(0);
+        bubbles.clearLast();
     }
     else
     {
@@ -76,21 +76,26 @@ void loadBpm()
         }
         else
         {
-            bubbles.setLast(doc["lastBpm"]);
-            Log.notice(F("Loaded lastBpm." CR));
+            bubbles.setLast(doc["dts"], doc["lastBpm"], doc["lastAmb"], doc["lastVes"]);
         }
-        // Delete file
-        LittleFS.remove(bpmFileName);
     }
 }
 
 void saveBpm()
 {
-    const size_t capacity = JSON_OBJECT_SIZE(1) + 10;
+    const size_t capacity = JSON_OBJECT_SIZE(4);
     DynamicJsonDocument doc(capacity);
-    const char *bpmFileName = "lastBpm.json";
+    const char *bpmFileName = LASTBPM_JSON;
 
-    doc["lastBpm"] = bubbles.getAvgBpm();
+    const float lastBpm = bubbles.getAvgBpm();
+    const float lastAmb = bubbles.getAvgAmbient();
+    const float lastVes = bubbles.getAvgVessel();
+    const time_t dts = time(nullptr); // 1546300800
+
+    doc["lastBpm"] = lastBpm;
+    doc["lastAmb"] = lastAmb;
+    doc["lastVes"] = lastVes;
+    doc["dts"] = dts;
 
     // Open file for writing
     File file = LittleFS.open(bpmFileName, "w");
