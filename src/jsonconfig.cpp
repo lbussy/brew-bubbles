@@ -61,11 +61,24 @@ bool loadFile()
     File file = LittleFS.open(filename, "r");
     if (!LittleFS.exists(filename) || !file)
     {
-        // File does not exist or unable to read file
-    }
-    else
-    {
-        // Existing configuration present
+        // Unable to open the file
+        file.close();
+        File file = LittleFS.open(filename, "w");
+        if (!LittleFS.exists(filename) || !file)
+        {
+            // Still could not create a file
+            return false;
+        }
+        else
+        {
+            file.close();
+            file = LittleFS.open(filename, "r");
+            if (!LittleFS.exists(filename) || !file)
+            {
+                // Unable to open a file we created in the previous block
+                return false;
+            }
+        }
     }
 
     if (!deserializeConfig(file))
@@ -115,6 +128,7 @@ bool deserializeConfig(Stream &src)
 
     if (err)
     {
+        // We really don;t care if there's an err, the file should be created anyway
         config.load(doc.as<JsonObject>());
         return true;
     }
@@ -265,6 +279,7 @@ void Bubble::load(JsonObjectConst obj)
 {
     // Load Bubble configuration
     //
+
     if (obj["name"].isNull())
     {
         strlcpy(name, BUBNAME, sizeof(name));
