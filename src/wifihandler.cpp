@@ -125,7 +125,7 @@ void doWiFi(bool dontUseStoredCreds)
             _delay(3000);
             digitalWrite(LED, HIGH);
             Log.warning(F("Restarting." CR));
-            resetController();
+            ESP.restart();
             _delay(1000); // Just a hack to give it time to reset
         }
         else
