@@ -1,12 +1,6 @@
 # TODO List
 
 ## Open
-
-### Firmware
-- Detect first run after flash
-- Normalize DRD with KC
-
-## Other
 - Update documentation
 
 ### Completed This Sprint
@@ -15,6 +9,8 @@
 - ~~Add temps to last bubble~~
 - ~~Add build and branch to version display on page~~
 - ~~Auto-reload the About page information~~
+- ~~Detect first run after flash~~
+- ~~Normalize DRD with KC~~
 
 ## Complete
 

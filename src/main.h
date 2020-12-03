@@ -23,6 +23,14 @@ SOFTWARE. */
 #ifndef _MAIN_H
 #define _MAIN_H
 
+// Use LittleFS for DRD storage
+#define ESP_DRD_USE_LITTLEFS true
+// #define DOUBLERESETDETECTOR_DEBUG true
+// Number of seconds to consider as considered a double reset.
+#define DRD_TIMEOUT 10
+// RTC Memory Address for the DoubleResetDetector to use
+#define DRD_ADDRESS 0
+
 #include "serialhandler.h"
 #include "config.h"
 #include "execota.h"
@@ -39,17 +47,9 @@ SOFTWARE. */
 #include "mdns.h"
 #include "ntp.h"
 #include "thatVersion.h"
-#include <DoubleResetDetect.h>
+#include <ESP_DoubleResetDetector.h>
 #include <ArduinoLog.h>
 #include <Arduino.h>
-
-// DRD_TIMEOUT =    Maximum number of seconds between resets that counts
-//                  as a double reset
-// DRD_ADDRESS =    Address to the block in the RTC user memory change it
-//                  if it collides with another usage of the address block
-//
-#define DRD_TIMEOUT 3.0
-#define DRD_ADDRESS 0x00
 
 extern struct Config config;
 extern bool loadConfig();

@@ -22,11 +22,11 @@ SOFTWARE. */
 
 #include "main.h"
 
-DoubleResetDetect drd(DRD_TIMEOUT, DRD_ADDRESS);
+DoubleResetDetector* drd;
 
 void setup()
 {
-    bool rst = drd.detect(); // Check for double-reset
+    drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
     setSerial();
 
     if (loadConfig())
@@ -44,7 +44,7 @@ void setup()
         Log.notice(F("%s low, presenting portal." CR), stringify(RESETWIFI));
         doWiFi(true);
     }
-    else if (rst == true)
+    else if (drd->detectDoubleReset())
     {
         Log.notice(F("DRD: Triggered, presenting portal." CR));
         doWiFi(true);
@@ -95,6 +95,9 @@ void loop()
 
     while (true)
     {
+        // Handle DRD timeout
+        drd->loop();
+
         // Handle semaphores - No radio work in a Ticker!
         tickerLoop();
 
