@@ -3,7 +3,7 @@
 Device Assembly
 ========================================
 
-Brew Bubbles runs on an ESP8266 controller. To detect the information to be logged, you need to connect specific devices to the controller.  I have provided a circuit board design, sometimes called a "shield" to make this easier.
+Brew Bubbles runs on an ESP8266 controller. To detect the information to be logged, you need to connect specific devices to the controller.  I have provided a circuit board design, sometimes called a "shield," to make this easier.
 
 Assembly is not difficult, but it does require some basic soldering.
 
@@ -19,13 +19,13 @@ Controller
 
 The ESP8266 controller is paired with many different "developer boards" to make connections easier.  Do yourself a favor and do not buy a bare ESP8266 chip.  I can't help you if you do.
 
-The developer board used in this project is the **Wemos D1 Mini**.  Wherever you purchase it, make sure it is an ESP-12F (if that information is listed) and that it says 4MB (or sometimes shown as 32Mb which is 4 megaBYTES converted to megaBITS.)  Also, be sure it comes with the 8-pin male and female headers, or else you will need to get them elsewhere.  You can find the Wemos D1 Mini in many places, here are a few:
+The developer board used in this project is the **Wemos D1 Mini**.  Wherever you purchase it, make sure it is an ESP-12F (if that information is listed) and that it says 4MB (or sometimes shown as 32Mb, which is 4 megaBYTES converted to megaBITS.)  Also, be sure it comes with the 8-pin male and female headers, or else you will need to get them elsewhere.  You can find the Wemos D1 Mini in many places; here are a few:
 
-#.  **The "Legitimate" Way**:  The Wemos D1 Mini has been knocked off mercilessly.  This situation is ironic since Espressif makes the ESP8266 controller, and they are a Chinese company.  In the past, wemos.cc_ was the way to buy the "original" Wemos D1 Mini. However, they no longer appear to sell them, and instead, the website is a wiki-type information source.
+#.  **The "Legitimate" Way**:  The Chinese have knocked the Wemos D1 Mini has mercilessly.  This situation is ironic since Espressif makes the ESP8266 controller, and they are a Chinese company.  In the past, wemos.cc_ was the way to buy the "original" Wemos D1 Mini. However, they no longer appear to sell directly, and instead, the website is a wiki-type information source.
 
 #.  **The Quick Way**:  Why Amazon, of course.  You can search for "Wemos D1 Mini" (it has to be "mini" and not "pro") and find a large number of different ways to buy.  My preference is to get a handful at a time since they are cheaper that way.  This_ link gives you five for $17.99 in a couple of days with free Prime shipping ($3.60/ea.)
 
-#.  **The Cheap Way**:  AliExpress_ has everything anyone would ever need, so long as that person can wait a month or more for delivery.  For $1.99 each this way is as cheap as it gets.  Be aware that there are different sellers on there, and each ship independently.  Sometimes you save by paying less on shipping if you are buying multiple things from one seller.
+#.  **The Cheap Way**:  AliExpress_ has everything anyone would ever need, so long as that person can wait a month or more for delivery.  For $1.99 each, this way is as cheap as it gets.  Be aware that there are different sellers on there, and each ship independently.  Sometimes you save by paying less on shipping if you are buying multiple things from one seller.
 
 Printed Circuit Board
 `````````````````````
@@ -53,7 +53,7 @@ General Parts
 
 These are the parts which you can get pretty much anywhere.
 
-The items marked with an \*asterisk below are optional. They are in the design to provide a means to monitor and trend the ambient temperature where you place the fermenter, and the fermenting liquid's temperature via a thermowell or insulated in contact with the fermenter. If you choose not to use these, the firmware automatically skips reporting these readings.
+The items marked with an \*asterisk below are optional. They are in the design to provide a means to monitor and trend the ambient temperature where you place the fermenter and the fermenting liquid's temperature via a thermowell or insulated in contact with the fermenter. If you choose not to use these, the firmware automatically skips reporting these readings.
 
 =====  ======================================  ============
 Quan   Description                             Placement
@@ -66,32 +66,32 @@ Quan   Description                             Placement
 2*     DS18B20 Temperature sensor and lead     VESSEL, ROOM
 =====  ======================================  ============
 
-This BOM is available on Mouser_.  You can find these parts just about any of the usual places.  Make sure they are the proper rating and form factor.
+This BOM is available on Mouser_.  You can find these parts in just about any of the usual places.  Please make sure they are the proper rating and form factor.
 
-If you choose to use the temperature sensors, you need to obtain two (2) Waterproof DS18B20_ Temperature Sensor with leads.  These are the same as used with the various fermenter temperature control projects such as BrewPi Remix.  You also need to crimp on a three-terminal female plug.  You can get a kit_ on Amazon with more terminals than you ever need including the crimping tool for about $25 or save by doing some careful AliExpress shopping.
+If you choose to use the temperature sensors, you need to obtain two (2) Waterproof DS18B20_ Temperature Sensor with leads.  These are the same as used with the various fermenter temperature control projects such as BrewPi Remix.  You also need to crimp on a three-terminal female plug.  You can get a kit_ on Amazon with more terminals than you ever need, including the crimping tool, for about $25 or save by doing some careful AliExpress shopping.
 
 Component Installation
 ----------------------
 
-You are going to have to solder.  If you have legitimately never soldered anything before, I recommend you spend a few minutes on YouTube and watch a few videos.  Sparkfun_ also has a very nice tutorial_. It is not hard at all once you get the hang of it.  And, while the shield is comparatively small, the components chosen are simple through-hole parts, which may be easily soldered by a beginner with a little patience.
+You are going to have to solder.  If you have legitimately never soldered anything before, I recommend you spend a few minutes on YouTube and watch a few videos.  Sparkfun_ also has a very nice tutorial_. It is not hard at all once you get the hang of it.  While the shield is comparatively small, the components chosen are simple through-hole parts, which may be easily soldered by a beginner with a little patience.
 
 I do not intend to provide a step-by-step on how to solder here. Still, I recommend the following part installation order for ease of assembly:
 
-1.  Resistors - As the shortest mounted components, soldering the three resistors to the board first is the least challenging. They are also some of the most tolerant components, so these grant you some experience to get you going.
+1.  Resistors - As the shortest mounted components, soldering the three resistors to the board first is the least challenging. They are also some of the most tolerant parts, so these grant you some experience to get you going.
 
-2.  3-Pin headers - These components are not sensitive to the heat at all except for the plastic.
+2.  3-Pin headers - These components are not sensitive to the heat except for the plastic.
 
 3.  Capacitors - These are mounted next. Be sure to get them as close to the board as possible since having them stick up changes their intended impact on the circuit.
 
-4.  8-pin female headers - These are the tallest items on the front side of the board and are the last pieces to go on this side. Lightly tack on one pin and make sure the header is straight. When you have it positioned correctly, start from the other end, and solder the pins correctly. If you have a D1 laying around with the pin headers soldered on it already, using that to steady the parts helps. This process is a chicken or the egg choice with the next item. The first part to be soldered, either the controller or shield, is the most difficult. After that, you can use the other to steady the headers of the first. If you have a breadboard, you may also employ that to steady the parts.
+4.  8-pin female headers - These are the tallest items on the front side of the board and are the last pieces to go on this side. Lightly tack on one pin and make sure the header is straight. When you have it positioned correctly, start from the other end, and solder the pins correctly. If you have a D1 laying around with the pin headers soldered on it already, using that to steady the parts helps. This process is a chicken or the egg choice with the next item. The first part to be soldered, either the controller or shield is the most difficult. After that, you can use the other to steady the headers of the first. If you have a breadboard, you may also employ that to steady the parts.
 
 5.  8-pin male headers - These need to be soldered on the controller board. See note on #4 above.
 
-6.  GP1A57HR photo-interrupter - If the controller is still attached, take it off temporarily. The photo-interrupter goes on the *back* side of the circuit board in the outline provided. Therefore you solder it from the top side.  If you put it on the wrong side, you can remove the solder (more YouTube work), but I'm not going to lie: it is frustrating.  Be careful to di it right the first time.
+6.  GP1A57HR photo-interrupter - If the controller is still attached, take it off temporarily. The photo-interrupter goes on the *back* side of the circuit board in the outline provided. Therefore you solder it from the top side.  If you put it on the wrong side, you can remove the solder (more YouTube work), but I'm not going to lie: it is frustrating.  Be careful to do it right the first time.
 
 Once you have finished soldering the shield, make sure to clean off the flux. You can use cheap vodka or Everclear, or a commercially available flux solvent.
 
-It should be apparent by now that the Wemos should plug into the shield.  There is a notch in the shield which corresponds to the notch in the Wemos, and the controller should be on the same side as the components as shown:
+It should be apparent by now that the Wemos should plug into the shield.  There is a notch in the shield, which corresponds to the notch in the Wemos. The controller should be on the same side as the components as shown:
 
 .. figure:: complete.jpg
    :scale: 100 %
@@ -101,7 +101,7 @@ It should be apparent by now that the Wemos should plug into the shield.  There 
 Sensors
 -------
 
-Obtain some Dupont headers and a crimper from any of the usual places.  Crimp a 3-pin female header on your sensors and plug them in.
+Obtain some Dupont headers and a crimper from any of the usual places.  Crimp a 3-pin female header on your sensors and plug them in. Some have asked about the pin order and the potential to change it to facilitate soldering a DS18B20 sensor directly to the PCB. That configuration was how I did my early prototypes, and it was a nicer form factor. However, I quickly found out that the ESP8266 would heat the surrounding parts, and the sensor read about 10°F higher than it should.  Other projects get away with this, I believe, because they use sleep mode on the controller.  As a web-delivered application, that was not an option for me.
 
 Bracket and Mounting
 --------------------
@@ -113,9 +113,9 @@ Position the photo-receptor such that the U-gap surrounds the bottom of a fermen
    :align: center
    :alt: Position of sensor around airlock
 
-You should certainly feel free to use duct tape or a rubber-band or whatever suits you to affix Brew Bubbles to the airlock.  For those who desire a more finished approach, I have included a 3-D printable bracket_ design in the project.  The finished controller & shield combo is slid into the top so that the temperature sensor connectors point up.  The airlock is then passed through the hole in the bracket and into the carboy stopper.  The hole may need to be adjusted larger or drilled out depending on the size of your airlock. If it is too loose around the airlock, a drill stop or even tape may be used on the tube under the bracket to hold it in place.
+You should certainly feel free to use duct tape or a rubber-band or whatever suits you to affix Brew Bubbles to the airlock.  I have included a 3-D printable bracket_ design in the project for those who desire a more finished approach.  The completed controller & shield combo is slid into the top to allow the temperature sensor connectors to point up.  The airlock is then passed through the hole in the bracket and into the carboy stopper.  The hole may need to be adjusted larger or drilled out depending on the size of your airlock. If it is too loose around the airlock, a drill stop or even tape may be used on the tube under the bracket to hold it in place.
 
-There is a hole in the side of the bracket intended to allow using a pop-rivet or small screw to secure the temperature sensor cable(s) with an R-type cable clamp_. I recommend this to avoid strain on the small wires.
+There is a hole in the bracket side intended to allow using a pop-rivet or small screw to secure the temperature sensor cable(s) with an R-type cable clamp_. I recommend this to avoid strain on the small wires.
 
 .. figure:: mounted.jpg
    :scale: 45 %

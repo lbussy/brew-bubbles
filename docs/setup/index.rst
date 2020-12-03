@@ -3,7 +3,7 @@ Set Up Networking
 
 Once you have flashed the firmware and littlefs files to your controller, it starts in Access Point mode with a captive portal.   A captive portal is similar to what you get when you connect to free WiFi with a login web page.  Any network communication will be redirected to the portal page, allowing you to log in.  This captive portal is how you initially configure Brew Bubbles, allowing it to connect to your local WiFi.
 
-This process works best through a phone in most cases.  There are some peculiarities in the ESP8266 libraries, which sometimes cause the process to act a little flakey.  It may not open the portal page, or not issue an IP address to your client.  In testing, these problems did not come up using a phone.  If you don't have a phone handy, it is possible to do this work with your computer. However, I point out some caveats below.
+This process works best through a phone in most cases.  There are some peculiarities in the ESP8266 libraries, which sometimes cause the process to act a little flakey.  It may not open the portal page or not issue an IP address to your client.  In testing, these problems did not come up using a phone.  If you don't have a phone handy, it is possible to do this work with your computer. However, I point out some caveats below.
 
 Blink Mode:
     The LED on the ESP8266 is an indicator of various modes during operation.  When in AP mode, the LED blinks on and off at 0.5Hz.  That is, it is on for a second and off for a second.  When in this mode, the access point shows up in the list of available access points on your client.
@@ -49,7 +49,7 @@ Captive Portal Page does not Open
 Connection Timed Out or Similar Errors
 ``````````````````````````````````````
 
-If you cannot open the captive portal web page by following the above instructions, it is possible your connection may not have been issued an IP address.  Follow instructions for your particular platform to set the following parameters:
+If you cannot open the captive portal web page by following the above instructions, the controller may not have issued your device an IP address.  Follow instructions for your particular platform to set the following parameters:
 
 IP Configuration:
     IP Address:  192.168.4.2
@@ -72,19 +72,19 @@ When you access the captive portal, you have six choices:
 #. Restart
 #. Exit
 
-.. figure:: 4_captive_portal.jpg
-   :scale: 90 %
+.. figure:: 4_captive_portal.png
+   :scale: 25 %
    :align: center
    :alt: Captive portal choices
 
 Select option 1, "Configure WiFi."  You see the following configuration screen:
 
-.. figure:: 5_ select_ap.jpg
-   :scale: 90 %
+.. figure:: 5_select_ap.png
+   :scale: 25 %
    :align: center
    :alt: Captive portal choices
 
-Your access point should be visible in the list on top.  Selecting it populates the name in the SSID field below.  If your access point does not show up, you can re-scan or simply enter the AP name manually.  Note this name is case-sensitive.  Next, enter your access point password in the "Password" field.
+Your access point should be visible in the list on top.  Selecting it populates the name in the SSID field below.  If your access point does not show up, you can re-scan or enter the AP name manually.  Note this name is case-sensitive.  Next, enter your access point password in the "Password" field.
 
 If you need to use a static IP address, you must fill out the following fields:
 
@@ -93,13 +93,20 @@ If you need to use a static IP address, you must fill out the following fields:
 #. Subnet
 #. Static DNS
 
-If you have questions about these fields, consult the documentation for your access point.  You need not fill out these fields to use an automatically assigned IP address, since you may access the device by its name once connected to WiFi.
+If you have questions about these fields, consult the documentation for your access point.  You need not fill out these fields to use an automatically assigned IP address since you may access the device by its name once connected to WiFi.
+
+You may also change the device name, which is required if you have more than one device on the network.  No two devices should have the same name.
 
 Once you have filled out at least the SSID and Password, click on the "Save" button.
 
-.. figure:: 6_save_ap.jpg
-   :scale: 90 %
+.. figure:: 6_save_ap.png
+   :scale: 25 %
    :align: center
    :alt: Save WiFi configuration
 
-The controller restarts at this point and connects to the wireless access point you have configured.
+The controller will now connect to the wireless access point you have configured.  On most phones, the configuration page will close automatically.
+
+.. figure:: 7_done.png
+   :scale: 25 %
+   :align: center
+   :alt: Save WiFi configuration

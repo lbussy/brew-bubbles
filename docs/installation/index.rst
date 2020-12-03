@@ -7,10 +7,10 @@ There are two critical files in this project:
 File           Description                             Address
 =============  ======================================  ==========
 firmware.bin_  The Brew Bubbles application layer      0x00000
-littlefs.bin_    The Brew Bubbles web file system        0x300000
+littlefs.bin_  The Brew Bubbles web file system        0x300000
 =============  ======================================  ==========
 
-These files represent the program that you upload to your controller.  The `firmware.bin` file is the C-based program that handles serving web pages, processing configurations, detecting pulses (bubbles), scheduling, and monitoring the temperature.  The LittleFS file system is delivered within the `littlefs.bin` file.  LittleFS is analogous to a directory on your computer.  It contains web pages and images served via the web interface.
+These files represent the program that you upload to your controller.  The `firmware.bin` file is the C-based program that handles serving web pages, processing configurations, detecting pulses (bubbles), scheduling, and monitoring the temperature.  The `littlefs.bin` file is how the controller's web file system is delivered.  It is analogous to a directory on your computer.  It contains web pages and images served via the web interface.
 
 Flashing Firmware - Initial
 ---------------------------
@@ -128,7 +128,7 @@ When setup is complete, click on the "*START*" button underneath the green box. 
    :align: center
    :alt: Completion screen for the Flash Download tool
 
-At this point, you may close the tool and the selection screen, and proceed with setup.
+At this point, you may close the tool and the selection screen and proceed with setup.
 
 Erase Flash
 -----------

@@ -1,7 +1,8 @@
 # TODO List
 
 ## Open
-- Update documentation
+
+- Figure out if we switch from PCBs.io
 
 ### Completed This Sprint
 - ~~Look into NaN on Bubbles after flash~~
@@ -11,6 +12,7 @@
 - ~~Auto-reload the About page information~~
 - ~~Detect first run after flash~~
 - ~~Normalize DRD with KC~~
+- ~~Update documentation~~
 
 ### Completed this version
 - ~~Fix 'nan' error in Bubbles after SPIFFS upload~~

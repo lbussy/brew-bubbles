@@ -6,7 +6,7 @@ Brew Bubbles is presented to the user for monitoring and configuration as a set 
 mDNS Support for Client OS
 --------------------------
 
-The Brew Bubbles device leverages a multicast Domain Naming System (mDNS) to make it easier to connect to your device.  You may also have heard of zeroconf, which includes mDNS, or Avahi, which is a different implementation of mDNS.  For our purposes, all of them work together.
+The Brew Bubbles device leverages a multicast Domain Naming System (mDNS) to make it easier to connect to your device.  You may also have heard of zeroconf, which includes mDNS; or Avahi, which is a different implementation of mDNS.  For our purposes, all of them work together.
 
 Since I designed Brew Bubbles to be accessed and configured via a web page, you need to know its address.  Your local WiFi automatically assigns an IP address if you did not enter a static address in the WiFi configuration.  You can always type in something like `192.168.4.100`, but that's not as easy to remember as `brewbubbles.local.`
 
@@ -33,7 +33,7 @@ Menu
 
 Across the top of every page, a menu displays.  The standard desktop page looks like the below:
 
-.. figure:: desktop_header.JPG
+.. figure:: desktop_header.jpg
    :scale: 100 %
    :align: center
    :alt: Desktop menu view
@@ -86,7 +86,7 @@ Vessel Name
     Vessel Name is a label that you may assign to help you keep track of multiple devices.  It defaults to "Fermenter 1," but you may change it in the settings.
 
 Bubbles per Minute
-    Brew Bubbles internally polls the device for approximately one minute.  It then reports the bubbles per minute in exact terms, meaning the number may be a decimal.  Brew Bubbles also uses a sliding window to average the readings to help filter noise.  The sliding window is set at 15, meaning as the device is in operation, it reports Bubbles per Minute as an average of up to the last 15 readings.  In effect, this is a 15-minute average.  This window is not configurable via the interface.
+    Brew Bubbles internally polls the device for approximately one minute.  It then reports the bubbles per minute in exact terms, meaning the number may be a decimal.  Brew Bubbles also uses a sliding window to average the readings to help filter noise.  The sliding window is set at 15, meaning as the device is in operation, it reports Bubbles per Minute as an average of up to the last 15 readings.  In effect, this is a 15-minute moving average.  This window is not configurable via the interface.
 
 Ambient Temp
     If you have an ambient (room) temperature sensor installed, this reports the temperature in the configured temperature format (default is Fahrenheit.)  This temperature reports in a 5-minute sliding window.  This window is not configurable via the interface.
@@ -95,7 +95,7 @@ Vessel Temp
     If you have a vessel temperature sensor installed, this reports the temperature in the configured temperature format (default is Fahrenheit.)  This temperature reports in a 5-minute sliding window.  This window is not configurable via the interface.
 
 Last Reading
-    The date and time of the most recently calculated reading set within the controller.  Internally the device refreshes its values every 60 seconds (approximately.)
+    The date and time of the most recently calculated reading set within the controller.  Internally the device refreshes its values approximately every 60 seconds.)
 
 Refresh In
     The web page refreshes its displayed values every 60 seconds.  This field shows the time remaining until that refresh.
@@ -109,7 +109,7 @@ Settings Page
 The settings page contains all configurable items for configuration and control of Brew Bubbles.
 
 Note:
-    Each setting has an "Update" button to save that individual setting.  Make sure you save each setting as you go.  If you change two settings and click "Update," you will be saving only the setting corresponding to the update button alongside.
+    Each setting page as an "Update" button.  Be sure to save any updates before leaving a page.  There will be no reminder if you selct another link without saving.
 
 Controller Settings
 ```````````````````
@@ -129,7 +129,7 @@ mDNS ID:
     The name should be 3 to 24 characters in length, begin with a letter, and contain only ASCII letters 'a' through 'z' (case-insensitive), the digits '0' through '9', and the hyphen-minus character ('-').  Do not include the `.local` portion of the mDNS name.
 
 Bubble ID:
-    Bubble ID is an additional field that can distinguish between different Brew Bubbles devices reporting to a shared system.
+    Bubble ID is an additional field that can help distinguish between different Brew Bubbles devices reporting to a shared system.
 
 Temperature Settings
 ````````````````````
@@ -142,13 +142,13 @@ Configure temperature format and calibration in this section:
    :alt: Temperature Settings
 
 Temperature Format:
-    Select either Fahrenheit or Celsius with the radio button and click "Update."  Conversion happens internally to the controller and displays in the proper format.
+    Select either Fahrenheit or Celsius with the radio button.  Conversion happens internal to the controller and reports in the proper format.
 
 Temperature Calibration:
-    In this section, you may enter calibration offsets to either sensor independently.  Enter any decimal-based number from -25.0 to 25.0 and click "Update."  The offset applies internally, and the corrected temperatures are displayed.
+    In this section, you may enter calibration offsets to either sensor independently.  Enter any decimal-based number from -25.0 to 25.0 and click "Update."  The compensation applies internally, and the corrected temperatures are displayed.
 
-Target Settings
-```````````````
+URL Target Settings
+````````````````````
 Target settings control how Brew Bubbles reports to HTML endpoints such as BrewPi Remix or Fermentrack.  BrewPi Remix automatically begins to report on Brew Bubbles' data once received at its endpoint.
 
 .. figure:: 5_target_settings.jpg
@@ -157,7 +157,7 @@ Target settings control how Brew Bubbles reports to HTML endpoints such as BrewP
    :alt: Target Settings
 
 Target:
-    The target may be any DNS or mDNS name.  If you are using mDNS, be sure to include the ".local" portion.  The address should be a complete URI, including the target page and port if needed.  For BrewPi Remix, the name will be `http://{hostname}.local/brewpi-api.php`.  Remember to click "Update" after entering the target URL.
+    The target may be any DNS or mDNS name.  If you are using mDNS, be sure to include the ".local" portion.  The address should be a complete URI, including the target page and port if needed.  For BrewPi Remix, the name will be `\http://{hostname}.local/brewpi-api.php`. 
 
     If you are unable to access Brew Bubbles using the \*.local name, you are not able to use a target with a .local name either.  In this case, use the IP address of your target.
     
@@ -175,9 +175,9 @@ Authority is made up of:
 
     authority = [userinfo@]host[:port]
 
-For more information, please review the Wiki_ article.
+For more information, please review the Wikipedia_ article.
 
-.. _Wiki: https://en.wikipedia.org/wiki/Uniform_Resource_Identifier
+.. _Wikipedia: https://en.wikipedia.org/wiki/Uniform_Resource_Identifier
 
 Push Frequency:
     Enter the push frequency in minutes.  Be sure to check your target system's requirements and restrictions so that you do not flood the target.  For BrewPi Remix, I recommend setting it at 2 minutes, which matches the default charting granularity.  Valid settings for this field are 1 to 60 minutes.
@@ -198,7 +198,52 @@ Brewer's Friend Key:
 Push Frequency:
     Enter the push frequency in minutes.  Brewer's Friend requires that you push readings no more than once every 15 minutes.  Valid settings for this field are 15 to 120 minutes.
 
-Other
-`````
+Brewfather Settings
+````````````````````
+
+Brewfather integration is also supported.  Adding Brew Bubbles to your Fermentation Chart is done in Settings where you will enable "Custom Stream."  The device must have reported to Brewer's Friend at least once to be listed.
+
+.. figure:: 7_brf_settings.jpg
+   :scale: 110 %
+   :align: center
+   :alt: Brewfather Settings
+
+Brewfather Key:
+    Log into your Brewfather account and go to Settings > Custom Stream. Your API key will be a 10 to 64-character string of letters and numbers on the line following "URL \http://log.brewfather.net/stream?id=" (do not include the the URL.) e.g. you may see: \http://log.brewfather.net/stream?id=q4F3wPfooBa3X3, from which you will enter `q4F3wPfooBa3X3` as your key.
+
+Push Frequency:
+    Enter the push frequency in minutes.  Brewfather requires that you push readings no more than once every 15 minutes.  Valid settings for this field are 15 to 120 minutes.
+
+ThingSpeak Settings
+````````````````````
+
+ThingSpeak allows posting custom data streams in order to collect and report upon it.  To enable this functionality, you must create a channel with the following:
+
+- **Name (optional):** Any you prefer, such as "Brew Bubbles | Fermenter 1"
+- **Description (optional):** How you would like to present this, such as "Brew Bubbles data channel for Fermenter 1."
+- **Field 1:** "BPM" and check enabled
+- **Field 2:** "Ambient °F" (or "Ambient °C") and check the box to enable
+- **Field 3:** "Vessel °F" (or "Vessel °C") and check the box to enable
+- **Link to External Site (optional):** \https://www.brewbubbles.com
+- **Link to GitHub (optional):** \https://github.com/lbussy/brew-bubbles/
+
+After you create your channel, you may optionally go into "Sharing" and allow people to view your channel.  The public URL may be discovered by selecting the "Public View" tab.
+
+.. figure:: 8_ts_settings.jpg
+   :scale: 110 %
+   :align: center
+   :alt: ThingSpeak Settings
+
+Channel ID:
+    Go to 'My Channels.' Select the 'API Keys' tab for your channel. The channel ID and write API key will be displayed.  The Channel ID is a number towards the top in bolded characters.
+
+Channel Write Key:
+    Go to 'My Channels.' Select the 'API Keys' tab for your channel. The channel ID and write API key will be displayed.  You must use the "Write" key, the "Read" key will not allow posting data.  If you ever wish to generate a new write API key, you must re-enter it into Brew Bubbles or else posting will fail.
+
+Push Frequency:
+    Enter the push frequency in minutes. Users of a free account are limited to sending no more than 3 million messages each year to the ThingSpeak service.  This works out to approximately 5 posts per minute.  Users of the free license will also be limited to 4 channels. Since Brew Bubbles only allows you to send once per minute, and ThingSpeak limits you to four free channels, you are unlikely to find a way to exceed your quota.
+
+Advanced
+``````````
 
 I will cover Firmware Update and WiFi reset in subsequent sections.
