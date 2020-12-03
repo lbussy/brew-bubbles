@@ -91,7 +91,12 @@
             <div class="card border-dark mb-3">
                 <!-- About Brew Bubbles Information -->
                 <div class="card-header">
-                    <h4 class="card-title">About Brew Bubbles <span id="thisVersion">(version loading...)</span></h4>
+                    <h4 class="card-title">
+                        About Brew Bubbles:
+                        v<span id="thisVersion"><strong> (version loading...)</strong></span>
+                        [<span class="text-primary" id="thisBranch"></span>]
+                        (<span class="text-warning" id="thisBuild"></span>)
+                    </h4>
                 </div>
                 <div class="card-body">
                     <p><a href="https://www.brewbubbles.com/">Brew Bubbles</a> is a project developed
@@ -122,7 +127,7 @@
     </main>
 
     <footer class="footer mt-auto py-3">
-        <div class="container">
+        <div class="container text-center">
             <span class="text-muted">Copyright © 2019-2020, Lee C. Bussy</span>
         </div>
     </footer>
@@ -137,127 +142,26 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
         </script>
 
+    <script src="/about.js"></script>
+
     <script type="text/javascript">
         // Attach the event after the page loads
         if (window.addEventListener)
-            window.addEventListener("load", loadPage, false);
+            window.addEventListener("load", startLoad, false);
         else if (window.attachEvent)
-            window.attachEvent("onload", loadPage);
-        else window.onload = loadPage;
+            window.attachEvent("onload", startLoad);
+        else window.onload = startLoad;
 
-        function loadPage() { // Load the page's JS elements
-            $(document).tooltip({ // Enable tooltips
-                'selector': '[data-toggle=tooltip]',
-                'toggleEnabled': true
-            });
-            var heapToolTip = "Heap Information:<br>";
-            heapToolTip += "<ul>";
-            heapToolTip += "<li>Free Heap = Total free bytes in the heap";
-            heapToolTip += "<li>Max = Size of largest free block in the heap";
-            heapToolTip += "<li>Frags = 100 - (max * 100) / free";
-            heapToolTip += "</ul>";
-            $("#uptime").attr("data-original-title", "Time since last controller (re)start");
-            $("#resetreason").attr("data-original-title", "Reason for last (re)start");
-            $("#heap").attr("data-original-title", heapToolTip);
-            loadThisVersion();  // Populate form with controller settings
-            loadUptime();       // Load uptime information
-            loadHeap();         // Load heap information
-            loadResetReason();  // Load last reset reason
-        }
-
-        function loadThisVersion() { // Get current parameters
-            var thisVersionJson = "/thisVersion/";
-            var thisVersion = $.getJSON(thisVersionJson, function () {
-            })
-                .done(function (thisVersion) {
-                    try {
-                        $('#thisVersion').text("v" + thisVersion.version);
+        function startLoad() { // Make sure the page is 100% loaded
+            if (document.readyState === 'ready' || document.readyState === 'complete') {
+                populatePage();
+            } else {
+                document.onreadystatechange = function () {
+                    if (document.readyState == "complete") {
+                        populatePage();
                     }
-                    catch {
-                        $('#thisVersion').text("(Error parsing version.)");
-                    }
-                })
-                .fail(function () {
-                    $('#thisVersion').text("(Error loading version.)");
-                })
-                .always(function () {
-                    // Can post-process here
-                });
-        }
-
-        function loadUptime() { // Get uptime information
-            var uptimeJson = "/uptime/";
-            var uptime = $.getJSON(uptimeJson, function () {
-            })
-                .done(function (uptime) {
-                    try {
-                        var days = uptime.u.days.toString();
-                        var hours = uptime.u.hours.toString();
-                        var minutes = uptime.u.minutes.toString();
-                        var seconds = uptime.u.seconds.toString();
-
-                        var uptime = "Days: " + days + ", Hours: " + hours + ", Minutes: " + minutes + ", Seconds: " + seconds;
-                        $('#uptime').text(uptime);
-                    }
-                    catch {
-                        $('#uptime').text("(Error parsing uptime.)");
-                    }
-                })
-                .fail(function () {
-                    $('#uptime').text("(Error loading uptime.)");
-                })
-                .always(function () {
-                    // Can post-process here
-                });
-        }
-
-        function loadHeap() { // Get heap information
-            var heapJson = "/heap/";
-            var heap = $.getJSON(heapJson, function () {
-            })
-                .done(function (heap) {
-                    try {
-                        var free = heap.h.free;
-                        var max = heap.h.max;
-                        var frag = heap.h.frag;
-
-                        var heapinfo = "Free Heap: " + free + ", Max: " + max + ", Frags: " + frag;
-                        $('#heap').text(heapinfo);
-                    }
-                    catch {
-                        $('#heap').text("(Error parsing heap.)");
-                    }
-                })
-                .fail(function () {
-                    $('#heap').text("(Error loading heap.)");
-                })
-                .always(function () {
-                    // Can post-process here
-                });
-        }
-
-        function loadResetReason() { // Get last reset reason
-            var resetJson = "/resetreason/";
-            var reset = $.getJSON(resetJson, function () {
-            })
-                .done(function (reset) {
-                    try {
-                        var resetReason = reset.r.reason;
-                        var resetDescription = reset.r.description;
-
-                        var resetText = "Reason: " + resetReason + ", Description: " + resetDescription;
-                        $('#resetreason').text(resetText);
-                    }
-                    catch {
-                        $('#thisVersion').text("(Error parsing version.)");
-                    }
-                })
-                .fail(function () {
-                    $('#thisVersion').text("(Error loading version.)");
-                })
-                .always(function () {
-                    // Can post-process here
-                });
+                }
+            }
         }
     </script>
 

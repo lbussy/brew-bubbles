@@ -193,10 +193,12 @@ void setJsonHandlers()
 
     server.on("/thisVersion/", HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Serving /thisVersion/." CR));
-        const size_t capacity = JSON_OBJECT_SIZE(1);
+        const size_t capacity = JSON_OBJECT_SIZE(3);
         DynamicJsonDocument doc(capacity);
 
         doc["version"] = version();
+        doc["branch"] = branch();
+        doc["build"] = build();
 
         String json;
         serializeJsonPretty(doc, json);
