@@ -7,6 +7,9 @@ Brew Bubbles runs on an ESP8266 controller. To detect the information to be logg
 
 Assembly is not difficult, but it does require some basic soldering.
 
+.. contents::
+    :depth: 3
+
 Materials Required
 ----------------------------------------
 

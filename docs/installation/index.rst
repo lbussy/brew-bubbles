@@ -1,6 +1,9 @@
 Installing the Firmware
 =======================
 
+.. contents::
+    :depth: 3
+
 There are two critical files in this project:
 
 =============  ======================================  ==========

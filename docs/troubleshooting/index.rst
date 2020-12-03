@@ -8,6 +8,9 @@ The easiest way to get help with the project is to join the `Brew Bubbles discus
 
 This page includes various bits and pieces that do not fit elsewhere, which may help you if things are not going as expected.
 
+.. contents::
+    :depth: 3
+
 LED Flashing
 ------------
 
