@@ -6,10 +6,10 @@ This folder contains the Eagle files for printed circuit boards supporting [Brew
 
 The shield provides the necessary component connections and circuitry for the ESP-8266 controller used in this project.  It is nearly identical in size to the Wemos D1 mini we use to provide a very compact and lightweight footprint.
 
-[Order from PCBs.io](https://PCBs.io/share/4lgy0):
+[Order from OSHPark.com](https://oshpark.com/shared_projects/NNPU5x7b):
 
-- 2 Layer Board - 1.1369 sq in (1.0055in x 1.1307in) / 733.48 sq/mm (25.54mm x 28.72mm)
-- $4.55 per set of 4 ($4.00 per sq in)
+- 2 layer board of 1.01 x 1.13 inches (25.6 x 28.7 mm) 
+- $5.65 per set of 3
 
 Please see [the documentation](https://docs.brewbubbles.com) for additional information.
 
@@ -32,13 +32,9 @@ Additionally you will need:
 
 (*) - Optional items for use when temperature sensors are desired.  They are in the design to provide a means to monitor and trend one's ambient temperature where the fermenter is placed, and/or the fermenting liquid's temperature via a thermowell or insulated in contact with the fermenter. If one chooses not to use these, the firmware will automatically skip reporting these readings.
 
-## Board Manufacture
-
-You may order this board for manufacture directly from [pcbs.io](https://PCBs.io/share/4lgy0).
-
 ## 3D-Printed Bracket
 
-See [this project on Thingiverse](https://www.thingiverse.com/thing:4020905) from @matridium on [Homebrewtalk.com](https://homebrewtalk.com) for a bracket you can print.
+See [this project on Thingiverse](https://www.thingiverse.com/thing:4020905) from @gromitdj on [Homebrewtalk.com](https://homebrewtalk.com) (original from @matridium on [Homebrewtalk.com](https://homebrewtalk.com)) for a bracket you can print.
 
 ## Modifying These Files
 If you would like to personalize these board designs, you may modify them with [Autodesk's EAGLE](https://www.autodesk.com/products/eagle/overview). EAGLE is a scriptable electronic design automation (EDA) application with schematic capture, printed circuit board (PCB) layout, auto-router and computer-aided manufacturing (CAM) features. EAGLE stands for Easily Applicable Graphical Layout Editor and is developed by CadSoft Computer GmbH. The company was acquired by Autodesk Inc. in 2016.  

@@ -33,16 +33,19 @@ The developer board used in this project is the **Wemos D1 Mini**.  Wherever you
 Printed Circuit Board
 `````````````````````
 
-The pcb_ directory in the repository_ contains the Eagle files for the printed circuit board shield supporting Brew Bubbles.  The shield provides the necessary component connections and circuitry for the ESP8266 controller used in this project. It is nearly identical in size to the Wemos D1 mini we use, providing a very compact and lightweight footprint.  Order boards for $4.55 per set of four from PCBs.io using this link_, or download the Brew-Bubbles.brd file and use it with the board fabrication house of your choosing.
+The pcb_ directory in the repository_ contains the Eagle files for the printed circuit board shield supporting Brew Bubbles.  The shield provides the necessary component connections and circuitry for the ESP8266 controller used in this project. It is nearly identical in size to the Wemos D1 mini we use, providing a very compact and lightweight footprint.  A sub-directory also contains Gerber files for people who need those.
 
-Displayed below is a view of the top of the printed circuit board, as rendered by PBCs.io.
+Everyone likes to save a dollar, including me. There used to be other recommendations for PCB manufacturers, but quality, responsiveness and dependability have forced me to limit my recommendations to OSH Park. You can buy three boards for $5.70 (plus shipping) at this link_.
+
+
+Displayed below is a view of the top of the printed circuit board, as rendered by OSH Park.
 
 .. figure:: Top.png
    :scale: 90 %
    :align: center
    :alt: Top view of printed circuit board
 
-Below is a view of the bottom of the printed circuit board, as rendered by PCBs.io.
+Below is a view of the bottom of the printed circuit board, as rendered by OSH Park.
 
 .. figure:: Bottom.png
    :scale: 90 %
@@ -136,7 +139,7 @@ Power the device via its USB port with a standard 5V cell phone type charger or 
 .. _AliExpress: https://www.aliexpress.com/item/32688079351.html
 .. _pcb: https://github.com/lbussy/brew-bubbles/tree/master/pcb
 .. _repository: https://github.com/lbussy/brew-bubbles/
-.. _link: https://pcbs.io/share/4lgy0
+.. _link: https://oshpark.com/shared_projects/NNPU5x7b
 .. _EAGLE: https://www.autodesk.com/products/eagle/overview
 .. _Mouser: https://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=216fcbe935
 .. _DS18B20: https://www.amazon.com/Vktech-Waterproof-Digital-Temperature-DS18b20/dp/B00EU70ZL8/
