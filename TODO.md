@@ -2,15 +2,19 @@
 
 ## Open
 
-- Auto-reload the About page information
+### Firmware
 - Detect first run after flash
 - Normalize DRD with KC
-- Add build and branch to version display on page
-- Use a semaphore file for first boot
+
+## Other
 - Update documentation
+
+### Completed This Sprint
 - ~~Look into NaN on Bubbles after flash~~
 - ~~Time stamp last bubble reading~~
 - ~~Add temps to last bubble~~
+- ~~Add build and branch to version display on page~~
+- ~~Auto-reload the About page information~~
 
 ## Complete
 
