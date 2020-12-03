@@ -12,6 +12,18 @@
 - ~~Detect first run after flash~~
 - ~~Normalize DRD with KC~~
 
+### Completed this version
+- ~~Fix 'nan' error in Bubbles after SPIFFS upload~~
+- ~~Merge update pages~~
+- ~~Add ThingSpeak support~~
+- ~~Remove lockup if there's no time hack~~
+- ~~Add mouseover on debug items~~
+  - ~~free = Total free bytes in the heap. Equivalent to multi_free_heap_size().~~
+	- ~~max = Size of largest free block in the heap. This is the largest malloc-able size.~~
+	- ~~frag = 100 - (max * 100) / free~~
+- ~~Change so that posting configuration changes is not a complete page reload~~
+
+
 ## Complete
 
 - ~~Fix mobile menu~~
@@ -161,12 +173,3 @@
 - ~~Wipe out temp array contents when temp format changes~~
 - ~~Review mDNS restart schedule to see if it's still needed~~
 - ~~See if we can do something about entering a bad password on portal~~
-- ~~Fix 'nan' error in Bubbles after SPIFFS upload~~
-- ~~Merge update pages~~
-- ~~Add ThingSpeak support~~
-- ~~Remove lockup if there's no time hack~~
-- ~~Add mouseover on debug items~~
-  - ~~free = Total free bytes in the heap. Equivalent to multi_free_heap_size().~~
-	- ~~max = Size of largest free block in the heap. This is the largest malloc-able size.~~
-	- ~~frag = 100 - (max * 100) / free~~
-- ~~Change so that posting configuration changes is not a complete page reload~~
