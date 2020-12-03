@@ -1,8 +1,7 @@
 # TODO List
 
 ## Open
-
-- Figure out if we switch from PCBs.io
+- ?
 
 ### Completed This Sprint
 - ~~Look into NaN on Bubbles after flash~~
@@ -13,6 +12,7 @@
 - ~~Detect first run after flash~~
 - ~~Normalize DRD with KC~~
 - ~~Update documentation~~
+- ~~Switch PCB links to OSH Park~~
 
 ### Completed this version
 - ~~Fix 'nan' error in Bubbles after SPIFFS upload~~
