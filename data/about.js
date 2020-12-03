@@ -44,18 +44,18 @@ function loadThisVersion() { // Get current parameters
     })
         .done(function (thisVersion) {
             try {
-                $('#thisVersion').text(thisVersion.version);
+                $('#thisVersion').text("v" + thisVersion.version);
                 $('#thisBranch').text(thisVersion.branch);
                 $('#thisBuild').text(thisVersion.build);
             }
             catch {
-                $('#thisVersion').html("").html('<span class="text-danger"> Error parsing version.</span>');
+                $('#thisVersion').html("").html('<span class="text-danger">Error parsing version.</span>');
                 $('#thisBranch').text();
                 $('#thisBuild').text();
             }
         })
         .fail(function () {
-            $('#thisVersion').html("").html('<span class="text-danger"> Error loading version.</span>');
+            $('#thisVersion').html("").html('<span class="text-danger">Error loading version.</span>');
             $('#thisBranch').text();
             $('#thisBuild').text();
         })
@@ -77,13 +77,6 @@ function loadUptime(callback = null) { // Get uptime information
 
                 var uptime = "Days: " + days + ", Hours: " + hours + ", Minutes: " + minutes + ", Seconds: " + seconds;
                 $('#uptime').text(uptime);
-
-                if (loaded < numReq) {
-                    loaded++;
-                }
-                if (typeof callback == "function") {
-                    callback();
-                }
             }
             catch {
                 $('#uptime').text("(Error parsing uptime.)");
@@ -93,7 +86,12 @@ function loadUptime(callback = null) { // Get uptime information
             $('#uptime').text("(Error loading uptime.)");
         })
         .always(function () {
-            // Can post-process here
+            if (loaded < numReq) {
+                loaded++;
+            }
+            if (typeof callback == "function") {
+                callback();
+            }
         });
 }
 
@@ -109,13 +107,6 @@ function loadHeap(callback = null) { // Get heap information
 
                 var heapinfo = "Free Heap: " + free + ", Max: " + max + ", Frags: " + frag;
                 $('#heap').text(heapinfo);
-
-                if (loaded < numReq) {
-                    loaded++;
-                }
-                if (typeof callback == "function") {
-                    callback();
-                }
             }
             catch {
                 $('#heap').text("(Error parsing heap.)");
@@ -125,7 +116,12 @@ function loadHeap(callback = null) { // Get heap information
             $('#heap').text("(Error loading heap.)");
         })
         .always(function () {
-            // Can post-process here
+            if (loaded < numReq) {
+                loaded++;
+            }
+            if (typeof callback == "function") {
+                callback();
+            }
         });
 }
 
@@ -140,23 +136,21 @@ function loadResetReason(callback = null) { // Get last reset reason
 
                 var resetText = "Reason: " + resetReason + ", Description: " + resetDescription;
                 $('#resetreason').text(resetText);
-
-                if (loaded < numReq) {
-                    loaded++;
-                }
-                if (typeof callback == "function") {
-                    callback();
-                }
             }
             catch {
-                $('#thisVersion').text("(Error parsing version.)");
+                $('#resetreason').text("(Error parsing version.)");
             }
         })
         .fail(function () {
-            $('#thisVersion').text("(Error loading version.)");
+            $('#resetreason').text("(Error loading version.)");
         })
         .always(function () {
-            // Can post-process here
+            if (loaded < numReq) {
+                loaded++;
+            }
+            if (typeof callback == "function") {
+                callback();
+            }
         });
 }
 
