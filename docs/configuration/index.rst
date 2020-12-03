@@ -3,6 +3,9 @@ Operation and Configuration
 
 Brew Bubbles is presented to the user for monitoring and configuration as a set of web pages.  Below are the different information and settings available.
 
+.. contents::
+    :depth: 3
+
 mDNS Support for Client OS
 --------------------------
 

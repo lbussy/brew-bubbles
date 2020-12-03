@@ -8,6 +8,9 @@ This process works best through a phone in most cases.  There are some peculiari
 Blink Mode:
     The LED on the ESP8266 is an indicator of various modes during operation.  When in AP mode, the LED blinks on and off at 0.5Hz.  That is, it is on for a second and off for a second.  When in this mode, the access point shows up in the list of available access points on your client.
 
+.. contents::
+    :depth: 3
+
 Connect to Captive Portal
 -------------------------
 
