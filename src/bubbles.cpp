@@ -51,6 +51,7 @@ bool Bubbles::update()
     lastVes = getTemp(VESSENSOR);
 
     // Push values to circular buffers
+    // TODO:  Handle aging out a sensor if it becomes disconnected
     tempAmbAvg.push(lastAmb);
     tempVesAvg.push(lastVes);
     bubAvg.push(lastBpm);
