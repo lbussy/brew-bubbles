@@ -23,6 +23,7 @@ SOFTWARE. */
 #ifndef _UPTIME_H
 #define _UPTIME_H
 
+#include <ArduinoLog.h> // DEBUG
 #include <Arduino.h>
 
 #define UPTIME_REFRESH 1
