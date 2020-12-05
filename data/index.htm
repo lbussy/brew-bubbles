@@ -172,10 +172,16 @@
             })
                 .done(function (bubble) {
                     try {
+                        var disco
+                        if (bubble.temp_unit == "F") {
+                            disco = -196.6
+                        } else {
+                            disco = -127
+                        }
                         $("#name").text(bubble.name)
                         $("#bpm").text(parseFloat(bubble.bpm).toFixed(1));
 
-                        if (bubble.ambient == -100) {
+                        if (bubble.ambient == disco) {
                             $("#aTemp").text("Not connected")
                         } else if (bubble.ambient == 0) {
                             $("#aTemp").text("Not yet updated.")
@@ -183,7 +189,7 @@
                             $("#aTemp").text(parseFloat(bubble.ambient).toFixed(2) + "°" + bubble.temp_unit);
                         }
 
-                        if (bubble.temp == -100) {
+                        if (bubble.temp == disco) {
                             $("#vTemp").text("Not connected")
                         } else if (bubble.temp == 0) {
                             $("#vTemp").text("Not yet updated.")
