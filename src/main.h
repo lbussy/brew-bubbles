@@ -27,7 +27,7 @@ SOFTWARE. */
 #define ESP_DRD_USE_LITTLEFS true
 // #define DOUBLERESETDETECTOR_DEBUG true
 // Number of seconds to consider as considered a double reset.
-#define DRD_TIMEOUT 10
+#define DRD_TIMEOUT 3
 // RTC Memory Address for the DoubleResetDetector to use
 #define DRD_ADDRESS 0
 
