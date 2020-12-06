@@ -95,7 +95,7 @@ void Bubbles::update()
 
     saveBpm();
 
-    Log.verbose(F("DEBUG: Current BPM is %D. Averages: BPM (%d) = %D, Ambient (%d) = %D, Vessel (%d) = %D." CR),
+    Log.verbose(F("Current BPM is %D. Averages: BPM (%d) = %D, Ambient (%d) = %D, Vessel (%d) = %D." CR),
                 bubbles.lastBpm,
                 bubAvg.size(),
                 bubbles.getAvgBpm(),
