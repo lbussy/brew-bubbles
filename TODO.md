@@ -1,27 +1,6 @@
 # TODO List
 
 ## Open
-- Test gel
-
-### Completed This Sprint
-- ~~Seconds on About page look like they are reporting millis~~
-- ~~Disconnected Sensor Shows Value #23 (seems to drop slowly when I disconnect it)~~
-
-### Completed this version
-- ~~Merge update pages~~
-- ~~Add ThingSpeak support~~
-- ~~Remove lockup if there's no time hack~~
-- ~~Add mouseover on debug items~~
-- ~~Change so that posting configuration changes is not a complete page reload~~
-- ~~Look into NaN on Bubbles after flash~~
-- ~~Time stamp last bubble reading~~
-- ~~Add temps to last bubble~~
-- ~~Add build and branch to version display on page~~
-- ~~Auto-reload the About page information~~
-- ~~Detect first run after flash~~
-- ~~Normalize DRD with KC~~
-- ~~Update documentation~~
-- ~~Switch PCB links to OSH Park~~
 
 
 ## Complete
@@ -186,3 +165,7 @@
 - ~~Remove lockup if there's no time hack~~
 - ~~Add mouseover on debug items~~
 - ~~Change so that posting configuration changes is not a complete page reload~~
+- ~~Look into NaN on Bubbles after flash~~
+- ~~Seconds on About page look like they are reporting millis~~
+- ~~Disconnected Sensor Shows Value #23 (seems to drop slowly when I disconnect it)~~
+- ~~Test gel~~
