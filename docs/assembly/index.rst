@@ -13,7 +13,7 @@ Assembly is not difficult, but it does require some basic soldering.
 Materials Required
 ----------------------------------------
 
-This shield uses one or two each of some widely-available and inexpensive components.  You may find you are better off buying a resistor assortment, for instance, or buying 10 or 20 of a piece at a time for a nominal cost from China. Make several!
+This shield uses one or two each of some widely-available and inexpensive components.  You may find you are better off buying a resistor assortment, for instance.  Buying 10 or 20 of a piece at a time for a nominal cost from China is also possible. Make several!
 
 Gather the following parts and pieces:
 
@@ -35,7 +35,7 @@ Printed Circuit Board
 
 The pcb_ directory in the repository_ contains the Eagle files for the printed circuit board shield supporting Brew Bubbles.  The shield provides the necessary component connections and circuitry for the ESP8266 controller used in this project. It is nearly identical in size to the Wemos D1 mini we use, providing a very compact and lightweight footprint.  A sub-directory also contains Gerber files for people who need those.
 
-Everyone likes to save a dollar, including me. There used to be other recommendations for PCB manufacturers, but quality, responsiveness and dependability have forced me to limit my recommendations to OSH Park. You can buy three boards for $5.70 (plus shipping) at this link_.
+Everyone likes to save a dollar, including me. There used to be other recommendations for PCB manufacturers, but quality, responsiveness, and dependability have forced me to limit my recommendations to OSH Park. You can buy three boards for $5.70 (plus shipping) at this link_.
 
 
 Displayed below is a view of the top of the printed circuit board, as rendered by OSH Park.
@@ -108,6 +108,38 @@ Sensors
 -------
 
 Obtain some Dupont headers and a crimper from any of the usual places.  Crimp a 3-pin female header on your sensors and plug them in. Some have asked about the pin order and the potential to change it to facilitate soldering a DS18B20 sensor directly to the PCB. That configuration was how I did my early prototypes, and it was a nicer form factor. However, I quickly found out that the ESP8266 would heat the surrounding parts, and the sensor read about 10°F higher than it should.  Other projects get away with this, I believe, because they use sleep mode on the controller.  As a web-delivered application, that was not an option for me.
+
+Light Filter
+--------------------
+
+These widely-used sensors are everywhere.  Using them for this application sometimes takes a little tweaking to make it perfect.  When developing Brew Bubbles, I got lucky and ended up with a couple of sensors that worked perfectly out of the box.  After release, I discovered that most people were not so fortunate.  Because the airlocks and water are clear, these other sensors failed to register bubbles correctly.
+
+The Sharp GP1A57HRJ00Fit emits 950 nm light, and the receptor is sensitive to 400 through 1200 nm. That ranges from blue/violet through infrared. The sensor is most sensitive to IR light (700 nm – 1 mm) at 900 nm.  Water absorbs infrared far better than the lower visible wavelengths:
+
+.. figure:: water_absorption.gif
+   :scale: 75 %
+   :align: center
+   :alt: Water absorption of light waves
+
+IR filters are standard in photography but possibly expensive to purchase. Unless you have one you can cannibalize, this approach might be pricey. What's not pricey are gels used for lighting in photography, stage, and film making. There are infrared gels, but these too are expensive and more difficult to find. What we used to do in the Army to make a flashlight for night-vision devices was to take our angle-head flashlights and put on the red and green filters. Red blocks all but red and green blocks all but green. The combination blocks pretty much all visible light but allows IR to pass.
+
+I tested this with gels I purchased online, which did not turn out to be as effective as I thought.  I could also see through the gels when I looked around the room, so I suspect they were not optimal for this purpose.  If you have an IR filter available, that might be a good thing to try.  Otherwise, users @ChrisThomas and @wd16261 on Homebrewtalk came up with a very practical solution:
+
+Here, ChrisThomas uses double-stick tape and a small piece of cardboard with a pinhole:
+
+.. figure:: chris_thomas.jpg
+   :scale: 30 %
+   :align: center
+   :alt: Cardboard pinhole collimator
+
+And here, wd16261 uses a piece of shrink-tubing with a dot of glue to hold his pinhole camera in place:
+
+.. figure:: wd16261.jpg
+   :scale: 45 %
+   :align: center
+   :alt: Shrinkwrap pinhole collimator
+
+Both of these form collimators that restrict the amount of light entering the sensor.  Both seem to be very effective and likely simpler than messing with light filters.
 
 Bracket and Mounting
 --------------------
