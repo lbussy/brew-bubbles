@@ -82,6 +82,9 @@ void execspiffs()
         config.didupdate = false;
         saveConfig();
         _delay(3000);
+        if (LittleFS.begin())
+            if (LittleFS.remove("/drd.dat"))
+                Log.notice(F("Deleted DRD semaphore." CR));
         ESP.restart();
         _delay(1000);
     }
