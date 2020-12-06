@@ -24,6 +24,8 @@ SOFTWARE. */
 
 Bubbles bubbles;
 volatile bool doBubble;
+volatile bool __attribute__((unused)) vesselDisconnected = false;  // Semaphore for vessel disconnected
+volatile bool __attribute__((unused)) ambientDisconnected = false; // Semaphore for ambient disconnected
 
 bool Bubbles::start()
 {
@@ -40,25 +42,69 @@ bool Bubbles::start()
     return true;
 }
 
-bool Bubbles::update()
+void Bubbles::update()
 { // Regular update loop, once per minute
     // Get NTP Time
     lastTime = getDTS();
 
     // Store last values
     lastBpm = getRawBpm();
-    lastAmb = getTemp(AMBSENSOR);
-    lastVes = getTemp(VESSENSOR);
-
-    // Push values to circular buffers
-    // TODO:  Handle aging out a sensor if it becomes disconnected
-    tempAmbAvg.push(lastAmb);
-    tempVesAvg.push(lastVes);
     bubAvg.push(lastBpm);
-    sampleSize = tempVesAvg.size();
+
+    // Check Ambient device
+    lastAmb = getTemp(AMBSENSOR);
+    if ((config.bubble.tempinf && lastAmb == (float)DEVICE_DISCONNECTED_F) || (!config.bubble.tempinf && lastAmb == (float)DEVICE_DISCONNECTED_C))
+    {
+        // Ambient device disconnected
+        ambientDisconnected = true;
+        tempAmbAvg.clear();
+    }
+    else
+    {
+        // Ambient device connected
+        if (ambientDisconnected)
+        {
+            // Ambient newly connected
+            tempAmbAvg.clear();
+        }
+        ambientDisconnected = false;
+    }
+    // Push Ambient value to circular buffer
+    tempAmbAvg.push(lastAmb);
+
+    // Check Vessel device
+    lastVes = getTemp(VESSENSOR);
+    if ((config.bubble.tempinf && lastVes == (float)DEVICE_DISCONNECTED_F) || (!config.bubble.tempinf && lastVes == (float)DEVICE_DISCONNECTED_C))
+    {
+        // Vessel device disconnected
+        vesselDisconnected = true;
+        tempVesAvg.clear();
+    }
+    else
+    {
+        // Vessel device connected
+        if (vesselDisconnected)
+        {
+            // Vessel newly connected
+            tempVesAvg.clear();
+        }
+        vesselDisconnected = false;
+    }
+    // Push Vessel value to circular buffer
+    tempVesAvg.push(lastVes);
 
     saveBpm();
-    return true;
+
+    Log.verbose(F("DEBUG: Current BPM is %D. Averages: BPM (%d) = %D, Ambient (%d) = %D, Vessel (%d) = %D." CR),
+                bubbles.lastBpm,
+                bubAvg.size(),
+                bubbles.getAvgBpm(),
+                tempAmbAvg.size(),
+                bubbles.getAvgAmbient(),
+                tempVesAvg.size(),
+                bubbles.getAvgVessel());
+
+    return;
 }
 
 float Bubbles::getRawBpm()
@@ -80,7 +126,6 @@ float Bubbles::getAvgAmbient()
     uint8_t size = tempAmbAvg.size();
     for (int i = 0; i < tempAmbAvg.size(); i++)
     {
-        // float thisTemp = tempAmbAvg[i];
         avg += tempAmbAvg[i] / size;
     }
     if (avg)
@@ -91,7 +136,7 @@ float Bubbles::getAvgAmbient()
 
 float Bubbles::getAvgVessel()
 {
-    // Return TEMPAVG readings to calculate average
+    // Retrieve TEMPAVG readings to calculate average
     float avg = 0.0;
     uint8_t size = tempVesAvg.size();
     for (int i = 0; i < tempVesAvg.size(); i++)

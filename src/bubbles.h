@@ -49,7 +49,7 @@ private:
 public:
     // Public Methods
     bool start();
-    bool update(); // Call every 60 seconds
+    void update(); // Call every 60 seconds
     float getAvgAmbient();
     float getAvgVessel();
     float getAvgBpm();
@@ -61,7 +61,6 @@ public:
     // Public Properties
     float lastBpm; // Holds most recent count
     String lastTime;
-    int sampleSize;
 };
 
 extern volatile int pulse;
