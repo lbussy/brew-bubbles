@@ -1,21 +1,17 @@
 # TODO List
 
 ## Open
-- Disconnected Sensor Shows Value #23 (seems to drop slowly when I disconnect it)
 - Test gel
 
 ### Completed This Sprint
 - ~~Seconds on About page look like they are reporting millis~~
+- ~~Disconnected Sensor Shows Value #23 (seems to drop slowly when I disconnect it)~~
 
 ### Completed this version
-- ~~Fix 'nan' error in Bubbles after SPIFFS upload~~
 - ~~Merge update pages~~
 - ~~Add ThingSpeak support~~
 - ~~Remove lockup if there's no time hack~~
 - ~~Add mouseover on debug items~~
-  - ~~free = Total free bytes in the heap. Equivalent to multi_free_heap_size().~~
-	- ~~max = Size of largest free block in the heap. This is the largest malloc-able size.~~
-	- ~~frag = 100 - (max * 100) / free~~
 - ~~Change so that posting configuration changes is not a complete page reload~~
 - ~~Look into NaN on Bubbles after flash~~
 - ~~Time stamp last bubble reading~~
@@ -176,7 +172,6 @@
 - ~~Wipe out temp array contents when temp format changes~~
 - ~~Review mDNS restart schedule to see if it's still needed~~
 - ~~See if we can do something about entering a bad password on portal~~
-- ~~Look into NaN on Bubbles after flash~~
 - ~~Time stamp last bubble reading~~
 - ~~Add temps to last bubble~~
 - ~~Add build and branch to version display on page~~
