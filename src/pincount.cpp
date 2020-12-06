@@ -24,6 +24,7 @@ SOFTWARE. */
 #include "pincount.h"
 
 volatile int pulse;
+volatile bool __attribute__((unused)) blip = false; // Semaphore for bubble display
 
 void interruptSetup()
 {
@@ -35,4 +36,5 @@ void interruptSetup()
 void ICACHE_RAM_ATTR handleInterrupt()
 {
     pulse++;
+    blip = true;
 }

@@ -59,5 +59,7 @@ static bool __attribute__((unused)) doOTA = false;         // Semaphore for rese
 static bool __attribute__((unused)) doNonBlock = false;    // Semaphore for non-blocking portal
 
 extern struct Bubbles bubbles;
+extern volatile bool doBubble;
+extern volatile bool blip;
 
 #endif

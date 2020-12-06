@@ -145,6 +145,12 @@ void maintenanceLoop()
         Log.notice(F("Maintenance: Setting time"));
         setClock();
     }
+    if (blip)
+    {
+        // Bubble display in debug for Chris Thomas :)
+        blip = false;
+        Log.verbose(F(".॰ₒ๐°৹" CR));
+    }
 }
 
 void setDoReset()
