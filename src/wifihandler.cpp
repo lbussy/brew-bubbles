@@ -125,8 +125,10 @@ void doWiFi(bool dontUseStoredCreds)
             _delay(3000);
             digitalWrite(LED, HIGH);
             Log.warning(F("Restarting." CR));
+            config.nodrd = true;
+            saveConfig();
+            _delay(100);
             ESP.restart();
-            _delay(1000); // Just a hack to give it time to reset
         }
         else
         {
@@ -178,6 +180,9 @@ void resetWifi()
     blinker.detach();       // Turn off blinker
     digitalWrite(LED, LOW); // Turn on LED
     Log.notice(F("Restarting after clearing WiFi settings." CR));
+    config.nodrd = true;
+    saveConfig();
+    _delay(100);
     ESP.restart();
 }
 
