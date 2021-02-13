@@ -38,6 +38,9 @@ void execfw()
     ESPhttpUpdate.setLedPin(LED, LOW);
     // "http://www.brewbubbles.com/firmware/firmware.bin"
     WiFiClient _client;
+    Log.verbose(F("Pulling Firmware from: %s" CR), F(FIRMWAREURL));
+    config.nodrd = true;
+    saveConfig();
     t_httpUpdate_return ret = ESPhttpUpdate.update(_client, F(FIRMWAREURL), "0");
 
     switch (ret)
@@ -48,7 +51,9 @@ void execfw()
         config.dospiffs1 = false;
         config.dospiffs2 = false;
         config.didupdate = false;
+        config.nodrd = true;
         saveConfig();
+        _delay(100);
         ESP.restart();
         break;
 
@@ -58,7 +63,9 @@ void execfw()
         config.dospiffs1 = false;
         config.dospiffs2 = false;
         config.didupdate = false;
+        config.nodrd = true;
         saveConfig();
+        _delay(100);
         ESP.restart();
         break;
 
@@ -66,8 +73,10 @@ void execfw()
         // We should never actually reach this as the controller
         // resets after OTA
         Log.notice(F("HTTP Firmware OTA Update complete, restarting." CR));
+        config.nodrd = true;
+        saveConfig();
+        _delay(100);
         ESP.restart();
-        _delay(1000);
         break;
     }
 }
@@ -80,13 +89,10 @@ void execspiffs()
         config.dospiffs1 = false;
         config.dospiffs2 = true;
         config.didupdate = false;
+        config.nodrd = true;
         saveConfig();
-        _delay(3000);
-        if (LittleFS.begin())
-            if (LittleFS.remove("/drd.dat"))
-                Log.notice(F("Deleted DRD semaphore." CR));
+        _delay(100);
         ESP.restart();
-        _delay(1000);
     }
     else if (config.dospiffs2)
     {
@@ -98,6 +104,7 @@ void execspiffs()
         ESPhttpUpdate.setLedPin(LED, LOW);
         // "http://www.brewbubbles.com/firmware/spiffs.bin"
         WiFiClient client;
+        Log.verbose(F("Pulling Filesystem from: %s" CR), F(LITTLEFSURL));
         t_httpUpdate_return ret = ESPhttpUpdate.updateFS(client, F(LITTLEFSURL), "");
 
         switch (ret)
@@ -115,11 +122,11 @@ void execspiffs()
             config.dospiffs1 = false;
             config.dospiffs2 = false;
             config.didupdate = true;
-            saveConfig(); // This not only saves the flags, it (re)saves the whole config after File System wipes it
-            _delay(1000);
+            config.nodrd = true;
             Log.notice(F("HTTP File System OTA Update complete, restarting." CR));
+            saveConfig();  // This not only saves the flags, it (re)saves the whole config after File System wipes it
+            _delay(100);
             ESP.restart();
-            _delay(1000);
             break;
         }
     }

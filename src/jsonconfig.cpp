@@ -25,8 +25,8 @@ SOFTWARE. */
 const char *filename = "/config.json";
 Config config;
 
-extern const size_t capacitySerial = 3 * JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + 3 * JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(11);
-extern const size_t capacityDeserial = capacitySerial + 810;
+extern const size_t capacitySerial = 1536;
+extern const size_t capacityDeserial = 768;
 
 bool deleteConfigFile()
 {
@@ -478,6 +478,15 @@ void Config::load(JsonObjectConst obj)
     {
         didupdate = obj["didupdate"];
     }
+
+    if (obj["nodrd"].isNull())
+    {
+        nodrd = false;
+    }
+    else
+    {
+        nodrd = obj["nodrd"];
+    }
 }
 
 void Config::save(JsonObject obj) const
@@ -504,4 +513,6 @@ void Config::save(JsonObject obj) const
     obj["dospiffs2"] = dospiffs2;
     // Add dospiffs1 object
     obj["didupdate"] = didupdate;
+    // Add nodrd object
+    obj["nodrd"] = nodrd;
 }
