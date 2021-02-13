@@ -94,6 +94,7 @@ struct Config
     bool dospiffs1;
     bool dospiffs2;
     bool didupdate;
+    bool nodrd;
 
     void load(JsonObjectConst);
     void save(JsonObject) const;

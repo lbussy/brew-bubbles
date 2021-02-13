@@ -196,7 +196,7 @@ int createChannel(
     channelJSON = http.getString();
 
 #ifdef PRINT_DEBUG_MESSAGES
-    Serial.println(F("DEBUG: Create ThingSpeak Channel results:"));
+    Serial.println(F("Create ThingSpeak Channel results:"));
     Serial.println(httpCode);    //Print HTTP return code
     Serial.println(channelJSON); //Print request response payload
 #endif
