@@ -44,7 +44,7 @@ void setup()
         Log.notice(F("%s low, presenting portal." CR), stringify(RESETWIFI));
         doWiFi(true);
     }
-    else if (drd->detectDoubleReset())
+    else if (!config.nodrd && drd->detectDoubleReset())
     {
         Log.notice(F("DRD: Triggered, presenting portal." CR));
         doWiFi(true);
@@ -52,6 +52,7 @@ void setup()
     else
     {
         Log.verbose(F("DRD: Normal boot." CR));
+        config.nodrd = false;
         doWiFi();
     }
 
