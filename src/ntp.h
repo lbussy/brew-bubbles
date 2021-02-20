@@ -36,21 +36,18 @@ SOFTWARE. */
 #include <Ticker.h>
 #include <ArduinoLog.h>
 
-
 void setClock();
 String getDTS();
 int getYear();   // tm_year
 int getMonth();  // tm_mon
 int getDate();   // tm_mday
 int getWday();   // tm_wday
+String getDayofWeek();
+String getShortDayofWeek();
 int getHour();   // tm_hour
 int getMinute(); // tm_min
 int getSecond(); // tm_sec
 int getYDay();   // tm_yday
 void ntpBlinker();
-
-static const int __attribute__((unused)) EPOCH_1_1_2019 = 1546300800; //1546300800 =  01/01/2019 @ 12:00am (UTC)
-static const char __attribute__((unused)) * DAYS_OF_WEEK[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-static const char __attribute__((unused)) * DAYS_OF_WEEK_3[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
 #endif // _NTP_H

@@ -25,6 +25,10 @@ SOFTWARE. */
 
 #include "ntp.h"
 
+static const int __attribute__((unused)) SECS_1_1_2019 = 1546300800; //1546300800 =  01/01/2019 @ 12:00am (UTC)
+static const char __attribute__((unused)) * DAY_OF_WEEK[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+static const char __attribute__((unused)) * DAY_OF_WEEK_SHORT[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+
 void setClock()
 {
     Ticker blinker;
@@ -32,7 +36,7 @@ void setClock()
     blinker.attach_ms(NTPBLINK, ntpBlinker);
     unsigned long startSecs = millis() / 1000;
     int cycle = 0;
-    while (time(nullptr) < EPOCH_1_1_2019)
+    while (time(nullptr) < SECS_1_1_2019)
     {
         configTime(THISTZ, TIMESERVER);
         if ((millis() / 1000) - startSecs > 9)
@@ -124,6 +128,16 @@ int getWday()
     ts = gmtime(&rawtime);
     int wday = 1 + ts->tm_wday;
     return wday;
+}
+
+String getDayofWeek()
+{
+    return DAY_OF_WEEK[getWday()];
+}
+
+String getShortDayofWeek()
+{
+    return DAY_OF_WEEK_SHORT[getWday()];
 }
 
 int getHour()

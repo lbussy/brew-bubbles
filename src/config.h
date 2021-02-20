@@ -65,7 +65,7 @@ SOFTWARE. */
 // Use SPIFFS Editor
 //
 #ifndef SPIFFSEDIT
-// #define SPIFFSEDIT
+#define SPIFFSEDIT
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
