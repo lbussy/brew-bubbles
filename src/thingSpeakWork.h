@@ -23,18 +23,6 @@ SOFTWARE. */
 #ifndef _THINGSPEAKWORK_H
 #define _THINGSPEAKWORK_H
 
-#define OK_SUCCESS 200				 // OK / Success
-#define ERR_BADAPIKEY 400			 // Incorrect API key (or invalid ThingSpeak server address)
-#define ERR_BADURL 404				 // Incorrect API key (or invalid ThingSpeak server address)
-#define ERR_OUT_OF_RANGE -101		 // Value is out of range or string is too long (> 255 bytes)
-#define ERR_INVALID_FIELD_NUM -201	 // Invalid field number specified
-#define ERR_SETFIELD_NOT_CALLED -210 // setField() was not called before writeFields()
-#define ERR_CONNECT_FAILED -301		 // Failed to connect to ThingSpeak
-#define ERR_UNEXPECTED_FAIL -302	 // Unexpected failure during write to ThingSpeak
-#define ERR_BAD_RESPONSE -303		 // Unable to parse response
-#define ERR_TIMEOUT -304			 // Timeout waiting for server to respond
-#define ERR_NOT_INSERTED -401		 // Point was not inserted (most probable cause is the rate limit of once every 15 seconds)
-
 #define THINGSPEAK_URL "api.thingspeak.com"
 #define THINGSPEAK_PORT_NUMBER 80
 
