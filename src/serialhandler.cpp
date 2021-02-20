@@ -61,7 +61,7 @@ void printTimestamp(Print *_logOutput)
     if (current_stamp == 0)
     {
         char c[12];
-        int m = sprintf(c, "%10lu ", millis());
+        sprintf(c, "%10lu ", millis());
         _logOutput->print(c);
     }
     else
