@@ -62,9 +62,9 @@ void setClock()
 #endif
     lastNTPUpdate = millis();
     Log.notice(F("NTP time set." CR));
-    struct tm timeinfo;
-    time_t nowSecs = time(nullptr);
-    gmtime_r(&nowSecs, &timeinfo);
+    // struct tm timeinfo;
+    // time_t nowSecs = time(nullptr);
+    // gmtime_r(&nowSecs, &timeinfo);
 }
 
 String getDTS()

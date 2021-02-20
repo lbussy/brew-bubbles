@@ -30,6 +30,7 @@ SOFTWARE. */
 #include "thatVersion.h"
 #include <ArduinoLog.h>
 #include <esptelnet.h>
+#include <sntp.h>   // sntp_get_current_timestamp()
 
 void setSerial();
 void printTimestamp(Print *_logOutput);
