@@ -736,9 +736,9 @@ bool handleThingSpeakTargetPost(AsyncWebServerRequest *request) // Handle ThingS
     }
 }
 
-#ifdef SPIFFSEDIT
 void setEditor()
 {
+#ifdef SPIFFSEDIT
     // Setup SPIFFS editor
 #ifdef ESP32
     server.addHandler(new SPIFFSEditor(SPIFFS, SPIFFSEDITUSER, SPIFFSEDITPW));
@@ -748,8 +748,8 @@ void setEditor()
     server.on("/edit/", HTTP_GET, [](AsyncWebServerRequest *request) {
         request->redirect("/edit");
     });
-}
 #endif
+}
 
 void stopWebServer()
 {
