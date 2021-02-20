@@ -31,7 +31,7 @@ void setClock()
     int cycle = 0;
     while (time(nullptr) < EPOCH_1_1_2019)
     {
-        configTime("GMT", "pool.ntp.org", "time.nist.gov");
+        configTime(THISTZ, TIMESERVER);
         if (time(nullptr) - startSecs > 9)
         {
             if (cycle > 9)

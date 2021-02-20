@@ -32,6 +32,7 @@ SOFTWARE. */
 #include "config.h"
 #include "tools.h"
 #include "serialhandler.h"
+#include <TZ.h>
 #include <Ticker.h>
 #include <ArduinoLog.h>
 
