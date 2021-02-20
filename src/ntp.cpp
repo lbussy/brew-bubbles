@@ -100,7 +100,7 @@ int getMonth()
     struct tm *ts;
     time(&rawtime);
     ts = gmtime(&rawtime);
-    int month = ts->tm_mon;
+    int month = ts->tm_mon + 1;
     return month;
 }
 
