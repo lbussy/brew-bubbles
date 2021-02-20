@@ -145,12 +145,6 @@ void maintenanceLoop()
         _delay(100);
         ESP.restart();
     }
-    if (lastNTPUpdate > NTPRESET)
-    {
-        // Reset NTP (blocking) every measured 24 hours
-        Log.notice(F("Maintenance: Setting time"));
-        setClock();
-    }
     if (blip)
     {
         // Bubble display in debug for Chris Thomas :)

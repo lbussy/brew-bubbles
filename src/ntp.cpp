@@ -20,6 +20,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
+// NTP Examples in:
+// https://github.com/esp8266/Arduino/blob/master/libraries/esp8266/examples/NTP-TZ-DST/NTP-TZ-DST.ino
+
 #include "ntp.h"
 
 void setClock()
@@ -27,20 +30,21 @@ void setClock()
     Ticker blinker;
     Log.notice(F("Entering blocking loop to get NTP time."));
     blinker.attach_ms(NTPBLINK, ntpBlinker);
-    time_t startSecs = time(nullptr);
+    unsigned long startSecs = millis() / 1000;
     int cycle = 0;
     while (time(nullptr) < EPOCH_1_1_2019)
     {
         configTime(THISTZ, TIMESERVER);
-        if (time(nullptr) - startSecs > 9)
+        if ((millis() / 1000) - startSecs > 9)
         {
             if (cycle > 9)
             {
 #ifdef LOG_LEVEL
                 myPrintln();
 #endif
-                Log.warning(F("Unable to get time hack from %s, starting with epoch." CR), TIMESERVER);
+                Log.warning(F("Unable to get time hack from server, restarting." CR));
                 blinker.detach();
+                ESP.restart();
                 return;
             }
 #ifdef LOG_LEVEL
@@ -60,11 +64,7 @@ void setClock()
 #ifdef LOG_LEVEL
     myPrintln();
 #endif
-    lastNTPUpdate = millis();
     Log.notice(F("NTP time set." CR));
-    // struct tm timeinfo;
-    // time_t nowSecs = time(nullptr);
-    // gmtime_r(&nowSecs, &timeinfo);
 }
 
 String getDTS()
