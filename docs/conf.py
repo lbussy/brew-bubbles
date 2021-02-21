@@ -23,7 +23,7 @@ import sphinx_bootstrap_theme
 # -- Project information -----------------------------------------------------
 
 project = u'Brew Bubbles'
-copyright = u'2019-2020, Lee C. Bussy'
+copyright = u'2019-2021, Lee C. Bussy'
 author = u'Lee C. Bussy'
 
 # Get 0.0.0 version from latest Git tag

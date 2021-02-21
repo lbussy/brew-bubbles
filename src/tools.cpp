@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -144,12 +144,6 @@ void maintenanceLoop()
         saveConfig();
         _delay(100);
         ESP.restart();
-    }
-    if (lastNTPUpdate > NTPRESET)
-    {
-        // Reset NTP (blocking) every measured 24 hours
-        Log.notice(F("Maintenance: Setting time"));
-        setClock();
     }
     if (blip)
     {
