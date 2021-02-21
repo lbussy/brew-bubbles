@@ -41,8 +41,11 @@ void setClock()
     unsigned long startSecs = millis() / 1000;
     int cycle = 0;
 #if LWIP_VERSION_MAJOR == 1
-    sntp_setservername(0, (char *)"pool.ntp.org");
-    sntp_setservername(0, (char *)"time.nist.gov");
+    char * servers[SNTP_MAX_SERVERS] = {TIMESERVER};
+    for (int i = 0; servers[i]!='\0'; i++)
+    {
+        sntp_setservername(i, servers[i]);
+    }
     sntp_set_timezone(0);
     while (sntp_get_current_timestamp() == 0)
     {
