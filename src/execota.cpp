@@ -22,6 +22,10 @@ SOFTWARE. */
 
 #include "execota.h"
 
+#if LWIP_VERSION_MAJOR == 2
+#warning "Remember: You are using lwIP v2.x and this causes filesystem OTA tp act weird."
+#endif
+
 void execfw()
 {
     Log.notice(F("Starting the Firmware OTA pull, will reboot without notice." CR));
