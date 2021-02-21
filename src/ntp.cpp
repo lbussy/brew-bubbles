@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -20,34 +20,59 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
+// NTP Examples in:
+// https://github.com/esp8266/Arduino/blob/master/libraries/esp8266/examples/NTP-TZ-DST/NTP-TZ-DST.ino
+
 #include "ntp.h"
+
+#if LWIP_VERSION_MAJOR == 1
+#warning "Remember: You are using lwIP v1.x and this causes ntp time to act weird."
+#endif
+
+static const int __attribute__((unused)) SECS_1_1_2019 = 1546300800; //1546300800 =  01/01/2019 @ 12:00am (UTC)
+static const char __attribute__((unused)) * DAY_OF_WEEK[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+static const char __attribute__((unused)) * DAY_OF_WEEK_SHORT[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
 void setClock()
 {
     Ticker blinker;
     Log.notice(F("Entering blocking loop to get NTP time."));
     blinker.attach_ms(NTPBLINK, ntpBlinker);
-    time_t startSecs = time(nullptr);
+    unsigned long startSecs = millis() / 1000;
     int cycle = 0;
-    while (time(nullptr) < EPOCH_1_1_2019)
+#if LWIP_VERSION_MAJOR == 1
+    char * servers[SNTP_MAX_SERVERS] = {TIMESERVER};
+    for (int i = 0; servers[i]!='\0'; i++)
     {
-        configTime("GMT", "pool.ntp.org", "time.nist.gov");
-        if (time(nullptr) - startSecs > 9)
+        sntp_setservername(i, servers[i]);
+    }
+    sntp_set_timezone(0);
+    while (sntp_get_current_timestamp() == 0)
+    {
+        sntp_stop();
+        sntp_init();
+#else
+    while (time(nullptr) < SECS_1_1_2019)
+    {
+        configTime(THISTZ, TIMESERVER);
+#endif
+        if ((millis() / 1000) - startSecs > 9)
         {
             if (cycle > 9)
             {
 #ifdef LOG_LEVEL
                 myPrintln();
 #endif
-                Log.warning(F("Unable to get time hack from %s, starting with epoch." CR), TIMESERVER);
+                Log.warning(F("Unable to get time hack from server, restarting." CR));
                 blinker.detach();
+                ESP.restart();
                 return;
             }
 #ifdef LOG_LEVEL
             myPrintln();
 #endif
             Log.verbose(F("Re-requesting time hack."));
-            startSecs = time(nullptr);
+            startSecs = millis() / 1000;
             cycle++;
         }
 #ifdef LOG_LEVEL
@@ -60,18 +85,13 @@ void setClock()
 #ifdef LOG_LEVEL
     myPrintln();
 #endif
-    lastNTPUpdate = millis();
     Log.notice(F("NTP time set." CR));
-    struct tm timeinfo;
-    time_t nowSecs = time(nullptr);
-    gmtime_r(&nowSecs, &timeinfo);
 }
 
 String getDTS()
 {
     // Returns JSON-type string = 2019-12-20T13:59:39Z
-    /// Also:
-    // sprintf(dts, "%04u-%02u-%02uT%02u:%02u:%02uZ", getYear(), getMonth(), getDate(), getHour(), getMinute(), getSecond());
+    // Also: sprintf(dta, "%04u-%02u-%02uT%02u:%02u:%02uZ", getYear(), getMonth(), getDate(), getHour(), getMinute(), getSecond());
     time_t now;
     time_t rawtime = time(&now);
     struct tm ts;
@@ -100,7 +120,7 @@ int getMonth()
     struct tm *ts;
     time(&rawtime);
     ts = gmtime(&rawtime);
-    int month = ts->tm_mon;
+    int month = ts->tm_mon + 1;
     return month;
 }
 
@@ -124,6 +144,16 @@ int getWday()
     ts = gmtime(&rawtime);
     int wday = 1 + ts->tm_wday;
     return wday;
+}
+
+String getDayofWeek()
+{
+    return DAY_OF_WEEK[getWday()];
+}
+
+String getShortDayofWeek()
+{
+    return DAY_OF_WEEK_SHORT[getWday()];
 }
 
 int getHour()
