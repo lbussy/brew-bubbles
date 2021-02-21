@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -65,7 +65,7 @@ SOFTWARE. */
 // Use SPIFFS Editor
 //
 #ifndef SPIFFSEDIT
-#define SPIFFSEDIT
+// #define SPIFFSEDIT
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
@@ -427,7 +427,9 @@ SOFTWARE. */
 // NTP Server
 //
 #ifndef TIMESERVER
-#define TIMESERVER "pool.ntp.org"
+#define TIMESERVER "pool.ntp.org", "time.nist.gov"
+#define THISTZ TZ_Etc_GMT
+// #define THISTZ TZ_America_Chicago
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
