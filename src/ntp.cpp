@@ -25,6 +25,10 @@ SOFTWARE. */
 
 #include "ntp.h"
 
+#if LWIP_VERSION_MAJOR == 1
+#warning "Remember: You are using lwIP v1.x and this causes ntp time to act weird."
+#endif
+
 static const int __attribute__((unused)) SECS_1_1_2019 = 1546300800; //1546300800 =  01/01/2019 @ 12:00am (UTC)
 static const char __attribute__((unused)) * DAY_OF_WEEK[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 static const char __attribute__((unused)) * DAY_OF_WEEK_SHORT[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
@@ -36,9 +40,19 @@ void setClock()
     blinker.attach_ms(NTPBLINK, ntpBlinker);
     unsigned long startSecs = millis() / 1000;
     int cycle = 0;
+#if LWIP_VERSION_MAJOR == 1
+    sntp_setservername(0, (char *)"pool.ntp.org");
+    sntp_setservername(0, (char *)"time.nist.gov");
+    sntp_set_timezone(0);
+    while (sntp_get_current_timestamp() == 0)
+    {
+        sntp_stop();
+        sntp_init();
+#else
     while (time(nullptr) < SECS_1_1_2019)
     {
         configTime(THISTZ, TIMESERVER);
+#endif
         if ((millis() / 1000) - startSecs > 9)
         {
             if (cycle > 9)
@@ -55,7 +69,7 @@ void setClock()
             myPrintln();
 #endif
             Log.verbose(F("Re-requesting time hack."));
-            startSecs = time(nullptr);
+            startSecs = millis() / 1000;
             cycle++;
         }
 #ifdef LOG_LEVEL
@@ -74,8 +88,7 @@ void setClock()
 String getDTS()
 {
     // Returns JSON-type string = 2019-12-20T13:59:39Z
-    /// Also:
-    // sprintf(dts, "%04u-%02u-%02uT%02u:%02u:%02uZ", getYear(), getMonth(), getDate(), getHour(), getMinute(), getSecond());
+    // Also: sprintf(dta, "%04u-%02u-%02uT%02u:%02u:%02uZ", getYear(), getMonth(), getDate(), getHour(), getMinute(), getSecond());
     time_t now;
     time_t rawtime = time(&now);
     struct tm ts;
