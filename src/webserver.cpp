@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -736,9 +736,9 @@ bool handleThingSpeakTargetPost(AsyncWebServerRequest *request) // Handle ThingS
     }
 }
 
-#ifdef SPIFFSEDIT
 void setEditor()
 {
+#ifdef SPIFFSEDIT
     // Setup SPIFFS editor
 #ifdef ESP32
     server.addHandler(new SPIFFSEditor(SPIFFS, SPIFFSEDITUSER, SPIFFSEDITPW));
@@ -748,8 +748,8 @@ void setEditor()
     server.on("/edit/", HTTP_GET, [](AsyncWebServerRequest *request) {
         request->redirect("/edit");
     });
-}
 #endif
+}
 
 void stopWebServer()
 {

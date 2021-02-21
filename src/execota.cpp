@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -21,6 +21,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
 #include "execota.h"
+
+#if LWIP_VERSION_MAJOR == 2
+#warning "Remember: You are using lwIP v2.x and this causes filesystem OTA tp act weird."
+#endif
 
 void execfw()
 {

@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2020 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -46,7 +46,8 @@ void setSerial()
     SERIAL.println();
     SERIAL.flush();
 #ifndef DISABLE_LOGGING
-    SERIAL.setDebugOutput(true);
+    SERIAL.setDebugOutput(false);
+    // SERIAL.setDebugOutput(true);
     Log.begin(LOG_LEVEL, &SERIAL, true);
     Log.setPrefix(printTimestamp);
     Log.notice(F("Serial logging started at %l." CR), BAUD);
@@ -55,13 +56,24 @@ void setSerial()
 
 void printTimestamp(Print *_logOutput)
 {
-    time_t now;
-    time_t rawtime = time(&now);
-    struct tm ts;
-    ts = *localtime(&rawtime);
-    char locTime[22] = {'\0'};
-    strftime(locTime, sizeof(locTime), "%FT%TZ ", &ts);
-    _logOutput->print(locTime);
+    uint32 current_stamp;
+    current_stamp = sntp_get_current_timestamp();
+    if (current_stamp == 0)
+    {
+        char c[12];
+        sprintf(c, "%10lu ", millis());
+        _logOutput->print(c);
+    }
+    else
+    {
+        time_t now;
+        time_t rawtime = time(&now);
+        struct tm ts;
+        ts = *localtime(&rawtime);
+        char locTime[22] = {'\0'};
+        strftime(locTime, sizeof(locTime), "%FT%TZ ", &ts);
+        _logOutput->print(locTime);
+    }
 }
 
 #else // DISABLE_LOGGING
