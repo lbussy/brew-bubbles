@@ -23,7 +23,7 @@ SOFTWARE. */
 #include "execota.h"
 
 #if LWIP_VERSION_MAJOR == 2
-#warning "Remember: You are using lwIP v2.x and this causes filesystem OTA tp act weird."
+#warning "Remember: You are using lwIP v2.x and this causes filesystem OTA to act weird."
 #endif
 
 void execfw()
