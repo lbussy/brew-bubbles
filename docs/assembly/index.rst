@@ -44,7 +44,7 @@ Displayed below is a view of the top of the printed circuit board, as rendered b
    :scale: 90 %
    :align: center
    :alt: Top view of printed circuit board
-
+ 
 Below is a view of the bottom of the printed circuit board, as rendered by OSH Park.
 
 .. figure:: Bottom.png
@@ -114,8 +114,10 @@ Light Filter
 
 These widely-used sensors are everywhere.  Using them for this application sometimes takes a little tweaking to make it perfect.  When developing Brew Bubbles, I got lucky and ended up with a couple of sensors that worked perfectly out of the box.  After release, I discovered that most people were not so fortunate.  Because the airlocks and water are clear, these other sensors failed to register bubbles correctly.
 
-The Sharp GP1A57HRJ00Fit emits 950 nm light, and the receptor is sensitive to 400 through 1200 nm. That ranges from blue/violet through infrared. The sensor is most sensitive to IR light (700 nm – 1 mm) at 900 nm.  Water absorbs infrared far better than the lower visible wavelengths:
+The Sharp GP1A57HRJ00Fit emits 950 nm light, and the receptor is sensitive to 400 through 1200 nm. That ranges from blue/violet through infrared.  This means that while the LED emits and the sensor senses infrared, it also will happily detect ambient light.  When that happens, the water in the airlock will not block the sensor sufficiently.
 
+The sensor is most sensitive to IR light (700 nm ΓÇô 1 mm) at 900 nm.  Water absorbs infrared far better than the lower visible wavelengths:
+ 
 .. figure:: water_absorption.gif
    :scale: 75 %
    :align: center
@@ -140,6 +142,13 @@ And here, wd16261 uses a piece of shrink-tubing with a dot of glue to hold his p
    :alt: Shrinkwrap pinhole collimator
 
 Both of these form collimators that restrict the amount of light entering the sensor.  Both seem to be very effective and likely simpler than messing with light filters.
+
+Subsequently, @gshadel on Homebrewtalk came up with something which may be even easier. He used aluminized HVAC duct tape (not the cloth kind) and a sewing pin to create a collimator with what seem to be excellent results.  The self-adhesive properties and thinness make this an attractive solution.
+
+.. figure:: sensor-tape.jpg
+   :scale: 15 %
+   :align: center
+   :alt: HVAC tape pinhole collimator
 
 Bracket and Mounting
 --------------------
