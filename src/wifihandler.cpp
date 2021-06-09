@@ -216,7 +216,7 @@ void preSaveConfigCallback()
 void saveConfigCallback()
 {
     Log.verbose(F("[CALLBACK]: setSaveConfigCallback fired." CR));
-    // shouldSaveConfig = true;
+    shouldSaveConfig = true;
 }
 
 void saveParamsCallback()
