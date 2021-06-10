@@ -428,7 +428,7 @@ SOFTWARE. */
 //
 #ifndef TIMESERVER
 #define TIMESERVER "pool.ntp.org", "time.nist.gov"
-// #define THISTZ TZ_Etc_GMT
+#define THISTZ TZ_Etc_GMT
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
