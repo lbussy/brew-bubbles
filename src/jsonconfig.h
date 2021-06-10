@@ -109,8 +109,8 @@ bool printConfig();
 bool printFile();
 bool serializeConfig(Print &);
 bool deserializeConfig(Stream &);
-bool merge(JsonVariant, JsonVariantConst);
-bool mergeJsonObject(JsonVariantConst);
-bool mergeJsonString(String);
+// bool merge(JsonVariant, JsonVariantConst);
+// bool mergeJsonObject(JsonVariantConst);
+// bool mergeJsonString(String);
 
 #endif // _JSONCONFIG_H
