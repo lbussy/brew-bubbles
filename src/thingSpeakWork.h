@@ -46,7 +46,7 @@ int createChannel(
     String &channelJSON,
     const char *api_key,
     const char *name,
-    const unsigned long fieldCount,
+    const int fieldCount,
     const char *field[],
     const char *description = "",
     const bool public_flag = false,
