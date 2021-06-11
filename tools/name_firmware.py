@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/env python
 
 # Copyright (C) 2019 Lee C. Bussy (@LBussy)
 
