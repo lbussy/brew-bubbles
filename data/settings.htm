@@ -545,24 +545,36 @@
                             <h4 class="card-title">Update Firmware: Confirmation</h4>
                         </div>
                         <div class="card-body">
-                            <p>
                             <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Current</th>
+                                        <th scope="col">Available</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
-                                    <tr class="table-success">
-                                        <th scope="row">Current Version:</th>
+                                    <tr class="table-firmware table-success">
+                                        <th scope="row">Firmware</th>
                                         <td>
-                                            <div id="thisVersion">... loading</div>
+                                            <div id="thisFWVersion">... loading</div>
+                                        </td>
+                                        <td>
+                                            <div id="thatFWVersion">... loading</div>
                                         </td>
                                     </tr>
-                                    <tr class="table-info">
-                                        <th scope="row">Available version:</th>
+                                    <tr class="table-firmware table-info">
+                                        <th scope="row">Filesystem</th>
                                         <td>
-                                            <div id="thatVersion">... loading</div>
+                                            <div id="thisFSVersion">... loading</div>
+                                        </td>
+                                        <td>
+                                            <div id="thatFSVersion">... loading</div>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
-                            </p>
+        
                             <p>
                                 If you are sure you want to update firmware, click the button below.
                             </p>
