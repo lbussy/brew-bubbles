@@ -153,13 +153,13 @@ void setJsonHandlers()
         const int hours = uptimeHours();
         const int minutes = uptimeMinutes();
         const int seconds = uptimeSeconds();
-        const int millis = uptimeMillis();
+        //const int millis = uptimeMillis();
 
         u["days"] = days;
         u["hours"] = hours;
         u["minutes"] = minutes;
         u["seconds"] = seconds;
-        u["millis"] = millis;
+        //u["millis"] = millis;
 
         String ut = "";
         serializeJson(doc, ut);

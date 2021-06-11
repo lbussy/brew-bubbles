@@ -226,7 +226,7 @@ bool merge(JsonVariant dst, JsonVariantConst src)
 {
     if (src.is<JsonObject>())
     {
-        for (auto kvp : src.as<JsonObject>())
+        for (auto kvp : src.as<JsonObjectConst>())
         {
             merge(dst.getOrAddMember(kvp.key()), kvp.value());
         }

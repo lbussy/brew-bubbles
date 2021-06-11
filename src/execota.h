@@ -23,6 +23,7 @@ SOFTWARE. */
 #ifndef _EXECOTA_H
 #define _EXECOTA_H
 
+#include "config.h"
 #include "tools.h"
 #include "jsonconfig.h"
 #include "webserver.h"

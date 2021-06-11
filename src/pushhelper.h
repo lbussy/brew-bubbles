@@ -23,6 +23,7 @@ SOFTWARE. */
 #ifndef _PUSHHELPER_H
 #define _PUSHHELPER_H
 
+#include "config.h"
 #include "bubbles.h"
 #include "pushtarget.h"
 #include "target.h"

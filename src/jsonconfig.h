@@ -107,10 +107,10 @@ bool loadFile();
 bool saveFile();
 bool printConfig();
 bool printFile();
+bool mergeJsonString(String newJson);
+bool mergeJsonObject(JsonVariantConst src);
+bool merge(JsonVariant dst, JsonVariantConst src);
 bool serializeConfig(Print &);
 bool deserializeConfig(Stream &);
-bool merge(JsonVariant, JsonVariantConst);
-bool mergeJsonObject(JsonVariantConst);
-bool mergeJsonString(String);
 
 #endif // _JSONCONFIG_H
