@@ -99,17 +99,20 @@ function loadThisVersion() { // Get current parameters
     })
         .done(function (thisVersion) {
             try {
-                $('#thisVersion').text(thisVersion.version);
+                $('#thisFWVersion').text(thisVersion.fw_version);
+                $('#thisFSVersion').text(thisVersion.fs_version);
             }
             catch {
                 if (!unloadingState) {
-                    $('#thisVersion').text("Error parsing.");
+                    $('#thisFWVersion').text("Error parsing.");
+                    $('#thisFSVersion').text("Error parsing.");
                 }
             }
         })
         .fail(function () {
             if (!unloadingState) {
-                $('#thisVersion').text("Error loading.");
+                $('#thisFWVersion').text("Error loading.");
+                $('#thisFSVersion').text("Error loading.");
             }
         })
         .always(function () {
@@ -129,18 +132,21 @@ function loadThatVersion() { // Get current parameters
     })
         .done(function (thatVersion) {
             try {
-                $('#thatVersion').text(thatVersion.version);
+                $('#thatFWVersion').text(thatVersion.fw_version);
+                $('#thatFSVersion').text(thatVersion.fs_version);
                 document.getElementById("proceed").disabled = false;
             }
             catch {
                 if (!unloadingState) {
-                    $('#thatVersion').text("Error parsing.");
+                    $('#thatFWVersion').text("Error parsing.");
+                    $('#thatFSVersion').text("Error parsing.");
                 }
             }
         })
         .fail(function () {
             if (!unloadingState) {
-                $('#thatVersion').text("Error loading.");
+                $('#thatFWVersion').text("Error loading.");
+                $('#thatFSVersion').text("Error loading.");
             }
         })
         .always(function () {
