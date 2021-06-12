@@ -29,7 +29,10 @@ void sendRequest()
 {
     if (request.readyState() == 0 || request.readyState() == 4)
     {
-        request.open("GET", VERSIONJSONLOC);
+        char url[128];
+        strcpy(url, UPGRADEURL);
+        strcat(url, VERSIONJSON);
+        request.open("GET", url);
         request.send();
     }
 }
