@@ -14,8 +14,23 @@ esptool.py --chip esp8266 --before default_reset --after hard_reset write_flash 
 
 ## Files in this Directory
 
+### Versions <= 2.2.3
+
+These files exist for legacy (version <= 2.2.3) Brew Bubbles users.
+
 **File Name**|**Description**
 -----|-----
 `firmware.bin`| Main firmware file containing the Brew Bubbles application.
 `littlefs.bin`| Controller filesystem image containing the web pages used by Brew Bubbles.
 `version.json` | File used for version control.
+
+### Versions > 2.2.3
+
+These files exist for updated (version > 2.2.3) Brew Bubbles users.
+
+**File Name**|**Description**
+-----|-----
+`{board_type}_firmware.bin`| Main firmware file containing the Brew Bubbles application.
+`{board_type}_littlefs.bin`| Controller filesystem image containing the web pages used by Brew Bubbles.
+`version.json` | File used for version control.
+
