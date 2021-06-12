@@ -109,7 +109,9 @@ void doWiFi(bool dontUseStoredCreds)
             _delay(3000);
             digitalWrite(LED, HIGH);
             Log.notice(F("Hit timeout for on-demand portal, exiting." CR));
-            setDoReset();
+            config.nodrd = true;
+            saveConfig();
+            ESP.reset();
         }
     }
     else
@@ -152,12 +154,14 @@ void doWiFi(bool dontUseStoredCreds)
         {
             Log.notice(F("Saving custom hostname configuration: %s." CR), hostname.getValue());
             strlcpy(config.hostname, hostname.getValue(), sizeof(config.hostname));
-            saveConfig();
 #ifdef ESP8266
             WiFi.hostname(config.hostname);
 #elif defined ESP32
             WiFi.setHostname(config.hostname);
 #endif
+            config.nodrd = true;
+            saveConfig();
+            ESP.reset();
         }
     }
 

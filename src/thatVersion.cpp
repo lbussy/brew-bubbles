@@ -30,8 +30,13 @@ void sendRequest()
     if (request.readyState() == 0 || request.readyState() == 4)
     {
         char url[128];
+#ifdef DOBETA
         strcpy(url, UPGRADEURL);
+#else
+        strcpy(url, UPGRADEURL);
+#endif
         strcat(url, VERSIONJSON);
+        Log.verbose(F("DEBUG: Checking %s." CR), url);
         request.open("GET", url);
         request.send();
     }
