@@ -248,7 +248,7 @@ SOFTWARE. */
 //
 #ifndef TESTINGURL
 #define DOBETA // Comment out for prod code
-#define UPGRADEURL "http://firmware.brewbubbles.com/testing"
+#define UPGRADEURL "http://www.brewbubbles.com/firmware/testing"
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
@@ -258,7 +258,7 @@ SOFTWARE. */
 // Upgrade URL
 //
 #ifndef UPGRADEURL
-#define UPGRADEURL "http://firmware.brewbubbles.com"
+#define UPGRADEURL "http://www.brewbubbles.com/firmware"
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
