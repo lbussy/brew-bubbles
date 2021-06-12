@@ -27,6 +27,7 @@ SOFTWARE. */
 #include "tools.h"
 #include "jsonconfig.h"
 #include "webserver.h"
+#include "version.h"
 #include <ESP8266WiFi.h>
 #include <ESP8266httpUpdate.h>
 #include <ArduinoLog.h>
