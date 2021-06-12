@@ -42,7 +42,11 @@ void execfw()
     ESPhttpUpdate.setLedPin(LED, LOW);
     WiFiClient _client;
     char url[128];
+#ifdef DOBETA
     strcpy(url, UPGRADEURL);
+#else
+    strcpy(url, UPGRADEURL);
+#endif
     strcat(url, board());
     strcat(url, "_firmware.bin");
     Log.verbose(F("Pulling Firmware from: %s" CR), url);
