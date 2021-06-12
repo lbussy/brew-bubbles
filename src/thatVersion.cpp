@@ -112,10 +112,10 @@ void ThatVersion::load(JsonObjectConst obj)
         if (_fw)
         {
             Log.notice(F("Deprecated version format detected." CR));
-            strlcpy(fw_version, _fw, sizeof(fw_version)); // Default            
+            strlcpy(fw_version, _fw, sizeof(fw_version)); // Default
         }
         else
-            strlcpy(fw_version, "0.0.0", sizeof(fw_version)); // Default        
+            strlcpy(fw_version, "0.0.0", sizeof(fw_version)); // Default
     }
 
     const char *fs = obj["fs_version"];
