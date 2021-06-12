@@ -47,6 +47,7 @@ void execfw()
 #else
     strcpy(url, UPGRADEURL);
 #endif
+    strcat(url, "/");
     strcat(url, board());
     strcat(url, "_firmware.bin");
     Log.verbose(F("Pulling Firmware from: %s" CR), url);
@@ -117,6 +118,7 @@ void execspiffs()
         WiFiClient client;
         char url[128];
         strcpy(url, UPGRADEURL);
+        strcat(url, "/");
         strcat(url, board());
         strcat(url, "_littlefs.bin");
         Log.verbose(F("Pulling Filesystem from: %s" CR), url);

@@ -36,7 +36,6 @@ void sendRequest()
         strcpy(url, UPGRADEURL);
 #endif
         strcat(url, VERSIONJSON);
-        Log.verbose(F("DEBUG: Checking %s." CR), url);
         request.open("GET", url);
         request.send();
     }
