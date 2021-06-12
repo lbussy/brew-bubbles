@@ -244,21 +244,15 @@ SOFTWARE. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Testing Upgrade URL
-//
-#ifndef TESTINGURL
-#define DOBETA // Comment out for prod code
-#define UPGRADEURL "http://www.brewbubbles.com/firmware/testing"
-#endif
-//
-//////////////////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////////////////
-//
 // Upgrade URL
 //
 #ifndef UPGRADEURL
-#define UPGRADEURL "http://www.brewbubbles.com/firmware"
+// #define DOBETA // Comment out for prod code
+#ifdef DOBETA
+#define UPGRADEURL "http://firmware.brewbubbles.com/testing"
+#else
+#define UPGRADEURL "http://firmware.brewbubbles.com"
+#endif
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
