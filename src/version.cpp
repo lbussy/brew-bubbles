@@ -22,9 +22,62 @@ SOFTWARE. */
 
 #include "version.h"
 
-const char *build() { return stringify(PIO_SRC_REV); }
+static const char *filename = VERSIONJSON;
+static char fs_ver[32];
+
+const char *project() { return stringify(PIO_SRC_NAM); }
+const char *fw_version() { return stringify(PIO_SRC_TAG); }
+const char *fs_version()
+{
+    fsver();
+    return (fs_ver);
+}
 const char *branch() { return stringify(PIO_SRC_BRH); }
-const char *version() { return stringify(PIO_SRC_TAG); }
+const char *build() { return stringify(PIO_SRC_REV); }
+const char *board() { return stringify(PIO_BOARD); }
+
+void fsver()
+{
+    StaticJsonDocument<96> doc;
+    // Filesystem Version
+    if (LittleFS.begin())
+    {
+        // Loads the configuration from a file on LittleFS
+        File file = LittleFS.open(filename, "r");
+        if (LittleFS.exists(filename) || !file)
+        {
+            // Parse the JSON object in the file
+            DeserializationError err = deserializeJson(doc, file);
+
+            if (!err)
+            {
+                if (!doc["fs_version"].isNull())
+                {
+                    const char *fs = doc["fs_version"];
+                    strlcpy(fs_ver, fs, sizeof(fs_ver));
+                    file.close();
+                    return;
+                }
+            }
+        }
+        else
+        {
+            Log.warning(F("Filesystem version not available." CR));
+            file.close();
+            File file = LittleFS.open(filename, "w");
+            strlcpy(fs_ver, "0.0.0", sizeof(fs_ver));
+            doc["fs_version"] = fs_ver;
+            serializeJsonPretty(doc, file);
+            file.close();
+        }
+    }
+    else
+    {
+        Log.error(F("Filesystem not available." CR));
+        strlcpy(fs_ver, "No FS", sizeof(fs_ver));
+    }
+    return;
+}
 
 /*
  * versionCompare: Compares two strings representing a semantic version

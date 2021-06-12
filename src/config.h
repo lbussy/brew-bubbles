@@ -224,30 +224,35 @@ SOFTWARE. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Set Version JSON location
+// File name for configuration JSON
 //
-#ifndef VERSIONJSONLOC
-#define VERSIONJSONLOC "http://www.brewbubbles.com/firmware/version.json"
+#ifndef CONFIGJSON
+#define CONFIGJSON "/config.json"
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Firmware URL
+// File name for version JSON
 //
-#ifndef FIRMWAREURL
-#define FIRMWAREURL "http://www.brewbubbles.com/firmware/firmware.bin"
+#ifndef VERSIONJSON
+#define VERSIONJSON "/version.json"
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////
 //
-// LittleFS URL
+// Upgrade URL
 //
-#ifndef LITTLEFSURL
-#define LITTLEFSURL "http://www.brewbubbles.com/firmware/littlefs.bin"
+#ifndef UPGRADEURL
+// #define DOBETA // Comment out for prod code
+#ifdef DOBETA
+#define UPGRADEURL "http://firmware.brewbubbles.com/testing"
+#else
+#define UPGRADEURL "http://firmware.brewbubbles.com"
+#endif
 #endif
 //
 //////////////////////////////////////////////////////////////////////////

@@ -22,7 +22,7 @@ SOFTWARE. */
 
 #include "jsonconfig.h"
 
-const char *filename = "/config.json";
+const char *filename = CONFIGJSON;
 Config config;
 
 extern const size_t capacitySerial = 1536;

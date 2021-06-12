@@ -65,7 +65,7 @@ void setup()
     if (bubbles.start()) // Initialize bubble counter
         Log.notice(F("Bubble counter initialized." CR));
 
-    Log.notice(F("Started %s version %s (%s) [%s]." CR), API_KEY, version(), branch(), build());
+    Log.notice(F("Started %s version %s/%s (%s) [%s]." CR), API_KEY, fw_version(), fs_version(), branch(), build());
 }
 
 void loop()
