@@ -1,1 +1,5 @@
-{"version": "2.2.3"}
+{
+    "version": "2.2.4-Alpha",
+    "fs_version": "2.2.4-Alpha",
+    "fw_version": "2.2.4-Alpha"
+}

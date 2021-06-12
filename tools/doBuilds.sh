@@ -24,6 +24,8 @@
 
 declare CWD GITNAME GITROOT GITTAG ENVIRONMENTS BINLOC PIO
 BINLOC="firmware"
+FSNAME="littlefs"
+DOPARTITIONS="false"
 
 get_pio() {
     echo -e "\nChecking PlatformIO environment."
@@ -89,8 +91,9 @@ create_version() {
     sleep 1
     cat << EOF | tee "$GITROOT/data/version.json" "$GITROOT/$BINLOC/version.json" > /dev/null || exit
 {
-    "fw_version": "$GITTAG",
-    "fs_version": "$GITTAG"
+    "version": "$GITTAG",
+    "fs_version": "$GITTAG",
+    "fw_version": "$GITTAG"
 }
 EOF
 }
@@ -115,8 +118,13 @@ copy_binaries() {
         do
             echo -e "Copying binaries for $env."
             cp "$GITROOT"/.pio/build/"$env"/firmware.bin "$GITROOT"/"$BINLOC"/"$env"_firmware.bin
-            cp "$GITROOT"/.pio/build/"$env"/partitions.bin "$GITROOT"/"$BINLOC"/"$env"_partitions.bin
-            cp "$GITROOT"/.pio/build/"$env"/spiffs.bin "$GITROOT"/"$BINLOC"/"$env"_spiffs.bin
+            cp "$GITROOT"/.pio/build/"$env"/firmware.bin "$GITROOT"/"$BINLOC"/firmware.bin # Legacy
+            if [ "$DOPARTITIONS" = "true" ]; then
+                cp "$GITROOT"/.pio/build/"$env"/partitions.bin "$GITROOT"/"$BINLOC"/"$env"_partitions.bin
+                cp "$GITROOT"/.pio/build/"$env"/partitions.bin "$GITROOT"/"$BINLOC"/partitions.bin
+            fi
+            cp "$GITROOT"/.pio/build/"$env"/"$FSNAME".bin "$GITROOT"/"$BINLOC"/"$env"_"$FSNAME".bin
+            cp "$GITROOT"/.pio/build/"$env"/"$FSNAME".bin "$GITROOT"/"$BINLOC"/"$FSNAME".bin #Legacy
         done
     else
         echo -e "\nERROR: Unable to copy files to $GITROOT/$BINLOC"
