@@ -22,6 +22,20 @@ SOFTWARE. */
 
 #include "tools.h"
 
+#include "execota.h"
+#include "wifihandler.h"
+#include "config.h"
+#include "bubbles.h"
+#include "brewersfriend.h"
+#include "brewfather.h"
+#include "thingspeaktarget.h"
+#include "target.h"
+#include <LittleFS.h>
+#include <ArduinoLog.h>
+#include <ArduinoJson.h>
+#include <EEPROM.h>
+#include <Arduino.h>
+
 void _delay(unsigned long ulDelay)
 {
     // Safe semi-blocking delay

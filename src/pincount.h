@@ -23,7 +23,6 @@ SOFTWARE. */
 #ifndef _PINCOUNT_H
 #define _PINCOUNT_H
 
-#include "config.h"
 #include <Arduino.h>
 
 void interruptSetup();

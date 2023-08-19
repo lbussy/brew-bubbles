@@ -22,6 +22,16 @@ SOFTWARE. */
 
 #include "pushhelper.h"
 
+#include "config.h"
+#include "bubbles.h"
+#include "target.h"
+#include "brewfather.h"
+#include "brewersfriend.h"
+#include "execota.h"
+#include <ArduinoLog.h>
+#include <ArduinoJson.h>
+#include <LCBUrl.h>
+
 IPAddress resolveHost(const char *hostname)
 {
     Log.verbose(F("Host lookup: %s." CR), hostname);

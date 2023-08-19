@@ -23,18 +23,6 @@ SOFTWARE. */
 #ifndef _TOOLS_H
 #define _TOOLS_H
 
-#include "config.h"
-#include "bubbles.h"
-#include "brewersfriend.h"
-#include "brewfather.h"
-#include "thingspeaktarget.h"
-#include "target.h"
-#include <LittleFS.h>
-#include <ArduinoLog.h>
-#include <ArduinoJson.h>
-#include <EEPROM.h>
-#include <Arduino.h>
-
 #define EEPROM_ADDRESS 0x00
 #define LASTBPM_JSON "lastBpm.json"
 

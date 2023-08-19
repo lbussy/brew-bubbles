@@ -23,14 +23,7 @@ SOFTWARE. */
 #ifndef _SERIALHANDLER_H
 #define _SERIALHANDLER_H
 
-#include "config.h"
-#include "tools.h"
-#include "ntp.h"
-#include "version.h"
-#include "thatVersion.h"
-#include <ArduinoLog.h>
-#include <TelnetSpy.h>
-#include <sntp.h>   // sntp_get_current_timestamp()
+#include <Arduino.h>
 
 void setSerial();
 

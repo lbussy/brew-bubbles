@@ -22,6 +22,13 @@ SOFTWARE. */
 
 #include "brewersfriend.h"
 
+#include "config.h"
+#include "pushhelper.h"
+#include "jsonconfig.h"
+#include <LCBUrl.h>
+#include <ArduinoLog.h>
+#include <Arduino.h>
+
 BFTarget *BFTarget::single = NULL;
 
 BFTarget *BFTarget::getInstance()

@@ -22,6 +22,13 @@ SOFTWARE. */
 
 #include "target.h"
 
+#include "config.h"
+#include "pushhelper.h"
+#include "jsonconfig.h"
+#include <LCBUrl.h>
+#include <ArduinoLog.h>
+#include <Arduino.h>
+
 Target *Target::single = NULL;
 
 Target *Target::getInstance()

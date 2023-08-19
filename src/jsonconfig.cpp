@@ -22,6 +22,9 @@ SOFTWARE. */
 
 #include "jsonconfig.h"
 
+#include "config.h"
+#include <LittleFS.h>
+
 const char *configFileName = CONFIGJSON;
 Config config;
 

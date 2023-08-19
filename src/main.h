@@ -31,26 +31,6 @@ SOFTWARE. */
 // RTC Memory Address for the DoubleResetDetector to use
 #define DRD_ADDRESS 0
 
-#include "serialhandler.h"
-#include "config.h"
-#include "execota.h"
-#include "jsonconfig.h"
-#include "webserver.h"
-#include "wifihandler.h"
-#include "version.h"
-#include "pushtarget.h"
-#include "target.h"
-#include "brewfather.h"
-#include "brewersfriend.h"
-#include "pushhelper.h"
-#include "bubbles.h"
-#include "mdns.h"
-#include "ntp.h"
-#include "thatVersion.h"
-#include <ESP_DoubleResetDetector.h>
-#include <ArduinoLog.h>
-#include <Arduino.h>
-
 extern struct Config config;
 extern bool loadConfig();
 extern struct ThatVersion thatVersion;

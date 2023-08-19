@@ -22,6 +22,21 @@ SOFTWARE. */
 
 #include "wifihandler.h"
 
+#include "config.h"
+#include "jsonconfig.h"
+#include "tools.h"
+#include "mdns.h"
+
+#ifdef ESP8266
+#include <ESP8266WiFi.h>
+#endif
+#ifdef ESP32
+#include <WiFi.h>
+#endif
+
+#include <Ticker.h>
+#include <ArduinoLog.h>
+
 AsyncWiFiManager awm;
 bool shouldSaveConfig = false;
 Ticker blinker;

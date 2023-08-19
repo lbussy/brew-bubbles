@@ -22,6 +22,12 @@ SOFTWARE. */
 
 #include "bubbles.h"
 
+#include "sensors.h"
+#include "ntp.h"
+#include "pincount.h"
+#include "tools.h"
+#include <ArduinoLog.h>
+
 Bubbles bubbles;
 volatile bool doBubble;
 volatile bool __attribute__((unused)) vesselDisconnected = false;  // Semaphore for vessel disconnected

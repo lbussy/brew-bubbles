@@ -23,6 +23,8 @@ SOFTWARE. */
 
 #include "pincount.h"
 
+#include "config.h"
+
 volatile int pulse;
 volatile bool __attribute__((unused)) blip = false; // Semaphore for bubble display
 

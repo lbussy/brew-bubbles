@@ -22,6 +22,12 @@ SOFTWARE. */
 
 #include "sensors.h"
 
+#include "config.h"
+#include "jsonconfig.h"
+#include <OneWire.h>
+#include <DS18B20.h>
+#include <ArduinoJson.h>
+
 // Device resolution
 #define TEMP_9_BIT  0x1F //  9 bit
 #define TEMP_10_BIT 0x3F // 10 bit

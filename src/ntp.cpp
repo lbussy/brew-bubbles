@@ -25,6 +25,19 @@ SOFTWARE. */
 
 #include "ntp.h"
 
+#ifdef ESP8266
+#include <ESP8266WiFi.h>
+#elif defined ESP32
+#include <WiFi.h>
+#endif
+
+#include "config.h"
+#include "tools.h"
+#include "serialhandler.h"
+#include <TZ.h>
+#include <Ticker.h>
+#include <ArduinoLog.h>
+
 #if LWIP_VERSION_MAJOR == 1
 #warning "Remember: You are using lwIP v1.x and this causes ntp time to act weird."
 #endif

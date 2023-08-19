@@ -22,6 +22,13 @@ SOFTWARE. */
 
 #include "mdns.h"
 
+#include "config.h"
+#include "jsonconfig.h"
+#include <ArduinoLog.h>
+#include <ESP8266mDNS.h>
+#include <ESP8266WiFi.h>
+#include <ArduinoJson.h>
+
 void mdnssetup()
 {
     if (!MDNS.begin(config.hostname))

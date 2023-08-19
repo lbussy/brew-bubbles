@@ -23,18 +23,7 @@ SOFTWARE. */
 #ifndef _NTP_H
 #define _NTP_H
 
-#ifdef ESP8266
-#include <ESP8266WiFi.h>
-#elif defined ESP32
-#include <WiFi.h>
-#endif
-
-#include "config.h"
-#include "tools.h"
-#include "serialhandler.h"
-#include <TZ.h>
-#include <Ticker.h>
-#include <ArduinoLog.h>
+#include <Arduino.h>
 
 void setClock();
 String getDTS();

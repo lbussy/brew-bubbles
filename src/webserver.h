@@ -23,29 +23,15 @@ SOFTWARE. */
 #ifndef _WEBSERVER_H
 #define _WEBSERVER_H
 
+#include "jsonconfig.h"
+#include "bubbles.h"
+#include <ESPAsyncWebServer.h>
+#include <Arduino.h>
+#include <ESP8266mDNS.h>
+
 #ifndef USE_LITTLEFS
 #define USE_LITTLEFS
 #endif
-
-#include "wifihandler.h"
-#include "execota.h"
-#include "bubbles.h"
-#include "jsonconfig.h"
-#include "version.h"
-#include "config.h"
-#include "thatVersion.h"
-#include "pushhelper.h"
-#include "tools.h"
-#include "uptime.h"
-#include <SPIFFSEditor.h>
-#include <ArduinoLog.h>
-#include <ArduinoJson.h>
-#include <AsyncJson.h>
-#include <LittleFS.h>
-#include <ESPAsyncWebServer.h>
-#include <ESP8266HTTPClient.h>
-#include <ESP8266mDNS.h>
-#include <Arduino.h>
 
 void initWebServer();
 void setRegPageAliases();
