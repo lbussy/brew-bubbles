@@ -22,8 +22,8 @@ SOFTWARE. */
 
 #include "version.h"
 
-static const char *filename = VERSIONJSON;
-static char fs_ver[32];
+const char *versionJSONFileName = VERSIONJSON;
+char fs_ver[32];
 
 const char *project() { return stringify(PIO_SRC_NAM); }
 const char *fw_version() { return stringify(PIO_SRC_TAG); }
@@ -43,8 +43,8 @@ void fsver()
     if (LittleFS.begin())
     {
         // Loads the configuration from a file on LittleFS
-        File file = LittleFS.open(filename, "r");
-        if (LittleFS.exists(filename) || !file)
+        File file = LittleFS.open(versionJSONFileName, "r");
+        if (LittleFS.exists(versionJSONFileName) || !file)
         {
             // Parse the JSON object in the file
             DeserializationError err = deserializeJson(doc, file);
@@ -64,7 +64,7 @@ void fsver()
         {
             Log.warning(F("Filesystem version not available." CR));
             file.close();
-            File file = LittleFS.open(filename, "w");
+            File file = LittleFS.open(versionJSONFileName, "w");
             strlcpy(fs_ver, "0.0.0", sizeof(fs_ver));
             doc["fs_version"] = fs_ver;
             serializeJsonPretty(doc, file);

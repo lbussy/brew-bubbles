@@ -22,7 +22,7 @@ SOFTWARE. */
 
 #include "jsonconfig.h"
 
-const char *filename = CONFIGJSON;
+const char *configFileName = CONFIGJSON;
 Config config;
 
 extern const size_t capacitySerial = 1536;
@@ -34,7 +34,7 @@ bool deleteConfigFile()
     {
         return false;
     }
-    return LittleFS.remove(filename);
+    return LittleFS.remove(configFileName);
 }
 
 bool loadConfig()
@@ -58,13 +58,13 @@ bool loadFile()
         return false;
     }
     // Loads the configuration from a file on File System
-    File file = LittleFS.open(filename, "r");
-    if (!LittleFS.exists(filename) || !file)
+    File file = LittleFS.open(configFileName, "r");
+    if (!LittleFS.exists(configFileName) || !file)
     {
         // Unable to open the file
         file.close();
-        File file = LittleFS.open(filename, "w");
-        if (!LittleFS.exists(filename) || !file)
+        File file = LittleFS.open(configFileName, "w");
+        if (!LittleFS.exists(configFileName) || !file)
         {
             // Still could not create a file
             return false;
@@ -72,8 +72,8 @@ bool loadFile()
         else
         {
             file.close();
-            file = LittleFS.open(filename, "r");
-            if (!LittleFS.exists(filename) || !file)
+            file = LittleFS.open(configFileName, "r");
+            if (!LittleFS.exists(configFileName) || !file)
             {
                 // Unable to open a file we created in the previous block
                 return false;
@@ -101,7 +101,7 @@ bool saveConfig()
 bool saveFile()
 {
     // Saves the configuration to a file on File System
-    File file = LittleFS.open(filename, "w");
+    File file = LittleFS.open(configFileName, "w");
     if (!file)
     {
         file.close();
@@ -157,7 +157,7 @@ bool serializeConfig(Print &dst)
 bool printFile()
 {
     // Prints the content of a file to the Serial
-    File file = LittleFS.open(filename, "r");
+    File file = LittleFS.open(configFileName, "r");
     if (!file)
         return false;
 
@@ -186,57 +186,57 @@ bool printConfig()
     return retval;
 }
 
-bool mergeJsonString(String newJson)
-{
-    // Serialize configuration
-    DynamicJsonDocument doc(capacityDeserial);
+// bool mergeJsonString(String newJson)
+// {
+//     // Serialize configuration
+//     DynamicJsonDocument doc(capacityDeserial);
 
-    // Parse directly from file
-    DeserializationError err = deserializeJson(doc, newJson);
-    if (err)
-        Serial.println(err.c_str());
+//     // Parse directly from file
+//     DeserializationError err = deserializeJson(doc, newJson);
+//     if (err)
+//         Serial.println(err.c_str());
 
-    return mergeJsonObject(doc);
-}
+//     return mergeJsonObject(doc);
+// }
 
-bool mergeJsonObject(JsonVariantConst src)
-{
-    // Serialize configuration
-    DynamicJsonDocument doc(capacityDeserial);
+// bool mergeJsonObject(JsonVariantConst src)
+// {
+//     // Serialize configuration
+//     DynamicJsonDocument doc(capacityDeserial);
 
-    // Create an object at the root
-    JsonObject root = doc.to<JsonObject>();
+//     // Create an object at the root
+//     JsonObject root = doc.to<JsonObject>();
 
-    // Fill the object
-    config.save(root);
+//     // Fill the object
+//     config.save(root);
 
-    // Merge in the configuration
-    if (merge(root, src))
-    {
-        // Move new object to config
-        config.load(root);
-        saveFile();
-        return true;
-    }
+//     // Merge in the configuration
+//     if (merge(root, src))
+//     {
+//         // Move new object to config
+//         config.load(root);
+//         saveFile();
+//         return true;
+//     }
 
-    return false;
-}
+//     return false;
+// }
 
-bool merge(JsonVariant dst, JsonVariantConst src)
-{
-    if (src.is<JsonObject>())
-    {
-        for (auto kvp : src.as<JsonObjectConst>())
-        {
-            merge(dst.getOrAddMember(kvp.key()), kvp.value());
-        }
-    }
-    else
-    {
-        dst.set(src);
-    }
-    return true;
-}
+// bool merge(JsonVariant dst, JsonVariantConst src)
+// {
+//     if (src.is<JsonObject>())
+//     {
+//         for (auto kvp : src.as<JsonObjectConst>())
+//         {
+//             merge(dst.getOrAddMember(kvp.key()), kvp.value());
+//         }
+//     }
+//     else
+//     {
+//         dst.set(src);
+//     }
+//     return true;
+// }
 
 void ApConfig::save(JsonObject obj) const
 {

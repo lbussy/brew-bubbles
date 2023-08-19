@@ -24,7 +24,7 @@ SOFTWARE. */
 
 #undef SERIAL
 #if DOTELNET == true
-ESPTelnet SerialAndTelnet;
+TelnetSpy SerialAndTelnet;
 #define SERIAL SerialAndTelnet // Use Telnet
 #else
 #define SERIAL Serial // Use hardware serial
@@ -49,31 +49,40 @@ void setSerial()
     SERIAL.setDebugOutput(false);
     // SERIAL.setDebugOutput(true);
     Log.begin(LOG_LEVEL, &SERIAL, true);
-    Log.setPrefix(printTimestamp);
+    Log.setPrefix(printPrefix);
     Log.notice(F("Serial logging started at %l." CR), BAUD);
 #endif
 }
 
+void printPrefix(Print* _logOutput, int logLevel) {
+    printTimestamp(_logOutput);
+    printLogLevel (_logOutput, logLevel);
+}
+
+void printLogLevel(Print* _logOutput, int logLevel) {
+    /// Show log description based on log level
+    switch (logLevel)
+    {
+        default:
+        case 0:_logOutput->print("SILENT " ); break;
+        case 1:_logOutput->print("FATAL "  ); break;
+        case 2:_logOutput->print("ERROR "  ); break;
+        case 3:_logOutput->print("WARNING "); break;
+        case 4:_logOutput->print("INFO "   ); break;
+        case 5:_logOutput->print("TRACE "  ); break;
+        case 6:_logOutput->print("VERBOSE "); break;
+    }   
+}
+
 void printTimestamp(Print *_logOutput)
 {
-    uint32 current_stamp;
-    current_stamp = sntp_get_current_timestamp();
-    if (current_stamp == 0)
-    {
-        char c[12];
-        sprintf(c, "%10lu ", millis());
-        _logOutput->print(c);
-    }
-    else
-    {
-        time_t now;
-        time_t rawtime = time(&now);
-        struct tm ts;
-        ts = *localtime(&rawtime);
-        char locTime[22] = {'\0'};
-        strftime(locTime, sizeof(locTime), "%FT%TZ ", &ts);
-        _logOutput->print(locTime);
-    }
+    time_t now;
+    time_t rawtime = time(&now);
+    struct tm ts;
+    ts = *localtime(&rawtime);
+    char locTime[22] = {'\0'};
+    strftime(locTime, sizeof(locTime), "%FT%TZ ", &ts);
+    _logOutput->print(locTime);
 }
 
 #else // DISABLE_LOGGING

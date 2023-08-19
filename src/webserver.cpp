@@ -25,6 +25,18 @@ SOFTWARE. */
 
 AsyncWebServer server(HTTPPORT);
 
+enum BB_METHODS
+{
+    BB_HTTP_GET = 0b00000001,
+    BB_HTTP_POST = 0b00000010,
+    BB_HTTP_DELETE = 0b00000100,
+    BB_HTTP_PUT = 0b00001000,
+    BB_HTTP_PATCH = 0b00010000,
+    BB_HTTP_HEAD = 0b00100000,
+    BB_HTTP_OPTIONS = 0b01000000,
+    BB_HTTP_ANY = 0b01111111,
+};
+
 void initWebServer()
 {
     setRegPageAliases();
@@ -66,26 +78,26 @@ void setActionPageHandlers()
 {
     // Action Page Handlers
 
-    server.on("/wifi2/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/wifi2/", BB_HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing /wifi2/." CR));
         request->send(LittleFS, "/wifi2.htm");
         resetWifi(); // Wipe settings, reset controller
     });
 
-    server.on("/reset/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/reset/", BB_HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing /reset/." CR));
         // Redirect to Reset page
         request->send(LittleFS, "/reset.htm");
         setDoReset();
     });
 
-    server.on("/otastart/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/otastart/", BB_HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing /otastart/." CR));
         request->send(200, F("text/plain"), F("200: OTA queued."));
         setDoOTA();
     });
 
-    server.on("/clearupdate/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/clearupdate/", BB_HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing /clearupdate/." CR));
         Log.verbose(F("Clearing any update flags." CR));
         config.dospiffs1 = false;
@@ -100,7 +112,7 @@ void setJsonHandlers()
 {
     // JSON Handlers
 
-    server.on("/resetreason/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/resetreason/", BB_HTTP_GET, [](AsyncWebServerRequest *request) {
         // Used to provide the reset reason json
         Log.verbose(F("Sending /resetreason/." CR));
 
@@ -119,7 +131,7 @@ void setJsonHandlers()
         request->send(200, F("text/plain"), resetreason);
     });
 
-    server.on("/heap/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/heap/", BB_HTTP_GET, [](AsyncWebServerRequest *request) {
         // Used to provide the heap json
         Log.verbose(F("Sending /heap/." CR));
 
@@ -128,7 +140,7 @@ void setJsonHandlers()
         JsonObject h = doc.createNestedObject("h");
 
         uint32_t free;
-        uint16_t max;
+        uint32_t max;
         uint8_t frag;
         ESP.getHeapStats(&free, &max, &frag);
 
@@ -141,7 +153,7 @@ void setJsonHandlers()
         request->send(200, F("text/plain"), heap);
     });
 
-    server.on("/uptime/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/uptime/", BB_HTTP_GET, [](AsyncWebServerRequest *request) {
         // Used to provide the uptime json
         Log.verbose(F("Sending /uptime/." CR));
 
@@ -159,14 +171,13 @@ void setJsonHandlers()
         u["hours"] = hours;
         u["minutes"] = minutes;
         u["seconds"] = seconds;
-        //u["millis"] = millis;
 
         String ut = "";
         serializeJson(doc, ut);
         request->send(200, F("text/plain"), ut);
     });
 
-    server.on("/bubble/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/bubble/", BB_HTTP_GET, [](AsyncWebServerRequest *request) {
         // Used to provide the Bubbles json
         Log.verbose(F("Sending /bubble/." CR));
 
@@ -191,7 +202,7 @@ void setJsonHandlers()
         request->send(200, F("application/json"), json);
     });
 
-    server.on("/thisVersion/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/thisVersion/", BB_HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Serving /thisVersion/." CR));
         StaticJsonDocument<192> doc;
 
@@ -205,7 +216,7 @@ void setJsonHandlers()
         request->send(200, F("application/json"), json);
     });
 
-    server.on("/thatVersion/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/thatVersion/", BB_HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Serving /thatVersion/." CR));
         StaticJsonDocument<96> doc;
 
@@ -219,7 +230,7 @@ void setJsonHandlers()
         request->send(200, F("application/json"), json);
     });
 
-    server.on("/config/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/config/", BB_HTTP_GET, [](AsyncWebServerRequest *request) {
         // Used to provide the Config json
         Log.verbose(F("Serving /config/." CR));
 
@@ -237,7 +248,7 @@ void setJsonHandlers()
 
 void setSettingsAliases()
 {
-    server.on("/settings/controller/", HTTP_POST, [](AsyncWebServerRequest *request) {
+    server.on("/settings/controller/", BB_HTTP_POST, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing post to /settings/controller/." CR));
         if (handleControllerPost(request))
         {
@@ -249,12 +260,12 @@ void setSettingsAliases()
         }
     });
 
-    server.on("/settings/controller/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    server.on("/settings/controller/", BB_HTTP_ANY, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Invalid method to /settings/tapcontrol/." CR));
         request->send(405, F("text/plain"), F("Method not allowed."));
     });
 
-    server.on("/settings/temperature/", HTTP_POST, [](AsyncWebServerRequest *request) {
+    server.on("/settings/temperature/", BB_HTTP_POST, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing post to /settings/tempcontrol/." CR));
         if (handleTemperaturePost(request))
         {
@@ -266,12 +277,12 @@ void setSettingsAliases()
         }
     });
 
-    server.on("/settings/temperature/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    server.on("/settings/temperature/", BB_HTTP_ANY, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Invalid method to /settings/tapcontrol/." CR));
         request->send(405, F("text/plain"), F("Method not allowed."));
     });
 
-    server.on("/settings/urltarget/", HTTP_POST, [](AsyncWebServerRequest *request) {
+    server.on("/settings/urltarget/", BB_HTTP_POST, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing post to /settings/urltarget/." CR));
         if (handleURLTargetPost(request))
         {
@@ -283,12 +294,12 @@ void setSettingsAliases()
         }
     });
 
-    server.on("/settings/urltarget/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    server.on("/settings/urltarget/", BB_HTTP_ANY, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Invalid method to /settings/tapcontrol/." CR));
         request->send(405, F("text/plain"), F("Method not allowed."));
     });
 
-    server.on("/settings/brewersfriendtarget/", HTTP_POST, [](AsyncWebServerRequest *request) {
+    server.on("/settings/brewersfriendtarget/", BB_HTTP_POST, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing post to /settings/brewersfriendtarget/." CR));
         if (handleBrewersFriendTargetPost(request))
         {
@@ -300,12 +311,12 @@ void setSettingsAliases()
         }
     });
 
-    server.on("/settings/brewersfriendtarget/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    server.on("/settings/brewersfriendtarget/", BB_HTTP_ANY, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Invalid method to /settings/brewersfriendtarget/." CR));
         request->send(405, F("text/plain"), F("Method not allowed."));
     });
 
-    server.on("/settings/brewfathertarget/", HTTP_POST, [](AsyncWebServerRequest *request) {
+    server.on("/settings/brewfathertarget/", BB_HTTP_POST, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing post to /settings/brewersfriendtarget/." CR));
         if (handleBrewfatherTargetPost(request))
         {
@@ -317,12 +328,12 @@ void setSettingsAliases()
         }
     });
 
-    server.on("/settings/brewfathertarget/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    server.on("/settings/brewfathertarget/", BB_HTTP_ANY, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Invalid method to /settings/brewersfriendtarget/." CR));
         request->send(405, F("text/plain"), F("Method not allowed."));
     });
 
-    server.on("/settings/thingspeaktarget/", HTTP_POST, [](AsyncWebServerRequest *request) {
+    server.on("/settings/thingspeaktarget/", BB_HTTP_POST, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Processing post to /settings/thingspeaktarget/." CR));
         if (handleThingSpeakTargetPost(request))
         {
@@ -334,7 +345,7 @@ void setSettingsAliases()
         }
     });
 
-    server.on("/settings/thingspeaktarget/", HTTP_ANY, [](AsyncWebServerRequest *request) {
+    server.on("/settings/thingspeaktarget/", BB_HTTP_ANY, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Invalid method to /settings/thingspeaktarget/." CR));
         request->send(405, F("text/plain"), F("Method not allowed."));
     });
@@ -746,7 +757,7 @@ void setEditor()
 #elif defined(ESP8266)
     server.addHandler(new SPIFFSEditor(SPIFFSEDITUSER, SPIFFSEDITPW));
 #endif
-    server.on("/edit/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/edit/", BB_HTTP_GET, [](AsyncWebServerRequest *request) {
         request->redirect("/edit");
     });
 #endif

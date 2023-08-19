@@ -29,13 +29,15 @@ SOFTWARE. */
 #include "version.h"
 #include "thatVersion.h"
 #include <ArduinoLog.h>
-#include <esptelnet.h>
+#include <TelnetSpy.h>
 #include <sntp.h>   // sntp_get_current_timestamp()
 
 void setSerial();
+
+void printPrefix(Print* _logOutput, int logLevel);
+void printLogLevel(Print* _logOutput, int logLevel);
 void printTimestamp(Print *_logOutput);
 
-void printTimestamp(Print *_logOutput);
 void serialLoop();
 
 extern struct ThatVersion thatVersion;
