@@ -22,6 +22,12 @@ SOFTWARE. */
 
 #include "sensors.h"
 
+// Device resolution
+#define TEMP_9_BIT  0x1F //  9 bit
+#define TEMP_10_BIT 0x3F // 10 bit
+#define TEMP_11_BIT 0x5F // 11 bit
+#define TEMP_12_BIT 0x7F // 12 bit
+
 double getTemp(uint8_t pin)
 {
     float retVal;
@@ -46,7 +52,7 @@ double getTemp(uint8_t pin)
 
             if (config.bubble.tempinf)
             {
-                retVal = sensor.getTempF();
+                retVal = (sensor.getTempC() * (9/5)) + 32;
                 if (pin == AMBSENSOR)
                 {
                     retVal = retVal + config.calibrate.room;

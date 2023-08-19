@@ -53,7 +53,6 @@ SOFTWARE. */
 
 extern struct Config config;
 extern bool loadConfig();
-extern const char *filename;
 extern struct ThatVersion thatVersion;
 extern struct Bubbles bubbles;
 extern volatile bool doBubble;
