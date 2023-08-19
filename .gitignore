@@ -4,6 +4,7 @@
 .piolibdeps
 .vscode
 *.code-workspace
+firmware
 
 # Documentation working files
 docs/_build/
