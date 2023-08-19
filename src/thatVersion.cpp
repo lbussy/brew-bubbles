@@ -22,6 +22,11 @@ SOFTWARE. */
 
 #include "thatVersion.h"
 
+#include "config.h"
+#include <ArduinoLog.h>
+#include <ESPAsyncTCP.h>
+#include <Arduino.h>
+
 asyncHTTPrequest request;
 ThatVersion __attribute__((unused)) thatVersion;
 

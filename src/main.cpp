@@ -21,6 +21,27 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
 #include "main.h"
+#include "serialhandler.h"
+#include "config.h"
+#include "execota.h"
+#include "jsonconfig.h"
+#include "webserver.h"
+#include "wifihandler.h"
+#include "version.h"
+#include "pushtarget.h"
+#include "target.h"
+#include "brewfather.h"
+#include "brewersfriend.h"
+#include "pushhelper.h"
+#include "bubbles.h"
+#include "mdns.h"
+#include "ntp.h"
+#include "thatVersion.h"
+#include "tools.h"
+#include <ESP_DoubleResetDetector.h>
+#include <ArduinoLog.h>
+#include <Ticker.h>
+#include <Arduino.h>
 
 DoubleResetDetector* drd;
 

@@ -22,6 +22,12 @@ SOFTWARE. */
 
 #include "thingspeaktarget.h"
 
+#include "config.h"
+#include <ThingSpeak.h>
+#include <LCBUrl.h>
+#include <ArduinoLog.h>
+#include <Arduino.h>
+
 bool pushThingspeak()
 {
     Log.verbose(F("Triggered %s push." CR), tsName);

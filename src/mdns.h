@@ -27,12 +27,6 @@ SOFTWARE. */
 #ifndef _MDNS_H
 #define _MDNS_H
 
-#include "config.h"
-#include "jsonconfig.h"
-#include <ArduinoLog.h>
-#include <ESP8266mDNS.h>
-#include <ESP8266WiFi.h>
-
 void mdnssetup();
 void mdnsreset();
 

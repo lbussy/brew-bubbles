@@ -22,6 +22,20 @@ SOFTWARE. */
 
 #include "thingSpeakWork.h"
 
+#include "config.h"
+#include "jsonconfig.h"
+
+#ifdef ESP32
+#include <WiFi.h>
+#include <HTTPClient.h>
+#elif defined ESP8266
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#endif
+
+#include <ArduinoJson.h>
+#include <ArduinoLog.h>
+
 /*
 	Function: createChannel
 

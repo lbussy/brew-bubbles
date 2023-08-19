@@ -22,6 +22,9 @@ SOFTWARE. */
 
 #include "uptime.h"
 
+#include "config.h"
+#include <Arduino.h>
+
 static int refresh = UPTIME_REFRESH * 1000;
 static unsigned long uptimeNow;
 static int days;

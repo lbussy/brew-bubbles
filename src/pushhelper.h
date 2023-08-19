@@ -23,13 +23,7 @@ SOFTWARE. */
 #ifndef _PUSHHELPER_H
 #define _PUSHHELPER_H
 
-#include "config.h"
-#include "bubbles.h"
 #include "pushtarget.h"
-#include "target.h"
-#include "brewfather.h"
-#include "brewersfriend.h"
-#include "execota.h"
 #include <ESP8266WiFi.h>
 
 IPAddress resolveHost(const char hostname[129]);

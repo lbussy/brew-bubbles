@@ -23,10 +23,8 @@ SOFTWARE. */
 #ifndef _SENSORS_H
 #define _SENSORS_H
 
-#include "config.h"
 #include "jsonconfig.h"
-#include <OneWire.h>
-#include <DS18B20.h>
+#include <Arduino.h>
 
 #define DEVICE_DISCONNECTED_C -127
 #define DEVICE_DISCONNECTED_F -196.6

@@ -22,6 +22,15 @@ SOFTWARE. */
 
 #include "serialhandler.h"
 
+#include "config.h"
+#include "tools.h"
+#include "ntp.h"
+#include "version.h"
+#include "thatVersion.h"
+#include <ArduinoLog.h>
+#include <TelnetSpy.h>
+#include <sntp.h>   // sntp_get_current_timestamp()
+
 #undef SERIAL
 #if DOTELNET == true
 TelnetSpy SerialAndTelnet;

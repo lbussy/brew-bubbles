@@ -23,23 +23,9 @@ SOFTWARE. */
 #ifndef _WIFIHANDLER_H
 #define _WIFIHANDLER_H
 
-#define WM_ASYNC
-
-#include "config.h"
-#include "jsonconfig.h"
-#include "tools.h"
-#include "mdns.h"
-
-#ifdef ESP8266
-#include <ESP8266WiFi.h>
-#endif
-#ifdef ESP32
-#include <WiFi.h>
-#endif
 #include <AsyncWiFiManager.h>
 
-#include <Ticker.h>
-#include <ArduinoLog.h>
+#define WM_ASYNC
 
 void wifiBlinker();
 void doWiFi();

@@ -22,6 +22,15 @@ SOFTWARE. */
 
 #include "execota.h"
 
+#include "config.h"
+#include "tools.h"
+#include "webserver.h"
+#include "version.h"
+#include "wifihandler.h"
+#include <ESP8266WiFi.h>
+#include <ESP8266httpUpdate.h>
+#include <ArduinoLog.h>
+
 #if LWIP_VERSION_MAJOR == 2
 #warning "Remember: You are using lwIP v2.x and this causes filesystem OTA to act weird."
 #endif

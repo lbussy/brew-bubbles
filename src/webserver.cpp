@@ -22,6 +22,21 @@ SOFTWARE. */
 
 #include "webserver.h"
 #include "resetreasons.h"
+#include "wifihandler.h"
+#include "execota.h"
+#include "version.h"
+#include "config.h"
+#include "thatVersion.h"
+#include "pushhelper.h"
+#include "tools.h"
+#include "uptime.h"
+#include "mdns.h"
+#include <SPIFFSEditor.h>
+#include <ArduinoLog.h>
+#include <ArduinoJson.h>
+#include <AsyncJson.h>
+#include <LittleFS.h>
+#include <ESP8266HTTPClient.h>
 
 AsyncWebServer server(HTTPPORT);
 

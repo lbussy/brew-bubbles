@@ -24,9 +24,6 @@ SOFTWARE. */
 #define _BUBBLES_H
 
 #include "config.h"
-#include "sensors.h"
-#include "ntp.h"
-#include "pincount.h"
 #include <CircularBuffer.h>
 #include <Arduino.h>
 

@@ -23,12 +23,8 @@ SOFTWARE. */
 #ifndef _THATVERSION_H
 #define _THATVERSION_H
 
-#include "config.h"
-#include <ArduinoLog.h>
-#include <ESPAsyncTCP.h>
-#include <asyncHTTPrequest.h>
 #include <ArduinoJson.h>
-#include <Arduino.h>
+#include <asyncHTTPrequest.h>
 
 struct ThatVersion
 {

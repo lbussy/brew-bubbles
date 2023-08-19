@@ -23,22 +23,10 @@ SOFTWARE. */
 #ifndef _THINGSPEAKWORK_H
 #define _THINGSPEAKWORK_H
 
+#include <Arduino.h>
+
 #define THINGSPEAK_URL "api.thingspeak.com"
 #define THINGSPEAK_PORT_NUMBER 80
-
-#include "config.h"
-#include "jsonconfig.h"
-
-#ifdef ESP32
-#include <WiFi.h>
-#include <HTTPClient.h>
-#elif defined ESP8266
-#include <ESP8266WiFi.h>
-#include <ESP8266HTTPClient.h>
-#endif
-
-#include <ArduinoJson.h>
-#include <ArduinoLog.h>
 
 const char *getNewBBChannel(const char *key, const char *bubName);
 

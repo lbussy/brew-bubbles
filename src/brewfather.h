@@ -23,13 +23,7 @@ SOFTWARE. */
 #ifndef _BREWFTARGET_H
 #define _BREWFTARGET_H
 
-#include "config.h"
 #include "pushtarget.h"
-#include "pushhelper.h"
-#include "jsonconfig.h"
-#include <LCBUrl.h>
-#include <ArduinoLog.h>
-#include <Arduino.h>
 
 class BrewfTarget
 {

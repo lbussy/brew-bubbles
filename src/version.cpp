@@ -22,6 +22,11 @@ SOFTWARE. */
 
 #include "version.h"
 
+#include "config.h"
+#include <LittleFS.h>
+#include <ArduinoLog.h>
+#include <ArduinoJson.h>
+
 const char *versionJSONFileName = VERSIONJSON;
 char fs_ver[32];
 

@@ -23,10 +23,6 @@ SOFTWARE. */
 #ifndef _VERSION_H
 #define _VERSION_H
 
-#include "config.h"
-#include <LittleFS.h>
-#include <ArduinoLog.h>
-#include <ArduinoJson.h>
 #include <Arduino.h>
 
 #define stringify(s) _stringifyDo(s)
