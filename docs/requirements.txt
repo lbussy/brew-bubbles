@@ -1,4 +1,7 @@
-# Remember to: `pip install -r requirements.txt --upgrade`
-recommonmark
+# Remember to: `pip3 install -r requirements.txt --upgrade`
+myst
+myst_parser
 sphinx
 sphinx_bootstrap_theme
+sphinx_markdown_parser
+esbonio
