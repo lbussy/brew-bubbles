@@ -23,6 +23,7 @@ SOFTWARE. */
 #ifndef _TOOLS_H
 #define _TOOLS_H
 
+#include "config.h"
 #include "bubbles.h"
 #include "brewersfriend.h"
 #include "brewfather.h"

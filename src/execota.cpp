@@ -23,7 +23,7 @@ SOFTWARE. */
 #include "execota.h"
 
 #if LWIP_VERSION_MAJOR == 2
-#warning "Remember: You are using lwIP v2.x and this causes filesystem OTA tp act weird."
+#warning "Remember: You are using lwIP v2.x and this causes filesystem OTA to act weird."
 #endif
 
 void execfw()
@@ -40,12 +40,20 @@ void execfw()
     saveConfig();
 
     ESPhttpUpdate.setLedPin(LED, LOW);
-    // "http://www.brewbubbles.com/firmware/firmware.bin"
     WiFiClient _client;
-    Log.verbose(F("Pulling Firmware from: %s" CR), F(FIRMWAREURL));
+    char url[128];
+#ifdef DOBETA
+    strcpy(url, UPGRADEURL);
+#else
+    strcpy(url, UPGRADEURL);
+#endif
+    strcat(url, "/");
+    strcat(url, board());
+    strcat(url, "_firmware.bin");
+    Log.verbose(F("Pulling Firmware from: %s" CR), url);
     config.nodrd = true;
     saveConfig();
-    t_httpUpdate_return ret = ESPhttpUpdate.update(_client, F(FIRMWAREURL), "0");
+    t_httpUpdate_return ret = ESPhttpUpdate.update(_client, url, "0");
 
     switch (ret)
     {
@@ -108,8 +116,13 @@ void execspiffs()
         ESPhttpUpdate.setLedPin(LED, LOW);
         // "http://www.brewbubbles.com/firmware/spiffs.bin"
         WiFiClient client;
-        Log.verbose(F("Pulling Filesystem from: %s" CR), F(LITTLEFSURL));
-        t_httpUpdate_return ret = ESPhttpUpdate.updateFS(client, F(LITTLEFSURL), "");
+        char url[128];
+        strcpy(url, UPGRADEURL);
+        strcat(url, "/");
+        strcat(url, board());
+        strcat(url, "_littlefs.bin");
+        Log.verbose(F("Pulling Filesystem from: %s" CR), url);
+        t_httpUpdate_return ret = ESPhttpUpdate.updateFS(client, url, "");
 
         switch (ret)
         {

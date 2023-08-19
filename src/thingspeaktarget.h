@@ -23,6 +23,7 @@ SOFTWARE. */
 #ifndef _TSTARGET_H
 #define _TSTARGET_H
 
+#include "config.h"
 #include "jsonconfig.h"
 #include "bubbles.h"
 #include <ThingSpeak.h>

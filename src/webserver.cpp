@@ -153,13 +153,13 @@ void setJsonHandlers()
         const int hours = uptimeHours();
         const int minutes = uptimeMinutes();
         const int seconds = uptimeSeconds();
-        const int millis = uptimeMillis();
+        //const int millis = uptimeMillis();
 
         u["days"] = days;
         u["hours"] = hours;
         u["minutes"] = minutes;
         u["seconds"] = seconds;
-        u["millis"] = millis;
+        //u["millis"] = millis;
 
         String ut = "";
         serializeJson(doc, ut);
@@ -193,10 +193,10 @@ void setJsonHandlers()
 
     server.on("/thisVersion/", HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Serving /thisVersion/." CR));
-        const size_t capacity = JSON_OBJECT_SIZE(3);
-        DynamicJsonDocument doc(capacity);
+        StaticJsonDocument<192> doc;
 
-        doc["version"] = version();
+        doc["fw_version"] = fw_version();
+        doc["fs_version"] = fs_version();
         doc["branch"] = branch();
         doc["build"] = build();
 
@@ -207,11 +207,12 @@ void setJsonHandlers()
 
     server.on("/thatVersion/", HTTP_GET, [](AsyncWebServerRequest *request) {
         Log.verbose(F("Serving /thatVersion/." CR));
-        const size_t capacity = JSON_OBJECT_SIZE(1);
-        DynamicJsonDocument doc(capacity);
+        StaticJsonDocument<96> doc;
 
-        const char *version = thatVersion.version;
-        doc["version"] = version;
+        const char *fw_version = thatVersion.fw_version;
+        const char *fs_version = thatVersion.fs_version;
+        doc["fs_version"] = fw_version;
+        doc["fw_version"] = fs_version;
 
         String json;
         serializeJsonPretty(doc, json);

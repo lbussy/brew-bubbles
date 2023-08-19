@@ -33,7 +33,7 @@ void interruptSetup()
     attachInterrupt(digitalPinToInterrupt(COUNTPIN), handleInterrupt, RISING);
 }
 
-void ICACHE_RAM_ATTR handleInterrupt()
+void IRAM_ATTR handleInterrupt()
 {
     pulse++;
     blip = true;
