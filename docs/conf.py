@@ -27,7 +27,6 @@ copyright = u'2019-2021, Lee C. Bussy'
 author = u'Lee C. Bussy'
 
 # Get 0.0.0 version from latest Git tag
-# Get 0.0.0 version from latest Git tag
 vercmd = "git describe --tags --abbrev=0"
 tagcmd = "git describe --tags"
 try:
