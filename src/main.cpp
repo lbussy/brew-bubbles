@@ -42,13 +42,30 @@ SOFTWARE. */
 #include <ArduinoLog.h>
 #include <Ticker.h>
 #include <Arduino.h>
+#include <ESP8266mDNS.h>
 
-DoubleResetDetector* drd;
+DoubleResetDetector *drd;
+
+Ticker getThatVer; // Poll for server version
+Ticker bubUpdate;  // Bubble loop to get periodic readings
+Ticker urlTarget;  // Target timer
+Ticker bfTimer;    // Brewer's Friend timer
+Ticker brewfTimer; // Brewfather timer
+Ticker tsTimer;    // ThingSpeak timer
 
 void setup()
 {
     drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
     setSerial();
+
+    if (!LittleFS.begin())
+    {
+        Log.fatal(F("Unable to mount filesystem." CR));
+        while (1)
+        {
+            ;
+        }
+    }
 
     if (loadConfig())
         Log.notice(F("Configuration loaded." CR));
@@ -77,93 +94,74 @@ void setup()
         doWiFi();
     }
 
-    execspiffs();        // Check for pending File System update
-    setClock();          // Set NTP Time
-    loadBpm();           // Get last BPM reading if it was a controlled reboot
-    mdnssetup();         // Set up mDNS responder
-    initWebServer();     // Turn on web server
-    doPoll();            // Get server version at startup
+    execspiffs();         // Check for pending File System update
+    setClock();           // Set NTP Time
+    loadBpm();            // Get last BPM reading if it was a controlled reboot
+    mdnssetup();          // Set up mDNS responder
+    initWebServer();      // Turn on web server
+    if (getThatVersion()) // Get server version at startup
+        Log.notice(F("Obtained available version." CR));
     if (bubbles.start()) // Initialize bubble counter
         Log.notice(F("Bubble counter initialized." CR));
 
     Log.notice(F("Started %s version %s/%s (%s) [%s]." CR), API_KEY, fw_version(), fs_version(), branch(), build());
+
+    getThatVer.attach(POLLSERVERVERSION, getThatVersion);             // Poll for server version
+    bubUpdate.attach(BUBLOOP, setDoBub);                              // Bubble loop to get periodic readings
+    urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);     // Target timer
+    bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);    // Brewer's Friend timer
+    brewfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget); // Brewfather timer
+    tsTimer.attach(config.thingspeak.freq * 60, setDoTSTarget);       // ThingSpeak timer
 }
 
 void loop()
 {
-    // Poll for server version
-    Ticker getThatVersion;
-    getThatVersion.attach(POLLSERVERVERSION, doPoll);
+    // Handle DRD timeout
+    drd->loop();
 
-    // Bubble loop to get periodic readings
-    Ticker bubUpdate;
-    bubUpdate.attach(BUBLOOP, setDoBub);
+    // Handle semaphores - No radio work in a Ticker!
+    tickerLoop();
 
-    // Target timer
-    Ticker urlTarget;
-    urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
+    // Toggle LED according to sensor
+    digitalWrite(LED, !digitalRead(COUNTPIN));
 
-    // Brewer's friend timer
-    Ticker bfTimer;
-    bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
+    // Handle mDNS requests
+    MDNS.update();
 
-    // Brewfather timer
-    Ticker brewfTimer;
-    brewfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
-
-    // ThingSpeak timer
-    Ticker tsTimer;
-    tsTimer.attach(config.thingspeak.freq * 60, setDoTSTarget);
-
-    while (true)
+    // If target frequencies needs to be updated, update here
+    if (config.urltarget.update)
     {
-        // Handle DRD timeout
-        drd->loop();
-
-        // Handle semaphores - No radio work in a Ticker!
-        tickerLoop();
-
-        // Toggle LED according to sensor
-        digitalWrite(LED, !digitalRead(COUNTPIN));
-
-        // Handle mDNS requests
-        MDNS.update();
-
-        // If target frequencies needs to be updated, update here
-        if (config.urltarget.update)
-        {
-            Log.notice(F("Resetting URL Target frequency timer to %l minutes." CR), config.urltarget.freq);
-            urlTarget.detach();
-            urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
-            config.urltarget.update = false;
-            saveConfig();
-        }
-        if (config.brewersfriend.update)
-        {
-            Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
-            bfTimer.detach();
-            bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
-            config.brewersfriend.update = false;
-            saveConfig();
-        }
-        if (config.brewfather.update)
-        {
-            Log.notice(F("Resetting Brewfather frequency timer to %l minutes." CR), config.brewfather.freq);
-            brewfTimer.detach();
-            brewfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
-            config.brewfather.update = false;
-            saveConfig();
-        }
-        if (config.thingspeak.update)
-        {
-            Log.notice(F("Resetting ThingSpeak frequency timer to %l minutes." CR), config.thingspeak.freq);
-            tsTimer.detach();
-            tsTimer.attach(config.thingspeak.freq * 60, setDoTSTarget);
-            config.thingspeak.update = false;
-            saveConfig();
-        }
-        serialLoop();
-        maintenanceLoop();
-        yield();
+        Log.notice(F("Resetting URL Target frequency timer to %l minutes." CR), config.urltarget.freq);
+        urlTarget.detach();
+        urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
+        config.urltarget.update = false;
+        saveConfig();
     }
+    if (config.brewersfriend.update)
+    {
+        Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
+        bfTimer.detach();
+        bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
+        config.brewersfriend.update = false;
+        saveConfig();
+    }
+    if (config.brewfather.update)
+    {
+        Log.notice(F("Resetting Brewfather frequency timer to %l minutes." CR), config.brewfather.freq);
+        brewfTimer.detach();
+        brewfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
+        config.brewfather.update = false;
+        saveConfig();
+    }
+    if (config.thingspeak.update)
+    {
+        Log.notice(F("Resetting ThingSpeak frequency timer to %l minutes." CR), config.thingspeak.freq);
+        tsTimer.detach();
+        tsTimer.attach(config.thingspeak.freq * 60, setDoTSTarget);
+        config.thingspeak.update = false;
+        saveConfig();
+    }
+    serialLoop();
+    maintenanceLoop();
+    yield();
 }

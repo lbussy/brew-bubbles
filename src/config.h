@@ -247,12 +247,13 @@ SOFTWARE. */
 // Upgrade URL
 //
 #ifndef UPGRADEURL
-// #define DOBETA // Comment out for prod code
-#ifdef DOBETA
-#define UPGRADEURL "http://firmware.brewbubbles.com/testing"
+#ifdef DOBETA // Define for debug version
+#define UPGRADEURL "firmware.brewbubbles.com/testing"
 #else
-#define UPGRADEURL "http://firmware.brewbubbles.com"
+#define UPGRADEURL "firmware.brewbubbles.com"
 #endif
+#define UPGRADEENDPOINT "/version.json"
+#define UPGRADEPORT 80
 #endif
 //
 //////////////////////////////////////////////////////////////////////////

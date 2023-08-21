@@ -29,6 +29,8 @@ SOFTWARE. */
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
 
+extern struct Config config;
+
 void mdnssetup()
 {
     if (!MDNS.begin(config.hostname))

@@ -30,6 +30,7 @@ SOFTWARE. */
 #include <ArduinoLog.h>
 #include <TelnetSpy.h>
 #include <sntp.h>   // sntp_get_current_timestamp()
+#include <ArduinoJson.h>
 
 #undef SERIAL
 #if DOTELNET == true

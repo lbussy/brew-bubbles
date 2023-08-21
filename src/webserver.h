@@ -23,37 +23,22 @@ SOFTWARE. */
 #ifndef _WEBSERVER_H
 #define _WEBSERVER_H
 
-#include "jsonconfig.h"
-#include "bubbles.h"
-#include <ESPAsyncWebServer.h>
 #include <Arduino.h>
-#include <ESP8266mDNS.h>
-
-#ifndef USE_LITTLEFS
-#define USE_LITTLEFS
-#endif
 
 void initWebServer();
+bool loadFromFS(String path);
+void handleNotFound();
 void setRegPageAliases();
 void setActionPageHandlers();
 void setJsonHandlers();
 void setSettingsAliases();
-void setEditor();
 void stopWebServer();
 
-bool handleControllerPost(AsyncWebServerRequest *request);
-bool handleTemperaturePost(AsyncWebServerRequest *request);
-bool handleURLTargetPost(AsyncWebServerRequest *request);
-bool handleBrewersFriendTargetPost(AsyncWebServerRequest *request);
-bool handleBrewfatherTargetPost(AsyncWebServerRequest *request);
-bool handleThingSpeakTargetPost(AsyncWebServerRequest *request);
-
-extern struct Config config;
-extern struct ThatVersion thatVersion;
-extern struct Bubbles bubbles;
-extern const size_t capacityDeserial;
-extern const size_t capacitySerial;
-extern const char *resetReason[7];
-extern const char *resetDescription[7];
+bool handleControllerPost();
+bool handleTemperaturePost();
+bool handleURLTargetPost();
+bool handleBrewersFriendTargetPost();
+bool handleBrewfatherTargetPost();
+bool handleThingSpeakTargetPost();
 
 #endif // _WEBSERVER_H
