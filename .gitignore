@@ -58,3 +58,6 @@ firmware/*.spec
 *.exe
 !flashFirmware.exe
 !flashFirmware_win.exe
+
+# Mac Specific
+.DS_Store
