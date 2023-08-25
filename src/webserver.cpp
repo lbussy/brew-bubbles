@@ -261,8 +261,7 @@ void setJsonHandlers()
             // Used to provide the reset reason json
             Log.verbose(F("Sending /resetreason/." LF));
 
-            const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2); // TODO: Size this
-            StaticJsonDocument<capacity> doc;
+            StaticJsonDocument<192> doc;
             JsonObject r = doc.createNestedObject("r");
 
             rst_info *_reset = ESP.getResetInfoPtr();
@@ -273,15 +272,14 @@ void setJsonHandlers()
 
             String resetreason;
             serializeJson(doc, resetreason);
-            webserver.send(200, F("text/plain"), resetreason); });
+            webserver.send(200, F("application/json"), resetreason); });
 
     webserver.on("/heap/", HTTP_GET, []()
                  {
             // Used to provide the heap json
             Log.verbose(F("Sending /heap/." LF));
 
-            const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(3); // TODO: Size this
-            StaticJsonDocument<capacity> doc;
+            StaticJsonDocument<64> doc;
             JsonObject h = doc.createNestedObject("h");
 
             uint32_t free;
@@ -295,15 +293,14 @@ void setJsonHandlers()
 
             String heap;
             serializeJson(doc, heap);
-            webserver.send(200, F("text/plain"), heap); });
+            webserver.send(200, F("application/json"), heap); });
 
     webserver.on("/uptime/", HTTP_GET, []()
                  {
             // Used to provide the uptime json
             Log.verbose(F("Sending /uptime/." LF));
 
-            const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(5); // TODO: Size this
-            StaticJsonDocument<capacity> doc;
+            StaticJsonDocument<96> doc;
             JsonObject u = doc.createNestedObject("u");
 
             const int days = uptimeDays();
@@ -319,15 +316,14 @@ void setJsonHandlers()
 
             String ut = "";
             serializeJson(doc, ut);
-            webserver.send(200, F("text/plain"), ut); });
+            webserver.send(200, F("application/json"), ut); });
 
     webserver.on("/bubble/", HTTP_GET, []()
                  {
             // Used to provide the Bubbles json
             Log.verbose(F("Sending /bubble/." LF));
 
-            const size_t capacity = JSON_OBJECT_SIZE(8) + 210; // TODO: Size this
-            StaticJsonDocument<capacity> doc;
+            StaticJsonDocument<384> doc;
 
             doc[F("api_key")] = F(API_KEY);
             doc[F("device_source")] = F(SOURCE);
@@ -344,12 +340,12 @@ void setJsonHandlers()
             String bubble;
             serializeJson(doc, bubble);
 
-            webserver.send(200, F("text/plain"), bubble); });
+            webserver.send(200, F("application/json"), bubble); });
 
     webserver.on("/thisVersion/", HTTP_GET, []()
                  {
             Log.verbose(F("Serving /thisVersion/." LF));
-            StaticJsonDocument<256> doc; // TODO: Size this
+            StaticJsonDocument<192> doc;
 
             doc["fw_version"] = fw_version();
             doc["fs_version"] = fs_version();
@@ -358,12 +354,12 @@ void setJsonHandlers()
 
             String version;
             serializeJson(doc, version);
-            webserver.send(200, F("text/plain"), version); });
+            webserver.send(200, F("application/json"), version); });
 
     webserver.on("/thatVersion/", HTTP_GET, []()
                  {
             Log.verbose(F("Serving /thatVersion/." LF));
-            StaticJsonDocument<192> doc; // TODO: Size this
+            StaticJsonDocument<192> doc;
 
             const char *fw_version = thatVersion.fw_version;
             const char *fs_version = thatVersion.fs_version;
@@ -372,7 +368,7 @@ void setJsonHandlers()
 
             String version;
             serializeJson(doc, version);
-            webserver.send(200, F("text/plain"), version); });
+            webserver.send(200, F("application/json"), version); });
 
     webserver.on("/config/", HTTP_GET, []()
                  {
@@ -387,7 +383,7 @@ void setJsonHandlers()
             serializeJson(doc, json_config);            // Serialize JSON to String
 
             //request->header("Cache-Control: no-store");
-            webserver.send(200, F("text/plain"), json_config); });
+            webserver.send(200, F("application/json"), json_config); });
 }
 
 void setSettingsAliases()
@@ -945,5 +941,5 @@ void stopWebServer()
 {
     webserver.close();
     webserver.stop();
-    Log.notice(F("Web webserver stopped." CR));
+    Log.notice(F("Web webserver stopped." LF));
 }
