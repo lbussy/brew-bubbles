@@ -21,180 +21,245 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
 #include "webserver.h"
-#include "resetreasons.h"
-#include "wifihandler.h"
-#include "execota.h"
-#include "version.h"
-#include "config.h"
-#include "thatVersion.h"
-#include "pushhelper.h"
-#include "tools.h"
-#include "uptime.h"
-#include "mdns.h"
-#include "jsonconfig.h"
-#include "bubbles.h"
-#include <Arduino.h>
-#include <ESP8266mDNS.h>
+
+#include <ESP8266WebServer.h>
+#include <LittleFS.h>
 #include <ArduinoLog.h>
 #include <ArduinoJson.h>
-#include <LittleFS.h>
-#include <ESP8266WebServer.h>
 
-extern struct Config config;
-extern struct ThatVersion thatVersion;
-extern struct Bubbles bubbles;
-extern const size_t capacityDeserial;
+#include "bubbles.h"
+#include "version"
+#include "config.h"
+#include "editfs.h"
+#include "jsonconfig.h"
+#include "resetreasons.h"
+#include "thatVersion.h"
+#include "uptime.h"
+#include "mdns.h"
+#include "wifihandler.h"
+#include "version.h"
+
 extern const size_t capacitySerial;
-extern const char *resetReason[7];
-extern const char *resetDescription[7];
+extern const size_t capacityDeserial;
+extern struct Config config;
 
-ESP8266WebServer server(HTTPPORT);
+extern FS *fileSystem;
+extern bool fsOK;
 
-void initWebServer()
+extern ThatVersion thatVersion;
+extern Bubbles bubbles;
+
+ESP8266WebServer webserver(HTTPPORT);
+
+static const char TEXT_PLAIN[] PROGMEM = "text/plain";
+
+////////////////////////////////
+// Utils to return HTTP codes, and determine content-type
+
+void replyOK()
 {
-    setRegPageAliases();
-    setActionPageHandlers();
-    setJsonHandlers();
-    setSettingsAliases();
-
-    // File not found handler
-
-    server.onNotFound(handleNotFound);
-
-    server.begin();
-
-    Log.notice(F("Async HTTP server started on port %l." CR), HTTPPORT);
-    Log.verbose(F("Open: http://%s.local to view controller application." CR), WiFi.hostname().c_str());
+    webserver.send(200, FPSTR(TEXT_PLAIN), "");
 }
 
+void replyOKWithMsg(String msg)
+{
+    webserver.send(200, FPSTR(TEXT_PLAIN), msg);
+}
+
+void replyNotFound(String msg)
+{
+    webserver.send(404, FPSTR(TEXT_PLAIN), msg);
+}
+
+void replyBadRequest(String msg)
+{
+    Serial.println(msg);
+    webserver.send(400, FPSTR(TEXT_PLAIN), msg);
+}
+
+void replyServerError(String msg)
+{
+    Serial.println(msg);
+    webserver.send(500, FPSTR(TEXT_PLAIN), msg);
+}
+
+/*
+   Read the given file from the filesystem and stream it back to the client
+*/
+bool handleFileRead(String path)
+{
+    Log.verbose(F("handleFileRead: %s" LF), path.c_str());
+    if (!fsOK)
+    {
+        replyServerError(FPSTR(FS_INIT_ERROR));
+        return false;
+    }
+
+    if (path.endsWith("/"))
+    {
+        path += "index.htm";
+    }
+
+    if (!fileSystem->exists(path))
+    {
+        // File not found, try gzip version
+        path = path + ".gz";
+    }
+
+    if (fileSystem->exists(path))
+    {
+        String contentType;
+        if (webserver.hasArg("download"))
+        {
+            contentType = F("application/octet-stream");
+        }
+        else
+        {
+            contentType = mime::getContentType(path);
+        }
+
+        File file = fileSystem->open(path, "r");
+        if (webserver.streamFile(file, contentType) != file.size())
+        {
+            Log.warning(F("Sent less data than expected." LF));
+        }
+        file.close();
+        return true;
+    }
+    else
+    {
+        return false;        
+    }
+}
+
+/*
+   The "Not Found" handler catches all URI not explicitly declared in code
+   First try to find and return the requested file from the filesystem, and
+   if it fails, return a 404 page with debug information
+*/
 void handleNotFound()
 {
-    Log.verbose(F("Serving 404." CR));
-    String message = "File Not Found\n\n";
-    message += "URI: ";
-    message += server.uri();
-    message += "\nMethod: ";
-    message += (server.method() == HTTP_GET) ? "GET" : "POST";
-    message += "\nArguments: ";
-    message += server.args();
-    message += "\n";
-    for (uint8_t i = 0; i < server.args(); i++)
+    if (!fsOK)
     {
-        message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+        return replyServerError(FPSTR(FS_INIT_ERROR));
     }
-    server.send(404, "text/plain", message);
+
+    String uri = ESP8266WebServer::urlDecode(webserver.uri()); // Required to read paths with blanks
+
+    // This will load files by explicit name
+    if (handleFileRead(uri))
+    {
+        return;
+    }
+
+    // Dump debug data
+    String message;
+    message.reserve(100);
+    message = F("Error: File not found\nURI: ");
+    message += uri;
+    message += F("\nMethod: ");
+    message += (webserver.method() == HTTP_GET) ? "GET" : "POST";
+    message += F("\nArguments: ");
+    message += webserver.args();
+    message += '\n';
+
+    for (uint8_t i = 0; i < webserver.args(); i++)
+    {
+        message += F("\nName: ");
+        message += webserver.argName(i);
+        message += F(", Value: ");
+        message += webserver.arg(i);
+        message += '\n';
+    }
+    message += "Path=";
+    message += webserver.arg("path");
+    message += "\n";
+
+    Log.error(F("404: [%s] URI: %s%s not found." LF),
+              (webserver.method() == HTTP_GET) ? "GET" : "POST",
+              uri.c_str(),
+              webserver.arg("path").c_str());
+
+    return replyNotFound(message);
 }
 
 void setRegPageAliases()
 {
     // Regular page aliases
 
-    server.on("/", HTTP_ANY, []()
-              { loadFromFS("index.html"); });
-    server.on("/home/", HTTP_ANY, []()
-              { loadFromFS("index.html"); });
-    server.on("/about/", HTTP_ANY, []()
-              { loadFromFS("about.html"); });
-    server.on("/help/", HTTP_ANY, []()
-              { loadFromFS("help.html"); });
-    server.on("/ota/", HTTP_ANY, []()
-              { loadFromFS("ota.html"); });
-    server.on("/ota2/", HTTP_ANY, []()
-              { loadFromFS("ota2.html"); });
-    server.on("/settings/", HTTP_ANY, []()
-              { loadFromFS("settings.html"); });
-    server.on("/wifi/", HTTP_ANY, []()
-              { loadFromFS("wifi.html"); });
-}
+    webserver.on("/", HTTP_ANY, []()
+                 {
+        if (handleFileRead(F("/index.htm")))
+        {
+            return;
+        }
+        replyNotFound(FPSTR(FILE_NOT_FOUND)); });
 
-bool loadFromFS(String path)
-{
-    String dataType = "text/plain";
-    if (path.endsWith("/"))
-        path += "index.htm";
+    webserver.on("/home/", HTTP_ANY, []()
+                 {
+        if (handleFileRead(F("/index.htm")))
+        {
+            return;
+        }
+        replyNotFound(FPSTR(FILE_NOT_FOUND)); });
 
-    if (path.endsWith(".src"))
-        path = path.substring(0, path.lastIndexOf("."));
-    else if (path.endsWith(".htm"))
-        dataType = "text/html";
-    else if (path.endsWith(".css"))
-        dataType = "text/css";
-    else if (path.endsWith(".js"))
-        dataType = "application/javascript";
-    else if (path.endsWith(".png"))
-        dataType = "image/png";
-    else if (path.endsWith(".gif"))
-        dataType = "image/gif";
-    else if (path.endsWith(".jpg"))
-        dataType = "image/jpeg";
-    else if (path.endsWith(".ico"))
-        dataType = "image/x-icon";
-    else if (path.endsWith(".xml"))
-        dataType = "text/xml";
-    else if (path.endsWith(".pdf"))
-        dataType = "application/pdf";
-    else if (path.endsWith(".zip"))
-        dataType = "application/zip";
+    webserver.on("/about/", HTTP_ANY, []()
+                 {
+        if (handleFileRead(F("/about.htm")))
+        {
+            return;
+        }
+        replyNotFound(FPSTR(FILE_NOT_FOUND)); });
 
-    File dataFile = LittleFS.open(path, "r");
+    webserver.on("/help/", HTTP_ANY, []()
+                 {
+        if (handleFileRead(F("/help.htm")))
+        {
+            return;
+        }
+        replyNotFound(FPSTR(FILE_NOT_FOUND)); });
 
-    if (!dataFile)
-        return false;
+    webserver.on("/ota/", HTTP_ANY, []()
+                 {
+        if (handleFileRead(F("/ota.htm")))
+        {
+            return;
+        }
+        replyNotFound(FPSTR(FILE_NOT_FOUND)); });
 
-    if (server.hasArg("download"))
-        dataType = "application/octet-stream";
+    webserver.on("/ota2/", HTTP_ANY, []()
+                 {
+        if (handleFileRead(F("/ota2.htm")))
+        {
+            return;
+        }
+        replyNotFound(FPSTR(FILE_NOT_FOUND)); });
 
-    if (server.streamFile(dataFile, dataType) != dataFile.size())
-    {
-        Log.warning(F("Sent less data than expected!" CR));
-    }
+    webserver.on("/settings/", HTTP_ANY, []()
+                 {
+        if (handleFileRead(F("/settings.htm")))
+        {
+            return;
+        }
+        replyNotFound(FPSTR(FILE_NOT_FOUND)); });
 
-    dataFile.close();
-    return true;
-}
-
-void setActionPageHandlers()
-{
-    // Action Page Handlers
-
-    server.on("/wifi2/", HTTP_ANY, []()
-              {
-        Log.verbose(F("Processing /wifi2/." CR));
-        loadFromFS("/wifi2.htm");
-        resetWifi(); // Wipe settings, reset controller // TODO:  Make this async 
-        });
-
-    server.on("/reset/", HTTP_GET, []()
-              {
-        Log.verbose(F("Processing /reset/." CR));
-        // Redirect to Reset page
-        loadFromFS("/reset.htm");
-        setDoReset(); });
-
-    server.on("/otastart/", HTTP_GET, []()
-              {
-        Log.verbose(F("Processing /otastart/." CR));
-        server.send(200, F("text/plain"), F("200: OTA queued."));
-        setDoOTA(); });
-
-    server.on("/clearupdate/", HTTP_GET, []()
-              {
-        Log.verbose(F("Processing /clearupdate/." CR));
-        Log.verbose(F("Clearing any update flags." CR));
-        config.dospiffs1 = false;
-        config.dospiffs2 = false;
-        config.didupdate = false;
-        saveConfig(); // TODO: Make Async
-        server.send(200, F("text/plain"), F("200: OK.")); });
+    webserver.on("/wifi/", HTTP_ANY, []()
+                 {
+        if (handleFileRead(F("/wifi.htm")))
+        {
+            return;
+        }
+        replyNotFound(FPSTR(FILE_NOT_FOUND)); });
 }
 
 void setJsonHandlers()
 {
     // JSON Handlers
 
-        server.on("/resetreason/", HTTP_GET, []() {
+    webserver.on("/resetreason/", HTTP_GET, []()
+                 {
             // Used to provide the reset reason json
-            Log.verbose(F("Sending /resetreason/." CR));
+            Log.verbose(F("Sending /resetreason/." LF));
 
             const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(2); // TODO: Size this
             StaticJsonDocument<capacity> doc;
@@ -208,12 +273,12 @@ void setJsonHandlers()
 
             String resetreason;
             serializeJson(doc, resetreason);
-            server.send(200, F("text/plain"), resetreason);
-        });
+            webserver.send(200, F("text/plain"), resetreason); });
 
-        server.on("/heap/", HTTP_GET, []() {
+    webserver.on("/heap/", HTTP_GET, []()
+                 {
             // Used to provide the heap json
-            Log.verbose(F("Sending /heap/." CR));
+            Log.verbose(F("Sending /heap/." LF));
 
             const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(3); // TODO: Size this
             StaticJsonDocument<capacity> doc;
@@ -230,12 +295,12 @@ void setJsonHandlers()
 
             String heap;
             serializeJson(doc, heap);
-            server.send(200, F("text/plain"), heap);
-        });
+            webserver.send(200, F("text/plain"), heap); });
 
-        server.on("/uptime/", HTTP_GET, []() {
+    webserver.on("/uptime/", HTTP_GET, []()
+                 {
             // Used to provide the uptime json
-            Log.verbose(F("Sending /uptime/." CR));
+            Log.verbose(F("Sending /uptime/." LF));
 
             const size_t capacity = JSON_OBJECT_SIZE(1) + JSON_OBJECT_SIZE(5); // TODO: Size this
             StaticJsonDocument<capacity> doc;
@@ -254,12 +319,12 @@ void setJsonHandlers()
 
             String ut = "";
             serializeJson(doc, ut);
-            server.send(200, F("text/plain"), ut);
-        });
+            webserver.send(200, F("text/plain"), ut); });
 
-        server.on("/bubble/", HTTP_GET, []() {
+    webserver.on("/bubble/", HTTP_GET, []()
+                 {
             // Used to provide the Bubbles json
-            Log.verbose(F("Sending /bubble/." CR));
+            Log.verbose(F("Sending /bubble/." LF));
 
             const size_t capacity = JSON_OBJECT_SIZE(8) + 210; // TODO: Size this
             StaticJsonDocument<capacity> doc;
@@ -277,13 +342,13 @@ void setJsonHandlers()
             doc[F("datetime")] = bubbles.lastTime;
 
             String bubble;
-            serializeJsonPretty(doc, bubble);
+            serializeJson(doc, bubble);
 
-            server.send(200, F("text/plain"), bubble);
-        });
+            webserver.send(200, F("text/plain"), bubble); });
 
-        server.on("/thisVersion/", HTTP_GET, []() {
-            Log.verbose(F("Serving /thisVersion/." CR));
+    webserver.on("/thisVersion/", HTTP_GET, []()
+                 {
+            Log.verbose(F("Serving /thisVersion/." LF));
             StaticJsonDocument<256> doc; // TODO: Size this
 
             doc["fw_version"] = fw_version();
@@ -292,12 +357,12 @@ void setJsonHandlers()
             doc["build"] = build();
 
             String version;
-            serializeJsonPretty(doc, version);
-            server.send(200, F("text/plain"), version);
-        });
+            serializeJson(doc, version);
+            webserver.send(200, F("text/plain"), version); });
 
-        server.on("/thatVersion/", HTTP_GET, []() {
-            Log.verbose(F("Serving /thatVersion/." CR));
+    webserver.on("/thatVersion/", HTTP_GET, []()
+                 {
+            Log.verbose(F("Serving /thatVersion/." LF));
             StaticJsonDocument<192> doc; // TODO: Size this
 
             const char *fw_version = thatVersion.fw_version;
@@ -306,129 +371,128 @@ void setJsonHandlers()
             doc["fw_version"] = fs_version;
 
             String version;
-            serializeJsonPretty(doc, version);
-            server.send(200, F("text/plain"), version);
-        });
+            serializeJson(doc, version);
+            webserver.send(200, F("text/plain"), version); });
 
-        server.on("/config/", HTTP_GET, []() {
+    webserver.on("/config/", HTTP_GET, []()
+                 {
             // Used to provide the Config json
-            Log.verbose(F("Serving /config/." CR));
+            Log.verbose(F("Serving /config/." LF));
 
             // Serialize configuration
-            DynamicJsonDocument doc(capacitySerial); // Create doc
-            JsonObject root = doc.to<JsonObject>();  // Create JSON object
-            config.save(root);                       // Fill the object with current config
+            DynamicJsonDocument doc(capacitySerial);    // Create doc
+            JsonObject root = doc.to<JsonObject>();     // Create JSON object
+            config.save(root);                          // Fill the object with current config
             String json_config;
-            serializeJsonPretty(doc, json_config); // Serialize JSON to String
+            serializeJson(doc, json_config);            // Serialize JSON to String
 
             //request->header("Cache-Control: no-store");
-            server.send(200, F("text/plain"), json_config);
-        });
+            webserver.send(200, F("text/plain"), json_config); });
 }
 
 void setSettingsAliases()
 {
-    server.on("/settings/controller/", HTTP_POST, []()
+    webserver.on("/settings/controller/", HTTP_POST, []()
               {
-        Log.verbose(F("Processing post to /settings/controller/." CR));
+        Log.verbose(F("Processing post to /settings/controller/." LF));
         if (handleControllerPost())
         {
-            server.send(200, F("text/plain"), F("Ok"));
+            webserver.send(200, F("text/plain"), F("Ok"));
         }
         else
         {
-            server.send(500, F("text/plain"), F("Unable to process data"));
+            webserver.send(500, F("text/plain"), F("Unable to process data"));
         } });
 
-    server.on("/settings/controller/", HTTP_ANY, []()
+    webserver.on("/settings/controller/", HTTP_ANY, []()
               {
-        Log.verbose(F("Invalid method to /settings/tapcontrol/." CR));
-        server.send(405, F("text/plain"), F("Method not allowed.")); });
+        Log.verbose(F("Invalid method to /settings/tapcontrol/." LF));
+        webserver.send(405, F("text/plain"), F("Method not allowed.")); });
 
-    server.on("/settings/temperature/", HTTP_POST, []()
+    webserver.on("/settings/temperature/", HTTP_POST, []()
               {
-        Log.verbose(F("Processing post to /settings/tempcontrol/." CR));
+        Log.verbose(F("Processing post to /settings/tempcontrol/." LF));
         if (handleTemperaturePost())
         {
-            server.send(200, F("text/plain"), F("Ok"));
+            webserver.send(200, F("text/plain"), F("Ok"));
         }
         else
         {
-            server.send(500, F("text/plain"), F("Unable to process data"));
+            webserver.send(500, F("text/plain"), F("Unable to process data"));
         } });
 
-    server.on("/settings/temperature/", HTTP_ANY, []()
+    webserver.on("/settings/temperature/", HTTP_ANY, []()
               {
-        Log.verbose(F("Invalid method to /settings/tapcontrol/." CR));
-        server.send(405, F("text/plain"), F("Method not allowed.")); });
+        Log.verbose(F("Invalid method to /settings/tapcontrol/." LF));
+        webserver.send(405, F("text/plain"), F("Method not allowed.")); });
 
-    server.on("/settings/urltarget/", HTTP_POST, []()
+    webserver.on("/settings/urltarget/", HTTP_POST, []()
               {
-        Log.verbose(F("Processing post to /settings/urltarget/." CR));
+        Log.verbose(F("Processing post to /settings/urltarget/." LF));
         if (handleURLTargetPost())
         {
-            server.send(200, F("text/plain"), F("Ok"));
+            webserver.send(200, F("text/plain"), F("Ok"));
         }
         else
         {
-            server.send(500, F("text/plain"), F("Unable to process data"));
+            webserver.send(500, F("text/plain"), F("Unable to process data"));
         } });
 
-    server.on("/settings/urltarget/", HTTP_ANY, []()
+    webserver.on("/settings/urltarget/", HTTP_ANY, []()
               {
-        Log.verbose(F("Invalid method to /settings/tapcontrol/." CR));
-        server.send(405, F("text/plain"), F("Method not allowed.")); });
+        Log.verbose(F("Invalid method to /settings/tapcontrol/." LF));
+        webserver.send(405, F("text/plain"), F("Method not allowed.")); });
 
-    server.on("/settings/brewersfriendtarget/", HTTP_POST, []()
+    webserver.on("/settings/brewersfriendtarget/", HTTP_POST, []()
               {
-        Log.verbose(F("Processing post to /settings/brewersfriendtarget/." CR));
+        Log.verbose(F("Processing post to /settings/brewersfriendtarget/." LF));
         if (handleBrewersFriendTargetPost())
         {
-            server.send(200, F("text/plain"), F("Ok"));
+            webserver.send(200, F("text/plain"), F("Ok"));
         }
         else
         {
-            server.send(500, F("text/plain"), F("Unable to process data"));
+            webserver.send(500, F("text/plain"), F("Unable to process data"));
         } });
 
-    server.on("/settings/brewersfriendtarget/", HTTP_ANY, []()
+    webserver.on("/settings/brewersfriendtarget/", HTTP_ANY, []()
               {
-        Log.verbose(F("Invalid method to /settings/brewersfriendtarget/." CR));
-        server.send(405, F("text/plain"), F("Method not allowed.")); });
+        Log.verbose(F("Invalid method to /settings/brewersfriendtarget/." LF));
+        webserver.send(405, F("text/plain"), F("Method not allowed.")); });
 
-    server.on("/settings/brewfathertarget/", HTTP_POST, []()
+    webserver.on("/settings/brewfathertarget/", HTTP_POST, []()
               {
-        Log.verbose(F("Processing post to /settings/brewersfriendtarget/." CR));
+        Log.verbose(F("Processing post to /settings/brewersfriendtarget/." LF));
         if (handleBrewfatherTargetPost())
         {
-            server.send(200, F("text/plain"), F("Ok"));
+            webserver.send(200, F("text/plain"), F("Ok"));
         }
         else
         {
-            server.send(500, F("text/plain"), F("Unable to process data"));
+            webserver.send(500, F("text/plain"), F("Unable to process data"));
         } });
 
-    server.on("/settings/brewfathertarget/", HTTP_ANY, []()
+    webserver.on("/settings/brewfathertarget/", HTTP_ANY, []()
               {
-        Log.verbose(F("Invalid method to /settings/brewersfriendtarget/." CR));
-        server.send(405, F("text/plain"), F("Method not allowed.")); });
+        Log.verbose(F("Invalid method to /settings/brewersfriendtarget/." LF));
+        webserver.send(405, F("text/plain"), F("Method not allowed.")); });
 
-    server.on("/settings/thingspeaktarget/", HTTP_POST, []()
+    webserver.on("/settings/thingspeaktarget/", HTTP_POST, []()
               {
-        Log.verbose(F("Processing post to /settings/thingspeaktarget/." CR));
+        Log.verbose(F("Processing post to /settings/thingspeaktarget/." LF));
         if (handleThingSpeakTargetPost())
         {
-            server.send(200, F("text/plain"), F("Ok"));
+            webserver.send(200, F("text/plain"), F("Ok"));
         }
         else
         {
-            server.send(500, F("text/plain"), F("Unable to process data"));
+            webserver.send(500, F("text/plain"), F("Unable to process data"));
         } });
 
-    server.on("/settings/thingspeaktarget/", HTTP_ANY, []()
+    webserver.on("/settings/thingspeaktarget/", HTTP_ANY, []()
               {
-        Log.verbose(F("Invalid method to /settings/thingspeaktarget/." CR));
-        server.send(405, F("text/plain"), F("Method not allowed.")); });
+        Log.verbose(F("Invalid method to /settings/thingspeaktarget/." LF));
+        webserver.send(405, F("text/plain"), F("Method not allowed.")); });
 }
 
 bool handleControllerPost() // Handle Controller settings
@@ -438,11 +502,11 @@ bool handleControllerPost() // Handle Controller settings
 
     bool hostnamechanged = false;
     // Loop through all parameters
-    for (int i = 0; i < server.args(); i++)
+    for (int i = 0; i < webserver.args(); i++)
     {
-        const char *name = server.argName(i).c_str();
-        const char *value = server.arg(i).c_str();
-        Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
+        const char *name = webserver.argName(i).c_str();
+        const char *value = webserver.arg(i).c_str();
+        Log.verbose(F("Processing [%s]:(%s) pair." LF), name, value);
 
         // Controller settings
         //
@@ -450,7 +514,7 @@ bool handleControllerPost() // Handle Controller settings
         {
             if ((strlen(value) < 3) || (strlen(value) > 32))
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not valid." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not valid." LF), name, value);
             }
             else
             {
@@ -458,7 +522,7 @@ bool handleControllerPost() // Handle Controller settings
                 {
                     hostnamechanged = true;
                 }
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 strlcpy(config.hostname, value, sizeof(config.hostname));
             }
         }
@@ -466,11 +530,11 @@ bool handleControllerPost() // Handle Controller settings
         {
             if ((strlen(value) < 3) || (strlen(value) > 32))
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not valid." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not valid." LF), name, value);
             }
             else
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 strlcpy(config.bubble.name, value, sizeof(config.bubble.name));
             }
         }
@@ -484,7 +548,7 @@ bool handleControllerPost() // Handle Controller settings
         tcpip_adapter_set_hostname(TCPIP_ADAPTER_IF_STA, config.hostname);
 #endif
         mdnsreset();
-        Log.verbose(F("POSTed new mDNSid, reset mDNS stack." CR));
+        Log.verbose(F("POSTed new mDNSid, reset mDNS stack." LF));
     }
 
     if (saveConfig()) // TODO: Make async
@@ -493,7 +557,7 @@ bool handleControllerPost() // Handle Controller settings
     }
     else
     {
-        Log.error(F("Error: Unable to save Controler configuration data." CR));
+        Log.error(F("Error: Unable to save Controler configuration data." LF));
         return false;
     }
 }
@@ -506,11 +570,11 @@ bool handleTemperaturePost() // Handle Temperature Post
     bool tempinf = config.bubble.tempinf;
 
     // Loop through all parameters
-    for (int i = 0; i < server.args(); i++)
+    for (int i = 0; i < webserver.args(); i++)
     {
-        const char *name = server.argName(i).c_str();
-        const char *value = server.arg(i).c_str();
-        Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
+        const char *name = webserver.argName(i).c_str();
+        const char *value = webserver.arg(i).c_str();
+        Log.verbose(F("Processing [%s]:(%s) pair." LF), name, value);
 
         // Temperature settings
         //
@@ -519,12 +583,12 @@ bool handleTemperaturePost() // Handle Temperature Post
             const double val = atof(value);
             if ((val >= -25) || (val <= 25))
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 config.calibrate.room = val;
             }
             else
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not valid." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not valid." LF), name, value);
             }
         }
         if (strcmp(name, "calvessel") == 0) // Set vessel calibration
@@ -532,29 +596,29 @@ bool handleTemperaturePost() // Handle Temperature Post
             const double val = atof(value);
             if ((val >= -25) || (val <= 25))
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 config.calibrate.vessel = val;
             }
             else
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not valid." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not valid." LF), name, value);
             }
         }
         if (strcmp(name, "tempformat") == 0) // Set temperature format
         {
             if (strcmp(value, "celsius") == 0)
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 config.bubble.tempinf = false;
             }
             else if (strcmp(value, "fahrenheit") == 0)
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 config.bubble.tempinf = true;
             }
             else
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not valid." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not valid." LF), name, value);
             }
         }
         if (!tempinf == config.bubble.tempinf)
@@ -567,7 +631,7 @@ bool handleTemperaturePost() // Handle Temperature Post
     }
     else
     {
-        Log.error(F("Error: Unable to save temperature configuration data." CR));
+        Log.error(F("Error: Unable to save temperature configuration data." LF));
         return false;
     }
 }
@@ -578,11 +642,11 @@ bool handleURLTargetPost() // Handle URL Target Post
     // TODO: Save only if changed
 
     // Loop through all parameters
-    for (int i = 0; i < server.args(); i++)
+    for (int i = 0; i < webserver.args(); i++)
     {
-        const char *name = server.argName(i).c_str();
-        const char *value = server.arg(i).c_str();
-        Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
+        const char *name = webserver.argName(i).c_str();
+        const char *value = webserver.arg(i).c_str();
+        Log.verbose(F("Processing [%s]:(%s) pair." LF), name, value);
 
         // URL Target settings
         //
@@ -590,16 +654,16 @@ bool handleURLTargetPost() // Handle URL Target Post
         {
             if (strlen(value) == 0)
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling Url Target." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied.  Disabling Url Target." LF), name, value);
                 strlcpy(config.urltarget.url, value, sizeof(config.urltarget.url));
             }
             else if ((strlen(value) < 3) || (strlen(value) > 128))
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not applied." LF), name, value);
             }
             else
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 strlcpy(config.urltarget.url, value, sizeof(config.urltarget.url));
             }
         }
@@ -607,11 +671,11 @@ bool handleURLTargetPost() // Handle URL Target Post
         {
             if ((atoi(value) < 1) || (atoi(value) > 60))
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not applied." LF), name, value);
             }
             else
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 config.urltarget.freq = atoi(value);
                 config.urltarget.update = true;
             }
@@ -624,7 +688,7 @@ bool handleURLTargetPost() // Handle URL Target Post
     }
     else
     {
-        Log.error(F("Error: Unable to save URL Target data." CR));
+        Log.error(F("Error: Unable to save URL Target data." LF));
         return false;
     }
 }
@@ -635,11 +699,11 @@ bool handleBrewersFriendTargetPost() // Handle Brewer's Friend Target Post
     // TODO: Save only if changed
 
     // Loop through all parameters
-    for (int i = 0; i < server.args(); i++)
+    for (int i = 0; i < webserver.args(); i++)
     {
-        const char *name = server.argName(i).c_str();
-        const char *value = server.arg(i).c_str();
-        Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
+        const char *name = webserver.argName(i).c_str();
+        const char *value = webserver.arg(i).c_str();
+        Log.verbose(F("Processing [%s]:(%s) pair." LF), name, value);
 
         // Brewer's Friend target settings
         //
@@ -647,16 +711,16 @@ bool handleBrewersFriendTargetPost() // Handle Brewer's Friend Target Post
         {
             if (strlen(value) == 0)
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied. Disabling Brewer's Friend target." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied. Disabling Brewer's Friend target." LF), name, value);
                 strlcpy(config.brewersfriend.key, value, sizeof(config.brewersfriend.key));
             }
             else if ((strlen(value) < 20) || (strlen(value) > 64))
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not applied." LF), name, value);
             }
             else
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 strlcpy(config.brewersfriend.key, value, sizeof(config.brewersfriend.key));
             }
         }
@@ -664,11 +728,11 @@ bool handleBrewersFriendTargetPost() // Handle Brewer's Friend Target Post
         {
             if ((atoi(value) < 15) || (atoi(value) > 120))
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not applied." LF), name, value);
             }
             else
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 config.brewersfriend.freq = atoi(value);
                 config.brewersfriend.update = true;
             }
@@ -681,7 +745,7 @@ bool handleBrewersFriendTargetPost() // Handle Brewer's Friend Target Post
     }
     else
     {
-        Log.error(F("Error: Unable to save Brewer's Friend configuration data." CR));
+        Log.error(F("Error: Unable to save Brewer's Friend configuration data." LF));
         return false;
     }
 }
@@ -692,11 +756,11 @@ bool handleBrewfatherTargetPost() // Handle Brewfather Target Pos
     // TODO: Save only if changed
 
     // Loop through all parameters
-    for (int i = 0; i < server.args(); i++)
+    for (int i = 0; i < webserver.args(); i++)
     {
-        const char *name = server.argName(i).c_str();
-        const char *value = server.arg(i).c_str();
-        Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
+        const char *name = webserver.argName(i).c_str();
+        const char *value = webserver.arg(i).c_str();
+        Log.verbose(F("Processing [%s]:(%s) pair." LF), name, value);
 
         // Brewer's Friend target settings
         //
@@ -704,16 +768,16 @@ bool handleBrewfatherTargetPost() // Handle Brewfather Target Pos
         {
             if (strlen(value) == 0)
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied. Disabling Brewfather target." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied. Disabling Brewfather target." LF), name, value);
                 strlcpy(config.brewfather.key, value, sizeof(config.brewfather.key));
             }
             else if ((strlen(value) < 10) || (strlen(value) > 64))
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not applied." LF), name, value);
             }
             else
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 strlcpy(config.brewfather.key, value, sizeof(config.brewfather.key));
             }
         }
@@ -721,11 +785,11 @@ bool handleBrewfatherTargetPost() // Handle Brewfather Target Pos
         {
             if ((atoi(value) < 15) || (atoi(value) > 120))
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not applied." LF), name, value);
             }
             else
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 config.brewfather.freq = atoi(value);
                 config.brewfather.update = true;
             }
@@ -738,7 +802,7 @@ bool handleBrewfatherTargetPost() // Handle Brewfather Target Pos
     }
     else
     {
-        Log.error(F("Error: Unable to save Brewfather configuration data." CR));
+        Log.error(F("Error: Unable to save Brewfather configuration data." LF));
         return false;
     }
 }
@@ -749,11 +813,11 @@ bool handleThingSpeakTargetPost() // Handle ThingSpeak Target Post
     // TODO: Save only if changed
 
     // Loop through all parameters
-    for (int i = 0; i < server.args(); i++)
+    for (int i = 0; i < webserver.args(); i++)
     {
-        const char *name = server.argName(i).c_str();
-        const char *value = server.arg(i).c_str();
-        Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
+        const char *name = webserver.argName(i).c_str();
+        const char *value = webserver.arg(i).c_str();
+        Log.verbose(F("Processing [%s]:(%s) pair." LF), name, value);
 
         // ThingSpeak target settings
         //
@@ -761,16 +825,16 @@ bool handleThingSpeakTargetPost() // Handle ThingSpeak Target Post
         {
             if ((atoi(value) == 0))
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied. Disabling ThingSpeak target." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied. Disabling ThingSpeak target." LF), name, value);
                 config.thingspeak.channel = atoi(value);
             }
             else if ((atoi(value) < 1000) || (atoi(value) > 9999999999))
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not applied." LF), name, value);
             }
             else
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 config.thingspeak.channel = atoi(value);
             }
         }
@@ -778,16 +842,16 @@ bool handleThingSpeakTargetPost() // Handle ThingSpeak Target Post
         {
             if (strlen(value) == 0)
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied. Disabling ThingSpeak target." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied. Disabling ThingSpeak target." LF), name, value);
                 strlcpy(config.thingspeak.key, value, sizeof(config.thingspeak.key));
             }
             else if ((strlen(value) < 10) || (strlen(value) > 64))
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not applied." LF), name, value);
             }
             else
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 strlcpy(config.thingspeak.key, value, sizeof(config.thingspeak.key));
             }
         }
@@ -795,11 +859,11 @@ bool handleThingSpeakTargetPost() // Handle ThingSpeak Target Post
         {
             if ((atoi(value) < 1) || (atoi(value) > 120))
             {
-                Log.warning(F("Settings update error, [%s]:(%s) not applied." CR), name, value);
+                Log.warning(F("Settings update error, [%s]:(%s) not applied." LF), name, value);
             }
             else
             {
-                Log.notice(F("Settings update, [%s]:(%s) applied." CR), name, value);
+                Log.notice(F("Settings update, [%s]:(%s) applied." LF), name, value);
                 config.thingspeak.freq = atoi(value);
                 config.thingspeak.update = true;
             }
@@ -812,41 +876,74 @@ bool handleThingSpeakTargetPost() // Handle ThingSpeak Target Post
     }
     else
     {
-        Log.error(F("Error: Unable to save ThingSpeak configuration data." CR));
+        Log.error(F("Error: Unable to save ThingSpeak configuration data." LF));
         return false;
     }
+}
+
+void setActionPageHandlers()
+{
+    // Action Page Handlers
+
+    webserver.on("/wifi2/", HTTP_ANY, []()
+              {
+        Log.verbose(F("Processing /wifi2/." LF));
+        handleFileRead("/wifi2.htm");
+        resetWifi(); // Wipe settings, reset controller // TODO:  Make this async
+        });
+
+    webserver.on("/reset/", HTTP_GET, []()
+              {
+        Log.verbose(F("Processing /reset/." LF));
+        // Redirect to Reset page
+        handleFileRead("/reset.htm");
+        // setDoReset(); // TODO
+         });
+
+    webserver.on("/otastart/", HTTP_GET, []()
+              {
+        Log.verbose(F("Processing /otastart/." LF));
+        webserver.send(200, F("text/plain"), F("200: OTA queued."));
+        // setDoOTA(); // TODO
+        });
+
+    webserver.on("/clearupdate/", HTTP_GET, []()
+              {
+        Log.verbose(F("Processing /clearupdate/." LF));
+        Log.verbose(F("Clearing any update flags." LF));
+        config.dospiffs1 = false;
+        config.dospiffs2 = false;
+        config.didupdate = false;
+        saveConfig(); // TODO: Make Async
+        webserver.send(200, F("text/plain"), F("200: OK.")); });
+}
+
+void startWebServer()
+{
+    // Standard routes
+    setRegPageAliases();
+
+    // Default handler for all URIs not defined above
+    // Use it to read files from filesystem
+    webserver.onNotFound(handleNotFound);
+
+    // Add FS Editor
+    editPagesInit();
+
+    // Add working handlers
+    setJsonHandlers();
+    setActionPageHandlers();
+    setSettingsAliases();
+
+    // Start webserver
+    webserver.begin();
+
+    Log.notice(F("HTTP webserver started on port %d." LF), HTTPPORT);
 }
 
 void stopWebServer()
 {
-    server.stop();
-    Log.notice(F("Web server stopped." CR));
-}
-
-bool handleGenericTargetPost() // Handle Generic Post
-{
-    // TODO: Make sure it is a post
-    // TODO: Save only if changed
-
-    // Loop through all parameters
-    for (int i = 0; i < server.args(); i++)
-    {
-        const char *name = server.argName(i).c_str();
-        const char *value = server.arg(i).c_str();
-        Log.verbose(F("Processing [%s]:(%s) pair." CR), name, value);
-
-        // Handle target settings: 
-        //
-
-    }
-
-    if (saveConfig()) // TODO: Make async
-    {
-        return true;
-    }
-    else
-    {
-        Log.error(F("Error: Unable to save Generic configuration data." CR));
-        return false;
-    }
+    webserver.close();
+    webserver.stop();
+    Log.notice(F("Web webserver stopped." CR));
 }

@@ -111,4 +111,7 @@ bool printFile();
 bool serializeConfig(Print &);
 bool deserializeConfig(Stream &);
 
+extern const size_t capacitySerial;
+extern const size_t capacityDeserial;
+
 #endif // _JSONCONFIG_H

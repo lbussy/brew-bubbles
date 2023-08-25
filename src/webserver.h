@@ -22,17 +22,24 @@ SOFTWARE. */
 
 #ifndef _WEBSERVER_H
 #define _WEBSERVER_H
+#pragma once
 
 #include <Arduino.h>
 
-void initWebServer();
-bool loadFromFS(String path);
+const char FILE_NOT_FOUND[] PROGMEM = "File Not Found";
+const char FS_INIT_ERROR[] PROGMEM = "FS Init Error";
+
+void startWebServer();
+void stopWebServer();
+void replyOK();
+void replyOKWithMsg(String msg);
+void replyNotFound(String msg);
+void replyBadRequest(String msg);
+void replyServerError(String msg);
 void handleNotFound();
-void setRegPageAliases();
-void setActionPageHandlers();
+bool handleFileRead(String path);
 void setJsonHandlers();
 void setSettingsAliases();
-void stopWebServer();
 
 bool handleControllerPost();
 bool handleTemperaturePost();

@@ -46,6 +46,13 @@ SOFTWARE. */
 
 DoubleResetDetector *drd;
 
+bool fsOK;
+#include <LittleFS.h>
+const char* fsName = "LittleFS"; // Used for JSON in Edit Page
+FS* fileSystem = &LittleFS; // Should be an alias for LittleFS class
+// TODO:  We should be able to limit the time we call LittleFS.begin();
+LittleFSConfig fileSystemConfig = LittleFSConfig();
+
 Ticker getThatVer; // Poll for server version
 Ticker bubUpdate;  // Bubble loop to get periodic readings
 Ticker urlTarget;  // Target timer
@@ -58,14 +65,18 @@ void setup()
     drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
     setSerial();
 
+    fileSystemConfig.setAutoFormat(false);
+    fileSystem->setConfig(fileSystemConfig);
     if (!LittleFS.begin())
     {
         Log.fatal(F("Unable to mount filesystem." CR));
+        fsOK = false;
         while (1)
         {
             ;
         }
     }
+    fsOK = true;
 
     if (loadConfig())
         Log.notice(F("Configuration loaded." CR));
@@ -94,15 +105,17 @@ void setup()
         doWiFi();
     }
 
-    execspiffs();         // Check for pending File System update
-    setClock();           // Set NTP Time
-    loadBpm();            // Get last BPM reading if it was a controlled reboot
-    mdnssetup();          // Set up mDNS responder
-    initWebServer();      // Turn on web server
+    execspiffs(); // Check for pending File System update
+    setClock();   // Set NTP Time
+    loadBpm();    // Get last BPM reading if it was a controlled reboot
+
     if (getThatVersion()) // Get server version at startup
         Log.notice(F("Obtained available version." CR));
     if (bubbles.start()) // Initialize bubble counter
         Log.notice(F("Bubble counter initialized." CR));
+
+    mdnssetup();      // Set up mDNS responder
+    startWebServer(); // Turn on web server
 
     Log.notice(F("Started %s version %s/%s (%s) [%s]." CR), API_KEY, fw_version(), fs_version(), branch(), build());
 
@@ -163,5 +176,6 @@ void loop()
     }
     serialLoop();
     maintenanceLoop();
+    webserver.handleClient();
     yield();
 }

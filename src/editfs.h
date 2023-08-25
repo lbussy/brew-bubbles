@@ -20,24 +20,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _MAIN_H
-#define _MAIN_H
+#ifndef _EDITFS_H
+#define _EDITFS_H
+#pragma once
 
-#include <ESP8266WebServer.h>
+#include <Arduino.h>
 
-// Use LittleFS for DRD storage
-#define ESP_DRD_USE_LITTLEFS true
-// #define DOUBLERESETDETECTOR_DEBUG true
-// Number of seconds to consider as considered a double reset.
-#define DRD_TIMEOUT 3
-// RTC Memory Address for the DoubleResetDetector to use
-#define DRD_ADDRESS 0
+void handleStatus();
+void handleFileList();
+String lastExistingParent(String path);
+void handleFileCreate();
+void deleteRecursive(String path);
+void handleFileDelete();
+void handleFileUpload();
+void handleGetEdit();
+void editPagesInit();
 
-extern struct Config config;
-extern bool loadConfig();
-extern struct ThatVersion thatVersion;
-extern struct Bubbles bubbles;
-extern volatile bool doBubble;
-extern ESP8266WebServer webserver;
-
-#endif // _MAIN_H
+#endif // _EDITFS_H

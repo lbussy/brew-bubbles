@@ -356,7 +356,7 @@
                     }
                 }
             };
-            xmlHttp.open("GET", "/status", true);
+            xmlHttp.open("GET", "/status/", true);
             xmlHttp.send(null);
         }
 
@@ -554,7 +554,7 @@
                 document.getElementById("editor").style.display = "none";
                 document.getElementById("editorButtons").style.display = "none";
                 preview.style.display = "block";
-                preview.innerHTML = "<span style='color:red;'>Ace editor could not be loaded from the internet nor from /edit/ace.js . Defaulting to text viewer...</span><pre id='txtContents' style='overflow: auto;'></pre>";
+                preview.innerHTML = "<span style='color:red;'>Ace editor could not be loaded from the internet nor from /edit//ace.js . Defaulting to text viewer...</span><pre id='txtContents' style='overflow: auto;'></pre>";
                 var xhr = new XMLHttpRequest();
                 xhr.onload = function () {
                     document.getElementById('txtContents').textContent = this.responseText;
@@ -941,7 +941,7 @@
                 // Fetch an updated list
                 xmlHttp = new XMLHttpRequest();
                 xmlHttp.onload = onListReceived(xmlHttp, parentPath, remainingPaths);
-                xmlHttp.open("GET", "/list?dir=" + parentPath, true);
+                xmlHttp.open("GET", "/list/?dir=" + parentPath, true);
                 xmlHttp.send(null);
             }
 
@@ -960,7 +960,7 @@
                 xmlHttp.onload = onOperationComplete(xmlHttp, path);
                 var formData = new FormData();
                 formData.append("data", file, path);
-                xmlHttp.open("POST", "/edit");
+                xmlHttp.open("POST", "/edit//");
                 xmlHttp.send(formData);
             };
 
@@ -971,7 +971,7 @@
                 xmlHttp.onload = onOperationComplete(xmlHttp, path);
                 var formData = new FormData();
                 formData.append("path", path);
-                xmlHttp.open("PUT", "/edit");
+                xmlHttp.open("PUT", "/edit/");
                 xmlHttp.send(formData);
             }
 
@@ -983,7 +983,7 @@
                 var formData = new FormData();
                 formData.append("path", dstPath);
                 formData.append("src", srcPath);
-                xmlHttp.open("PUT", "/edit");
+                xmlHttp.open("PUT", "/edit/");
                 xmlHttp.send(formData);
             }
 
@@ -993,7 +993,7 @@
                 xmlHttp.onload = onOperationComplete(xmlHttp);
                 var formData = new FormData();
                 formData.append("path", path);
-                xmlHttp.open("DELETE", "/edit");
+                xmlHttp.open("DELETE", "/edit/");
                 xmlHttp.send(formData);
             }
 
@@ -1056,7 +1056,7 @@
                 xmlHttp.onload = filePosted;
                 var formData = new FormData();
                 formData.append("data", new Blob([data], { type: type }), path);
-                xmlHttp.open("POST", "/edit");
+                xmlHttp.open("POST", "/edit/");
                 xmlHttp.send(formData);
             }
 
@@ -1159,7 +1159,7 @@
         if (typeof ace == "undefined") {
             console.log("Cannot load ace.js from the web, trying local copy");
             var script = document.createElement('script');
-            script.src = "/edit/ace.js";
+            script.src = "/edit//ace.js";
             script.async = false;
             document.head.appendChild(script);
         }
