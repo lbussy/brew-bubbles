@@ -76,7 +76,7 @@ void setClock()
 #ifdef LOG_LEVEL
                 myPrintln();
 #endif
-                Log.warning(F("Unable to get time hack from server, restarting." CR));
+                Log.warning(F("Unable to get time hack from server, restarting." LF));
                 blinker.detach();
                 ESP.restart();
                 return;
@@ -98,7 +98,7 @@ void setClock()
 #ifdef LOG_LEVEL
     myPrintln();
 #endif
-    Log.notice(F("NTP time set." CR));
+    Log.notice(F("NTP time set." LF));
 }
 
 String getDTS()

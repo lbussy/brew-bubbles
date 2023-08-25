@@ -101,7 +101,7 @@ void Bubbles::update()
 
     saveBpm();
 
-    Log.verbose(F("Current BPM is %D. Averages: BPM (%d) = %D, Ambient (%d) = %D, Vessel (%d) = %D." CR),
+    Log.verbose(F("Current BPM is %D. Averages: BPM (%d) = %D, Ambient (%d) = %D, Vessel (%d) = %D." LF),
                 bubbles.lastBpm,
                 bubAvg.size(),
                 bubbles.getAvgBpm(),
@@ -174,12 +174,12 @@ void Bubbles::setLast(time_t dts, double lastBpm, double lastAmb, double lastVes
     if (expAge > now)
     {
         // JSON expired
-        Log.verbose(F("Last BPM JSON expired." CR));
+        Log.verbose(F("Last BPM JSON expired." LF));
         saveBpm();
     }
     else
     {
-        Log.notice(F("Loading last BPM." CR));
+        Log.notice(F("Loading last BPM." LF));
         // Loading JSON information
         if (!lastBpm)
             bubAvg.push(0);

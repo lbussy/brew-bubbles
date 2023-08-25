@@ -67,7 +67,7 @@ void fsver()
         }
         else
         {
-            Log.warning(F("Filesystem version not available." CR));
+            Log.warning(F("Filesystem version not available." LF));
             file.close();
             File file = LittleFS.open(versionJSONFileName, "w");
             strlcpy(fs_ver, "0.0.0", sizeof(fs_ver));
@@ -78,7 +78,7 @@ void fsver()
     }
     else
     {
-        Log.error(F("Filesystem not available." CR));
+        Log.error(F("Filesystem not available." LF));
         strlcpy(fs_ver, "No FS", sizeof(fs_ver));
     }
     return;

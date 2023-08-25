@@ -60,13 +60,13 @@ void setSerial()
     // SERIAL.setDebugOutput(true);
     Log.begin(LOG_LEVEL, &SERIAL, true);
     Log.setPrefix(printPrefix);
-    Log.notice(F("Serial logging started at %l." CR), BAUD);
+    Log.notice(F("Serial logging started at %l." LF), BAUD);
 #endif
 }
 
 void printPrefix(Print* _logOutput, int logLevel) {
     printTimestamp(_logOutput);
-    printLogLevel (_logOutput, logLevel);
+    // printLogLevel (_logOutput, logLevel);
 }
 
 void printLogLevel(Print* _logOutput, int logLevel) {

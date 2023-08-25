@@ -123,7 +123,7 @@ void doWiFi(bool dontUseStoredCreds)
             digitalWrite(LED, LOW);
             _delay(3000);
             digitalWrite(LED, HIGH);
-            Log.notice(F("Hit timeout for on-demand portal, exiting." CR));
+            Log.notice(F("Hit timeout for on-demand portal, exiting." LF));
             config.nodrd = true;
             saveConfig();
             ESP.reset();
@@ -136,12 +136,12 @@ void doWiFi(bool dontUseStoredCreds)
         wm.setConfigPortalTimeout(120);
         if (!wm.autoConnect(config.apconfig.ssid, config.apconfig.passphrase))
         {
-            Log.warning(F("Failed to connect and/or hit timeout." CR));
+            Log.warning(F("Failed to connect and/or hit timeout." LF));
             blinker.detach(); // Turn off blinker
             digitalWrite(LED, LOW);
             _delay(3000);
             digitalWrite(LED, HIGH);
-            Log.warning(F("Restarting." CR));
+            Log.warning(F("Restarting." LF));
             config.nodrd = true;
             saveConfig();
             _delay(100);
@@ -167,7 +167,7 @@ void doWiFi(bool dontUseStoredCreds)
     { // Save configuration
         if (hostname.getValue() != config.hostname)
         {
-            Log.notice(F("Saving custom hostname configuration: %s." CR), hostname.getValue());
+            Log.notice(F("Saving custom hostname configuration: %s." LF), hostname.getValue());
             strlcpy(config.hostname, hostname.getValue(), sizeof(config.hostname));
 #ifdef ESP8266
             WiFi.hostname(config.hostname);
@@ -183,12 +183,12 @@ void doWiFi(bool dontUseStoredCreds)
     if (doNonBlock)
     {
         // Turn off nonblocking portal (if configured)
-        Log.notice(F("Returning after non-blocking reconnect." CR));
+        Log.notice(F("Returning after non-blocking reconnect." LF));
         doNonBlock = false;
         mdnsreset();
     }
 
-    Log.notice(F("Connected. IP address: %s." CR), WiFi.localIP().toString().c_str());
+    Log.notice(F("Connected. IP address: %s." LF), WiFi.localIP().toString().c_str());
     blinker.detach();        // Turn off blinker
     digitalWrite(LED, HIGH); // Turn off LED
 }
@@ -198,7 +198,7 @@ void resetWifi()
     wm.resetSettings();
     blinker.detach();       // Turn off blinker
     digitalWrite(LED, LOW); // Turn on LED
-    Log.notice(F("Restarting after clearing WiFi settings." CR));
+    Log.notice(F("Restarting after clearing WiFi settings." LF));
     config.nodrd = true;
     saveConfig();
     _delay(100);
@@ -214,22 +214,22 @@ void wifiBlinker()
 
 void apCallback(WiFiManager *asyncWiFiManager)
 { // Entered Access Point mode
-    Log.verbose(F("[CALLBACK]: setAPCallback fired." CR));
+    Log.verbose(F("[CALLBACK]: setAPCallback fired." LF));
     blinker.detach(); // Turn off blinker
     blinker.attach_ms(APBLINK, wifiBlinker);
-    Log.notice(F("Entered portal mode; name: %s, IP: %s." CR),
+    Log.notice(F("Entered portal mode; name: %s, IP: %s." LF),
                asyncWiFiManager->getConfigPortalSSID().c_str(),
                WiFi.localIP().toString().c_str());
 }
 
 void configResetCallback()
 {
-    Log.verbose(F("[CALLBACK]: setConfigResetCallback fired." CR));
+    Log.verbose(F("[CALLBACK]: setConfigResetCallback fired." LF));
 }
 
 void saveConfigCallback()
 {
-    Log.verbose(F("[CALLBACK]: setSaveConfigCallback fired." CR));
+    Log.verbose(F("[CALLBACK]: setSaveConfigCallback fired." LF));
     shouldSaveConfig = true;
 }
 

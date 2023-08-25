@@ -69,7 +69,7 @@ void setup()
     fileSystem->setConfig(fileSystemConfig);
     if (!LittleFS.begin())
     {
-        Log.fatal(F("Unable to mount filesystem." CR));
+        Log.fatal(F("Unable to mount filesystem." LF));
         fsOK = false;
         while (1)
         {
@@ -79,9 +79,9 @@ void setup()
     fsOK = true;
 
     if (loadConfig())
-        Log.notice(F("Configuration loaded." CR));
+        Log.notice(F("Configuration loaded." LF));
     else
-        Log.error(F("Unable to load configuration." CR));
+        Log.error(F("Unable to load configuration." LF));
 
     pinMode(LED, OUTPUT);
     pinMode(RESETWIFI, INPUT_PULLUP);
@@ -90,17 +90,17 @@ void setup()
 
     if (digitalRead(RESETWIFI) == LOW)
     {
-        Log.notice(F("%s low, presenting portal." CR), stringify(RESETWIFI));
+        Log.notice(F("%s low, presenting portal." LF), stringify(RESETWIFI));
         doWiFi(true);
     }
     else if (!config.nodrd && drd->detectDoubleReset())
     {
-        Log.notice(F("DRD: Triggered, presenting portal." CR));
+        Log.notice(F("DRD: Triggered, presenting portal." LF));
         doWiFi(true);
     }
     else
     {
-        Log.verbose(F("DRD: Normal boot." CR));
+        Log.verbose(F("DRD: Normal boot." LF));
         config.nodrd = false;
         doWiFi();
     }
@@ -110,14 +110,14 @@ void setup()
     loadBpm();    // Get last BPM reading if it was a controlled reboot
 
     if (getThatVersion()) // Get server version at startup
-        Log.notice(F("Obtained available version." CR));
+        Log.notice(F("Obtained available version." LF));
     if (bubbles.start()) // Initialize bubble counter
-        Log.notice(F("Bubble counter initialized." CR));
+        Log.notice(F("Bubble counter initialized." LF));
 
     mdnssetup();      // Set up mDNS responder
     startWebServer(); // Turn on web server
 
-    Log.notice(F("Started %s version %s/%s (%s) [%s]." CR), API_KEY, fw_version(), fs_version(), branch(), build());
+    Log.notice(F("Started %s version %s/%s (%s) [%s]." LF), API_KEY, fw_version(), fs_version(), branch(), build());
 
     getThatVer.attach(POLLSERVERVERSION, getThatVersion);             // Poll for server version
     bubUpdate.attach(BUBLOOP, setDoBub);                              // Bubble loop to get periodic readings
@@ -144,7 +144,7 @@ void loop()
     // If target frequencies needs to be updated, update here
     if (config.urltarget.update)
     {
-        Log.notice(F("Resetting URL Target frequency timer to %l minutes." CR), config.urltarget.freq);
+        Log.notice(F("Resetting URL Target frequency timer to %l minutes." LF), config.urltarget.freq);
         urlTarget.detach();
         urlTarget.attach(config.urltarget.freq * 60, setDoURLTarget);
         config.urltarget.update = false;
@@ -152,7 +152,7 @@ void loop()
     }
     if (config.brewersfriend.update)
     {
-        Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." CR), config.brewersfriend.freq);
+        Log.notice(F("Resetting Brewer's Friend frequency timer to %l minutes." LF), config.brewersfriend.freq);
         bfTimer.detach();
         bfTimer.attach(config.brewersfriend.freq * 60, setDoBFTarget);
         config.brewersfriend.update = false;
@@ -160,7 +160,7 @@ void loop()
     }
     if (config.brewfather.update)
     {
-        Log.notice(F("Resetting Brewfather frequency timer to %l minutes." CR), config.brewfather.freq);
+        Log.notice(F("Resetting Brewfather frequency timer to %l minutes." LF), config.brewfather.freq);
         brewfTimer.detach();
         brewfTimer.attach(config.brewfather.freq * 60, setDoBrewfTarget);
         config.brewfather.update = false;
@@ -168,7 +168,7 @@ void loop()
     }
     if (config.thingspeak.update)
     {
-        Log.notice(F("Resetting ThingSpeak frequency timer to %l minutes." CR), config.thingspeak.freq);
+        Log.notice(F("Resetting ThingSpeak frequency timer to %l minutes." LF), config.thingspeak.freq);
         tsTimer.detach();
         tsTimer.attach(config.thingspeak.freq * 60, setDoTSTarget);
         config.thingspeak.update = false;

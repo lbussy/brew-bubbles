@@ -53,7 +53,7 @@ void _delay(unsigned long ulDelay)
 
 void resetController()
 {
-    Log.notice(F("Reboot request - rebooting system." CR));
+    Log.notice(F("Reboot request - rebooting system." LF));
     _delay(5000);
     saveBpm();
     config.nodrd = true;
@@ -71,7 +71,7 @@ void loadBpm()
     // Mount File System
     if (!LittleFS.begin())
     {
-        Log.error(F("CONFIG: Failed to mount File System." CR));
+        Log.error(F("CONFIG: Failed to mount File System." LF));
         return;
     }
 
@@ -79,7 +79,7 @@ void loadBpm()
     File file = LittleFS.open(bpmFileName, "r");
     if (!LittleFS.exists(bpmFileName) || !file)
     {
-        Log.notice(F("No lastBpm available." CR));
+        Log.notice(F("No lastBpm available." LF));
         bubbles.clearLast();
     }
     else
@@ -88,7 +88,7 @@ void loadBpm()
         DeserializationError err = deserializeJson(doc, file);
         if (err)
         {
-            Log.error(F("Failed to deserialize lastBpm." CR));
+            Log.error(F("Failed to deserialize lastBpm." LF));
             Log.error(err.c_str());
         }
         else
@@ -118,7 +118,7 @@ void saveBpm()
     File file = LittleFS.open(bpmFileName, "w");
     if (!file)
     {
-        Log.error(F("Failed to open lastBpm file." CR));
+        Log.error(F("Failed to open lastBpm file." LF));
     }
     else
     {
@@ -127,11 +127,11 @@ void saveBpm()
         // This may fail if the JSON is invalid
         if (!success)
         {
-            Log.error(F("Failed to serialize lastBpm." CR));
+            Log.error(F("Failed to serialize lastBpm." LF));
         }
         else
         {
-            Log.verbose(F("Saved lastBpm." CR), bpmFileName);
+            Log.verbose(F("Saved lastBpm." LF), bpmFileName);
         }
     }
 }
@@ -140,12 +140,12 @@ void maintenanceLoop()
 {
     if (ESP.getFreeHeap() < MINFREEHEAP)
     {
-        Log.warning(F("Maintenance: Heap memory has degraded below safe minimum, restarting." CR));
+        Log.warning(F("Maintenance: Heap memory has degraded below safe minimum, restarting." LF));
         resetController();
     }
     if (WiFi.status() != WL_CONNECTED)
     {
-        Log.warning(F("Maintenance: WiFi not connected, reconnecting." CR));
+        Log.warning(F("Maintenance: WiFi not connected, reconnecting." LF));
         doNonBlock = true;
         doWiFi(); // With doNonBlock, this should be non-blocking
     }
@@ -163,7 +163,7 @@ void maintenanceLoop()
     {
         // Bubble display in debug for Chris Thomas :)
         blip = false;
-        Log.verbose(F(".॰ₒ๐°৹" CR));
+        Log.verbose(F(".॰ₒ๐°৹" LF));
     }
 }
 

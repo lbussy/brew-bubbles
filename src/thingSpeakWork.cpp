@@ -133,7 +133,7 @@ void getNewBBChannel(String &writeKey, const char *key, const char *bubName)
     }
     else
     {
-        Log.error(F("ThingSpeak POST returned value %d." CR), retVal);
+        Log.error(F("ThingSpeak POST returned value %d." LF), retVal);
     }
 }
 

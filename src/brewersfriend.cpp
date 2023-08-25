@@ -78,7 +78,7 @@ BFTarget *BFTarget::getInstance()
 
 bool BFTarget::push()
 {
-    Log.verbose(F("Triggered %s push." CR), single->target->target.name);
+    Log.verbose(F("Triggered %s push." LF), single->target->target.name);
     if (single->target->target.enabled && strlen(config.brewersfriend.key))
     {                                                                                                  // Key target is unique per target (for now)
         strlcpy(single->target->key.name, config.brewersfriend.key, sizeof(config.brewersfriend.key)); // Key target is unique per target (for now)
@@ -98,40 +98,40 @@ bool BFTarget::push()
             {
                 if (single->target->ip == INADDR_NONE)
                 {
-                    Log.error(F("Unable to resolve host %s to IP address." CR), lcburl.getHost().c_str());
+                    Log.error(F("Unable to resolve host %s to IP address." LF), lcburl.getHost().c_str());
                     return false;
                 }
                 else
                 {
-                    Log.verbose(F("Using cached information for host %s at IP %s." CR), lcburl.getHost().c_str(), single->target->ip.toString().c_str());
+                    Log.verbose(F("Using cached information for host %s at IP %s." LF), lcburl.getHost().c_str(), single->target->ip.toString().c_str());
                 }
             }
             else
             {
-                Log.verbose(F("Resolved host %s to IP %s." CR), lcburl.getHost().c_str(), resolvedIP.toString().c_str());
+                Log.verbose(F("Resolved host %s to IP %s." LF), lcburl.getHost().c_str(), resolvedIP.toString().c_str());
                 single->target->ip = resolvedIP;
             }
         }
         else
         {
-            Log.error(F("Invalid URL in %s configuration: %s" CR), single->target->target.name, single->target->url);
+            Log.error(F("Invalid URL in %s configuration: %s" LF), single->target->target.name, single->target->url);
             return false;
         }
     }
     else
     {
-        Log.verbose(F("%s not enabled, skipping." CR), single->target->target.name);
+        Log.verbose(F("%s not enabled, skipping." LF), single->target->target.name);
         return true;
     }
 
     if (pushToTarget(single->target, target->ip, lcburl.getPort()))
     {
-        Log.notice(F("%s post ok." CR), single->target->target.name);
+        Log.notice(F("%s post ok." LF), single->target->target.name);
         return true;
     }
     else
     {
-        Log.error(F("%s post failed." CR), single->target->target.name);
+        Log.error(F("%s post failed." LF), single->target->target.name);
         return false;
     }
 }

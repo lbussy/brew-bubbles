@@ -35,7 +35,7 @@ bool getThatVersion()
     WiFiClient client;
 
     if (client.connect(UPGRADEURL, UPGRADEPORT)) {
-        Log.notice(F("Connected to server" CR));
+        Log.notice(F("Connected to server" LF));
         client.println("GET " + String(UPGRADEENDPOINT) + " HTTP/1.1");
         client.print("Host: ");
         client.println(UPGRADEURL);
@@ -60,7 +60,7 @@ bool getThatVersion()
     DeserializationError error = deserializeJson(verDoc, client);
     if (error)
     {
-        Log.error(F("Deserialization error: " CR), error.c_str());
+        Log.error(F("Deserialization error: " LF), error.c_str());
         return false;
     }
     else
@@ -85,5 +85,5 @@ void ThatVersion::load(JsonObjectConst obj)
     if (!obj["fs_version"].isNull())
         strlcpy(thatVersion.fs_version, (const char*)obj["fs_version"], sizeof(fs_version));
 
-    Log.notice(F("[DEBUG] Version: %s, FW Version: %s, FS Version: %s" CR), version, fw_version, fs_version);
+    Log.notice(F("[DEBUG] Version: %s, FW Version: %s, FS Version: %s" LF), version, fw_version, fs_version);
 }

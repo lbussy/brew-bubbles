@@ -28,8 +28,8 @@ SOFTWARE. */
 const char *configFileName = CONFIGJSON;
 Config config;
 
-const size_t capacitySerial = 1536;
-const size_t capacityDeserial = 768;
+const size_t capacitySerial = 1024;
+const size_t capacityDeserial = 1536;
 
 bool deleteConfigFile()
 {
