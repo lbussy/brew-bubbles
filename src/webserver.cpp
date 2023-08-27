@@ -534,7 +534,7 @@ bool handleControllerPost() // Handle Controller settings
             }
         }
     }
-    if (hostnamechanged) // TODO: Make async
+    if (hostnamechanged)
     { // We reset hostname, process
         hostnamechanged = false;
 #ifdef ESP8266
@@ -552,8 +552,6 @@ bool handleControllerPost() // Handle Controller settings
 
 bool handleTemperaturePost() // Handle Temperature Post
 {
-    // TODO: Save only if changed
-
     bool tempinf = config.bubble.tempinf;
 
     // Loop through all parameters
@@ -618,9 +616,6 @@ bool handleTemperaturePost() // Handle Temperature Post
 
 bool handleURLTargetPost() // Handle URL Target Post
 {
-    // TODO: Make sure it is a post
-    // TODO: Save only if changed
-
     // Loop through all parameters
     for (int i = 0; i < webserver.args(); i++)
     {
@@ -668,9 +663,6 @@ bool handleURLTargetPost() // Handle URL Target Post
 
 bool handleBrewersFriendTargetPost() // Handle Brewer's Friend Target Post
 {
-    // TODO: Make sure it is a post
-    // TODO: Save only if changed
-
     // Loop through all parameters
     for (int i = 0; i < webserver.args(); i++)
     {
@@ -718,9 +710,6 @@ bool handleBrewersFriendTargetPost() // Handle Brewer's Friend Target Post
 
 bool handleBrewfatherTargetPost() // Handle Brewfather Target Pos
 {
-    // TODO: Make sure it is a post
-    // TODO: Save only if changed
-
     // Loop through all parameters
     for (int i = 0; i < webserver.args(); i++)
     {
@@ -768,9 +757,6 @@ bool handleBrewfatherTargetPost() // Handle Brewfather Target Pos
 
 bool handleThingSpeakTargetPost() // Handle ThingSpeak Target Post
 {
-    // TODO: Make sure it is a post
-    // TODO: Save only if changed
-
     // Loop through all parameters
     for (int i = 0; i < webserver.args(); i++)
     {
@@ -841,7 +827,7 @@ void setActionPageHandlers()
               {
         Log.verbose(F("Processing /wifi2/." LF));
         handleFileRead("/wifi2.htm");
-        resetWifi(); // Wipe settings, reset controller // TODO:  Make this async
+        setDoReset(); // Wipe settings, reset controller
         });
 
     webserver.on("/reset/", HTTP_GET, []()
@@ -849,14 +835,14 @@ void setActionPageHandlers()
         Log.verbose(F("Processing /reset/." LF));
         // Redirect to Reset page
         handleFileRead("/reset.htm");
-        // setDoReset(); // TODO
+        setDoReset();
          });
 
     webserver.on("/otastart/", HTTP_GET, []()
               {
         Log.verbose(F("Processing /otastart/." LF));
         webserver.send(200, F("text/plain"), F("200: OTA queued."));
-        // setDoOTA(); // TODO
+        setDoOTA();
         });
 
     webserver.on("/clearupdate/", HTTP_GET, []()

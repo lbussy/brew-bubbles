@@ -53,7 +53,7 @@ void doWiFi()
 void doWiFi(bool dontUseStoredCreds)
 {
     // Eliminate 4-way handshake errors
-    // WiFi.disconnect(); // Don't think I should use this
+    WiFi.disconnect();
     WiFi.enableSTA(true);
 #ifdef ESP8266
     WiFi.setSleepMode(WIFI_NONE_SLEEP);
@@ -63,12 +63,12 @@ void doWiFi(bool dontUseStoredCreds)
     wm.setBreakAfterConfig(true);
 
     // WiFiManager Callbacks
-    wm.setAPCallback(apCallback);                       // Called after AP has started
-    wm.setSaveConfigCallback(saveConfigCallback);       // Called only if optional parameters are saved, or setBreakAfterConfig(true)
+    wm.setAPCallback(apCallback);                 // Called after AP has started
+    wm.setSaveConfigCallback(saveConfigCallback); // Called only if optional parameters are saved, or setBreakAfterConfig(true)
 
 #ifndef DISABLE_LOGGING
     if (Log.getLevel())
-        wm.setDebugOutput(true); // Verbose debug is enabled by default
+        wm.setDebugOutput(false); // Verbose debug is enabled by default
     else
         wm.setDebugOutput(false);
 #else
@@ -86,15 +86,11 @@ void doWiFi(bool dontUseStoredCreds)
         "restart",
         "exit"};
 
-    // TODO:
-    // wm.setMenu(_wfmPortalMenu); // Set menu items
-
-    // wm.setCountry(WIFI_COUNTRY);    // Setting WiFi country seems to improve OSX soft ap connectivity
-    // wm.setWiFiAPChannel(WIFI_CHAN); // Set WiFi channel
-
-    // wm.setShowStaticFields(true); // Force show static ip fields
-    // wm.setShowDnsFields(true);    // Force show dns field always
-    // TODO^
+    wm.setMenu(_wfmPortalMenu);     // Set menu items
+    wm.setCountry(WIFI_COUNTRY);    // Setting WiFi country seems to improve OSX soft ap connectivity
+    wm.setWiFiAPChannel(WIFI_CHAN); // Set WiFi channel
+    wm.setShowStaticFields(true);   // Force show static ip fields
+    wm.setShowDnsFields(true);      // Force show dns field always
 
     // Allow non-default host name
     WiFiManagerParameter hostname("hostname", "Custom Hostname", HOSTNAME, 32);
@@ -103,7 +99,7 @@ void doWiFi(bool dontUseStoredCreds)
     if (doNonBlock)
     {
         // Enable nonblocking portal (if configured)
-        // wm.setConfigPortalBlocking(false); // TODO
+        wm.setConfigPortalBlocking(false);
     }
 
     if (dontUseStoredCreds)

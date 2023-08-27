@@ -148,8 +148,8 @@ void handleFileList()
         }
 
         output += F("\",\"name\":\"");
+        
         // Always return names without leading "/"
-        // TODO: Handle an exlusion list
         if (dir.fileName()[0] == '/')
         {
             output += &(dir.fileName()[1]);
