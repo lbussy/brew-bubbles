@@ -24,15 +24,22 @@
 
 declare CWD GITNAME GITROOT GITTAG ENVIRONMENTS BINLOC PIO
 BINLOC="firmware"
-FSNAME="littlefs"
-DOPARTITIONS="false"
 
 get_pio() {
     echo -e "\nChecking PlatformIO environment."
-    if grep -q "WSL" /proc/version; then
+    if [[ $OSTYPE == 'darwin'* ]]; then
+        # On a Mac
+        PIO="$HOME/.platformio/penv/bin/platformio"
+    elif [[ $(grep -q "WSL" /proc/version 2>/dev/null) -gt 0 ]]; then
         # Running WSL
         PIO="/mnt/c/Users/$LOGNAME/.platformio/penv/Scripts/platformio.exe"
-    elif grep -q "@WIN" /proc/version; then
+    elif [ "$(expr substr $(uname -s) 1 5)" == "MINGW" ]; then
+        # Running GitBash on Windows
+        PIO="$HOME/.platformio/penv/Scripts/platformio.exe"
+    elif [ "$(expr substr $(uname -s) 1 7)" == "MSYS_NT" ]; then
+        # Running some weird bash on Windows
+        PIO="$HOME/.platformio/penv/Scripts/platformio.exe"
+    elif [[ $(grep -q "@WIN" /proc/version 2>/dev/null) -gt 0 ]]; then
         # Running Git Bash
         PIO="$HOME/.platformio/penv/Scripts/platformio.exe"
     else
@@ -53,13 +60,26 @@ get_git() {
     fi
     echo -e "\nDetermining git root."
     if [[ ! $(git status 2>/dev/null) ]]; then
-        echo -e "\nERROR: Git repository not found."
-        exit
+        # Not a git repo
+        SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+        if [[ -f "$SCRIPT_DIR/platformio.ini" ]]; then
+            # Platformio.ini is in the current directory
+            GITROOT="$SCRIPT_DIR"
+        elif [[ -f "$SCRIPT_DIR/../platformio.ini" ]]; then
+            # Platformio.ini is in the parent directory
+            GITROOT=${readlink -f "$SCRIPT_DIR/.."}
+        else
+            echo -e "\nERROR: Git repository nor platformio.ini found."
+            exit
+        fi
+        GITNAME="${SCRIPT_DIR##*/}"
+        GITTAG="0.0.0"
+    else
+        GITROOT=$(git rev-parse --show-toplevel)
+        GITNAME=$(git rev-parse --show-toplevel)
+        GITNAME=${GITROOT##*/}
+        GITTAG=$(git describe --tags --abbrev=0)
     fi
-    GITROOT=$(git rev-parse --show-toplevel)
-    GITNAME=$(git rev-parse --show-toplevel)
-    GITNAME=${GITROOT##*/}
-    GITTAG=$(git describe --tags --abbrev=0)
 }
 
 check_root() {
@@ -74,7 +94,12 @@ check_root() {
 get_envs() {
     echo -e "\nGathering build environments for $GITNAME."
     cd "$GITROOT" || exit
-    readarray -t ENVIRONMENTS < <("$PIO" project data | grep "env_name" | cut -d'"' -f2)
+    while IFS= read var value; do
+        if [ ! -z "$var" ] ; then
+            ENVIRONMENTS+=($var)
+            values+=($value)
+        fi
+    done <<<  $($PIO project config | grep "env:" | cut -d':' -f2)
 }
 
 list_envs() {
@@ -89,11 +114,13 @@ list_envs() {
 create_version() {
     echo -e "\nCreating version JSON."
     sleep 1
+    if [ ! -d "$GITROOT"/"$BINLOC"/ ]; then
+        mkdir "$GITROOT"/"$BINLOC"
+    fi
     cat << EOF | tee "$GITROOT/data/version.json" "$GITROOT/$BINLOC/version.json" > /dev/null || exit
 {
-    "version": "$GITTAG",
-    "fs_version": "$GITTAG",
-    "fw_version": "$GITTAG"
+    "fw_version": "$GITTAG",
+    "fs_version": "$GITTAG"
 }
 EOF
 }
@@ -102,29 +129,40 @@ build_binaries() {
     cd "$GITROOT" || (echo -e "Environment not found." && exit)
     for env in "${ENVIRONMENTS[@]}"
     do
-        echo -e "\nBuilding binaries for $env."
-        sleep 3
-        eval "$PIO" run -e "$env"
-        echo -e "\nBuilding filesysyem for $env."
-        sleep 3
-        eval "$PIO" run --target buildfs -e "$env"
+        if [ ! -z "$env" ] ; then
+            echo -e "\nBuilding binaries for $env."
+            sleep 3
+            eval "$PIO" run -e "$env"
+            echo -e "\nBuilding filesysyem for $env."
+            sleep 3
+            eval "$PIO" run --target buildfs -e "$env"
+        fi
     done
 }
 
 copy_binaries() {
+    local isLittleFS=false
     echo
     if [ -d "$GITROOT"/"$BINLOC"/ ]; then
         for env in "${ENVIRONMENTS[@]}"
         do
-            echo -e "Copying binaries for $env."
-            cp "$GITROOT"/.pio/build/"$env"/firmware.bin "$GITROOT"/"$BINLOC"/"$env"_firmware.bin
-            cp "$GITROOT"/.pio/build/"$env"/firmware.bin "$GITROOT"/"$BINLOC"/firmware.bin # Legacy
-            if [ "$DOPARTITIONS" = "true" ]; then
-                cp "$GITROOT"/.pio/build/"$env"/partitions.bin "$GITROOT"/"$BINLOC"/"$env"_partitions.bin
-                cp "$GITROOT"/.pio/build/"$env"/partitions.bin "$GITROOT"/"$BINLOC"/partitions.bin
+            if [ ! -z "$env" ] ; then
+                echo -e "Copying binaries for $env."
+                cp "$GITROOT"/.pio/build/"$env"/firmware.bin "$GITROOT"/"$BINLOC"/"$env"_firmware.bin
+                # cp "$GITROOT"/.pio/build/"$env"/partitions.bin "$GITROOT"/"$BINLOC"/"$env"_partitions.bin
+
+                # Handle SPIFFS vs LittleFS
+                while IFS= read -r line; do
+                if [[ $line == "board_build.filesystem"* && $line == *"littlefs" ]]; then
+                    isLittleFS=true
+                fi
+                done < "$GITROOT"/platformio.ini
+                if [ "$isLittleFS" ]; then
+                    cp "$GITROOT"/.pio/build/"$env"/littlefs.bin "$GITROOT"/"$BINLOC"/"$env"_littlefs.bin
+                else
+                    cp "$GITROOT"/.pio/build/"$env"/spiffs.bin "$GITROOT"/"$BINLOC"/"$env"_spiffs.bin
+                fi
             fi
-            cp "$GITROOT"/.pio/build/"$env"/"$FSNAME".bin "$GITROOT"/"$BINLOC"/"$env"_"$FSNAME".bin
-            cp "$GITROOT"/.pio/build/"$env"/"$FSNAME".bin "$GITROOT"/"$BINLOC"/"$FSNAME".bin #Legacy
         done
     else
         echo -e "\nERROR: Unable to copy files to $GITROOT/$BINLOC"

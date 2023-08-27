@@ -22,15 +22,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import subprocess
 Import("env")
 
-my_flags = env.ParseFlags(env['BUILD_FLAGS'])
-defines = {k: v for (k, v) in my_flags.get("CPPDEFINES")}
+env.Append(CPPDEFINES=[
+    ("PIO_BOARD", env["BOARD"])
+])
 
-env.Replace(PROGNAME="%s-%s-%s-%s-%s" % (
-    defines.get("PIO_SRC_NAM"),
-    str(env["BOARD"]),
-    defines.get("PIO_SRC_TAG"),
-    defines.get("PIO_SRC_REV"),
-    defines.get("PIO_SRC_BRH")))
+if env.GetBuildType() == "debug":
+    env.Append(CPPDEFINES=[
+        ("_DEBUG_BUILD"),
+        ("BUILD_TYPE", "debug")
+    ])
+
+else:
+    env.Append(CPPDEFINES=[
+        ("_RELEASE_BUILD"),
+        ("BUILD_TYPE", "release")
+    ])
