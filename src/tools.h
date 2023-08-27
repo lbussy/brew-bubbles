@@ -38,13 +38,15 @@ void setDoBrewfTarget();
 void setDoTSTarget();
 void setDoReset();
 void setDoOTA();
+void setDoSaveConfig();
 
 static bool __attribute__((unused)) doURLTarget = false;   // Semaphore for Target timer
 static bool __attribute__((unused)) doBFTarget = false;    // Semaphore for BF timer
 static bool __attribute__((unused)) doBrewfTarget = false; // Semaphore for BRF timer
 static bool __attribute__((unused)) doTSTarget = false;    // Semaphore for TS timer
-static bool __attribute__((unused)) doReset = false;       // Semaphore for reset
-static bool __attribute__((unused)) doOTA = false;         // Semaphore for reset
+static bool __attribute__((unused)) doReset = false;       // Semaphore for wifi reset
+static bool __attribute__((unused)) doOTA = false;         // Semaphore for controller reset
+static bool __attribute__((unused)) doSaveConfig = false;  // Semaphore for config save
 static bool __attribute__((unused)) doNonBlock = false;    // Semaphore for non-blocking portal
 
 extern struct Bubbles bubbles;

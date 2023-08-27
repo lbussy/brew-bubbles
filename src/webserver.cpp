@@ -38,6 +38,7 @@ SOFTWARE. */
 #include "mdns.h"
 #include "wifihandler.h"
 #include "version.h"
+#include "tools.h"
 
 extern const size_t capacitySerial;
 extern const size_t capacityDeserial;
@@ -493,10 +494,8 @@ void setSettingsAliases()
 
 bool handleControllerPost() // Handle Controller settings
 {
-    // TODO: Make sure it is a post
-    // TODO: Save only if changed
-
     bool hostnamechanged = false;
+
     // Loop through all parameters
     for (int i = 0; i < webserver.args(); i++)
     {
@@ -547,20 +546,12 @@ bool handleControllerPost() // Handle Controller settings
         Log.verbose(F("POSTed new mDNSid, reset mDNS stack." LF));
     }
 
-    if (saveConfig()) // TODO: Make async
-    {
-        return true;
-    }
-    else
-    {
-        Log.error(F("Error: Unable to save Controler configuration data." LF));
-        return false;
-    }
+    setDoSaveConfig();
+    return true;
 }
 
 bool handleTemperaturePost() // Handle Temperature Post
 {
-    // TODO: Make sure it is a post
     // TODO: Save only if changed
 
     bool tempinf = config.bubble.tempinf;
@@ -621,15 +612,8 @@ bool handleTemperaturePost() // Handle Temperature Post
             bubbles.wipeArray(); // Clear temp array out in case we changed format
     }
 
-    if (saveConfig()) // TODO: Make async
-    {
-        return true;
-    }
-    else
-    {
-        Log.error(F("Error: Unable to save temperature configuration data." LF));
-        return false;
-    }
+    setDoSaveConfig();
+    return true;
 }
 
 bool handleURLTargetPost() // Handle URL Target Post
@@ -678,15 +662,8 @@ bool handleURLTargetPost() // Handle URL Target Post
         }
     }
 
-    if (saveConfig()) // TODO: Make async
-    {
-        return true;
-    }
-    else
-    {
-        Log.error(F("Error: Unable to save URL Target data." LF));
-        return false;
-    }
+    setDoSaveConfig();
+    return true;
 }
 
 bool handleBrewersFriendTargetPost() // Handle Brewer's Friend Target Post
@@ -735,15 +712,8 @@ bool handleBrewersFriendTargetPost() // Handle Brewer's Friend Target Post
         }
     }
 
-    if (saveConfig()) // TODO: Make async
-    {
-        return true;
-    }
-    else
-    {
-        Log.error(F("Error: Unable to save Brewer's Friend configuration data." LF));
-        return false;
-    }
+    setDoSaveConfig();
+    return true;
 }
 
 bool handleBrewfatherTargetPost() // Handle Brewfather Target Pos
@@ -792,15 +762,8 @@ bool handleBrewfatherTargetPost() // Handle Brewfather Target Pos
         }
     }
 
-    if (saveConfig()) // TODO: Make async
-    {
-        return true;
-    }
-    else
-    {
-        Log.error(F("Error: Unable to save Brewfather configuration data." LF));
-        return false;
-    }
+    setDoSaveConfig();
+    return true;
 }
 
 bool handleThingSpeakTargetPost() // Handle ThingSpeak Target Post
@@ -866,15 +829,8 @@ bool handleThingSpeakTargetPost() // Handle ThingSpeak Target Post
         }
     }
 
-    if (saveConfig()) // TODO: Make async
-    {
-        return true;
-    }
-    else
-    {
-        Log.error(F("Error: Unable to save ThingSpeak configuration data." LF));
-        return false;
-    }
+    setDoSaveConfig();
+    return true;
 }
 
 void setActionPageHandlers()
@@ -910,7 +866,7 @@ void setActionPageHandlers()
         config.dospiffs1 = false;
         config.dospiffs2 = false;
         config.didupdate = false;
-        saveConfig(); // TODO: Make Async
+        setDoSaveConfig();
         webserver.send(200, F("text/plain"), F("200: OK.")); });
 }
 

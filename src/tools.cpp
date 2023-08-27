@@ -201,6 +201,11 @@ void setDoOTA()
     doOTA = true; // Semaphore required for OTA in callback
 }
 
+void setDoSaveConfig()
+{
+    doSaveConfig = true; // Semaphore required for config save in callback
+}
+
 void tickerLoop()
 {
     Target *target = Target::getInstance();
@@ -257,5 +262,11 @@ void tickerLoop()
     {
         doOTA = false;
         execfw();
+    }
+
+    if (doSaveConfig)
+    {
+        doSaveConfig = false;
+        saveConfig();
     }
 }
