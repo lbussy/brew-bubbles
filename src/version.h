@@ -23,10 +23,7 @@ SOFTWARE. */
 #ifndef _VERSION_H
 #define _VERSION_H
 
-#include <Arduino.h>
-
-#define stringify(s) _stringifyDo(s)
-#define _stringifyDo(s) #s
+class String;
 
 const char *project();
 const char *fw_version();
@@ -35,6 +32,7 @@ void fsver();
 const char *branch();
 const char *build();
 const char *board();
+const char *build_mode();
 
 int versionCompare(String, String);
 

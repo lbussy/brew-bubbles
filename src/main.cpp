@@ -46,11 +46,13 @@ SOFTWARE. */
 
 DoubleResetDetector *drd;
 
+#define stringify(s) _stringifyDo(s)
+#define _stringifyDo(s) #s
+
 bool fsOK;
 #include <LittleFS.h>
 const char* fsName = "LittleFS"; // Used for JSON in Edit Page
-FS* fileSystem = &LittleFS; // Should be an alias for LittleFS class
-// TODO:  We should be able to limit the time we call LittleFS.begin();
+FS* fileSystem = &LittleFS; // An alias for filesystem class
 LittleFSConfig fileSystemConfig = LittleFSConfig();
 
 Ticker getThatVer; // Poll for server version
@@ -67,7 +69,7 @@ void setup()
 
     fileSystemConfig.setAutoFormat(false);
     fileSystem->setConfig(fileSystemConfig);
-    if (!LittleFS.begin())
+    if (!fileSystem->begin())
     {
         Log.fatal(F("Unable to mount filesystem." LF));
         fsOK = false;

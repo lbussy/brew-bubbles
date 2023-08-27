@@ -22,6 +22,12 @@ SOFTWARE. */
 
 #include "tools.h"
 
+#include <LittleFS.h>
+#include <ArduinoLog.h>
+#include <ArduinoJson.h>
+#include <EEPROM.h>
+#include <Arduino.h>
+
 #include "execota.h"
 #include "wifihandler.h"
 #include "config.h"
@@ -30,11 +36,9 @@ SOFTWARE. */
 #include "brewfather.h"
 #include "thingspeaktarget.h"
 #include "target.h"
-#include <LittleFS.h>
-#include <ArduinoLog.h>
-#include <ArduinoJson.h>
-#include <EEPROM.h>
-#include <Arduino.h>
+
+extern bool fsOK;
+extern FS* fileSystem;
 
 void _delay(unsigned long ulDelay)
 {
@@ -69,15 +73,15 @@ void loadBpm()
     const char *bpmFileName = LASTBPM_JSON;
 
     // Mount File System
-    if (!LittleFS.begin())
+    if (!fsOK)
     {
         Log.error(F("CONFIG: Failed to mount File System." LF));
         return;
     }
 
     // Open file for reading
-    File file = LittleFS.open(bpmFileName, "r");
-    if (!LittleFS.exists(bpmFileName) || !file)
+    File file = fileSystem->open(bpmFileName, "r");
+    if (!fileSystem->exists(bpmFileName) || !file)
     {
         Log.notice(F("No lastBpm available." LF));
         bubbles.clearLast();
@@ -115,7 +119,7 @@ void saveBpm()
     doc["dts"] = dts;
 
     // Open file for writing
-    File file = LittleFS.open(bpmFileName, "w");
+    File file = fileSystem->open(bpmFileName, "w");
     if (!file)
     {
         Log.error(F("Failed to open lastBpm file." LF));

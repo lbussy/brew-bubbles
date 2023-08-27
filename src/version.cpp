@@ -22,65 +22,56 @@ SOFTWARE. */
 
 #include "version.h"
 
-#include "config.h"
-#include <LittleFS.h>
 #include <ArduinoLog.h>
+#include <Arduino.h>
 #include <ArduinoJson.h>
+#include <LittleFS.h>
 
-const char *versionJSONFileName = VERSIONJSON;
-char fs_ver[32];
+#include "config.h"
+
+#define stringify(s) _stringifyDo(s)
+#define _stringifyDo(s) #s
+
+extern FS* fileSystem;
+
+static const char *versionfile = VERSIONJSON;
+static char fs_ver[32];
 
 const char *project() { return stringify(PIO_SRC_NAM); }
 const char *fw_version() { return stringify(PIO_SRC_TAG); }
-const char *fs_version()
-{
-    fsver();
-    return (fs_ver);
-}
+const char *fs_version() { fsver(); return (fs_ver); }
 const char *branch() { return stringify(PIO_SRC_BRH); }
 const char *build() { return stringify(PIO_SRC_REV); }
 const char *board() { return stringify(PIO_BOARD); }
+const char *build_mode() { return stringify(BUILD_TYPE); }
 
 void fsver()
 {
-    StaticJsonDocument<96> doc;
     // Filesystem Version
-    if (LittleFS.begin())
+    // Loads the configuration from a file on LittleFS
+    File file = fileSystem->open(versionfile, "r");
+    if (fileSystem->exists(versionfile) || !file)
     {
-        // Loads the configuration from a file on LittleFS
-        File file = LittleFS.open(versionJSONFileName, "r");
-        if (LittleFS.exists(versionJSONFileName) || !file)
-        {
-            // Parse the JSON object in the file
-            DeserializationError err = deserializeJson(doc, file);
+        // Deserialize version
+        StaticJsonDocument<96> doc;
 
-            if (!err)
+        // Parse the JSON object in the file
+        DeserializationError err = deserializeJson(doc, file);
+
+        if (!err)
+        {
+            if (doc["fs_version"].isNull())
             {
-                if (!doc["fs_version"].isNull())
-                {
-                    const char *fs = doc["fs_version"];
-                    strlcpy(fs_ver, fs, sizeof(fs_ver));
-                    file.close();
-                    return;
-                }
+                strlcpy(fs_ver, "0.0.0", sizeof(fs_ver));
+            }
+            else
+            {
+                const char *fs = doc["fs_version"];
+                strlcpy(fs_ver, fs, sizeof(fs_ver));
             }
         }
-        else
-        {
-            Log.warning(F("Filesystem version not available." LF));
-            file.close();
-            File file = LittleFS.open(versionJSONFileName, "w");
-            strlcpy(fs_ver, "0.0.0", sizeof(fs_ver));
-            doc["fs_version"] = fs_ver;
-            serializeJsonPretty(doc, file);
-            file.close();
-        }
     }
-    else
-    {
-        Log.error(F("Filesystem not available." LF));
-        strlcpy(fs_ver, "No FS", sizeof(fs_ver));
-    }
+    file.close();
     return;
 }
 
