@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -23,10 +23,7 @@ SOFTWARE. */
 #ifndef _VERSION_H
 #define _VERSION_H
 
-#include <Arduino.h>
-
-#define stringify(s) _stringifyDo(s)
-#define _stringifyDo(s) #s
+class String;
 
 const char *project();
 const char *fw_version();
@@ -35,6 +32,7 @@ void fsver();
 const char *branch();
 const char *build();
 const char *board();
+const char *build_mode();
 
 int versionCompare(String, String);
 

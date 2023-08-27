@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -22,6 +22,12 @@ SOFTWARE. */
 
 #include "tools.h"
 
+#include <LittleFS.h>
+#include <ArduinoLog.h>
+#include <ArduinoJson.h>
+#include <EEPROM.h>
+#include <Arduino.h>
+
 #include "execota.h"
 #include "wifihandler.h"
 #include "config.h"
@@ -30,11 +36,9 @@ SOFTWARE. */
 #include "brewfather.h"
 #include "thingspeaktarget.h"
 #include "target.h"
-#include <LittleFS.h>
-#include <ArduinoLog.h>
-#include <ArduinoJson.h>
-#include <EEPROM.h>
-#include <Arduino.h>
+
+extern bool fsOK;
+extern FS* fileSystem;
 
 void _delay(unsigned long ulDelay)
 {
@@ -53,7 +57,7 @@ void _delay(unsigned long ulDelay)
 
 void resetController()
 {
-    Log.notice(F("Reboot request - rebooting system." CR));
+    Log.notice(F("Reboot request - rebooting system." LF));
     _delay(5000);
     saveBpm();
     config.nodrd = true;
@@ -69,17 +73,17 @@ void loadBpm()
     const char *bpmFileName = LASTBPM_JSON;
 
     // Mount File System
-    if (!LittleFS.begin())
+    if (!fsOK)
     {
-        Log.error(F("CONFIG: Failed to mount File System." CR));
+        Log.error(F("CONFIG: Failed to mount File System." LF));
         return;
     }
 
     // Open file for reading
-    File file = LittleFS.open(bpmFileName, "r");
-    if (!LittleFS.exists(bpmFileName) || !file)
+    File file = fileSystem->open(bpmFileName, "r");
+    if (!fileSystem->exists(bpmFileName) || !file)
     {
-        Log.notice(F("No lastBpm available." CR));
+        Log.notice(F("No lastBpm available." LF));
         bubbles.clearLast();
     }
     else
@@ -88,7 +92,7 @@ void loadBpm()
         DeserializationError err = deserializeJson(doc, file);
         if (err)
         {
-            Log.error(F("Failed to deserialize lastBpm." CR));
+            Log.error(F("Failed to deserialize lastBpm." LF));
             Log.error(err.c_str());
         }
         else
@@ -115,10 +119,10 @@ void saveBpm()
     doc["dts"] = dts;
 
     // Open file for writing
-    File file = LittleFS.open(bpmFileName, "w");
+    File file = fileSystem->open(bpmFileName, "w");
     if (!file)
     {
-        Log.error(F("Failed to open lastBpm file." CR));
+        Log.error(F("Failed to open lastBpm file." LF));
     }
     else
     {
@@ -127,11 +131,11 @@ void saveBpm()
         // This may fail if the JSON is invalid
         if (!success)
         {
-            Log.error(F("Failed to serialize lastBpm." CR));
+            Log.error(F("Failed to serialize lastBpm." LF));
         }
         else
         {
-            Log.verbose(F("Saved lastBpm." CR), bpmFileName);
+            Log.verbose(F("Saved lastBpm." LF), bpmFileName);
         }
     }
 }
@@ -140,12 +144,12 @@ void maintenanceLoop()
 {
     if (ESP.getFreeHeap() < MINFREEHEAP)
     {
-        Log.warning(F("Maintenance: Heap memory has degraded below safe minimum, restarting." CR));
+        Log.warning(F("Maintenance: Heap memory has degraded below safe minimum, restarting." LF));
         resetController();
     }
     if (WiFi.status() != WL_CONNECTED)
     {
-        Log.warning(F("Maintenance: WiFi not connected, reconnecting." CR));
+        Log.warning(F("Maintenance: WiFi not connected, reconnecting." LF));
         doNonBlock = true;
         doWiFi(); // With doNonBlock, this should be non-blocking
     }
@@ -163,7 +167,7 @@ void maintenanceLoop()
     {
         // Bubble display in debug for Chris Thomas :)
         blip = false;
-        Log.verbose(F(".॰ₒ๐°৹" CR));
+        Log.verbose(F(".॰ₒ๐°৹" LF));
     }
 }
 
@@ -195,6 +199,11 @@ void setDoTSTarget()
 void setDoOTA()
 {
     doOTA = true; // Semaphore required for OTA in callback
+}
+
+void setDoSaveConfig()
+{
+    doSaveConfig = true; // Semaphore required for config save in callback
 }
 
 void tickerLoop()
@@ -253,5 +262,11 @@ void tickerLoop()
     {
         doOTA = false;
         execfw();
+    }
+
+    if (doSaveConfig)
+    {
+        doSaveConfig = false;
+        saveConfig();
     }
 }

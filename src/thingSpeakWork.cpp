@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -133,7 +133,7 @@ void getNewBBChannel(String &writeKey, const char *key, const char *bubName)
     }
     else
     {
-        Log.error(F("ThingSpeak POST returned value %d." CR), retVal);
+        Log.error(F("ThingSpeak POST returned value %d." LF), retVal);
     }
 }
 

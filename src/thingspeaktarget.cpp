@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -30,7 +30,7 @@ SOFTWARE. */
 
 bool pushThingspeak()
 {
-    Log.verbose(F("Triggered %s push." CR), tsName);
+    Log.verbose(F("Triggered %s push." LF), tsName);
     if (strlen(config.thingspeak.key) && config.thingspeak.channel > 0)
     {
         WiFiClient client;
@@ -47,18 +47,18 @@ bool pushThingspeak()
         int retVal = ThingSpeak.writeFields(config.thingspeak.channel, config.thingspeak.key);
         if (retVal == 200)
         {
-            Log.notice(F("%s channel update successful." CR), tsName);
+            Log.notice(F("%s channel update successful." LF), tsName);
             return true;
         }
         else
         {
-            Log.error(F("Problem updating %s channel %d. HTTP error code %d." CR), tsName, config.thingspeak.channel, retVal);
+            Log.error(F("Problem updating %s channel %d. HTTP error code %d." LF), tsName, config.thingspeak.channel, retVal);
             return false;
         }
     }
     else
     {
-        Log.verbose(F("ThingSpeak not enabled, skipping." CR));
+        Log.verbose(F("ThingSpeak not enabled, skipping." LF));
         return false;
     }
 }

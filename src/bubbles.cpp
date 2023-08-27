@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -101,7 +101,7 @@ void Bubbles::update()
 
     saveBpm();
 
-    Log.verbose(F("Current BPM is %D. Averages: BPM (%d) = %D, Ambient (%d) = %D, Vessel (%d) = %D." CR),
+    Log.verbose(F("Current BPM is %D. Averages: BPM (%d) = %D, Ambient (%d) = %D, Vessel (%d) = %D." LF),
                 bubbles.lastBpm,
                 bubAvg.size(),
                 bubbles.getAvgBpm(),
@@ -174,12 +174,12 @@ void Bubbles::setLast(time_t dts, double lastBpm, double lastAmb, double lastVes
     if (expAge > now)
     {
         // JSON expired
-        Log.verbose(F("Last BPM JSON expired." CR));
+        Log.verbose(F("Last BPM JSON expired." LF));
         saveBpm();
     }
     else
     {
-        Log.notice(F("Loading last BPM." CR));
+        Log.notice(F("Loading last BPM." LF));
         // Loading JSON information
         if (!lastBpm)
             bubAvg.push(0);

@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -76,7 +76,7 @@ void setClock()
 #ifdef LOG_LEVEL
                 myPrintln();
 #endif
-                Log.warning(F("Unable to get time hack from server, restarting." CR));
+                Log.warning(F("Unable to get time hack from server, restarting." LF));
                 blinker.detach();
                 ESP.restart();
                 return;
@@ -98,7 +98,7 @@ void setClock()
 #ifdef LOG_LEVEL
     myPrintln();
 #endif
-    Log.notice(F("NTP time set." CR));
+    Log.notice(F("NTP time set." LF));
 }
 
 String getDTS()

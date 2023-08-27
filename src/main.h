@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -23,6 +23,8 @@ SOFTWARE. */
 #ifndef _MAIN_H
 #define _MAIN_H
 
+#include <ESP8266WebServer.h>
+
 // Use LittleFS for DRD storage
 #define ESP_DRD_USE_LITTLEFS true
 // #define DOUBLERESETDETECTOR_DEBUG true
@@ -36,5 +38,6 @@ extern bool loadConfig();
 extern struct ThatVersion thatVersion;
 extern struct Bubbles bubbles;
 extern volatile bool doBubble;
+extern ESP8266WebServer webserver;
 
 #endif // _MAIN_H

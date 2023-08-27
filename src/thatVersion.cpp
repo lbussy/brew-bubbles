@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -23,81 +23,51 @@ SOFTWARE. */
 #include "thatVersion.h"
 
 #include "config.h"
+#include <ESP8266WiFi.h>
 #include <ArduinoLog.h>
-#include <ESPAsyncTCP.h>
-#include <Arduino.h>
 
-asyncHTTPrequest request;
 ThatVersion __attribute__((unused)) thatVersion;
 
-void sendRequest()
+bool getThatVersion()
 {
-    if (request.readyState() == 0 || request.readyState() == 4)
-    {
-        char url[128];
-#ifdef DOBETA
-        strcpy(url, UPGRADEURL);
-#else
-        strcpy(url, UPGRADEURL);
-#endif
-        strcat(url, VERSIONJSON);
-        request.open("GET", url);
-        request.send();
+    // Create a WiFiClient instance to establish the connection
+    // Make a request to the server
+    WiFiClient client;
+
+    if (client.connect(UPGRADEURL, UPGRADEPORT)) {
+        Log.notice(F("Connected to server" LF));
+        client.println("GET " + String(UPGRADEENDPOINT) + " HTTP/1.1");
+        client.print("Host: ");
+        client.println(UPGRADEURL);
+        client.println("Connection: close");
+        client.println();
+    } else {
+        Serial.println("Connection failed");
+        return false;
     }
-}
 
-void requestHandler(void *optParm, asyncHTTPrequest *request, int readyState)
-{
-    String body = request->responseText();
-    const char *src = body.c_str();
-    if (!deserializeVersion(src, thatVersion))
+    // Wait for server response
+    while (client.connected())
     {
-        Log.error(F("Failed to deserialize version information." CR));
+        String line = client.readStringUntil('\n');
+        if (line == "\r") {
+        break; // Empty line, end of headers
+        }
     }
-    else
+
+    // Read and process multi-line response
+    DynamicJsonDocument verDoc(192);
+    DeserializationError error = deserializeJson(verDoc, client);
+    if (error)
     {
-        Log.verbose(F("Deserialized version information." CR));
-    }
-}
-
-bool serializeVersion(const ThatVersion &thatVersion, Print &dst)
-{
-    // Serialize version
-    StaticJsonDocument<96> doc;
-
-    // Create an object at the root
-    JsonObject root = doc.to<JsonObject>();
-
-    // Fill the object
-    thatVersion.save(root);
-
-    // Serialize JSON to file
-    return serializeJsonPretty(doc, dst) > 0;
-}
-
-bool deserializeVersion(const char *&src, ThatVersion &thatVersion)
-{
-    // Deserialize version
-    StaticJsonDocument<128> doc;
-
-    // Parse the JSON object in the file
-    DeserializationError err = deserializeJson(doc, src);
-    if (err)
-    {
-        thatVersion.load(doc.as<JsonObject>());
-        return true;
+        Log.error(F("Deserialization error: " LF), error.c_str());
+        return false;
     }
     else
     {
-        thatVersion.load(doc.as<JsonObject>());
+        thatVersion.load(verDoc.as<JsonObject>());
         return true;
     }
-}
-
-void doPoll()
-{
-    request.onData(requestHandler);
-    sendRequest();
 }
 
 void ThatVersion::save(JsonObject obj) const
@@ -108,24 +78,12 @@ void ThatVersion::save(JsonObject obj) const
 
 void ThatVersion::load(JsonObjectConst obj)
 {
-    const char *fw = obj["fw_version"];
-    if (fw)
-        strlcpy(fw_version, fw, sizeof(fw_version));
-    else
-    {
-        const char *_fw = obj["version"];
-        if (_fw)
-        {
-            Log.notice(F("Deprecated version format detected." CR));
-            strlcpy(fw_version, _fw, sizeof(fw_version)); // Default
-        }
-        else
-            strlcpy(fw_version, "0.0.0", sizeof(fw_version)); // Default
-    }
+    if (!obj["version"].isNull())
+        strlcpy(thatVersion.version, (const char*)obj["version"], sizeof(version));
+    if (!obj["fw_version"].isNull())
+        strlcpy(thatVersion.fw_version, (const char*)obj["fw_version"], sizeof(fw_version));
+    if (!obj["fs_version"].isNull())
+        strlcpy(thatVersion.fs_version, (const char*)obj["fs_version"], sizeof(fs_version));
 
-    const char *fs = obj["fs_version"];
-    if (fs)
-        strlcpy(fs_version, fs, sizeof(fs_version));
-    else
-        strlcpy(fs_version, "0.0.0", sizeof(fs_version)); // Default
+    Log.notice(F("[DEBUG] Version: %s, FW Version: %s, FS Version: %s" LF), version, fw_version, fs_version);
 }

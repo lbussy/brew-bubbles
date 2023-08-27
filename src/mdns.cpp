@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -29,30 +29,32 @@ SOFTWARE. */
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
 
+extern struct Config config;
+
 void mdnssetup()
 {
     if (!MDNS.begin(config.hostname))
     { // Start the mDNS responder
-        Log.error(F("Error setting up mDNS responder." CR));
+        Log.error(F("Error setting up mDNS responder." LF));
     }
     else
     {
-        Log.notice(F("mDNS responder started for %s.local." CR), config.hostname);
+        Log.notice(F("mDNS responder started for %s.local." LF), config.hostname);
         if (!MDNS.addService("http", "tcp", HTTPPORT))
         {
-            Log.error(F("Failed to register Web mDNS service." CR));
+            Log.error(F("Failed to register Web mDNS service." LF));
         }
         else
         {
-            Log.notice(F("HTTP registered via mDNS on port %i." CR), HTTPPORT);
+            Log.notice(F("HTTP registered via mDNS on port %i." LF), HTTPPORT);
         }
         if (!MDNS.addService(config.hostname, "tcp", HTTPPORT))
         {
-            Log.error(F("Failed to register %s mDNS service." CR), API_KEY);
+            Log.error(F("Failed to register %s mDNS service." LF), API_KEY);
         }
         else
         {
-            Log.notice(F("%s registered via mDNS on port %i." CR), API_KEY, HTTPPORT);
+            Log.notice(F("%s registered via mDNS on port %i." LF), API_KEY, HTTPPORT);
         }
     }
 }
@@ -67,9 +69,9 @@ void mdnsreset()
     else
     {
 #ifdef ESP32
-        Log.notice(F("mDNS responder restarted, hostname: %s.local." CR), WiFi.getHostname());
+        Log.notice(F("mDNS responder restarted, hostname: %s.local." LF), WiFi.getHostname());
 #elif ESP8266
-        Log.notice(F("mDNS responder restarted, hostname: %s.local." CR), WiFi.hostname().c_str());
+        Log.notice(F("mDNS responder restarted, hostname: %s.local." LF), WiFi.hostname().c_str());
 #endif
         MDNS.addService("http", "tcp", HTTPPORT);
         MDNS.addService(config.hostname, "tcp", HTTPPORT);

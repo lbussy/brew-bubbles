@@ -20,15 +20,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
 
-#ifndef _EXECOTA_H
-#define _EXECOTA_H
+#ifndef _EDITFS_H
+#define _EDITFS_H
+#pragma once
 
-#include "jsonconfig.h"
+#include <Arduino.h>
 
-void execfw();
-void execspiffs();
+void handleStatus();
+void handleFileList();
+String lastExistingParent(String path);
+void handleFileCreate();
+void deleteRecursive(String path);
+void handleFileDelete();
+void handleFileUpload();
+void handleGetEdit();
+void editPagesInit();
 
-extern bool saveConfig();
-extern struct Config config;
-
-#endif //_EXECOTA_H
+#endif // _EDITFS_H

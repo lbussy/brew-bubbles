@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -110,5 +110,8 @@ bool printFile();
 // bool merge(JsonVariant dst, JsonVariantConst src);
 bool serializeConfig(Print &);
 bool deserializeConfig(Stream &);
+
+extern const size_t capacitySerial;
+extern const size_t capacityDeserial;
 
 #endif // _JSONCONFIG_H

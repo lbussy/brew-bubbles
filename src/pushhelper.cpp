@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -34,11 +34,11 @@ SOFTWARE. */
 
 IPAddress resolveHost(const char *hostname)
 {
-    Log.verbose(F("Host lookup: %s." CR), hostname);
+    Log.verbose(F("Host lookup: %s." LF), hostname);
     IPAddress returnIP = INADDR_NONE;
     if (WiFi.hostByName(hostname, returnIP, 10000) == 0)
     {
-        Log.error(F("Host lookup error." CR));
+        Log.error(F("Host lookup error." LF));
         returnIP = INADDR_NONE;
     }
     return returnIP;
@@ -49,7 +49,7 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port)
     LCBUrl lcburl;
     lcburl.setUrl(String(target->url) + String(target->key.name));
 
-    Log.notice(F("Posting to: %s" CR), lcburl.getHost().c_str());
+    Log.notice(F("Posting to: %s" LF), lcburl.getHost().c_str());
 
     const size_t capacity = JSON_OBJECT_SIZE(8) + 210;
     StaticJsonDocument<capacity> doc;
@@ -75,7 +75,7 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port)
     serializeJson(doc, json);
 
     // Use the IP address we resolved (necessary for mDNS)
-    Log.verbose(F("Connecting to: %s at %s on port %l" CR),
+    Log.verbose(F("Connecting to: %s at %s on port %l" LF),
                 lcburl.getHost().c_str(),
                 targetIP.toString().c_str(),
                 port);
@@ -91,18 +91,18 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port)
     client.setTimeout(10000);
     if (client.connect(targetIP, port))
     {
-        Log.notice(F("Connected to: %s." CR), target->target.name);
+        Log.notice(F("Connected to: %s." LF), target->target.name);
 
         // Open POST connection
         if (lcburl.getAfterPath().length() > 0)
         {
-            Log.verbose(F("POST /%s%s HTTP/1.1" CR),
+            Log.verbose(F("POST /%s%s HTTP/1.1" LF),
                         lcburl.getPath().c_str(),
                         lcburl.getAfterPath().c_str());
         }
         else
         {
-            Log.verbose(F("POST /%s HTTP/1.1" CR), lcburl.getPath().c_str());
+            Log.verbose(F("POST /%s HTTP/1.1" LF), lcburl.getPath().c_str());
         }
         client.print(F("POST /"));
         client.print(lcburl.getPath().c_str());
@@ -115,21 +115,21 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port)
         // Begin headers
         //
         // Host
-        Log.verbose(F("Host: %s" CR), lcburl.getHost().c_str());
+        Log.verbose(F("Host: %s" LF), lcburl.getHost().c_str());
         client.print(F("Host: "));
         client.println(lcburl.getHost().c_str());
         //
-        Log.verbose(F("Connection: close" CR));
+        Log.verbose(F("Connection: close" LF));
         client.println(F("Connection: close"));
         // Content
-        Log.verbose(F("Content-Length: %l" CR), json.length());
+        Log.verbose(F("Content-Length: %l" LF), json.length());
         client.print(F("Content-Length: "));
         client.println(json.length());
         // Content Type
-        Log.verbose(F("Content-Type: application/json" CR));
+        Log.verbose(F("Content-Type: application/json" LF));
         client.println(F("Content-Type: application/json"));
         // Terminate headers with a blank line
-        Log.verbose(F("End headers." CR));
+        Log.verbose(F("End headers." LF));
         client.println();
         //
         // End Headers
@@ -140,7 +140,7 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port)
         char status[32] = {0};
         client.readBytesUntil('\r', status, sizeof(status));
         client.stop();
-        Log.verbose(F("Status: %s" CR), status);
+        Log.verbose(F("Status: %s" LF), status);
         if (strcmp(status + 9, "200 OK") == 0)
         {
             if (target->checkBody.enabled == true)
@@ -149,12 +149,12 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port)
                 String response = String(status);
                 if (response.indexOf(target->checkBody.name) >= 0)
                 {
-                    Log.verbose(F("Response body ok." CR));
+                    Log.verbose(F("Response body ok." LF));
                     return true;
                 }
                 else
                 {
-                    Log.error(F("Unexpected body content: %s" CR), response.c_str());
+                    Log.error(F("Unexpected body content: %s" LF), response.c_str());
                     return false;
                 }
             }
@@ -165,13 +165,13 @@ bool pushToTarget(PushTarget *target, IPAddress targetIP, int port)
         }
         else
         {
-            Log.error(F("Unexpected status: %s" CR), status);
+            Log.error(F("Unexpected status: %s" LF), status);
             return false;
         }
     }
     else
     {
-        Log.warning(F("Connection failed, Host: %s, Port: %l (Err: %d)" CR),
+        Log.warning(F("Connection failed, Host: %s, Port: %l (Err: %d)" LF),
                     lcburl.getHost().c_str(), port, client.connected());
         return false;
     }

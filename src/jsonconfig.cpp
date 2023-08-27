@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -28,16 +28,19 @@ SOFTWARE. */
 const char *configFileName = CONFIGJSON;
 Config config;
 
-extern const size_t capacitySerial = 1536;
-extern const size_t capacityDeserial = 768;
+const size_t capacitySerial = 1024;
+const size_t capacityDeserial = 1536;
+
+extern FS* fileSystem;
+extern bool fsOK;
 
 bool deleteConfigFile()
 {
-    if (!LittleFS.begin())
+    if (!fsOK)
     {
         return false;
     }
-    return LittleFS.remove(configFileName);
+    return fileSystem->remove(configFileName);
 }
 
 bool loadConfig()
@@ -56,18 +59,18 @@ bool loadConfig()
 
 bool loadFile()
 {
-    if (!LittleFS.begin())
+    if (!fsOK)
     {
         return false;
     }
     // Loads the configuration from a file on File System
-    File file = LittleFS.open(configFileName, "r");
-    if (!LittleFS.exists(configFileName) || !file)
+    File file = fileSystem->open(configFileName, "r");
+    if (!fileSystem->exists(configFileName) || !file)
     {
         // Unable to open the file
         file.close();
-        File file = LittleFS.open(configFileName, "w");
-        if (!LittleFS.exists(configFileName) || !file)
+        File file = fileSystem->open(configFileName, "w");
+        if (!fileSystem->exists(configFileName) || !file)
         {
             // Still could not create a file
             return false;
@@ -75,8 +78,8 @@ bool loadFile()
         else
         {
             file.close();
-            file = LittleFS.open(configFileName, "r");
-            if (!LittleFS.exists(configFileName) || !file)
+            file = fileSystem->open(configFileName, "r");
+            if (!fileSystem->exists(configFileName) || !file)
             {
                 // Unable to open a file we created in the previous block
                 return false;
@@ -104,7 +107,7 @@ bool saveConfig()
 bool saveFile()
 {
     // Saves the configuration to a file on File System
-    File file = LittleFS.open(configFileName, "w");
+    File file = fileSystem->open(configFileName, "w");
     if (!file)
     {
         file.close();
@@ -160,7 +163,7 @@ bool serializeConfig(Print &dst)
 bool printFile()
 {
     // Prints the content of a file to the Serial
-    File file = LittleFS.open(configFileName, "r");
+    File file = fileSystem->open(configFileName, "r");
     if (!file)
         return false;
 

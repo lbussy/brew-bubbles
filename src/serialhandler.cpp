@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -30,6 +30,7 @@ SOFTWARE. */
 #include <ArduinoLog.h>
 #include <TelnetSpy.h>
 #include <sntp.h>   // sntp_get_current_timestamp()
+#include <ArduinoJson.h>
 
 #undef SERIAL
 #if DOTELNET == true
@@ -59,13 +60,13 @@ void setSerial()
     // SERIAL.setDebugOutput(true);
     Log.begin(LOG_LEVEL, &SERIAL, true);
     Log.setPrefix(printPrefix);
-    Log.notice(F("Serial logging started at %l." CR), BAUD);
+    Log.notice(F("Serial logging started at %l." LF), BAUD);
 #endif
 }
 
 void printPrefix(Print* _logOutput, int logLevel) {
     printTimestamp(_logOutput);
-    printLogLevel (_logOutput, logLevel);
+    // printLogLevel (_logOutput, logLevel);
 }
 
 void printLogLevel(Print* _logOutput, int logLevel) {

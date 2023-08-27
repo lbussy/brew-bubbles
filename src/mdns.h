@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -29,7 +29,5 @@ SOFTWARE. */
 
 void mdnssetup();
 void mdnsreset();
-
-extern struct Config config;
 
 #endif // _MDNS_H

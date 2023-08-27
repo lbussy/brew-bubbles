@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -24,21 +24,17 @@ SOFTWARE. */
 #define _THATVERSION_H
 
 #include <ArduinoJson.h>
-#include <asyncHTTPrequest.h>
 
 struct ThatVersion
 {
+    char version[32]    = {'0', '.', '0', '.', '0'};
     char fw_version[32] = {'0', '.', '0', '.', '0'};
     char fs_version[32] = {'0', '.', '0', '.', '0'};
 
-    void load(JsonObjectConst);
-    void save(JsonObject) const;
+    void load(JsonObjectConst obj);
+    void save(JsonObject obj) const;
 };
 
-void doPoll();
-void sendRequest();
-void requestHandler(void *, asyncHTTPrequest *, int);
-bool serializeVersion(const ThatVersion &, Print &);
-bool deserializeVersion(const char *&, ThatVersion &);
+bool getThatVersion();
 
 #endif // _THATVERSION_H

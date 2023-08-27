@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -23,9 +23,7 @@ SOFTWARE. */
 #ifndef _WIFIHANDLER_H
 #define _WIFIHANDLER_H
 
-#include <AsyncWiFiManager.h>
-
-#define WM_ASYNC
+#include <WiFiManager.h>
 
 void wifiBlinker();
 void doWiFi();
@@ -33,16 +31,8 @@ void doWiFi(bool);
 void resetWifi();
 
 // WiFiManager Callbacks
-void apCallback(AsyncWiFiManager *myWiFiManager);
-void configResetCallback();
-void preSaveConfigCallback();
+void apCallback(WiFiManager *myWiFiManager);
 void saveConfigCallback();
-void saveParamsCallback();
-void webServerCallback();
-
-extern struct Config config;
-extern const size_t capacitySerial;
-extern const size_t capacityDeserial;
 
 struct tcp_pcb;
 extern struct tcp_pcb *tcp_tw_pcbs;

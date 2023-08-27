@@ -1,4 +1,4 @@
-/* Copyright (C) 2019-2021 Lee C. Bussy (@LBussy)
+/* Copyright (C) 2019-2023 Lee C. Bussy (@LBussy)
 
 This file is part of Lee Bussy's Brew Bubbles (brew-bubbles).
 
@@ -22,38 +22,30 @@ SOFTWARE. */
 
 #ifndef _WEBSERVER_H
 #define _WEBSERVER_H
+#pragma once
 
-#include "jsonconfig.h"
-#include "bubbles.h"
-#include <ESPAsyncWebServer.h>
 #include <Arduino.h>
-#include <ESP8266mDNS.h>
 
-#ifndef USE_LITTLEFS
-#define USE_LITTLEFS
-#endif
+const char FILE_NOT_FOUND[] PROGMEM = "File Not Found";
+const char FS_INIT_ERROR[] PROGMEM = "FS Init Error";
 
-void initWebServer();
-void setRegPageAliases();
-void setActionPageHandlers();
+void startWebServer();
+void stopWebServer();
+void replyOK();
+void replyOKWithMsg(String msg);
+void replyNotFound(String msg);
+void replyBadRequest(String msg);
+void replyServerError(String msg);
+void handleNotFound();
+bool handleFileRead(String path);
 void setJsonHandlers();
 void setSettingsAliases();
-void setEditor();
-void stopWebServer();
 
-bool handleControllerPost(AsyncWebServerRequest *request);
-bool handleTemperaturePost(AsyncWebServerRequest *request);
-bool handleURLTargetPost(AsyncWebServerRequest *request);
-bool handleBrewersFriendTargetPost(AsyncWebServerRequest *request);
-bool handleBrewfatherTargetPost(AsyncWebServerRequest *request);
-bool handleThingSpeakTargetPost(AsyncWebServerRequest *request);
-
-extern struct Config config;
-extern struct ThatVersion thatVersion;
-extern struct Bubbles bubbles;
-extern const size_t capacityDeserial;
-extern const size_t capacitySerial;
-extern const char *resetReason[7];
-extern const char *resetDescription[7];
+bool handleControllerPost();
+bool handleTemperaturePost();
+bool handleURLTargetPost();
+bool handleBrewersFriendTargetPost();
+bool handleBrewfatherTargetPost();
+bool handleThingSpeakTargetPost();
 
 #endif // _WEBSERVER_H
