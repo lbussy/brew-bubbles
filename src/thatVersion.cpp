@@ -29,7 +29,14 @@ void sendRequest()
 {
     if (request.readyState() == 0 || request.readyState() == 4)
     {
-        request.open("GET", VERSIONJSONLOC);
+        char url[128];
+#ifdef DOBETA
+        strcpy(url, UPGRADEURL);
+#else
+        strcpy(url, UPGRADEURL);
+#endif
+        strcat(url, VERSIONJSON);
+        request.open("GET", url);
         request.send();
     }
 }
@@ -51,8 +58,7 @@ void requestHandler(void *optParm, asyncHTTPrequest *request, int readyState)
 bool serializeVersion(const ThatVersion &thatVersion, Print &dst)
 {
     // Serialize version
-    const size_t capacity = JSON_OBJECT_SIZE(1);
-    DynamicJsonDocument doc(capacity);
+    StaticJsonDocument<96> doc;
 
     // Create an object at the root
     JsonObject root = doc.to<JsonObject>();
@@ -67,8 +73,7 @@ bool serializeVersion(const ThatVersion &thatVersion, Print &dst)
 bool deserializeVersion(const char *&src, ThatVersion &thatVersion)
 {
     // Deserialize version
-    const size_t capacity = JSON_OBJECT_SIZE(1) + 50;
-    DynamicJsonDocument doc(capacity);
+    StaticJsonDocument<128> doc;
 
     // Parse the JSON object in the file
     DeserializationError err = deserializeJson(doc, src);
@@ -92,14 +97,30 @@ void doPoll()
 
 void ThatVersion::save(JsonObject obj) const
 {
-    obj["version"] = version;
+    obj["fw_version"] = fw_version;
+    obj["fs_version"] = fs_version;
 }
 
 void ThatVersion::load(JsonObjectConst obj)
 {
-    const char *v = obj["version"];
-    if (v)
-        strlcpy(version, v, sizeof(version));
+    const char *fw = obj["fw_version"];
+    if (fw)
+        strlcpy(fw_version, fw, sizeof(fw_version));
     else
-        strlcpy(version, "0.0.0", sizeof(version)); // Default
+    {
+        const char *_fw = obj["version"];
+        if (_fw)
+        {
+            Log.notice(F("Deprecated version format detected." CR));
+            strlcpy(fw_version, _fw, sizeof(fw_version)); // Default
+        }
+        else
+            strlcpy(fw_version, "0.0.0", sizeof(fw_version)); // Default
+    }
+
+    const char *fs = obj["fs_version"];
+    if (fs)
+        strlcpy(fs_version, fs, sizeof(fs_version));
+    else
+        strlcpy(fs_version, "0.0.0", sizeof(fs_version)); // Default
 }

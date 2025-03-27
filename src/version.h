@@ -19,17 +19,26 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE. */
+
 #ifndef _VERSION_H
 #define _VERSION_H
 
+#include "config.h"
+#include <LittleFS.h>
+#include <ArduinoLog.h>
+#include <ArduinoJson.h>
 #include <Arduino.h>
 
 #define stringify(s) _stringifyDo(s)
 #define _stringifyDo(s) #s
 
-const char *build();
+const char *project();
+const char *fw_version();
+const char *fs_version();
+void fsver();
 const char *branch();
-const char *version();
+const char *build();
+const char *board();
 
 int versionCompare(String, String);
 

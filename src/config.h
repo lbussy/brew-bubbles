@@ -25,6 +25,16 @@ SOFTWARE. */
 
 //////////////////////////////////////////////////////////////////////////
 //
+// Allow ArduinoJson to support 64-bit numbers
+//
+#ifndef ARDUINOJSON_USE_LONG_LONG
+#define ARDUINOJSON_USE_LONG_LONG 1
+#endif
+//
+//////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+//
 // Set verbosity of debug messages 0-6
 //
 //      * 0 - LOG_LEVEL_SILENT     no output
@@ -214,30 +224,35 @@ SOFTWARE. */
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Set Version JSON location
+// File name for configuration JSON
 //
-#ifndef VERSIONJSONLOC
-#define VERSIONJSONLOC "http://www.brewbubbles.com/firmware/version.json"
+#ifndef CONFIGJSON
+#define CONFIGJSON "/config.json"
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////
 //
-// Firmware URL
+// File name for version JSON
 //
-#ifndef FIRMWAREURL
-#define FIRMWAREURL "http://www.brewbubbles.com/firmware/firmware.bin"
+#ifndef VERSIONJSON
+#define VERSIONJSON "/version.json"
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////
 //
-// LittleFS URL
+// Upgrade URL
 //
-#ifndef LITTLEFSURL
-#define LITTLEFSURL "http://www.brewbubbles.com/firmware/littlefs.bin"
+#ifndef UPGRADEURL
+// #define DOBETA // Comment out for prod code
+#ifdef DOBETA
+#define UPGRADEURL "http://firmware.brewbubbles.com/testing"
+#else
+#define UPGRADEURL "http://firmware.brewbubbles.com"
+#endif
 #endif
 //
 //////////////////////////////////////////////////////////////////////////
@@ -428,7 +443,7 @@ SOFTWARE. */
 //
 #ifndef TIMESERVER
 #define TIMESERVER "pool.ntp.org", "time.nist.gov"
-// #define THISTZ TZ_Etc_GMT
+#define THISTZ TZ_Etc_GMT
 #endif
 //
 //////////////////////////////////////////////////////////////////////////

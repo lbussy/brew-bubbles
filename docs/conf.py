@@ -27,13 +27,16 @@ copyright = u'2019-2021, Lee C. Bussy'
 author = u'Lee C. Bussy'
 
 # Get 0.0.0 version from latest Git tag
-tagcmd = "git describe --tags --abbrev=0"
-version = subprocess.check_output(tagcmd, shell=True).decode().strip()
-
-# The short X.Y version
-version = version
-# The full version, including alpha/beta/rc tags
-release = version
+vercmd = "git describe --tags --abbrev=0"
+tagcmd = "git describe --tags"
+try:
+    # The short X.Y version
+    version = subprocess.check_output(vercmd, shell=True).decode().strip()
+    # The full version, including alpha/beta/rc tags
+    release = subprocess.check_output(tagcmd, shell=True).decode().strip()
+except:
+    version = "0.0.0"
+    release = "0.0.0"
 
 # -- General configuration ---------------------------------------------------
 
@@ -63,7 +66,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

@@ -22,7 +22,7 @@ SOFTWARE. */
 
 #include "jsonconfig.h"
 
-const char *filename = "/config.json";
+const char *filename = CONFIGJSON;
 Config config;
 
 extern const size_t capacitySerial = 1536;
@@ -226,7 +226,7 @@ bool merge(JsonVariant dst, JsonVariantConst src)
 {
     if (src.is<JsonObject>())
     {
-        for (auto kvp : src.as<JsonObject>())
+        for (auto kvp : src.as<JsonObjectConst>())
         {
             merge(dst.getOrAddMember(kvp.key()), kvp.value());
         }

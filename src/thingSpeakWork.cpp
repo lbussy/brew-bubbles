@@ -150,7 +150,7 @@ int createChannel(
     String &channelJSON,
     const char *api_key,
     const char *name,
-    const unsigned long fieldCount,
+    const int fieldCount,
     const char *field[],
     const char *description,
     const bool public_flag,
@@ -173,10 +173,10 @@ int createChannel(
 
     // Handle field names
     String fieldData = "";
-    for (unsigned int i = 0; i < fieldCount; i++)
+    for (int i = 0; i < (short)fieldCount; i++)
     {
         fieldData += "&";
-        char buffer[4];
+        char buffer[6];
         sprintf(buffer, "%d", i + 1);
         String inst = buffer;
         fieldData += "field" + inst + "=" + urlencode(String(field[i]));

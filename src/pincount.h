@@ -27,6 +27,6 @@ SOFTWARE. */
 #include <Arduino.h>
 
 void interruptSetup();
-void ICACHE_RAM_ATTR handleInterrupt();
+void IRAM_ATTR handleInterrupt();
 
 #endif // _PINCOUNT_H
