@@ -24,8 +24,8 @@ Well, if you want to go crazy, you can connect Brew Bubbles to [Brewer's Friend]
 
 Have I piqued your interest? Want to know how to get started? I'm glad you asked. The average garage handyman can build brew Bubbles for around $10, and it takes all of an hour before you are up and running.
 
-You can hit the [website](https://www.brewbubbles.com) as a jumping-off point. I have prepared [full documentation](https://docs.brewbubbles.com), or you can dive right into the repository here if that's how you'd like to do start.
+You can hit the [website](https://www.brewbubbles.com) as a jumping-off point. I have prepared [full documentation](https://brew-bubbles.readthedocs.io/en/latest/), or you can dive right into the repository here if that's how you'd like to do start.
 
-The [Homebrewtalk thread](https://support.brewbubbles.com) will serve for general support, true bugs should get logged to the [issues tracker](https://bugs.brewbubbles.com) here.
+The [Homebrewtalk thread](https://support.brewbubbles.com) will serve for general support, true bugs should get logged to the [issues tracker](https://github.com/lbussy/brew-bubbles/issues) here.
 
 I really hope some of you will get some use out of this.

@@ -5,6 +5,7 @@
 .vscode
 *.code-workspace
 firmware
+.venv
 
 # Documentation working files
 docs/_build/
