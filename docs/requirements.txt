@@ -1,4 +1,4 @@
-# Remember to: `pip install -r requirements.txt --upgrade`
-recommonmark
-sphinx
-sphinx_bootstrap_theme
+# Keep these bounded to compatible major releases for reproducible RTD builds.
+Sphinx>=8,<9
+myst-parser>=4,<5
+sphinx-bootstrap-theme>=0.8,<0.9

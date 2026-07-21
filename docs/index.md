@@ -1,10 +1,10 @@
-.. figure:: _static/bb_logo.gif
-    :scale: 13 %
-    :align: center
-    :alt: Brew Bubbles Logo
+:::{figure} _static/bb_logo.gif
+:align: center
+:alt: Brew Bubbles Logo
+:scale: 13 %
+:::
 
-Brew Bubbles Documentation
-==========================
+# Brew Bubbles Documentation
 
 Brew Bubbles is a mature, stable product with no intended roadmap changes. It is maintained for historical reference only. No new releases, upgrades, or individual support are promised. Firmware 2.2.3 is the final supported version.
 
@@ -14,33 +14,33 @@ Brew Bubbles is a combination hardware/software solution for homebrewers. Brew B
 
 If you use temperature control already, such as BrewPi Remix or Fermentrack, Brew Bubbles reports that data to display in that solution. If you use a cloud dashboard for your brews, such as Brewer’s Friend, you can display the data there as well.
 
-.. figure:: home.png
-   :scale: 75 %
-   :align: center
-   :alt: Main Window
+:::{figure} home.png
+:align: center
+:alt: Main Window
+:scale: 75 %
+:::
 
-Community Channels
-------------------
+## Community Channels
 
-Use `GitHub Discussions`_ for questions and community help. Report reproducible defects through `GitHub Issues`_. These channels remain active, but individual support and response times are not promised.
+Use [GitHub Discussions] for questions and community help. Report reproducible defects through [GitHub Issues]. These channels remain active, but individual support and response times are not promised.
 
-Table of Contents
------------------
+## Table of Contents
 
-.. toctree::
-    :maxdepth: 2
+```{toctree}
+:maxdepth: 2
 
-    prerequisites/index.rst
-    assembly/index.rst
-    installation/index.rst
-    setup/index.rst
-    configuration/index.rst
-    firmwareupdate/index.rst
-    wifireset/index.rst
-    api/index.rst
-    troubleshooting/index.rst
+prerequisites/index
+assembly/index
+installation/index
+setup/index
+configuration/index
+firmwareupdate/index
+wifireset/index
+api/index
+troubleshooting/index
+```
 
-.. _GitHub Discussions: https://github.com/lbussy/brew-bubbles/discussions
-.. _GitHub Issues: https://github.com/lbussy/brew-bubbles/issues
-.. _BrewPi Remix: https://www.brewpiremix.com
-.. _Fermentrack: https://www.fermentrack.com
+[brewpi remix]: https://www.brewpiremix.com
+[fermentrack]: https://www.fermentrack.com
+[github discussions]: https://github.com/lbussy/brew-bubbles/discussions
+[github issues]: https://github.com/lbussy/brew-bubbles/issues

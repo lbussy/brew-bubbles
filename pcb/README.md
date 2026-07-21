@@ -37,6 +37,6 @@ Additionally you will need:
 See [this project on Thingiverse](https://www.thingiverse.com/thing:4020905) from @gromitdj on [Homebrewtalk.com](https://homebrewtalk.com) (original from @matridium on [Homebrewtalk.com](https://homebrewtalk.com)) for a bracket you can print.
 
 ## Modifying These Files
-If you would like to personalize these board designs, you may modify them with [Autodesk's EAGLE](https://www.autodesk.com/products/eagle/overview). EAGLE is a scriptable electronic design automation (EDA) application with schematic capture, printed circuit board (PCB) layout, auto-router and computer-aided manufacturing (CAM) features. EAGLE stands for Easily Applicable Graphical Layout Editor and is developed by CadSoft Computer GmbH. The company was acquired by Autodesk Inc. in 2016.  
+If you would like to personalize these board designs, you may modify them with [Autodesk has removed Eagle as a supported product, the PCBs have not been converted to KiCad].  
 
 The program supports Windows, Linux, and Mac OS X.  EAGLE is available in a [free version](https://www.autodesk.com/products/eagle/free-download), as well as a [subscription-based version with more features](https://www.autodesk.com/products/eagle/compare).
