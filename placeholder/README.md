@@ -1,4 +1,4 @@
-[![Brew Bubbles Logo](https://www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")](http://www.brewbubbles.com/)
+![Brew Bubbles logo](../graphics/BB%20full%20logo.png "Brew Bubbles")
 
 # Web Pages
 

@@ -56,8 +56,6 @@ void setRegPageAliases()
     server.serveStatic("/index.htm", LittleFS, "/").setDefaultFile("index.htm").setCacheControl("max-age=600");
     server.serveStatic("/about/", LittleFS, "/").setDefaultFile("about.htm").setCacheControl("max-age=600");
     server.serveStatic("/help/", LittleFS, "/").setDefaultFile("help.htm").setCacheControl("max-age=600");
-    server.serveStatic("/ota/", LittleFS, "/").setDefaultFile("ota.htm").setCacheControl("max-age=600");
-    server.serveStatic("/ota2/", LittleFS, "/").setDefaultFile("ota2.htm").setCacheControl("max-age=600");
     server.serveStatic("/settings/", LittleFS, "/").setDefaultFile("settings.htm").setCacheControl("max-age=600");
     server.serveStatic("/wifi/", LittleFS, "/").setDefaultFile("wifi.htm").setCacheControl("max-age=600");
 }
@@ -79,21 +77,6 @@ void setActionPageHandlers()
         setDoReset();
     });
 
-    server.on("/otastart/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        Log.verbose(F("Processing /otastart/." CR));
-        request->send(200, F("text/plain"), F("200: OTA queued."));
-        setDoOTA();
-    });
-
-    server.on("/clearupdate/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        Log.verbose(F("Processing /clearupdate/." CR));
-        Log.verbose(F("Clearing any update flags." CR));
-        config.dospiffs1 = false;
-        config.dospiffs2 = false;
-        config.didupdate = false;
-        saveConfig();
-        request->send(200, F("text/plain"), F("200: OK."));
-    });
 }
 
 void setJsonHandlers()
@@ -199,19 +182,6 @@ void setJsonHandlers()
         doc["version"] = version();
         doc["branch"] = branch();
         doc["build"] = build();
-
-        String json;
-        serializeJsonPretty(doc, json);
-        request->send(200, F("application/json"), json);
-    });
-
-    server.on("/thatVersion/", HTTP_GET, [](AsyncWebServerRequest *request) {
-        Log.verbose(F("Serving /thatVersion/." CR));
-        const size_t capacity = JSON_OBJECT_SIZE(1);
-        DynamicJsonDocument doc(capacity);
-
-        const char *version = thatVersion.version;
-        doc["version"] = version;
 
         String json;
         serializeJsonPretty(doc, json);

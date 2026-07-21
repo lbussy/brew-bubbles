@@ -10,7 +10,7 @@
 
     <title>Brew Bubbles</title>
 
-    <link rel="canonical" href="https://www.brewbubbles.com/">
+    <link rel="canonical" href="https://brew-bubbles.readthedocs.io/en/latest/">
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -126,7 +126,6 @@
                             aria-haspopup="true" aria-expanded="false">Advanced</a>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" data-toggle="tab" href="#reset">Reset</a>
-                            <a class="dropdown-item" data-toggle="tab" href="#update">Update</a>
                             <a class="dropdown-item" data-toggle="tab" href="#wifi">Wifi</a>
                         </div>
                     </li> <!-- Advanced Nav Item -->
@@ -538,39 +537,6 @@
                             </form>
                         </div>
                     </div> <!-- Reset Controllers tab -->
-
-                    <!-- Update Firmware tab -->
-                    <div class="tab-pane fade" id="update">
-                        <div class="card-header">
-                            <h4 class="card-title">Update Firmware: Confirmation</h4>
-                        </div>
-                        <div class="card-body">
-                            <p>
-                            <table class="table table-hover">
-                                <tbody>
-                                    <tr class="table-success">
-                                        <th scope="row">Current Version:</th>
-                                        <td>
-                                            <div id="thisVersion">... loading</div>
-                                        </td>
-                                    </tr>
-                                    <tr class="table-info">
-                                        <th scope="row">Available version:</th>
-                                        <td>
-                                            <div id="thatVersion">... loading</div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            </p>
-                            <p>
-                                If you are sure you want to update firmware, click the button below.
-                            </p>
-                            <form action="/ota/">
-                                <button class="btn btn-danger" id="proceed" disabled="true">Update Firmware</button>
-                            </form>
-                        </div>
-                    </div> <!-- Update Firmware tab -->
 
                     <!-- Wifi Reset tab -->
                     <div class="tab-pane fade" id="wifi">

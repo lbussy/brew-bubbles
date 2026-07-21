@@ -28,7 +28,6 @@ SOFTWARE. */
 #include "target.h"
 #include "brewfather.h"
 #include "brewersfriend.h"
-#include "execota.h"
 #include <ESP8266WiFi.h>
 
 IPAddress resolveHost(const char hostname[129]);

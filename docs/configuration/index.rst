@@ -164,7 +164,7 @@ Target:
 
     If you are unable to access Brew Bubbles using the \*.local name, you are not able to use a target with a .local name either.  In this case, use the IP address of your target.
     
-    Only HTTP (not HTTPS) is supported.  Support for SSL on controllers is extremely resource-intensive as well as unstable at this time.  If the libraries improve in the future, I will consider https support.
+    Only HTTP (not HTTPS) is supported. SSL on these controllers is resource-intensive and is not part of the mature product's supported configuration.
     
     If a port number is required, it comes immediately after the hostname.  Basic URI rules are:
 
@@ -227,7 +227,7 @@ ThingSpeak allows posting custom data streams in order to collect and report upo
 - **Field 1:** "BPM" and check enabled
 - **Field 2:** "Ambient °F" (or "Ambient °C") and check the box to enable
 - **Field 3:** "Vessel °F" (or "Vessel °C") and check the box to enable
-- **Link to External Site (optional):** \https://www.brewbubbles.com
+- **Link to External Site (optional):** \https://github.com/lbussy/brew-bubbles/
 - **Link to GitHub (optional):** \https://github.com/lbussy/brew-bubbles/
 
 After you create your channel, you may optionally go into "Sharing" and allow people to view your channel.  The public URL may be discovered by selecting the "Public View" tab.
@@ -249,4 +249,4 @@ Push Frequency:
 Advanced
 ``````````
 
-I will cover Firmware Update and WiFi reset in subsequent sections.
+WiFi reset is covered in a subsequent section.

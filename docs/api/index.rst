@@ -56,9 +56,7 @@ Triggers the controller to send all of its configuration items
         "freq": 15,
         "update": false
     },
-    "dospiffs1": false,
-    "dospiffs2": false,
-    "didupdate": false
+    "nodrd": false
     }
 
 These keys represent the following settings:
@@ -101,14 +99,8 @@ thingspeak:
     - freq: The frequency (in minutes) at which the application sends a POST to ThingSpeak
     - update: Internal semaphore to trigger a reconfiguration
 
-dospiffs1:
-    - Sets a semaphore indicating that the controller has reset one time after the firmware update
-
-dospiffs2:
-    - Sets a semaphore indicating that the controller has reset two times after firmware update and that LittleFS update may begin
-
-didupdate:
-    - An indication that both firmware and LittleFS OTA has completed
+nodrd:
+    - Internal double-reset detector state used to distinguish controlled restarts
 
 Outbound API
 *************
@@ -148,11 +140,6 @@ This endpoint returns the current controller firmware and LittleFS version in JS
     }
 
 
-/thatVersion/
-==============
-
-This endpoint returns the currently available controller firmware and LittleFS version from the Brew Bubbles website in the same format as the local version.
-
 Inbound API
 ************
 
@@ -189,9 +176,6 @@ The controller uses inbound POST endpoints to configure Brew Bubbles:
     - thingspeakkey: Write key for the channel
     - thingspeakfreq: Frequency for reports in minutes
 
-/clearupdate/
-    - Clears all update related semaphores.
-
 Control Points
 ================
 
@@ -199,9 +183,6 @@ The following pages take action upon access:
 
 /wifi2/:
     Accessing this page resets all WiFi configuration items and resets the controller.
-
-/otastart/:
-    Accessing this page begins the OTA update process independent of web page processes.
 
 Downstream Targets
 *******************

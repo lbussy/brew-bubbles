@@ -56,12 +56,10 @@ void setup()
         doWiFi();
     }
 
-    execspiffs();        // Check for pending File System update
     setClock();          // Set NTP Time
     loadBpm();           // Get last BPM reading if it was a controlled reboot
     mdnssetup();         // Set up mDNS responder
     initWebServer();     // Turn on web server
-    doPoll();            // Get server version at startup
     if (bubbles.start()) // Initialize bubble counter
         Log.notice(F("Bubble counter initialized." CR));
 
@@ -70,10 +68,6 @@ void setup()
 
 void loop()
 {
-    // Poll for server version
-    Ticker getThatVersion;
-    getThatVersion.attach(POLLSERVERVERSION, doPoll);
-
     // Bubble loop to get periodic readings
     Ticker bubUpdate;
     bubUpdate.attach(BUBLOOP, setDoBub);

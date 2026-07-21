@@ -2,8 +2,6 @@
 
 var posted = false;
 var unloadingState = false;
-var loaded = 0; // Hold data load status
-var numReq = 2; // Number of JSON required
 
 // Tab tracking
 var previousTab = "";
@@ -33,10 +31,7 @@ function populatePage() {
     });
     loadHash();
     populateForm();
-    loadThisVersion();
-    loadThatVersion();
     loadTab();
-    pollComplete();
 }
 
 function loadTab() {
@@ -91,76 +86,6 @@ function populateForm() { // Get current parameters
         .always(function () {
             // Can post-process here
         });
-}
-
-function loadThisVersion() { // Get current parameters
-    var thisVersionJson = "/thisVersion/";
-    var thisVersion = $.getJSON(thisVersionJson, function () {
-    })
-        .done(function (thisVersion) {
-            try {
-                $('#thisVersion').text(thisVersion.version);
-            }
-            catch {
-                if (!unloadingState) {
-                    $('#thisVersion').text("Error parsing.");
-                }
-            }
-        })
-        .fail(function () {
-            if (!unloadingState) {
-                $('#thisVersion').text("Error loading.");
-            }
-        })
-        .always(function () {
-            // Can post-process here
-            if (loaded < numReq) {
-                loaded++;
-            }
-            if (typeof callback == "function") {
-                callback();
-            }
-        });
-}
-
-function loadThatVersion() { // Get current parameters
-    var thatVersionJson = "/thatVersion/";
-    var thatVersion = $.getJSON(thatVersionJson, function () {
-    })
-        .done(function (thatVersion) {
-            try {
-                $('#thatVersion').text(thatVersion.version);
-                document.getElementById("proceed").disabled = false;
-            }
-            catch {
-                if (!unloadingState) {
-                    $('#thatVersion').text("Error parsing.");
-                }
-            }
-        })
-        .fail(function () {
-            if (!unloadingState) {
-                $('#thatVersion').text("Error loading.");
-            }
-        })
-        .always(function () {
-            // Can post-process here
-            if (loaded < numReq) {
-                loaded++;
-            }
-            if (typeof callback == "function") {
-                callback();
-            }
-        });
-}
-
-function pollComplete() { // Poll to see if entire page is loaded
-    if (loaded == numReq) {
-        posted = true;
-        // finishPage();
-    } else {
-        setTimeout(pollComplete, 300); // try again in 300 milliseconds
-    }
 }
 
 // POST Handlers:

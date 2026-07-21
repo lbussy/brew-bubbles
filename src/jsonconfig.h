@@ -91,9 +91,6 @@ struct Config
     KeyTarget brewersfriend;
     KeyTarget brewfather;
     KeyTarget thingspeak;
-    bool dospiffs1;
-    bool dospiffs2;
-    bool didupdate;
     bool nodrd;
 
     void load(JsonObjectConst);

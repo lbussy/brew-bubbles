@@ -27,7 +27,6 @@ SOFTWARE. */
 #include "tools.h"
 #include "ntp.h"
 #include "version.h"
-#include "thatVersion.h"
 #include <ArduinoLog.h>
 #include <esptelnet.h>
 #include <sntp.h>   // sntp_get_current_timestamp()
@@ -38,7 +37,6 @@ void printTimestamp(Print *_logOutput);
 void printTimestamp(Print *_logOutput);
 void serialLoop();
 
-extern struct ThatVersion thatVersion;
 extern const char *resetReason[7];
 extern const char *resetDescription[7];
 

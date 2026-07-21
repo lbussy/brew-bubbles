@@ -108,7 +108,7 @@
 - ~~Add AP instructions to firmware instructions~~
 - ~~Move Bubble update to Ticker~~
 - ~~Fix busted formatting in wifi/2 & ota/2~~
-- ~~Consider moving all graphics to github or brewbubbles.com (depends on SSL)~~
+- ~~Move project graphics to repository-hosted assets~~
 - ~~OTA changes~~
   - ~~Try to apply former configuration when updating firmware~~
   - ~~Do a version check~~

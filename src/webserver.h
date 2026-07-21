@@ -28,12 +28,10 @@ SOFTWARE. */
 #endif
 
 #include "wifihandler.h"
-#include "execota.h"
 #include "bubbles.h"
 #include "jsonconfig.h"
 #include "version.h"
 #include "config.h"
-#include "thatVersion.h"
 #include "pushhelper.h"
 #include "tools.h"
 #include "uptime.h"
@@ -43,7 +41,6 @@ SOFTWARE. */
 #include <AsyncJson.h>
 #include <LittleFS.h>
 #include <ESPAsyncWebServer.h>
-#include <ESP8266HTTPClient.h>
 #include <ESP8266mDNS.h>
 #include <Arduino.h>
 
@@ -63,7 +60,6 @@ bool handleBrewfatherTargetPost(AsyncWebServerRequest *request);
 bool handleThingSpeakTargetPost(AsyncWebServerRequest *request);
 
 extern struct Config config;
-extern struct ThatVersion thatVersion;
 extern struct Bubbles bubbles;
 extern const size_t capacityDeserial;
 extern const size_t capacitySerial;

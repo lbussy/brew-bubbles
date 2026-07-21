@@ -1,4 +1,4 @@
-![alt text](https://www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")
+![Brew Bubbles logo](graphics/BB%20full%20logo.png "Brew Bubbles")
 ---
 *It beats watching the grass grow!*
 
@@ -24,8 +24,8 @@ Well, if you want to go crazy, you can connect Brew Bubbles to [Brewer's Friend]
 
 Have I piqued your interest? Want to know how to get started? I'm glad you asked. The average garage handyman can build brew Bubbles for around $10, and it takes all of an hour before you are up and running.
 
-You can hit the [website](https://www.brewbubbles.com) as a jumping-off point. I have prepared [full documentation](https://brew-bubbles.readthedocs.io/en/latest/), or you can dive right into the repository here if that's how you'd like to do start.
+Start with the [full documentation](https://brew-bubbles.readthedocs.io/en/latest/), or explore the repository here.
 
-The [Homebrewtalk thread](https://support.brewbubbles.com) will serve for general support, true bugs should get logged to the [issues tracker](https://github.com/lbussy/brew-bubbles/issues) here.
+Brew Bubbles is a mature, stable product with no intended roadmap changes. It is maintained for historical reference only. No new releases, upgrades, or individual support are promised. Ask questions in [GitHub Discussions](https://github.com/lbussy/brew-bubbles/discussions) and report reproducible defects in [GitHub Issues](https://github.com/lbussy/brew-bubbles/issues). The original [HomeBrewTalk thread](https://homebrewtalk.com/threads/brew-bubbles-web-enabled-airlock.673559/) remains available as a historical community resource.
 
 I really hope some of you will get some use out of this.

@@ -172,7 +172,7 @@
 <wire x1="0.03" y1="7.3375" x2="0.03" y2="28.422625" width="0" layer="20"/>
 <wire x1="0.03" y1="28.422625" x2="0.347375" y2="28.740125" width="0" layer="20" curve="-89.977443"/>
 <text x="6.55015" y="8.3771" size="0.8128" layer="26" font="vector" rot="MR90" align="top-left">Designed by @LBussy
-www.brewbubbles.com</text>
+Brew Bubbles</text>
 <text x="18.63" y="6.2" size="0.8" layer="25" font="vector" align="bottom-center">DAT</text>
 <text x="21.1821" y="6.2" size="0.8" layer="25" font="vector" align="bottom-center">VCC</text>
 <text x="23.71" y="6.2" size="0.8" layer="25" font="vector" align="bottom-center">GND</text>

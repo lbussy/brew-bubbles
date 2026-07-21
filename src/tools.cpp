@@ -178,11 +178,6 @@ void setDoTSTarget()
     doTSTarget = true; // Semaphore required for Ticker + radio event
 }
 
-void setDoOTA()
-{
-    doOTA = true; // Semaphore required for OTA in callback
-}
-
 void tickerLoop()
 {
     Target *target = Target::getInstance();
@@ -235,9 +230,4 @@ void tickerLoop()
         resetController();
     }
 
-    if (doOTA)
-    {
-        doOTA = false;
-        execfw();
-    }
 }

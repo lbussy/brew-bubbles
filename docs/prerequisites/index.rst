@@ -3,7 +3,7 @@ Project Prerequisites
 
 To use Brew Bubbles, you need to use an S-lock type fermentation lock. These locks are inexpensive and readily available. There are always discussions about the ability to clean these locks. It’s my experience that a warm soap and water soak followed by a good rinse handles the nasties. For the price of the airlocks, you could replace them every few batches if you were worried. 
 
-These are not perfect airlocks. I would have preferred to devise a way to use the three-piece airlocks; however, in testing, these proved to be exceedingly dependant upon the airlock fill level to work reliably.  Still, Brew Bubbles should take its signal from any input.  The future may hold additional options.
+These are not perfect airlocks. I would have preferred to devise a way to use the three-piece airlocks; however, in testing, these proved to be exceedingly dependant upon the airlock fill level to work reliably. Brew Bubbles should take its signal from any compatible input, but additional input options are not part of the mature product's supported configuration.
 
 If you use a blow-off-tube, you would remove that and replace it with the S-lock when blowoff danger has subsided. I have also had excellent results using FermCap-S and not using a blowoff tube despite vigorous fermentation.
 

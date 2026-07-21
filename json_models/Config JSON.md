@@ -38,18 +38,8 @@
         "freq": 9999,
         "update": false
     },
-    "dospiffs1": false,
-    "dospiffs2": false,
-    "didupdate": false,
     "nodrd": false
 }
-```
-
-## Size:
-
-```
-const size_t capacity = 3*JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(3) + 3*JSON_OBJECT_SIZE(4) + JSON_OBJECT_SIZE(11) + 810;
-512+728 = 1240
 ```
 
 ## Deserializing:
@@ -102,9 +92,6 @@ long thingspeak_channel = thingspeak["channel"]; // 999999999
 int thingspeak_freq = thingspeak["freq"]; // 9999
 bool thingspeak_update = thingspeak["update"]; // false
 
-bool dospiffs1 = doc["dospiffs1"]; // false
-bool dospiffs2 = doc["dospiffs2"]; // false
-bool didupdate = doc["didupdate"]; // false
 bool nodrd = doc["nodrd"]; // false
 ```
 
@@ -148,9 +135,6 @@ thingspeak["key"] = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 thingspeak["channel"] = 999999999;
 thingspeak["freq"] = 9999;
 thingspeak["update"] = false;
-doc["dospiffs1"] = false;
-doc["dospiffs2"] = false;
-doc["didupdate"] = false;
 doc["nodrd"] = false;
 
 serializeJson(doc, output);

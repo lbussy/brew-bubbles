@@ -451,34 +451,6 @@ void Config::load(JsonObjectConst obj)
     brewfather.load(obj["brewfather"]);
     thingspeak.load(obj["thingspeak"]);
 
-    if (obj["dospiffs1"].isNull())
-    {
-        dospiffs1 = false;
-    }
-    else
-    {
-        dospiffs1 = obj["dospiffs1"];
-    }
-
-    if (obj["dospiffs2"].isNull())
-    {
-        dospiffs2 = false;
-    }
-    else
-    {
-        dospiffs2 = obj["dospiffs2"];
-    }
-
-    bool firstrun = obj["didupdate"].isNull();
-    if (firstrun)
-    {
-        didupdate = false;
-    }
-    else
-    {
-        didupdate = obj["didupdate"];
-    }
-
     if (obj["nodrd"].isNull())
     {
         nodrd = false;
@@ -507,12 +479,6 @@ void Config::save(JsonObject obj) const
     brewfather.save(obj.createNestedObject("brewfather"));
     // Add Thingspeak object
     thingspeak.save(obj.createNestedObject("thingspeak"));
-    // Add dospiffs1 object
-    obj["dospiffs1"] = dospiffs1;
-    // Add dospiffs2 object
-    obj["dospiffs2"] = dospiffs2;
-    // Add dospiffs1 object
-    obj["didupdate"] = didupdate;
     // Add nodrd object
     obj["nodrd"] = nodrd;
 }

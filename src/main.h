@@ -33,7 +33,6 @@ SOFTWARE. */
 
 #include "serialhandler.h"
 #include "config.h"
-#include "execota.h"
 #include "jsonconfig.h"
 #include "webserver.h"
 #include "wifihandler.h"
@@ -46,7 +45,6 @@ SOFTWARE. */
 #include "bubbles.h"
 #include "mdns.h"
 #include "ntp.h"
-#include "thatVersion.h"
 #include <ESP_DoubleResetDetector.h>
 #include <ArduinoLog.h>
 #include <Arduino.h>
@@ -54,7 +52,6 @@ SOFTWARE. */
 extern struct Config config;
 extern bool loadConfig();
 extern const char *filename;
-extern struct ThatVersion thatVersion;
 extern struct Bubbles bubbles;
 extern volatile bool doBubble;
 

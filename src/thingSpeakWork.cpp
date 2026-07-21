@@ -91,7 +91,7 @@ void getNewBBChannel(String &writeKey, const char *key, const char *bubName)
         description,
         true,
         NULL,
-        "https://www.brewbubbles.com",
+        "https://github.com/lbussy/brew-bubbles/",
         NULL);
 
     if (retVal == 200)

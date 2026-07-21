@@ -15,6 +15,8 @@ littlefs.bin_  The Brew Bubbles web file system        0x300000
 
 These files represent the program that you upload to your controller.  The `firmware.bin` file is the C-based program that handles serving web pages, processing configurations, detecting pulses (bubbles), scheduling, and monitoring the temperature.  The `littlefs.bin` file is how the controller's web file system is delivered.  It is analogous to a directory on your computer.  It contains web pages and images served via the web interface.
 
+Brew Bubbles 2.2.3 is the final supported firmware. No new releases or upgrades are promised.
+
 Flashing Firmware - Initial
 ---------------------------
 
@@ -28,11 +30,13 @@ Important Note:
 Preferred Method for Windows and Macs
 `````````````````````````````````````
 
-BrewFlasher_ is a stand-alone desktop application for Windows and macOS designed to simplify flashing Brew Bubbles (And other brewing-related firmware) to your controller.
+BrewFlasher_ is a stand-alone desktop application for Windows and macOS designed to simplify flashing Brew Bubbles and other brewing-related firmware to your controller.
 
 It handles everything - locating the correct firmware, downloading it, setting the correct flash options/offsets, and flashing the firmware. There is no fumbling with the command line or worrying about esptool options. Select the project you want to flash, click a button, and you have finished.
 
 You may download BrewFlasher_ from its GitHub release page or BrewFlasher.com_.
+
+Brew Bubbles firmware 2.2.3 can be installed using BrewFlasher. Availability through BrewFlasher is maintained by that project and is not guaranteed by Brew Bubbles.
 
 .. figure:: bf_gui.png
    :scale: 60%
@@ -44,7 +48,7 @@ You will use the following settings:
 - Serial port: Auto-select
 - Project: Brew Bubbles
 - Device Family: ESP8266
-- Firmware: Brew Bubbles (latest version)
+- Firmware: Brew Bubbles 2.2.3
 - Baud rate: 921600 (any should work, this is faster)
 - Flash mode: Dual I/O (DIO)
 - Erase flash: yes, wipes all data (this avoids problems later on - it will wipe wifi settings if any)
@@ -82,7 +86,7 @@ If you desire to erase your controller, you may also use `esptool`'s erase flash
 Mac Platforms
 `````````````
 
-I do not have access to a Mac. However, anecdotally, I believe Mac users may follow the "*Unix-Based Platforms*" instructions above.  If you have firsthand knowledge of this process, please let me know.
+Mac users may follow the "*Unix-Based Platforms*" instructions above.
 
 Windows-Based Platforms
 ```````````````````````
@@ -138,15 +142,16 @@ Erase Flash
 
 If you desire to erase your controller, you may leverage the "*ERASE*" button within the Flash Download tool.
 
-Firmware Updates
-----------------
+Manual Installation Files
+-------------------------
 
-The web application provides Over The Air (OTA) update functionality for upgrades.  Navigate to the *Settings* page and scroll down to the *Update Firmware* section.
+For manual installation or reinstallation, download ``firmware.bin`` and ``littlefs.bin`` from the final `Brew Bubbles 2.2.3 release`_. Flashing these files can erase application configuration; record any settings you need before proceeding.
 
 .. _BrewFlasher: https://github.com/thorrak/brewflasher
 .. _BrewFlasher.com: https://www.brewflasher.com/
-.. _firmware.bin: https://github.com/lbussy/brew-bubbles/raw/master/firmware/firmware.bin
-.. _littlefs.bin: https://github.com/lbussy/brew-bubbles/raw/master/firmware/littlefs.bin
+.. _firmware.bin: https://github.com/lbussy/brew-bubbles/releases/download/2.2.3/firmware.bin
+.. _littlefs.bin: https://github.com/lbussy/brew-bubbles/releases/download/2.2.3/littlefs.bin
+.. _Brew Bubbles 2.2.3 release: https://github.com/lbussy/brew-bubbles/releases/tag/2.2.3
 .. _esptool: https://github.com/espressif/esptool
 .. _repository: https://github.com/espressif/esptool
 .. _download: https://www.espressif.com/en/support/download/other-tools

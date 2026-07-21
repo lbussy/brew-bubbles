@@ -1,10 +1,11 @@
 Troubleshooting
 ===============
 
-The easiest way to get help with the project is to join the `Brew Bubbles discussion on Homebrewtalk.com`_.  You may also open an issue on Github_.
+Ask questions and seek community help in `GitHub Discussions`_. Report reproducible defects through `GitHub Issues`_. These channels remain active, but individual support and response times are not promised. The original `Brew Bubbles discussion on HomeBrewTalk`_ remains available as a historical community resource.
 
-.. _Brew Bubbles discussion on Homebrewtalk.com: https://support.brewbubbles.com
-.. _Github: https://github.com/lbussy/brew-bubbles/issues
+.. _GitHub Discussions: https://github.com/lbussy/brew-bubbles/discussions
+.. _GitHub Issues: https://github.com/lbussy/brew-bubbles/issues
+.. _Brew Bubbles discussion on HomeBrewTalk: https://homebrewtalk.com/threads/brew-bubbles-web-enabled-airlock.673559/
 
 This page includes various bits and pieces that do not fit elsewhere, which may help you if things are not going as expected.
 

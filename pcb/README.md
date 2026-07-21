@@ -2,7 +2,7 @@
 
 # Brew Bubbles Shield
 
-This folder contains the Eagle files for printed circuit boards supporting [Brew Bubbles](https://www.brewbubbles.com/).
+This folder contains the Eagle files for printed circuit boards supporting [Brew Bubbles](https://github.com/lbussy/brew-bubbles/).
 
 The shield provides the necessary component connections and circuitry for the ESP-8266 controller used in this project.  It is nearly identical in size to the Wemos D1 mini we use to provide a very compact and lightweight footprint.
 
@@ -11,7 +11,7 @@ The shield provides the necessary component connections and circuitry for the ES
 - 2 layer board of 1.01 x 1.13 inches (25.6 x 28.7 mm) 
 - $5.65 per set of 3
 
-Please see [the documentation](https://docs.brewbubbles.com) for additional information.
+Please see [the documentation](https://brew-bubbles.readthedocs.io/en/latest/) for additional information.
 
 ## BOM
 

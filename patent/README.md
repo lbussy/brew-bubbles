@@ -1,4 +1,4 @@
-[![Brew Bubbles Logo](https://www.brewbubbles.com/wp-content/uploads/2019/08/BB-full-logo.png "Brew Bubbles")](http://www.brewbubbles.com/)
+![Brew Bubbles logo](../graphics/BB%20full%20logo.png "Brew Bubbles")
 =======
 
 # Patent and Prior Art
@@ -7,4 +7,4 @@ After an admittedly amateur search, no patents were found which may be considere
 
 Additionally, I have worked with people in academia who relate their experiences using a system such as this in the 2005-2007 time frame in a learning environment.
 
-If you believe this project infringes upon your intellectual property, or you are a representative or agent of such a person or group, please contact me initially via an [Issue logged in this repository](https://github.com/lbussy/brew-bubbles/issues) and I will reply to you promptly.
+If you believe this project infringes upon your intellectual property, or you are a representative or agent of such a person or group, report it through [GitHub Issues](https://github.com/lbussy/brew-bubbles/issues).
