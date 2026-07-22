@@ -60,6 +60,8 @@ The complete environment requires two release assets:
 - `brew-bubbles-2.2.3-offline-cache-linux-amd64.tar.gz`
 
 Their hashes are recorded in `EXTERNAL-ASSETS.sha256`.
+They are published in the
+[2.2.3 build-preservation release](https://github.com/lbussy/brew-bubbles/releases/tag/2.2.3-build-preservation).
 
 The container archive preserves Python, Git, PlatformIO Core, and the Debian
 userspace. The offline-cache archive preserves the compiler, framework,
@@ -103,3 +105,10 @@ restoration.
 container was assembled. The saved container archive is authoritative because
 future availability of the historical Debian and Python dependencies cannot be
 assumed.
+
+## Continuous integration
+
+The `Preserve PlatformIO 2.2.3` GitHub Actions workflow downloads the published
+archives, verifies them, and runs the reconstruction with container networking
+disabled. It requires complete Git history because the reconstruction checks
+out historical source commit `3beff558e54862332a419fd5431d5ed59dd25a05`.

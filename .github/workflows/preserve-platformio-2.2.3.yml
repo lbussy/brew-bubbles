@@ -1,0 +1,52 @@
+name: Preserve PlatformIO 2.2.3
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - preserve-platformio-build
+    paths:
+      - ".github/workflows/preserve-platformio-2.2.3.yml"
+      - "preserved/2.2.3/**"
+  pull_request:
+    paths:
+      - ".github/workflows/preserve-platformio-2.2.3.yml"
+      - "preserved/2.2.3/**"
+
+permissions:
+  contents: read
+
+jobs:
+  offline-reconstruction:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out complete repository history
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Download preserved external assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir external-assets
+          gh release download 2.2.3-build-preservation \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern "*.tar.gz" \
+            --dir external-assets
+
+      - name: Run network-disabled reconstruction
+        run: |
+          preserved/2.2.3/build/build-offline.sh \
+            external-assets \
+            "$RUNNER_TEMP/reconstructed-2.2.3"
+
+      - name: Upload reconstructed outputs
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: brew-bubbles-2.2.3-reconstructed
+          path: ${{ runner.temp }}/reconstructed-2.2.3/
+          if-no-files-found: error
+          retention-days: 14
