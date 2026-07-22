@@ -1,0 +1,101 @@
+Brew Bubbles preservation manifest
+==================================
+
+Release: 2.2.3
+Release URL: https://github.com/lbussy/brew-bubbles/releases/tag/2.2.3
+Release source commit:
+e6ef7c2dbbb77c74b7d83dc42bed159a5f17eecf
+
+Release source commit metadata:
+commit=e6ef7c2dbbb77c74b7d83dc42bed159a5f17eecf
+author_date=2021-02-21T09:58:17-06:00
+commit_date=2021-02-21T09:58:17-06:00
+subject=Fix NTP with lwIP 1.4
+
+Hardware target: Wemos D1 Mini / ESP8266
+Flash capacity: 4 MB / 32 Mbit
+Firmware address: 0x000000
+LittleFS address: 0x300000
+Upload speed: 460800
+Serial monitor speed: 74880
+
+Archived artifact checksums:
+08becff15e539e207205b779a1c0fc8bd6320683762fca8a003e6f8610365709  firmware.bin
+529498dc4eae9c24c537891ac019b685dcbfd85e854316547b88796b11bffdda  littlefs.bin
+13203bec47ca42896b11aa65ad525eae75f43c2e24252b2b7c7978ac67d676b8  source-2.2.3.tar.gz
+
+Repository PlatformIO configuration at release:
+; PlatformIO Project Configuration File
+;
+;   Build options: build flags, source filter
+;   Upload options: custom upload port, speed and extra flags
+;   Library options: dependencies, extra library storages
+;   Advanced options: extra scripting
+;
+; Please visit documentation for the other options and examples
+; https://docs.platformio.org/page/projectconf.html
+
+[common_env_data]
+upload_speed = 460800 ; 921600 // MacBook can't handle the heat!
+monitor_speed = 74880
+monitor_filters =
+    ; esp8266_exception_decoder
+    ; log2file
+framework = arduino
+platform = espressif8266
+build_unflags = 
+build_flags =
+    !python tools/git_rev.py
+    -D PIO_SRC_TAG=2.2.3Beta
+    -D BAUD=${common_env_data.monitor_speed}
+    ; -D DEBUG_ESP_PORT=Serial
+    ; -D DEBUG_ESP_WIFI
+    ; -D DEBUG_ESP_HTTP_UPDATE
+    ; -D DEBUG_ESP_HTTP_CLIENT
+    ; -D DEBUG_ESP_UPDATE
+    ; -D DEBUG_ESP_OTA
+    ; -D DEBUG_ESP_OOM
+    ; -include "umm_malloc/umm_malloc_cfg.h"
+    ; -D DEBUG_ESP_CORE
+    ; -D PIO_FRAMEWORK_ARDUINO_LWIP2_LOW_MEMORY			 		; v2 Lower Memory (default)
+    ; -D PIO_FRAMEWORK_ARDUINO_LWIP2_HIGHER_BANDWIDTH			; v2 Higher Bandwidth
+    ; -D PIO_FRAMEWORK_ARDUINO_LWIP2_LOW_MEMORY_LOW_FLASH		; v2 Lower Memory (no features)
+    ; -D PIO_FRAMEWORK_ARDUINO_LWIP2_HIGHER_BANDWIDTH_LOW_FLASH	; v2 Higher Bandwidth (no features)
+    ; -D PIO_FRAMEWORK_ARDUINO_LWIP2_IPV6_LOW_MEMORY 			; v2 IPv6 Lower Memory
+    ; -D PIO_FRAMEWORK_ARDUINO_LWIP2_IPV6_HIGHER_BANDWIDTH 		; v2 IPv6 Higher Bandwidth
+    -D PIO_FRAMEWORK_ARDUINO_LWIP_HIGHER_BANDWIDTH              ; v1.4 Higher Bandwidth (Needed because of stream errors getting Filesystem OTA)
+extra_scripts = ; pre:python tools\name_firmware.py
+lib_deps = 
+    ArduinoJson
+    https://github.com/lbussy/OneWire.git
+    https://github.com/lbussy/DS18B20.git
+    https://github.com/lbussy/Arduino-Log.git
+    https://github.com/lbussy/ESPAsyncTCP
+    https://github.com/lbussy/ESPAsyncWebServer.git
+    https://github.com/lbussy/AsyncWiFiManager.git
+    https://github.com/lbussy/asyncHTTPrequest.git
+    https://github.com/lbussy/CircularBuffer.git
+    https://github.com/lbussy/LCBUrl.git
+    https://github.com/lbussy/esptelnet.git
+    khoih-prog/ESP_WiFiManager
+    https://github.com/lbussy/ThingSpeak
+monitor_filters =
+    ; esp8266_exception_decoder
+    ; log2file
+build_type = release ; Cannot use debug with Wemos D1
+
+[env:d1_mini]
+board_build.filesystem = littlefs
+upload_speed = ${common_env_data.upload_speed}
+monitor_speed = ${common_env_data.monitor_speed}
+framework = ${common_env_data.framework}
+platform = ${common_env_data.platform}
+build_unflags = ${common_env_data.build_unflags}
+build_flags =
+    ${common_env_data.build_flags}
+    -D USE_LITTLEFS
+extra_scripts = ${common_env_data.extra_scripts}
+lib_deps = ${common_env_data.lib_deps}
+monitor_filters = ${common_env_data.monitor_filters}
+build_type = ${common_env_data.build_type}
+board = d1_mini
