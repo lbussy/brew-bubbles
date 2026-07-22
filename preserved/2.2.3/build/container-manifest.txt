@@ -1,0 +1,53 @@
+Docker image ID:
+sha256:00e4ea21728a75474566e3a6bcefeb84e69ffe2b8b2dbcdf000a9280ce646341
+
+Base image:
+python@sha256:18b8bae1ea34d6c9cef6f29833c9d0913cea3d5c6d98a1bd2db2037348473450
+
+Operating system:
+PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
+NAME="Debian GNU/Linux"
+VERSION_ID="11"
+VERSION="11 (bullseye)"
+VERSION_CODENAME=bullseye
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+
+Primary tools:
+Python 3.8.18
+git version 2.30.2
+PlatformIO Core, version 5.1.0
+
+Python packages:
+aiofiles==0.6.0
+bottle==0.12.25
+certifi==2026.7.22
+charset-normalizer==3.4.9
+click==7.1.2
+colorama==0.4.6
+h11==0.16.0
+idna==3.15
+ifaddr==0.2.0
+json-rpc==1.13.0
+marshmallow==3.22.0
+packaging==26.2
+platformio==5.1.0
+pyelftools==0.32
+pyserial==3.5
+requests==2.32.4
+semantic-version==2.8.5
+starlette==0.14.2
+tabulate==0.8.10
+urllib3==2.2.3
+uvicorn==0.13.4
+wsproto==1.0.0
+zeroconf==0.28.8
+
+Selected Debian packages:
+ca-certificates=20230311+deb12u1~deb11u1
+git=1:2.30.2-1+deb11u5
+git-man=1:2.30.2-1+deb11u5
+libcurl3-gnutls=7.74.0-1.3+deb11u16
+liberror-perl=0.17029-1
