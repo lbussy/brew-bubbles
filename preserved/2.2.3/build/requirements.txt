@@ -20,4 +20,4 @@ tabulate==0.8.10
 urllib3==2.2.3
 uvicorn==0.13.4
 wsproto==1.0.0
-zeroconf==0.28.8
+zeroconf==0.149.16
